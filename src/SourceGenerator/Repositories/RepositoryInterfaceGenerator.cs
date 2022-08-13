@@ -12,7 +12,7 @@ public sealed class RepositoryInterfaceGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -41,7 +41,7 @@ public sealed class RepositoryInterfaceGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
         StringVariations sv = new(type.Name);
-        
+
         var name = type.Name;
         var lower = name.ToLower();
         var dto = $"{name}Dto";
@@ -49,7 +49,7 @@ public sealed class RepositoryInterfaceGenerator : IIncrementalGenerator
 
         return StringConstants.FileHeader + @$"
 
-using System.Collections.Generic;
+using {rootNs}.Contracts.Data;
 using {rootNs}.Database;
 using Dapper;
 

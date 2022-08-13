@@ -12,7 +12,7 @@ public sealed class RepositoryGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -41,7 +41,7 @@ public sealed class RepositoryGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
         StringVariations sv = new(type.Name);
-        
+
         var name = type.Name;
         var lower = name.ToLower();
         var dto = $"{name}Dto";
@@ -49,7 +49,7 @@ public sealed class RepositoryGenerator : IIncrementalGenerator
 
         return StringConstants.FileHeader + @$"
 
-using System.Collections.Generic;
+using {rootNs}.Contracts.Data;
 using {rootNs}.Database;
 using Dapper;
 
@@ -68,7 +68,7 @@ using Dapper;
         {{
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var result = await connection.ExecuteAsync(
-                @""INSERT INTO Customers (Id, Username, FullName, Email, DateOfBirth) 
+                @""INSERT INTO Customers (Id, Username, FullName, Email, DateOfBirth)
                 VALUES (@Id, @Username, @FullName, @Email, @DateOfBirth)"",
                 {lower});
             return result > 0;
@@ -91,7 +91,7 @@ using Dapper;
         {{
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var result = await connection.ExecuteAsync(
-                @""UPDATE Customers SET Username = @Username, FullName = @FullName, Email = @Email, 
+                @""UPDATE Customers SET Username = @Username, FullName = @FullName, Email = @Email,
                      DateOfBirth = @DateOfBirth WHERE Id = @Id"",
                 {lower});
             return result > 0;
