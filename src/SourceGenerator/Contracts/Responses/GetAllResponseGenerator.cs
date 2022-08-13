@@ -12,7 +12,7 @@ public sealed class GetAllResponseGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -41,19 +41,17 @@ public sealed class GetAllResponseGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
         StringVariations sv = new(type.Name);
-        
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+
+        string modelResponse = $"{sv.Pascal}Response";
+        string getAllModelsResponse = $"GetAll{sv.PascalPlural}Response";
 
         return StringConstants.FileHeader + @$"
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class GetAllCustomersResponse
+    public class {getAllModelsResponse}
     {{
-        public IEnumerable<{name}Response> Customers {{ get; init; }} = Enumerable.Empty<{name}Response>();
+        public IEnumerable<{modelResponse}> {sv.PascalPlural} {{ get; init; }} = Enumerable.Empty<{modelResponse}>();
     }}
 {(ns is null ? null : @"}
 ")}";
