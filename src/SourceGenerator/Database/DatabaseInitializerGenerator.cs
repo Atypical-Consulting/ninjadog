@@ -25,13 +25,13 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
             return;
         }
 
-        foreach (var type in enumerations)
-        {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Database";
+        var type = enumerations[0];
+        var code = GenerateCode(type);
+        var typeNamespace = Utilities.GetRootNamespace(type) + ".Database";
 
-            context.AddSource($"{typeNamespace}.DatabaseInitializer.g.cs", code);
-        }
+        const string className = "DatabaseInitializer";
+
+        context.AddSource($"{typeNamespace}.{className}.g.cs", code);
     }
 
     private static string GenerateCode(ITypeSymbol type)

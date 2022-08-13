@@ -30,7 +30,10 @@ public sealed class DeleteRequestGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Contracts.Requests";
 
-            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
+            StringVariations sv = new(type.Name);
+            var className = $"Delete{sv.Pascal}Request";
+
+            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
     }
 

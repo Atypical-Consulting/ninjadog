@@ -30,7 +30,10 @@ public sealed class UpdateEndpointGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Endpoints";
 
-            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
+            StringVariations sv = new(type.Name);
+            var className = $"Update{sv.Pascal}Endpoint";
+
+            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
     }
 

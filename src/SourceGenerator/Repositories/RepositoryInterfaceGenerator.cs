@@ -30,7 +30,10 @@ public sealed class RepositoryInterfaceGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Repositories";
 
-            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
+            StringVariations sv = new(type.Name);
+            var className = $"I{sv.Pascal}Repository";
+
+            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
     }
 

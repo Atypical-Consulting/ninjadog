@@ -30,7 +30,10 @@ public sealed class DtoGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Contracts.Data";
 
-            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
+            StringVariations sv = new(type.Name);
+            var className = $"{sv.Pascal}Dto";
+
+            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
     }
 

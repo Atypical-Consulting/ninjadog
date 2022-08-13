@@ -30,7 +30,10 @@ public sealed class UpdateRequestValidatorGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Validation";
 
-            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
+            StringVariations sv = new(type.Name);
+            string className = $"Update{sv.Pascal}RequestValidator";
+
+            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
     }
 

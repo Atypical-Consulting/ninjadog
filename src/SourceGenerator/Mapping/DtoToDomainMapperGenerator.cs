@@ -25,13 +25,13 @@ public sealed class DtoToDomainMapperGenerator : IIncrementalGenerator
             return;
         }
 
-        foreach (var type in enumerations)
-        {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
+        var type = enumerations[0];
+        var code = GenerateCode(type);
+        var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
 
-            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
-        }
+        const string className = "DtoToDomainMapperGenerator";
+
+        context.AddSource($"{typeNamespace}.{className}.g.cs", code);
     }
 
     private static string GenerateCode(ITypeSymbol type)

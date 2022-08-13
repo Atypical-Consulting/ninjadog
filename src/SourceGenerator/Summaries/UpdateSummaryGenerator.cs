@@ -30,7 +30,10 @@ public sealed class UpdateSummaryGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Summaries";
 
-            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
+            StringVariations sv = new(type.Name);
+            string className = $"Update{sv.Pascal}Summary";
+
+            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
     }
 
