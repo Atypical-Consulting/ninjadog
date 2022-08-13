@@ -12,7 +12,7 @@ public sealed class GetEndpointGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -28,11 +28,9 @@ public sealed class GetEndpointGenerator : IIncrementalGenerator
         foreach (var type in enumerations)
         {
             string code = GenerateCode(type);
-            string? typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : $"{type.ContainingNamespace}.";
+            var typeNamespace = Utilities.GetRootNamespace(type) + ".Endpoints";
 
-            context.AddSource($"{typeNamespace}{type.Name}.g.cs", code);
+            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
         }
     }
 
@@ -41,7 +39,7 @@ public sealed class GetEndpointGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
         StringVariations sv = new(type.Name);
-        
+
         string name = type.Name;
         string lower = name.ToLower();
         string dto = $"{name}Dto";

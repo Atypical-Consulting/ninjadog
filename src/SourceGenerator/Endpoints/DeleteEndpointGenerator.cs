@@ -12,7 +12,7 @@ public sealed class DeleteEndpointGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -28,11 +28,9 @@ public sealed class DeleteEndpointGenerator : IIncrementalGenerator
         foreach (var type in enumerations)
         {
             var code = GenerateCode(type);
-            var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : $"{type.ContainingNamespace}.";
+            var typeNamespace = Utilities.GetRootNamespace(type) + ".Endpoints";
 
-            context.AddSource($"{typeNamespace}{type.Name}.g.cs", code);
+            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
         }
     }
 

@@ -12,7 +12,7 @@ public sealed class ServiceGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -28,11 +28,9 @@ public sealed class ServiceGenerator : IIncrementalGenerator
         foreach (var type in enumerations)
         {
             var code = GenerateCode(type);
-            var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : $"{type.ContainingNamespace}.";
+            var typeNamespace = Utilities.GetRootNamespace(type) + ".Services";
 
-            context.AddSource($"{typeNamespace}{type.Name}.g.cs", code);
+            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
         }
     }
 
@@ -41,7 +39,7 @@ public sealed class ServiceGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Services" : null;
         StringVariations sv = new(type.Name);
-        
+
         var name = type.Name;
         var lower = name.ToLower();
         var dto = $"{name}Dto";

@@ -60,7 +60,7 @@ public static class Utilities
                 }
             });
     }
-    
+
     internal static IEnumerable<string> GetItemNames(ITypeSymbol type)
     {
         return type.GetMembers()

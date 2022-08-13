@@ -12,7 +12,7 @@ public sealed class GetAllSummaryGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -28,11 +28,9 @@ public sealed class GetAllSummaryGenerator : IIncrementalGenerator
         foreach (var type in enumerations)
         {
             var code = GenerateCode(type);
-            var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : $"{type.ContainingNamespace}.";
+            var typeNamespace = Utilities.GetRootNamespace(type) + ".Summaries";
 
-            context.AddSource($"{typeNamespace}{type.Name}.g.cs", code);
+            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
         }
     }
 
@@ -41,7 +39,7 @@ public sealed class GetAllSummaryGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
         StringVariations sv = new(type.Name);
-        
+
         string className = $"GetAll{sv.PascalPlural}Summary";
         string getAllEndpoint = $"GetAll{sv.PascalPlural}Endpoint";
         string getAllResponse = $"GetAll{sv.PascalPlural}Response";

@@ -12,7 +12,7 @@ public sealed class GetAllEndpointGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -28,11 +28,9 @@ public sealed class GetAllEndpointGenerator : IIncrementalGenerator
         foreach (var type in enumerations)
         {
             string code = GenerateCode(type);
-            string? typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : $"{type.ContainingNamespace}.";
+            var typeNamespace = Utilities.GetRootNamespace(type) + ".Endpoints";
 
-            context.AddSource($"{typeNamespace}{type.Name}.g.cs", code);
+            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
         }
     }
 
@@ -41,7 +39,7 @@ public sealed class GetAllEndpointGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
         StringVariations sv = new(type.Name);
-        
+
         string endpointAddress = sv.Dashed;
         string className = $"GetAll{sv.PascalPlural}Endpoint";
         string response = $"GetAll{sv.PascalPlural}Response";
@@ -51,7 +49,7 @@ public sealed class GetAllEndpointGenerator : IIncrementalGenerator
         string varModels = sv.CamelPlural;
         string varModelsResponse = $"{sv.CamelPlural}Response";
         string methodToModelsResponse = $"To{sv.PascalPlural}Response()";
-        
+
         return StringConstants.FileHeader + @$"
 
 using {rootNs}.Contracts.Responses;

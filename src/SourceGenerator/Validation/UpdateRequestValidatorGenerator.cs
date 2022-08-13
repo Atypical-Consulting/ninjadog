@@ -12,7 +12,7 @@ public sealed class UpdateRequestValidatorGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -28,11 +28,9 @@ public sealed class UpdateRequestValidatorGenerator : IIncrementalGenerator
         foreach (var type in enumerations)
         {
             var code = GenerateCode(type);
-            var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : $"{type.ContainingNamespace}.";
+            var typeNamespace = Utilities.GetRootNamespace(type) + ".Validation";
 
-            context.AddSource($"{typeNamespace}{type.Name}.g.cs", code);
+            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
         }
     }
 
@@ -52,7 +50,7 @@ public sealed class UpdateRequestValidatorGenerator : IIncrementalGenerator
 using {rootNs}.Contracts.Requests;
 using FastEndpoints;
 using FluentValidation;
-    
+
 {(ns is null ? null : $@"namespace {ns}
 {{")}
     public class Update{name}RequestValidator : Validator<Update{name}Request>

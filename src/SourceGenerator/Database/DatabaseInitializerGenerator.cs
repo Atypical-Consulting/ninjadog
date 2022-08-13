@@ -12,7 +12,7 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -28,11 +28,9 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
         foreach (var type in enumerations)
         {
             var code = GenerateCode(type);
-            var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : $"{type.ContainingNamespace}.";
+            var typeNamespace = Utilities.GetRootNamespace(type) + ".Database";
 
-            context.AddSource($"{typeNamespace}{type.Name}.g.cs", code);
+            context.AddSource($"{typeNamespace}.DatabaseInitializer.g.cs", code);
         }
     }
 
@@ -41,7 +39,7 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Database" : null;
         StringVariations sv = new(type.Name);
-        
+
         var name = type.Name;
         var lower = name.ToLower();
         var dto = $"{name}Dto";
@@ -67,7 +65,7 @@ using Dapper;
             using var connection = await _connectionFactory.CreateConnectionAsync();
             // TODO: Generate SQL query for database creation
             // await connection.ExecuteAsync(@""CREATE TABLE IF NOT EXISTS Customers (
-            // Id CHAR(36) PRIMARY KEY, 
+            // Id CHAR(36) PRIMARY KEY,
             // Username TEXT NOT NULL,
             // FullName TEXT NOT NULL,
             // Email TEXT NOT NULL,

@@ -12,7 +12,7 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -28,11 +28,9 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
         foreach (var type in enumerations)
         {
             var code = GenerateCode(type);
-            var typeNamespace = type.ContainingNamespace.IsGlobalNamespace
-                ? null
-                : $"{type.ContainingNamespace}.";
+            var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
 
-            context.AddSource($"{typeNamespace}{type.Name}.g.cs", code);
+            context.AddSource($"{typeNamespace}.{type.Name}.g.cs", code);
         }
     }
 
@@ -68,7 +66,7 @@ using Dapper;
         {{
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var result = await connection.ExecuteAsync(
-                @""INSERT INTO Customers (Id, Username, FullName, Email, DateOfBirth) 
+                @""INSERT INTO Customers (Id, Username, FullName, Email, DateOfBirth)
                 VALUES (@Id, @Username, @FullName, @Email, @DateOfBirth)"",
                 {lower});
             return result > 0;
@@ -91,7 +89,7 @@ using Dapper;
         {{
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var result = await connection.ExecuteAsync(
-                @""UPDATE Customers SET Username = @Username, FullName = @FullName, Email = @Email, 
+                @""UPDATE Customers SET Username = @Username, FullName = @FullName, Email = @Email,
                      DateOfBirth = @DateOfBirth WHERE Id = @Id"",
                 {lower});
             return result > 0;
