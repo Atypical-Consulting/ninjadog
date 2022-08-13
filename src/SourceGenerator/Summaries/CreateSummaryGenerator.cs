@@ -12,7 +12,7 @@ public sealed class CreateSummaryGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
-        
+
         context.RegisterSourceOutput(enumTypes, GenerateCode);
     }
 
@@ -41,7 +41,7 @@ public sealed class CreateSummaryGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
         StringVariations sv = new(type.Name);
-        
+
         string className = $"Create{sv.Pascal}Summary";
         string createEndpoint = $"Create{sv.Pascal}Endpoint";
         string humanized = sv.Humanized;
@@ -51,6 +51,7 @@ public sealed class CreateSummaryGenerator : IIncrementalGenerator
 
 using {rootNs}.Contracts.Responses;
 using {rootNs}.Endpoints;
+using DemoLibrary.Contracts.Responses;
 using FastEndpoints;
 
 {(ns is null ? null : $@"namespace {ns}
