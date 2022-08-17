@@ -55,9 +55,9 @@ public partial class {_.ClassGetAllModelsSummary} : Summary<{_.ClassGetAllModels
 {{
     public {_.ClassGetAllModelsSummary}()
     {{
-        Summary = ""Returns all the {_.ModelHumanized} in the system"";
-        Description = ""Returns all the {_.ModelHumanized} in the system"";
-        Response<{_.ClassGetAllModelsResponse}>(200, ""All {_.ModelHumanized} in the system are returned"");
+        Summary = ""Returns all the {_.ModelsHumanized} in the system"";
+        Description = ""Returns all the {_.ModelsHumanized} in the system"";
+        Response<{_.ClassGetAllModelsResponse}>(200, ""All {_.ModelsHumanized} in the system are returned"");
     }}
 }}";
 
