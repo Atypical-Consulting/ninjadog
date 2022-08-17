@@ -5,19 +5,7 @@ namespace DemoApi.Domain;
 [NinjadogModel]
 public partial class WeatherForecast
 {
-    public static readonly WeatherForecast Today = new()
-    {
-        Date = DateTime.Today,
-        Summary = "Sunny",
-        TemperatureC = 32
-    };
-
-    public static readonly WeatherForecast Yesterday = new()
-    {
-        Date = DateTime.Today - TimeSpan.FromDays(1),
-        Summary = "Very sunny",
-        TemperatureC = 34
-    };
+    public Guid Id { get; set; }
 
     public DateTime Date { get; set; }
 
