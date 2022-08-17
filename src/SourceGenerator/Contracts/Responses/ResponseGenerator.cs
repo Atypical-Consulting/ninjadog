@@ -52,7 +52,7 @@ public sealed class ResponseGenerator : IIncrementalGenerator
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class {name}Response
+    public partial class {name}Response
     {{
         public Guid Id {{ get; init; }}
 

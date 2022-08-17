@@ -51,7 +51,7 @@ using Dapper;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class DatabaseInitializer
+    public partial class DatabaseInitializer
     {{
         private readonly IDbConnectionFactory _connectionFactory;
 

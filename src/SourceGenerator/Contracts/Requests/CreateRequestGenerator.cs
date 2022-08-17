@@ -52,7 +52,7 @@ public sealed class CreateRequestGenerator : IIncrementalGenerator
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class Create{name}Request
+    public partial class Create{name}Request
     {{
         // TODO: Generate properties
 

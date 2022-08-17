@@ -53,7 +53,7 @@ using Dapper;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class {name}Repository : I{name}Repository
+    public partial class {name}Repository : I{name}Repository
     {{
         private readonly IDbConnectionFactory _connectionFactory;
 

@@ -52,7 +52,7 @@ public sealed class DeleteRequestGenerator : IIncrementalGenerator
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class Delete{name}Request
+    public partial class Delete{name}Request
     {{
         public Guid Id {{ get; init; }}
     }}

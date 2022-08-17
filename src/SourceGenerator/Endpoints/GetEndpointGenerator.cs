@@ -60,7 +60,7 @@ using Microsoft.AspNetCore.Authorization;
 {(ns is null ? null : $@"namespace {ns}
 {{")}
     [HttpGet(""customers/{{id:guid}}""), AllowAnonymous]
-    public class Get{name}Endpoint : Endpoint<Get{name}Request, {name}Response>
+    public partial class Get{name}Endpoint : Endpoint<Get{name}Request, {name}Response>
     {{
         private readonly I{name}Service _{lower}Service;
 

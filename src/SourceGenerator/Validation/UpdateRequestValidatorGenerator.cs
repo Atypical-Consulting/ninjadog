@@ -56,7 +56,7 @@ using FluentValidation;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class Update{name}RequestValidator : Validator<Update{name}Request>
+    public partial class Update{name}RequestValidator : Validator<Update{name}Request>
     {{
         public Update{name}RequestValidator()
         {{

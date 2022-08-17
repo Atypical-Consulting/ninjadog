@@ -56,7 +56,7 @@ using Dapper;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class {dto}
+    public partial class {dto}
     {{
     }}
 {(ns is null ? null : @"}

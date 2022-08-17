@@ -60,7 +60,7 @@ using Microsoft.AspNetCore.Authorization;
 {(ns is null ? null : $@"namespace {ns}
 {{")}
     [HttpPut(""customers/{{id:guid}}""), AllowAnonymous]
-    public class Update{name}Endpoint : Endpoint<Update{name}Request, {name}Response>
+    public partial class Update{name}Endpoint : Endpoint<Update{name}Request, {name}Response>
     {{
         private readonly I{name}Service _{lower}Service;
 

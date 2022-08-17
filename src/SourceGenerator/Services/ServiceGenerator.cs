@@ -58,7 +58,7 @@ using FluentValidation.Results;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class {name}Service : I{name}Service
+    public partial class {name}Service : I{name}Service
     {{
         private readonly I{name}Repository _{lower}Repository;
 

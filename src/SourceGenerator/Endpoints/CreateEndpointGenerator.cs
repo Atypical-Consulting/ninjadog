@@ -60,7 +60,7 @@ using Microsoft.AspNetCore.Authorization;
 {(ns is null ? null : $@"namespace {ns}
 {{")}
     [HttpPost(""customers""), AllowAnonymous]
-    public class Create{name}Endpoint : Endpoint<Create{name}Request, {name}Response>
+    public partial class Create{name}Endpoint : Endpoint<Create{name}Request, {name}Response>
     {{
         private readonly I{name}Service _{lower}Service;
 

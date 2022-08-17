@@ -52,7 +52,7 @@ public sealed class GetRequestGenerator : IIncrementalGenerator
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class Get{name}Request
+    public partial class Get{name}Request
     {{
         public Guid Id {{ get; init; }}
     }}

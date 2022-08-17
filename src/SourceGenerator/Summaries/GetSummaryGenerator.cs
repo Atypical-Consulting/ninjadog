@@ -56,7 +56,7 @@ using FastEndpoints;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class {className} : Summary<{getModelEndpoint}>
+    public partial class {className} : Summary<{getModelEndpoint}>
     {{
         public {className}()
         {{

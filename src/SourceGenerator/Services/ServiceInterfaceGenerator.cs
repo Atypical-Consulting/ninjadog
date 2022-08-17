@@ -56,7 +56,7 @@ using Dapper;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public interface I{name}Service
+    public partial interface I{name}Service
     {{
         Task<bool> CreateAsync({name} {lower});
 

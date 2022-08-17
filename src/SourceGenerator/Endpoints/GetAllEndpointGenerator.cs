@@ -64,7 +64,7 @@ using Microsoft.AspNetCore.Authorization;
 {(ns is null ? null : $@"namespace {ns}
 {{")}
     [HttpGet(""{endpointAddress}""), AllowAnonymous]
-    public class {className} : EndpointWithoutRequest<{response}>
+    public partial class {className} : EndpointWithoutRequest<{response}>
     {{
         private readonly {interfaceService} {fieldService};
 

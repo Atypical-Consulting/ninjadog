@@ -50,7 +50,7 @@ public sealed class GetAllResponseGenerator : IIncrementalGenerator
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public class {getAllModelsResponse}
+    public partial class {getAllModelsResponse}
     {{
         public IEnumerable<{modelResponse}> {sv.PascalPlural} {{ get; init; }} = Enumerable.Empty<{modelResponse}>();
     }}

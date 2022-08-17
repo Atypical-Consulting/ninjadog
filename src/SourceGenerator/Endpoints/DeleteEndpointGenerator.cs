@@ -58,7 +58,7 @@ using Microsoft.AspNetCore.Authorization;
 {(ns is null ? null : $@"namespace {ns}
 {{")}
     [HttpDelete(""customers/{{id:guid}}""), AllowAnonymous]
-    public class Delete{name}Endpoint : Endpoint<Delete{name}Request>
+    public partial class Delete{name}Endpoint : Endpoint<Delete{name}Request>
     {{
         private readonly I{name}Service _{lower}Service;
 
