@@ -39,8 +39,8 @@ public sealed class DtoGenerator : IIncrementalGenerator
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Contracts.Data" : null;
+        var rootNs = Utilities.GetRootNamespace(type);
+        var ns = rootNs is not null ? $"{rootNs}.Contracts.Data" : null;
 
         StringTokens _ = new(type.Name);
 

@@ -39,8 +39,8 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
+        var rootNs = Utilities.GetRootNamespace(type);
+        var ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
 
         StringTokens _ = new(type.Name);
 

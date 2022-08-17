@@ -31,7 +31,7 @@ public sealed class CreateRequestValidatorGenerator : IIncrementalGenerator
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Validation";
 
             StringVariations sv = new(type.Name);
-            string className = $"Create{sv.Pascal}RequestValidator";
+            var className = $"Create{sv.Pascal}RequestValidator";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
@@ -39,8 +39,8 @@ public sealed class CreateRequestValidatorGenerator : IIncrementalGenerator
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Validation" : null;
+        var rootNs = Utilities.GetRootNamespace(type);
+        var ns = rootNs is not null ? $"{rootNs}.Validation" : null;
 
         StringTokens _ = new(type.Name);
 

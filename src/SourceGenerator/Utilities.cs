@@ -14,7 +14,7 @@ public static class Utilities
             return false;
         }
 
-        string? name = ExtractName(attribute.Name);
+        var name = ExtractName(attribute.Name);
 
         return name is "EnumGeneration" or "EnumGenerationAttribute";
     }

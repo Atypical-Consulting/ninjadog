@@ -122,14 +122,14 @@ public static class Inflector
 
     private static string? ApplyRules(List<Rule> rules, string word)
     {
-        string? result = word;
+        var result = word;
 
         if (_uncountables.Contains(word.ToLower()))
         {
             return result;
         }
 
-        for (int i = rules.Count - 1; i >= 0; i--)
+        for (var i = rules.Count - 1; i >= 0; i--)
         {
             if ((result = rules[i].Apply(word)) != null)
             {
@@ -178,7 +178,7 @@ public static class Inflector
 
     private static string Ordanize(int number, string numberString)
     {
-        int nMod100 = number % 100;
+        var nMod100 = number % 100;
 
         if (nMod100 is >= 11 and <= 13)
         {

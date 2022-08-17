@@ -36,8 +36,8 @@ public sealed class ValidationFailureResponseGenerator : IIncrementalGenerator
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
+        var rootNs = Utilities.GetRootNamespace(type);
+        var ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
 
         var code = @$"
 {Utilities.WriteFileScopedNamespace(ns)}

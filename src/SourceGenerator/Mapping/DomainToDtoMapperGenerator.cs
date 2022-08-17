@@ -36,8 +36,8 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
 
     private static string GenerateCode(ITypeSymbol type, ImmutableArray<ITypeSymbol> models)
     {
-        string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
+        var rootNs = Utilities.GetRootNamespace(type);
+        var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
 
         var methods = string.Join(
             Environment.NewLine,

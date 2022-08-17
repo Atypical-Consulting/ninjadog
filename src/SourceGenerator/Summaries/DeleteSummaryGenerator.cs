@@ -31,7 +31,7 @@ public sealed class DeleteSummaryGenerator : IIncrementalGenerator
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Summaries";
 
             StringVariations sv = new(type.Name);
-            string className = $"Delete{sv.Pascal}Summary";
+            var className = $"Delete{sv.Pascal}Summary";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
@@ -39,8 +39,8 @@ public sealed class DeleteSummaryGenerator : IIncrementalGenerator
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
+        var rootNs = Utilities.GetRootNamespace(type);
+        var ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
 
         StringTokens _ = new(type.Name);
 

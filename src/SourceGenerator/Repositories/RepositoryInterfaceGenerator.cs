@@ -39,12 +39,12 @@ public sealed class RepositoryInterfaceGenerator : IIncrementalGenerator
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
+        var rootNs = Utilities.GetRootNamespace(type);
+        var ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
 
         StringTokens _ = new(type.Name);
 
-        string code = @$"
+        var code = @$"
 using {rootNs}.Contracts.Data;
 using {rootNs}.Database;
 using Dapper;

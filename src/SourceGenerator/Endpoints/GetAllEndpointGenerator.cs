@@ -27,7 +27,7 @@ public sealed class GetAllEndpointGenerator : IIncrementalGenerator
 
         foreach (var type in enumerations)
         {
-            string code = GenerateCode(type);
+            var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Endpoints";
 
             StringVariations sv = new(type.Name);
@@ -39,8 +39,8 @@ public sealed class GetAllEndpointGenerator : IIncrementalGenerator
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
+        var rootNs = Utilities.GetRootNamespace(type);
+        var ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
 
         StringTokens _ = new(type.Name);
 
