@@ -23,7 +23,7 @@ public sealed class ApiContractToDomainMapperGenerator : IIncrementalGenerator
         }
 
         var type = models[0];
-        var code = GenerateCode(type);
+        var code = GenerateCode(models);
         var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
 
         const string className = "ApiContractToDomainMapperGenerator";
@@ -31,12 +31,16 @@ public sealed class ApiContractToDomainMapperGenerator : IIncrementalGenerator
         context.AddSource($"{typeNamespace}.{className}.g.cs", code);
     }
 
-    private static string GenerateCode(ITypeSymbol type)
+    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = Utilities.GetRootNamespace(models[0]);
         var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
 
-        StringTokens _ = new(type.Name);
+        var methods = string.Join(
+            Environment.NewLine,
+            models.Select(GenerateToModelMethods));
+
+        // StringTokens _ = new(type.Name);
 
         var code = @$"
 using {rootNs}.Contracts.Requests;
@@ -47,31 +51,80 @@ using {rootNs}.Domain.Common;
 
 public static class ApiContractToDomainMapper
 {{
-    public static Customer ToCustomer(this CreateCustomerRequest request)
-    {{
-        return new Customer
-        {{
-            Id = CustomerId.From(Guid.NewGuid()),
-            Email = EmailAddress.From(request.Email),
-            Username = Username.From(request.Username),
-            FullName = FullName.From(request.FullName),
-            DateOfBirth = DateOfBirth.From(DateOnly.FromDateTime(request.DateOfBirth))
-        }};
-    }}
-
-    public static Customer ToCustomer(this UpdateCustomerRequest request)
-    {{
-        return new Customer
-        {{
-            Id = CustomerId.From(request.Id),
-            Email = EmailAddress.From(request.Email),
-            Username = Username.From(request.Username),
-            FullName = FullName.From(request.FullName),
-            DateOfBirth = DateOfBirth.From(DateOnly.FromDateTime(request.DateOfBirth))
-        }};
-    }}
+    {methods}
 }}";
 
         return Utilities.DefaultCodeLayout(code);
+    }
+
+    private static string GenerateToModelMethods(ITypeSymbol type)
+    {
+        StringTokens _ = new(type.Name);
+        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+
+        IndentedStringBuilder sb = new();
+
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+
+        for (var i = 0; i < modelProperties.Length; i++)
+        {
+            bool isLastItem = i == modelProperties.Length - 1;
+
+            var p = modelProperties[i];
+
+            if (p.IsReadOnly)
+            {
+                continue;
+            }
+
+            var baseTypeName = p.Type.BaseType?.Name;
+            var isValueOf = baseTypeName is "ValueOf";
+            var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
+
+            sb.Append($"{p.Name} = ");
+
+            if (isValueOf)
+            {
+                sb.Append($"{p.Type}.From(");
+            }
+
+            var realType = isValueOf
+                ? valueOfArgument
+                : p.Type.ToString();
+
+            switch (realType)
+            {
+                case "System.Guid":
+                    sb.Append($"Guid.NewGuid()");
+                    break;
+                case "System.DateOnly":
+                    sb.Append($"DateOnly.FromDateTime(request.{p.Name})");
+                    break;
+                default:
+                    sb.Append($"request.{p.Name}");
+                    break;
+            }
+
+            if (isValueOf)
+            {
+                sb.Append(")");
+            }
+
+            if (!isLastItem)
+            {
+                sb.AppendLine(",");
+            }
+        }
+
+        return @$"
+    public static {_.Model} {_.MethodToModel}(this {_.ClassCreateModelRequest} request)
+    {{
+        return new {_.Model}
+        {{
+{sb.ToString()}
+        }};
+    }}";
     }
 }
