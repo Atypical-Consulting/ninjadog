@@ -43,7 +43,6 @@ using {rootNs}.Mapping;
 using {rootNs}.Repositories;
 using {rootNs}.Services;
 using {rootNs}.Validation;
-using DemoLibrary.Database;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 
