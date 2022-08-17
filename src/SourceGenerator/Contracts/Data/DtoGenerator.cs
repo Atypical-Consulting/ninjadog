@@ -78,7 +78,7 @@ public partial class {_.ClassModelDto}
         {
             "System.Guid" => "string",
             "System.DateOnly" => "DateTime",
-            _ => "string"
+            _ => realType
         };
 
         sb.Append($"public {propertyType} {p.Name} {{ get; init; }}");
