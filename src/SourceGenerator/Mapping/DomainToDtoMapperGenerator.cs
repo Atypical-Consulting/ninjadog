@@ -26,7 +26,7 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
         }
 
         var type = enumerations[0];
-        var code = GenerateCode(type);
+        var code = GenerateCode(type, enumerations);
         var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
 
         const string className = "DomainToDtoMapperGenerator";
@@ -34,16 +34,14 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
         context.AddSource($"{typeNamespace}.{className}.g.cs", code);
     }
 
-    private static string GenerateCode(ITypeSymbol type)
+    private static string GenerateCode(ITypeSymbol type, ImmutableArray<ITypeSymbol> models)
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        var methods = string.Join(
+            Environment.NewLine,
+            models.Select(GenerateMethodsToModelDto));
 
         var code = @$"
 using {rootNs}.Contracts.Data;
@@ -53,9 +51,20 @@ using {rootNs}.Domain;
 
 public static class DomainToDtoMapper
 {{
-    public static CustomerDto ToCustomerDto(this Customer customer)
+    {methods}
+}}";
+
+        return Utilities.DefaultCodeLayout(code);
+    }
+
+    private static string GenerateMethodsToModelDto(ITypeSymbol type)
+    {
+        StringTokens _ = new(type.Name);
+
+        return @$"
+    public static {_.ClassModelDto} {_.MethodToModelDto}(this {_.Model} {_.VarModel})
     {{
-        return new CustomerDto
+        return new {_.ClassModelDto}
         {{
             Id = customer.Id.Value.ToString(),
             Email = customer.Email.Value,
@@ -63,9 +72,6 @@ public static class DomainToDtoMapper
             FullName = customer.FullName.Value,
             DateOfBirth = customer.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
         }};
-    }}
-}}";
-
-        return Utilities.DefaultCodeLayout(code);
+    }}";
     }
 }
