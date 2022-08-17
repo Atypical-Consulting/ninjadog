@@ -23,7 +23,7 @@ public sealed class DtoToDomainMapperGenerator : IIncrementalGenerator
         }
 
         var type = models[0];
-        var code = GenerateCode(type);
+        var code = GenerateCode(models);
         var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
 
         const string className = "DtoToDomainMapperGenerator";
@@ -31,16 +31,14 @@ public sealed class DtoToDomainMapperGenerator : IIncrementalGenerator
         context.AddSource($"{typeNamespace}.{className}.g.cs", code);
     }
 
-    private static string GenerateCode(ITypeSymbol type)
+    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = Utilities.GetRootNamespace(models[0]);
         var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        var methods = string.Join(
+            Environment.NewLine,
+            models.Select(GenerateToModelMethods));
 
         var code = @$"
 using {rootNs}.Contracts.Data;
@@ -51,19 +49,80 @@ using {rootNs}.Domain.Common;
 
 public static class DtoToDomainMapper
 {{
-    public static Customer ToCustomer(this CustomerDto customerDto)
-    {{
-        return new Customer
-        {{
-            Id = CustomerId.From(Guid.Parse(customerDto.Id)),
-            Email = EmailAddress.From(customerDto.Email),
-            Username = Username.From(customerDto.Username),
-            FullName = FullName.From(customerDto.FullName),
-            DateOfBirth = DateOfBirth.From(DateOnly.FromDateTime(customerDto.DateOfBirth))
-        }};
-    }}
+    {methods}
 }}";
 
         return Utilities.DefaultCodeLayout(code);
+    }
+
+    private static string GenerateToModelMethods(ITypeSymbol type)
+    {
+        StringTokens _ = new(type.Name);
+        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+
+        IndentedStringBuilder sb = new();
+
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+
+        for (var i = 0; i < modelProperties.Length; i++)
+        {
+            bool isLastItem = i == modelProperties.Length - 1;
+
+            var p = modelProperties[i];
+
+            if (p.IsReadOnly)
+            {
+                continue;
+            }
+
+            var baseTypeName = p.Type.BaseType?.Name;
+            var isValueOf = baseTypeName is "ValueOf";
+            var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
+
+            sb.Append($"{p.Name} = ");
+
+            if (isValueOf)
+            {
+                sb.Append($"{p.Type}.From(");
+            }
+
+            var realType = isValueOf
+                ? valueOfArgument
+                : p.Type.ToString();
+
+            switch (realType)
+            {
+                case "System.Guid":
+                    sb.Append($"Guid.Parse({_.VarModelDto}.{p.Name})");
+                    break;
+                case "System.DateOnly":
+                    sb.Append($"DateOnly.FromDateTime({_.VarModelDto}.{p.Name})");
+                    break;
+                default:
+                    sb.Append($"{_.VarModelDto}.{p.Name}");
+                    break;
+            }
+
+            if (isValueOf)
+            {
+                sb.Append(")");
+            }
+
+            if (!isLastItem)
+            {
+                sb.AppendLine(",");
+            }
+        }
+
+        return @$"
+    public static {_.Model} {_.MethodToModel}(this {_.ClassModelDto} {_.VarModelDto})
+    {{
+        return new {_.Model}
+        {{
+{sb.ToString()}
+        }};
+    }}";
     }
 }
