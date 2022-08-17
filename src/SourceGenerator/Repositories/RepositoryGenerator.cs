@@ -38,12 +38,12 @@ public sealed class RepositoryGenerator : IIncrementalGenerator
     private static string GenerateCode(ITypeSymbol type)
     {
         var rootNs = Utilities.GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
+        var ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
 
         StringTokens _ = new(type.Name);
 
         var code = @$"
-using System.Collections.Generic;
+using {rootNs}.Contracts.Data;
 using {rootNs}.Database;
 using Dapper;
 
