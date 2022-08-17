@@ -23,7 +23,7 @@ public sealed class DomainToApiContractMapperGenerator : IIncrementalGenerator
         }
 
         var type = models[0];
-        var code = GenerateCode(type);
+        var code = GenerateCode(models);
         var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
 
         const string className = "DomainToApiContractMapperGenerator";
@@ -31,12 +31,18 @@ public sealed class DomainToApiContractMapperGenerator : IIncrementalGenerator
         context.AddSource($"{typeNamespace}.{className}.g.cs", code);
     }
 
-    private static string GenerateCode(ITypeSymbol type)
+    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = Utilities.GetRootNamespace(models[0]);
         var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
 
-        StringTokens _ = new(type.Name);
+        var toModelResponseMethods = string.Join(
+            Environment.NewLine,
+            models.Select(GenerateToModelResponseMethods));
+
+        var toModelsResponseMethods = string.Join(
+            Environment.NewLine,
+            models.Select(GenerateToModelsResponseMethods));
 
         var code = @$"
 using {rootNs}.Contracts.Responses;
@@ -46,34 +52,122 @@ using {rootNs}.Domain;
 
 public static class DomainToApiContractMapper
 {{
-    public static CustomerResponse ToCustomerResponse(this Customer customer)
-    {{
-        return new CustomerResponse
-        {{
-            Id = customer.Id.Value,
-            Email = customer.Email.Value,
-            Username = customer.Username.Value,
-            FullName = customer.FullName.Value,
-            DateOfBirth = customer.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
-        }};
-    }}
-
-    public static GetAllCustomersResponse ToCustomersResponse(this IEnumerable<Customer> customers)
-    {{
-        return new GetAllCustomersResponse
-        {{
-            Customers = customers.Select(x => new CustomerResponse
-            {{
-                Id = x.Id.Value,
-                Email = x.Email.Value,
-                Username = x.Username.Value,
-                FullName = x.FullName.Value,
-                DateOfBirth = x.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
-            }})
-        }};
-    }}
+    {toModelsResponseMethods}
+    {toModelResponseMethods}
 }}";
 
         return Utilities.DefaultCodeLayout(code);
+    }
+
+    private static string GenerateToModelResponseMethods(ITypeSymbol type)
+    {
+        StringTokens _ = new(type.Name);
+        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+
+        IndentedStringBuilder sb = new();
+
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+
+        for (var i = 0; i < modelProperties.Length; i++)
+        {
+            bool isLastItem = i == modelProperties.Length - 1;
+
+            var p = modelProperties[i];
+
+            var baseTypeName = p.Type.BaseType?.Name;
+            var isValueOf = baseTypeName is "ValueOf";
+            var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
+
+            sb.Append($"{p.Name} = {_.VarModel}.{p.Name}");
+
+            var realType = p.Type.ToString();
+
+            if (isValueOf)
+            {
+                sb.Append($".Value");
+                realType = valueOfArgument;
+            }
+
+            switch (realType)
+            {
+                case "System.DateOnly":
+                    sb.Append(".ToDateTime(TimeOnly.MinValue)");
+                    break;
+            }
+
+            if (!isLastItem)
+            {
+                sb.AppendLine(",");
+            }
+        }
+
+        return @$"
+    public static {_.ClassModelResponse} {_.MethodToModelResponse}(this {_.Model} {_.VarModel})
+    {{
+        return new {_.ClassModelResponse}
+        {{
+{sb.ToString()}
+        }};
+    }}";
+    }
+
+    private static string GenerateToModelsResponseMethods(ITypeSymbol type)
+    {
+        StringTokens _ = new(type.Name);
+        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+
+        IndentedStringBuilder sb = new();
+
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+
+        for (var i = 0; i < modelProperties.Length; i++)
+        {
+            bool isLastItem = i == modelProperties.Length - 1;
+
+            var p = modelProperties[i];
+
+            var baseTypeName = p.Type.BaseType?.Name;
+            var isValueOf = baseTypeName is "ValueOf";
+            var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
+
+            sb.Append($"{p.Name} = x.{p.Name}");
+
+            var realType = p.Type.ToString();
+
+            if (isValueOf)
+            {
+                sb.Append($".Value");
+                realType = valueOfArgument;
+            }
+
+            switch (realType)
+            {
+                case "System.DateOnly":
+                    sb.Append(".ToDateTime(TimeOnly.MinValue)");
+                    break;
+            }
+
+            if (!isLastItem)
+            {
+                sb.AppendLine(",");
+            }
+        }
+
+        return @$"
+    public static {_.ClassGetAllModelsResponse} {_.MethodToModelsResponse}(this IEnumerable<{_.Model}> {_.VarModels})
+    {{
+        return new {_.ClassGetAllModelsResponse}
+        {{
+            {_.Models} = {_.VarModels}.Select(x => new {_.ClassModelResponse}
+            {{
+{sb.ToString()}
+            }})
+        }};
+    }}";
     }
 }
