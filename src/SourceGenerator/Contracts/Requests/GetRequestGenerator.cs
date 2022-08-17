@@ -44,8 +44,7 @@ public sealed class GetRequestGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 {(ns is null ? null : $@"namespace {ns}
 {{")}
     public partial class {_.ClassGetModelRequest}
@@ -54,5 +53,7 @@ public sealed class GetRequestGenerator : IIncrementalGenerator
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

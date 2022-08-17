@@ -44,8 +44,7 @@ public sealed class ServiceGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Domain;
 using {rootNs}.Mapping;
 using {rootNs}.Repositories;
@@ -105,5 +104,7 @@ using FluentValidation.Results;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

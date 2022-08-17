@@ -45,8 +45,7 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
         var dto = $"{name}Dto";
         var items = Utilities.GetItemNames(type);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Contracts.Data;
 using {rootNs}.Domain;
 
@@ -68,5 +67,7 @@ using {rootNs}.Domain;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

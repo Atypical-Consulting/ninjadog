@@ -39,8 +39,7 @@ public sealed class ValidationFailureResponseGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 {(ns is null ? null : $@"namespace {ns}
 {{")}
     public class ValidationFailureResponse
@@ -49,5 +48,7 @@ public sealed class ValidationFailureResponseGenerator : IIncrementalGenerator
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

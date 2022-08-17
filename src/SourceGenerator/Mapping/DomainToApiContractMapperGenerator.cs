@@ -41,8 +41,7 @@ public sealed class DomainToApiContractMapperGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Contracts.Responses;
 using {rootNs}.Domain;
 
@@ -79,5 +78,7 @@ using {rootNs}.Domain;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

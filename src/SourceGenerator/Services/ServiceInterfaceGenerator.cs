@@ -44,8 +44,7 @@ public sealed class ServiceInterfaceGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Domain;
 
 {(ns is null ? null : $@"namespace {ns}
@@ -64,5 +63,7 @@ using {rootNs}.Domain;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

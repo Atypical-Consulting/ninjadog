@@ -44,8 +44,7 @@ public sealed class DeleteEndpointGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Contracts.Requests;
 using {rootNs}.Services;
 using FastEndpoints;
@@ -77,5 +76,7 @@ using Microsoft.AspNetCore.Authorization;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

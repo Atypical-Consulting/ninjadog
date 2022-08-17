@@ -44,8 +44,7 @@ public sealed class RepositoryInterfaceGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        string code = @$"
 using {rootNs}.Contracts.Data;
 using {rootNs}.Database;
 using Dapper;
@@ -66,5 +65,7 @@ using Dapper;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

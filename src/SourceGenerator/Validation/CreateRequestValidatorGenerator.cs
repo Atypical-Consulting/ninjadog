@@ -44,8 +44,7 @@ public sealed class CreateRequestValidatorGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Contracts.Requests;
 using FastEndpoints;
 using FluentValidation;
@@ -65,5 +64,7 @@ using FluentValidation;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

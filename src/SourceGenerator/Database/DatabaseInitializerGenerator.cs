@@ -39,8 +39,7 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Database" : null;
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using Dapper;
 
 {(ns is null ? null : $@"namespace {ns}
@@ -67,5 +66,7 @@ using Dapper;
         }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

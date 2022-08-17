@@ -44,8 +44,7 @@ public sealed class DtoGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using System.Collections.Generic;
 using {rootNs}.Database;
 using Dapper;
@@ -57,5 +56,7 @@ using Dapper;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

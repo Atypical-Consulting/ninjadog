@@ -44,8 +44,7 @@ public sealed class GetAllEndpointGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Contracts.Responses;
 using {rootNs}.Mapping;
 using {rootNs}.Services;
@@ -73,5 +72,7 @@ using Microsoft.AspNetCore.Authorization;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

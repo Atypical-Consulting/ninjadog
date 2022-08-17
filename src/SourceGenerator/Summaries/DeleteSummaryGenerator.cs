@@ -44,8 +44,7 @@ public sealed class DeleteSummaryGenerator : IIncrementalGenerator
 
         StringTokens _ = new(type.Name);
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Endpoints;
 using FastEndpoints;
 
@@ -63,5 +62,7 @@ using FastEndpoints;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }

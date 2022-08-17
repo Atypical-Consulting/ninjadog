@@ -49,8 +49,7 @@ public sealed class UpdateRequestValidatorGenerator : IIncrementalGenerator
         // string classNameUpdateRequestValidator = $"Update{sv.Pascal}RequestValidator";
         // string classNameUpdateRequest = $"Update{sv.Pascal}Request";
 
-        return StringConstants.FileHeader + @$"
-
+        var code = @$"
 using {rootNs}.Contracts.Requests;
 using FastEndpoints;
 using FluentValidation;
@@ -70,5 +69,7 @@ using FluentValidation;
     }}
 {(ns is null ? null : @"}
 ")}";
+
+        return Utilities.DefaultCodeLayout(code);
     }
 }
