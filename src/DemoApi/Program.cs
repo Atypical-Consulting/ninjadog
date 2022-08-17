@@ -1,43 +1,13 @@
-using DemoApi.Contracts.Responses;
-using DemoApi.Database;
-using DemoApi.Mapping;
-using DemoApi.Validation;
-using DemoApi.Repositories;
-using DemoApi.Services;
-using DemoLibrary.Database;
-using FastEndpoints;
-using FastEndpoints.Swagger;
+using DemoApi;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 var config = builder.Configuration;
 
-builder.Services.AddFastEndpoints();
-builder.Services.AddSwaggerDoc();
-
-builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
-    new SqliteConnectionFactory(config.GetValue<string>("Database:ConnectionString")));
-builder.Services.AddSingleton<DatabaseInitializer>();
-builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
-builder.Services.AddSingleton<ICustomerService, CustomerService>();
+services.AddNinjadog(config);
 
 var app = builder.Build();
 
-app.UseMiddleware<ValidationExceptionMiddleware>();
-app.UseFastEndpoints(x =>
-{
-    x.ErrorResponseBuilder = (failures, _) =>
-    {
-        return new ValidationFailureResponse
-        {
-            Errors = failures.Select(y => y.ErrorMessage).ToList()
-        };
-    };
-});
-
-app.UseOpenApi();
-app.UseSwaggerUi3(s => s.ConfigureDefaults());
-
-var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
-await databaseInitializer.InitializeAsync();
+await app.UseNinjadog();
 
 app.Run();
