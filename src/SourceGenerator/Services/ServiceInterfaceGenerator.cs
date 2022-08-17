@@ -46,9 +46,7 @@ public sealed class ServiceInterfaceGenerator : IIncrementalGenerator
 
         return StringConstants.FileHeader + @$"
 
-using System.Collections.Generic;
-using {rootNs}.Database;
-using Dapper;
+using {rootNs}.Domain;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
