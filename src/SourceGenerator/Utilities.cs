@@ -1,11 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace SourceGenerator;
 
 public static class Utilities
 {
-    internal static bool CouldBeEnumerationAsync(
+    internal static bool CouldBeNinjadogModelAsync(
         SyntaxNode syntaxNode,
         CancellationToken cancellationToken)
     {
@@ -29,7 +30,7 @@ public static class Utilities
         };
     }
 
-    internal static ITypeSymbol? GetEnumTypeOrNull(
+    internal static ITypeSymbol? GetNinjadogModelTypeOrNull(
         GeneratorSyntaxContext context,
         CancellationToken cancellationToken)
     {
@@ -44,10 +45,10 @@ public static class Utilities
 
         var type = context.SemanticModel.GetDeclaredSymbol(classDeclaration) as ITypeSymbol;
 
-        return type is null || !IsEnumeration(type) ? null : type;
+        return type is null || !IsNinjadogModel(type) ? null : type;
     }
 
-    internal static bool IsEnumeration(ISymbol type)
+    internal static bool IsNinjadogModel(ISymbol type)
     {
         return type.GetAttributes()
             .Any(a => a.AttributeClass is
@@ -80,23 +81,21 @@ public static class Utilities
             .Where(field => field is not null)!;
     }
 
-    internal static IEnumerable<string> GetPropertiesWithGetSet(ITypeSymbol type)
+    internal static IEnumerable<IPropertySymbol> GetPropertiesWithGetSet(ITypeSymbol type)
     {
         return type.GetMembers()
             .Select(m =>
             {
-                if (!m.IsStatic ||
+                if (m.IsStatic ||
                     m.DeclaredAccessibility != Accessibility.Public ||
-                    m is not IFieldSymbol field)
+                    m is not IPropertySymbol property)
                 {
                     return null;
                 }
 
-                return SymbolEqualityComparer.Default.Equals(field.Type, type)
-                    ? field.Name
-                    : null;
+                return property;
             })
-            .Where(field => field is not null)!;
+            .Where(property => property is not null)!;
     }
 
     internal static string? GetRootNamespace(ITypeSymbol type)
@@ -109,7 +108,7 @@ public static class Utilities
         }
         else
         {
-            string[] strings = type.ContainingNamespace.ToString().Split('.');
+            string [] strings = type.ContainingNamespace.ToString().Split('.');
             strings = strings.Take(strings.Length - 1).ToArray();
             ns = strings.Aggregate((s1, s2) => s1 + "." + s2);
         }
@@ -132,5 +131,14 @@ public static class Utilities
         return ns is not null
             ? $@"namespace {ns};"
             : null;
+    }
+
+    public static IncrementalValueProvider<ImmutableArray<ITypeSymbol>> CollectNinjadogModelTypes(
+        IncrementalGeneratorInitializationContext context)
+    {
+        return context.SyntaxProvider
+            .CreateSyntaxProvider(Utilities.CouldBeNinjadogModelAsync, Utilities.GetNinjadogModelTypeOrNull)
+            .Where(type => type is not null)
+            .Collect()!;
     }
 }

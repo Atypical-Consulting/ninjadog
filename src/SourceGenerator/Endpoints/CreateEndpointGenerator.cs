@@ -8,10 +8,7 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValueProvider<ImmutableArray<ITypeSymbol>> modelTypes = context.SyntaxProvider
-            .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
-            .Where(type => type is not null)
-            .Collect()!;
+        var modelTypes = Utilities.CollectNinjadogModelTypes(context);
 
         context.RegisterSourceOutput(modelTypes, GenerateCode);
     }

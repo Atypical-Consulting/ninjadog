@@ -141,6 +141,7 @@ internal class IndentedStringBuilder
         {
             var first = true;
             string? line;
+
             while ((line = reader.ReadLine()) != null)
             {
                 if (first)

@@ -8,10 +8,7 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValueProvider<ImmutableArray<ITypeSymbol>> modelTypes = context.SyntaxProvider
-            .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
-            .Where(type => type is not null)
-            .Collect()!;
+        var modelTypes = Utilities.CollectNinjadogModelTypes(context);
 
         context.RegisterSourceOutput(modelTypes, GenerateCode);
     }
@@ -41,7 +38,7 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
 
         var methods = string.Join(
             Environment.NewLine,
-            models.Select(GenerateMethodsToModelDto));
+            models.Select(GenerateToModelDtoMethods));
 
         var code = @$"
 using {rootNs}.Contracts.Data;
@@ -57,20 +54,69 @@ public static class DomainToDtoMapper
         return Utilities.DefaultCodeLayout(code);
     }
 
-    private static string GenerateMethodsToModelDto(ITypeSymbol type)
+    private static string GenerateToModelDtoMethods(ITypeSymbol type)
     {
         StringTokens _ = new(type.Name);
+        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+
+        IndentedStringBuilder sb = new();
+
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+
+        for (var i = 0; i < modelProperties.Length; i++)
+        {
+            bool isLastItem = i == modelProperties.Length - 1;
+
+            var p = modelProperties[i];
+
+            var baseTypeName = p.Type.BaseType?.Name;
+            var isValueOf = baseTypeName is "ValueOf";
+            var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
+
+            sb.Append($"{p.Name} = {_.VarModel}.{p.Name}");
+
+            var realType = p.Type.ToString();
+
+            if (isValueOf)
+            {
+                sb.Append($".Value");
+                realType = valueOfArgument;
+            }
+
+            switch (realType)
+            {
+                case "System.Guid":
+                    sb.Append(".ToString()");
+                    break;
+                case "System.DateOnly":
+                    sb.Append(".ToDateTime(TimeOnly.MinValue)");
+                    break;
+            }
+
+            if (!isLastItem)
+            {
+                sb.AppendLine(",");
+            }
+
+            // Uncomment the following lines for debug...
+
+            // sb.AppendLine($"//   -- type          : {p.Type}");
+            // sb.AppendLine($"//   -- base type     : {baseTypeName}");
+            //
+            // if (isValueOf)
+            // {
+            //     sb.AppendLine($"//   -- value of      : {valueOfArgument}");
+            // }
+        }
 
         return @$"
     public static {_.ClassModelDto} {_.MethodToModelDto}(this {_.Model} {_.VarModel})
     {{
         return new {_.ClassModelDto}
         {{
-            Id = customer.Id.Value.ToString(),
-            Email = customer.Email.Value,
-            Username = customer.Username.Value,
-            FullName = customer.FullName.Value,
-            DateOfBirth = customer.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
+{sb.ToString()}
         }};
     }}";
     }

@@ -114,10 +114,10 @@ public static class Inflector
     private static readonly List<Rule> _singulars = new();
     private static readonly List<string> _uncountables = new();
 
-    public static string Pluralize(this string word) 
+    public static string Pluralize(this string word)
         => ApplyRules(_plurals, word)!;
 
-    public static string Singularize(this string word) 
+    public static string Singularize(this string word)
         => ApplyRules(_singulars, word)!;
 
     private static string? ApplyRules(List<Rule> rules, string word)
@@ -146,7 +146,7 @@ public static class Inflector
             @"\b([a-z])",
             match => match.Captures[0].Value.ToUpper());
 
-    public static string Humanize(this string lowercaseAndUnderscoredWord) 
+    public static string Humanize(this string lowercaseAndUnderscoredWord)
         => Capitalize(Regex.Replace(lowercaseAndUnderscoredWord, @"_", " "));
 
     public static string Pascalize(this string lowercaseAndUnderscoredWord)
@@ -167,13 +167,13 @@ public static class Inflector
     public static string Capitalize(this string word)
         => word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
 
-    public static string Uncapitalize(this string word) 
+    public static string Uncapitalize(this string word)
         => word.Substring(0, 1).ToLower() + word.Substring(1);
 
     public static string Ordinalize(this string numberString)
         => Ordanize(int.Parse(numberString), numberString);
 
-    public static string Ordinalize(this int number) 
+    public static string Ordinalize(this int number)
         => Ordanize(number, number.ToString());
 
     private static string Ordanize(int number, string numberString)
@@ -194,6 +194,6 @@ public static class Inflector
         };
     }
 
-    public static string Dasherize(this string underscoredWord) 
+    public static string Dasherize(this string underscoredWord)
         => underscoredWord.Replace('_', '-');
 }
