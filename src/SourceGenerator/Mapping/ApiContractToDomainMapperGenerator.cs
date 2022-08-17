@@ -36,9 +36,13 @@ public sealed class ApiContractToDomainMapperGenerator : IIncrementalGenerator
         var rootNs = Utilities.GetRootNamespace(models[0]);
         var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
 
-        var methods = string.Join(
+        var toModelFromCreateMethods = string.Join(
             Environment.NewLine,
-            models.Select(GenerateToModelMethods));
+            models.Select(GenerateToModelFromCreateMethods));
+
+        var toModelFromUpdateMethods = string.Join(
+            Environment.NewLine,
+            models.Select(GenerateToModelFromUpdateMethods));
 
         // StringTokens _ = new(type.Name);
 
@@ -51,13 +55,14 @@ using {rootNs}.Domain.Common;
 
 public static class ApiContractToDomainMapper
 {{
-    {methods}
+    {toModelFromCreateMethods}
+    {toModelFromUpdateMethods}
 }}";
 
         return Utilities.DefaultCodeLayout(code);
     }
 
-    private static string GenerateToModelMethods(ITypeSymbol type)
+    private static string GenerateToModelFromCreateMethods(ITypeSymbol type)
     {
         StringTokens _ = new(type.Name);
         var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
@@ -120,6 +125,74 @@ public static class ApiContractToDomainMapper
 
         return @$"
     public static {_.Model} {_.MethodToModel}(this {_.ClassCreateModelRequest} request)
+    {{
+        return new {_.Model}
+        {{
+{sb.ToString()}
+        }};
+    }}";
+    }
+
+    private static string GenerateToModelFromUpdateMethods(ITypeSymbol type)
+    {
+        StringTokens _ = new(type.Name);
+        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+
+        IndentedStringBuilder sb = new();
+
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+        sb.IncrementIndent();
+
+        for (var i = 0; i < modelProperties.Length; i++)
+        {
+            bool isLastItem = i == modelProperties.Length - 1;
+
+            var p = modelProperties[i];
+
+            if (p.IsReadOnly)
+            {
+                continue;
+            }
+
+            var baseTypeName = p.Type.BaseType?.Name;
+            var isValueOf = baseTypeName is "ValueOf";
+            var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
+
+            sb.Append($"{p.Name} = ");
+
+            if (isValueOf)
+            {
+                sb.Append($"{p.Type}.From(");
+            }
+
+            var realType = isValueOf
+                ? valueOfArgument
+                : p.Type.ToString();
+
+            switch (realType)
+            {
+                case "System.DateOnly":
+                    sb.Append($"DateOnly.FromDateTime(request.{p.Name})");
+                    break;
+                default:
+                    sb.Append($"request.{p.Name}");
+                    break;
+            }
+
+            if (isValueOf)
+            {
+                sb.Append(")");
+            }
+
+            if (!isLastItem)
+            {
+                sb.AppendLine(",");
+            }
+        }
+
+        return @$"
+    public static {_.Model} {_.MethodToModel}(this {_.ClassUpdateModelRequest} request)
     {{
         return new {_.Model}
         {{
