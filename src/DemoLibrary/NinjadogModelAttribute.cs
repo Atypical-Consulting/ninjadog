@@ -1,7 +1,7 @@
 namespace DemoLibrary;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class EnumGenerationAttribute : Attribute
+public class NinjadogModelAttribute : Attribute
 {
-    
+
 }

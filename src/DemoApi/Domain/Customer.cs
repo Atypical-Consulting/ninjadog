@@ -3,7 +3,7 @@ using DemoLibrary;
 
 namespace DemoApi.Domain;
 
-[EnumGeneration]
+[NinjadogModel]
 public class Customer
 {
     public CustomerId Id { get; init; } = CustomerId.From(Guid.NewGuid());

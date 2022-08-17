@@ -8,25 +8,25 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValueProvider<ImmutableArray<ITypeSymbol>> enumTypes = context.SyntaxProvider
+        IncrementalValueProvider<ImmutableArray<ITypeSymbol>> modelTypes = context.SyntaxProvider
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
 
-        context.RegisterSourceOutput(enumTypes, GenerateCode);
+        context.RegisterSourceOutput(modelTypes, GenerateCode);
     }
 
     private static void GenerateCode(
         SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> enumerations)
+        ImmutableArray<ITypeSymbol> models)
     {
-        if (enumerations.IsDefaultOrEmpty)
+        if (models.IsDefaultOrEmpty)
         {
             return;
         }
 
-        var type = enumerations[0];
-        var code = GenerateCode(type, enumerations);
+        var type = models[0];
+        var code = GenerateCode(models);
         var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
 
         const string className = "DomainToDtoMapperGenerator";
@@ -34,9 +34,9 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
         context.AddSource($"{typeNamespace}.{className}.g.cs", code);
     }
 
-    private static string GenerateCode(ITypeSymbol type, ImmutableArray<ITypeSymbol> models)
+    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = Utilities.GetRootNamespace(models[0]);
         var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
 
         var methods = string.Join(

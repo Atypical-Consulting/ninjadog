@@ -2,7 +2,7 @@ using DemoLibrary;
 
 namespace DemoApi.Domain;
 
-[EnumGeneration]
+[NinjadogModel]
 public partial class ProductCategory
 {
     public static readonly ProductCategory Fruits = new("Fruits");

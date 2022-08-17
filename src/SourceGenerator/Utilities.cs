@@ -16,7 +16,7 @@ public static class Utilities
 
         var name = ExtractName(attribute.Name);
 
-        return name is "EnumGeneration" or "EnumGenerationAttribute";
+        return name is "NinjadogModel" or "NinjadogModelAttribute";
     }
 
     internal static string? ExtractName(NameSyntax? name)
@@ -52,7 +52,7 @@ public static class Utilities
         return type.GetAttributes()
             .Any(a => a.AttributeClass is
             {
-                Name: "EnumGenerationAttribute",
+                Name: "NinjadogModelAttribute",
                 ContainingNamespace:
                 {
                     Name: "DemoLibrary",

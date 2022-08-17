@@ -8,24 +8,24 @@ public sealed class DtoToDomainMapperGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValueProvider<ImmutableArray<ITypeSymbol>> enumTypes = context.SyntaxProvider
+        IncrementalValueProvider<ImmutableArray<ITypeSymbol>> modelTypes = context.SyntaxProvider
             .CreateSyntaxProvider(Utilities.CouldBeEnumerationAsync, Utilities.GetEnumTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
 
-        context.RegisterSourceOutput(enumTypes, GenerateCode);
+        context.RegisterSourceOutput(modelTypes, GenerateCode);
     }
 
     private static void GenerateCode(
         SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> enumerations)
+        ImmutableArray<ITypeSymbol> models)
     {
-        if (enumerations.IsDefaultOrEmpty)
+        if (models.IsDefaultOrEmpty)
         {
             return;
         }
 
-        var type = enumerations[0];
+        var type = models[0];
         var code = GenerateCode(type);
         var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
 

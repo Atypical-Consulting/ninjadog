@@ -2,7 +2,7 @@ using DemoLibrary;
 
 namespace DemoApi.Domain;
 
-[EnumGeneration]
+[NinjadogModel]
 public partial class WeatherForecast
 {
     public static readonly WeatherForecast Today = new()
@@ -11,14 +11,14 @@ public partial class WeatherForecast
         Summary = "Sunny",
         TemperatureC = 32
     };
-    
+
     public static readonly WeatherForecast Yesterday = new()
     {
         Date = DateTime.Today - TimeSpan.FromDays(1),
         Summary = "Very sunny",
         TemperatureC = 34
     };
-    
+
     public DateTime Date { get; set; }
 
     public int TemperatureC { get; set; }
