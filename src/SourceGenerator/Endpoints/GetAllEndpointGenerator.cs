@@ -53,7 +53,7 @@ using Microsoft.AspNetCore.Authorization;
 
 {Utilities.WriteFileScopedNamespace(ns)}
 
-[HttpGet(""{_.EndpointModels}""), AllowAnonymous]
+[HttpGet(""{_.ModelEndpoint}""), AllowAnonymous]
 public partial class {_.ClassGetAllModelsEndpoint} : EndpointWithoutRequest<{_.ClassGetAllModelsResponse}>
 {{
     private readonly {_.InterfaceModelService} {_.FieldModelService};

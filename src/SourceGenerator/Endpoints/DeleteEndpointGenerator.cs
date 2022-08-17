@@ -52,7 +52,7 @@ using Microsoft.AspNetCore.Authorization;
 
 {Utilities.WriteFileScopedNamespace(ns)}
 
-[HttpDelete(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
+[HttpDelete(""{_.ModelEndpoint}/{{id:guid}}""), AllowAnonymous]
 public partial class {_.ClassDeleteModelEndpoint} : Endpoint<{_.ClassDeleteModelRequest}>
 {{
     private readonly {_.InterfaceModelService} {_.FieldModelService};

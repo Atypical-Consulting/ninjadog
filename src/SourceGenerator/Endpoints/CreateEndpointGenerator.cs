@@ -54,7 +54,7 @@ using Microsoft.AspNetCore.Authorization;
 
 {Utilities.WriteFileScopedNamespace(ns)}
 
-[HttpPost(""{_.EndpointModels}""), AllowAnonymous]
+[HttpPost(""{_.ModelEndpoint}""), AllowAnonymous]
 public partial class {_.ClassCreateModelEndpoint} : Endpoint<{_.ClassCreateModelRequest}, {_.ClassModelResponse}>
 {{
     private readonly {_.InterfaceModelService} {_.FieldModelService};

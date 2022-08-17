@@ -51,13 +51,13 @@ using {rootNs}.Domain;
 
 public partial interface {_.InterfaceModelService}
 {{
-    Task<bool> CreateAsync({_.ClassModel} {_.VarModel});
+    Task<bool> CreateAsync({_.Model} {_.VarModel});
 
-    Task<{_.ClassModel}?> GetAsync(Guid id);
+    Task<{_.Model}?> GetAsync(Guid id);
 
-    Task<IEnumerable<{_.ClassModel}>> GetAllAsync();
+    Task<IEnumerable<{_.Model}>> GetAllAsync();
 
-    Task<bool> UpdateAsync({_.ClassModel} {_.VarModel});
+    Task<bool> UpdateAsync({_.Model} {_.VarModel});
 
     Task<bool> DeleteAsync(Guid id);
 }}";

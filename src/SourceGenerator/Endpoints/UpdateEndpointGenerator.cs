@@ -54,7 +54,7 @@ using Microsoft.AspNetCore.Authorization;
 
 {Utilities.WriteFileScopedNamespace(ns)}
 
-[HttpPut(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
+[HttpPut(""{_.ModelEndpoint}/{{id:guid}}""), AllowAnonymous]
 public partial class {_.ClassUpdateModelEndpoint} : Endpoint<{_.ClassUpdateModelRequest}, {_.ClassModelResponse}>
 {{
     private readonly {_.InterfaceModelService} {_.FieldModelService};

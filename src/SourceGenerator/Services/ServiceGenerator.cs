@@ -62,7 +62,7 @@ public partial class {_.ClassModelService} : {_.InterfaceModelService}
         {_.FieldModelRepository} = {_.VarModelRepository};
     }}
 
-    public async Task<bool> CreateAsync({_.ClassModel} {_.VarModel})
+    public async Task<bool> CreateAsync({_.Model} {_.VarModel})
     {{
         // TODO: rename existingUser variable
         var {_.VarExistingModel} = await {_.FieldModelRepository}.GetAsync({_.VarModel}.Id.Value);
@@ -71,7 +71,7 @@ public partial class {_.ClassModelService} : {_.InterfaceModelService}
             var message = $""A {_.ModelHumanized} with id {{{_.VarModel}.Id}} already exists"";
             throw new ValidationException(message, new []
             {{
-                new ValidationFailure(nameof({_.ClassModel}), message)
+                new ValidationFailure(nameof({_.Model}), message)
             }});
         }}
 
@@ -79,19 +79,19 @@ public partial class {_.ClassModelService} : {_.InterfaceModelService}
         return await {_.FieldModelRepository}.CreateAsync({_.VarModelDto});
     }}
 
-    public async Task<{_.ClassModel}?> GetAsync(Guid id)
+    public async Task<{_.Model}?> GetAsync(Guid id)
     {{
         var {_.VarModelDto} = await {_.FieldModelRepository}.GetAsync(id);
         return {_.VarModelDto}?.{_.MethodToModel}();
     }}
 
-    public async Task<IEnumerable<{_.ClassModel}>> GetAllAsync()
+    public async Task<IEnumerable<{_.Model}>> GetAllAsync()
     {{
         var {_.VarModelDtos} = await {_.FieldModelRepository}.GetAllAsync();
         return {_.VarModelDtos}.Select(x => x.{_.MethodToModel}());
     }}
 
-    public async Task<bool> UpdateAsync({_.ClassModel} {_.VarModel})
+    public async Task<bool> UpdateAsync({_.Model} {_.VarModel})
     {{
         var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
         return await {_.FieldModelRepository}.UpdateAsync({_.VarModelDto});
