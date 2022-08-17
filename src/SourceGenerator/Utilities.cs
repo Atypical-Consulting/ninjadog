@@ -116,4 +116,13 @@ public static class Utilities
 
         return ns;
     }
+
+    internal static string DefaultCodeLayout(string code)
+    {
+        return StringConstants.FileHeader +
+               StringConstants.NullableEnable +
+               Environment.NewLine +
+               code +
+               StringConstants.NullableDisable;
+    }
 }
