@@ -40,6 +40,11 @@ public sealed class DtoGenerator : IIncrementalGenerator
         var ns = rootNs is not null ? $"{rootNs}.Contracts.Data" : null;
 
         StringTokens _ = new(type.Name);
+        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+
+        var properties = string.Join(
+            Environment.NewLine,
+            modelProperties.Select(property => GenerateDtoProperties(property, _)));
 
         var code = @$"
 using System.Collections.Generic;
@@ -50,8 +55,41 @@ using Dapper;
 
 public partial class {_.ClassModelDto}
 {{
+{properties}
 }}";
 
         return Utilities.DefaultCodeLayout(code);
+    }
+
+    private static string GenerateDtoProperties(IPropertySymbol p, StringTokens _)
+    {
+        IndentedStringBuilder sb = new();
+        sb.Indent();
+
+        var baseTypeName = p.Type.BaseType?.Name;
+        var isValueOf = baseTypeName is "ValueOf";
+        var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
+
+        var realType = isValueOf
+            ? valueOfArgument
+            : p.Type.ToString();
+
+        var propertyType = realType switch
+        {
+            "System.Guid" => "string",
+            "System.DateOnly" => "DateTime",
+            _ => "string"
+        };
+
+        sb.Append($"public {propertyType} {p.Name} {{ get; init; }}");
+
+        if (propertyType == "string")
+        {
+            sb.Append($" = default!;");
+        }
+
+        sb.AppendLine();
+
+        return sb.ToString();
     }
 }
