@@ -1,6 +1,9 @@
+using DemoApi.Contracts.Responses;
+using DemoApi.Database;
+using DemoApi.Mapping;
 using DemoApi.Validation;
-using DemoApi.Models;
-using DemoLibrary.Contracts.Responses;
+using DemoApi.Repositories;
+using DemoApi.Services;
 using DemoLibrary.Database;
 using FastEndpoints;
 using FastEndpoints.Swagger;

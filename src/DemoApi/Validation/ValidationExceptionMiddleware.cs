@@ -1,4 +1,4 @@
-using DemoLibrary.Contracts.Responses;
+using DemoApi.Contracts.Responses;
 using FluentValidation;
 
 namespace DemoApi.Validation;
