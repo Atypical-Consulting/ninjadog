@@ -45,39 +45,37 @@ public sealed class DomainToApiContractMapperGenerator : IIncrementalGenerator
 using {rootNs}.Contracts.Responses;
 using {rootNs}.Domain;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public static class DomainToApiContractMapper
-    {{
-        public static CustomerResponse ToCustomerResponse(this Customer customer)
-        {{
-            return new CustomerResponse
-            {{
-                Id = customer.Id.Value,
-                Email = customer.Email.Value,
-                Username = customer.Username.Value,
-                FullName = customer.FullName.Value,
-                DateOfBirth = customer.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
-            }};
-        }}
+{Utilities.WriteFileScopedNamespace(ns)}
 
-        public static GetAllCustomersResponse ToCustomersResponse(this IEnumerable<Customer> customers)
+public static class DomainToApiContractMapper
+{{
+    public static CustomerResponse ToCustomerResponse(this Customer customer)
+    {{
+        return new CustomerResponse
         {{
-            return new GetAllCustomersResponse
-            {{
-                Customers = customers.Select(x => new CustomerResponse
-                {{
-                    Id = x.Id.Value,
-                    Email = x.Email.Value,
-                    Username = x.Username.Value,
-                    FullName = x.FullName.Value,
-                    DateOfBirth = x.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
-                }})
-            }};
-        }}
+            Id = customer.Id.Value,
+            Email = customer.Email.Value,
+            Username = customer.Username.Value,
+            FullName = customer.FullName.Value,
+            DateOfBirth = customer.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
+        }};
     }}
-{(ns is null ? null : @"}
-")}";
+
+    public static GetAllCustomersResponse ToCustomersResponse(this IEnumerable<Customer> customers)
+    {{
+        return new GetAllCustomersResponse
+        {{
+            Customers = customers.Select(x => new CustomerResponse
+            {{
+                Id = x.Id.Value,
+                Email = x.Email.Value,
+                Username = x.Username.Value,
+                FullName = x.FullName.Value,
+                DateOfBirth = x.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
+            }})
+        }};
+    }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

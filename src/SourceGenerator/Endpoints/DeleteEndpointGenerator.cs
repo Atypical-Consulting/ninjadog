@@ -50,32 +50,30 @@ using {rootNs}.Services;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    [HttpDelete(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
-    public partial class {_.ClassDeleteModelEndpoint} : Endpoint<{_.ClassDeleteModelRequest}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+[HttpDelete(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
+public partial class {_.ClassDeleteModelEndpoint} : Endpoint<{_.ClassDeleteModelRequest}>
+{{
+    private readonly {_.InterfaceModelService} {_.FieldModelService};
+
+    public {_.ClassDeleteModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
     {{
-        private readonly {_.InterfaceModelService} {_.FieldModelService};
-
-        public {_.ClassDeleteModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
-        {{
-            {_.FieldModelService} = {_.VarModelService};
-        }}
-
-        public override async Task HandleAsync({_.ClassDeleteModelRequest} req, CancellationToken ct)
-        {{
-            var deleted = await {_.FieldModelService}.DeleteAsync(req.Id);
-            if (!deleted)
-            {{
-                await SendNotFoundAsync(ct);
-                return;
-            }}
-
-            await SendNoContentAsync(ct);
-        }}
+        {_.FieldModelService} = {_.VarModelService};
     }}
-{(ns is null ? null : @"}
-")}";
+
+    public override async Task HandleAsync({_.ClassDeleteModelRequest} req, CancellationToken ct)
+    {{
+        var deleted = await {_.FieldModelService}.DeleteAsync(req.Id);
+        if (!deleted)
+        {{
+            await SendNotFoundAsync(ct);
+            return;
+        }}
+
+        await SendNoContentAsync(ct);
+    }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

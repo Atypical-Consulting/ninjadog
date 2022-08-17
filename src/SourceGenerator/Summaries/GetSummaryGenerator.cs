@@ -49,20 +49,18 @@ using {rootNs}.Contracts.Responses;
 using {rootNs}.Endpoints;
 using FastEndpoints;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassGetModelSummary} : Summary<{_.ClassGetModelEndpoint}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassGetModelSummary} : Summary<{_.ClassGetModelEndpoint}>
+{{
+    public {_.ClassGetModelSummary}()
     {{
-        public {_.ClassGetModelSummary}()
-        {{
-            Summary = ""Returns a single {_.ModelHumanized} by id"";
-            Description = ""Returns a single {_.ModelHumanized} by id"";
-            Response<{_.ClassModelResponse}>(200, ""Successfully found and returned the {_.ModelHumanized}"");
-            Response(404, ""The {_.ModelHumanized} does not exist in the system"");
-        }}
+        Summary = ""Returns a single {_.ModelHumanized} by id"";
+        Description = ""Returns a single {_.ModelHumanized} by id"";
+        Response<{_.ClassModelResponse}>(200, ""Successfully found and returned the {_.ModelHumanized}"");
+        Response(404, ""The {_.ModelHumanized} does not exist in the system"");
     }}
-{(ns is null ? null : @"}
-")}";
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

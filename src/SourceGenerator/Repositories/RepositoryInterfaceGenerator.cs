@@ -49,22 +49,20 @@ using {rootNs}.Contracts.Data;
 using {rootNs}.Database;
 using Dapper;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial interface {_.InterfaceModelRepository}
-    {{
-        Task<bool> CreateAsync({_.ClassModelDto} {_.VarModel});
+{Utilities.WriteFileScopedNamespace(ns)}
 
-        Task<{_.ClassModelDto}?> GetAsync(Guid id);
+public partial interface {_.InterfaceModelRepository}
+{{
+    Task<bool> CreateAsync({_.ClassModelDto} {_.VarModel});
 
-        Task<IEnumerable<{_.ClassModelDto}>> GetAllAsync();
+    Task<{_.ClassModelDto}?> GetAsync(Guid id);
 
-        Task<bool> UpdateAsync({_.ClassModelDto} {_.VarModel});
+    Task<IEnumerable<{_.ClassModelDto}>> GetAllAsync();
 
-        Task<bool> DeleteAsync(Guid id);
-    }}
-{(ns is null ? null : @"}
-")}";
+    Task<bool> UpdateAsync({_.ClassModelDto} {_.VarModel});
+
+    Task<bool> DeleteAsync(Guid id);
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

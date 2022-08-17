@@ -45,14 +45,12 @@ public sealed class DeleteRequestGenerator : IIncrementalGenerator
         StringTokens _ = new(type.Name);
 
         var code = @$"
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassDeleteModelRequest}
-    {{
-        public Guid Id {{ get; init; }}
-    }}
-{(ns is null ? null : @"}
-")}";
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassDeleteModelRequest}
+{{
+    public Guid Id {{ get; init; }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

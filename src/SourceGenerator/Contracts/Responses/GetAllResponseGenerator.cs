@@ -45,14 +45,12 @@ public sealed class GetAllResponseGenerator : IIncrementalGenerator
         StringTokens _ = new(type.Name);
 
         var code = @$"
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassGetAllModelsResponse}
-    {{
-        public IEnumerable<{_.ClassModelResponse}> {_.Models} {{ get; init; }} = Enumerable.Empty<{_.ClassModelResponse}>();
-    }}
-{(ns is null ? null : @"}
-")}";
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassGetAllModelsResponse}
+{{
+    public IEnumerable<{_.ClassModelResponse}> {_.Models} {{ get; init; }} = Enumerable.Empty<{_.ClassModelResponse}>();
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

@@ -49,24 +49,22 @@ public sealed class DomainToDtoMapperGenerator : IIncrementalGenerator
 using {rootNs}.Contracts.Data;
 using {rootNs}.Domain;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public static class DomainToDtoMapper
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public static class DomainToDtoMapper
+{{
+    public static CustomerDto ToCustomerDto(this Customer customer)
     {{
-        public static CustomerDto ToCustomerDto(this Customer customer)
+        return new CustomerDto
         {{
-            return new CustomerDto
-            {{
-                Id = customer.Id.Value.ToString(),
-                Email = customer.Email.Value,
-                Username = customer.Username.Value,
-                FullName = customer.FullName.Value,
-                DateOfBirth = customer.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
-            }};
-        }}
+            Id = customer.Id.Value.ToString(),
+            Email = customer.Email.Value,
+            Username = customer.Username.Value,
+            FullName = customer.FullName.Value,
+            DateOfBirth = customer.DateOfBirth.Value.ToDateTime(TimeOnly.MinValue)
+        }};
     }}
-{(ns is null ? null : @"}
-")}";
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

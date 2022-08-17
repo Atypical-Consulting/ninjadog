@@ -51,59 +51,57 @@ using {rootNs}.Repositories;
 using FluentValidation;
 using FluentValidation.Results;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassModelService} : {_.InterfaceModelService}
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassModelService} : {_.InterfaceModelService}
+{{
+    private readonly {_.InterfaceModelRepository} {_.FieldModelRepository};
+
+    public {_.ClassModelService}({_.InterfaceModelRepository} {_.VarModelRepository})
     {{
-        private readonly {_.InterfaceModelRepository} {_.FieldModelRepository};
-
-        public {_.ClassModelService}({_.InterfaceModelRepository} {_.VarModelRepository})
-        {{
-            {_.FieldModelRepository} = {_.VarModelRepository};
-        }}
-
-        public async Task<bool> CreateAsync({_.ClassModel} {_.VarModel})
-        {{
-            // TODO: rename existingUser variable
-            var {_.VarExistingModel} = await {_.FieldModelRepository}.GetAsync({_.VarModel}.Id.Value);
-            if ({_.VarExistingModel} is not null)
-            {{
-                var message = $""A {_.ModelHumanized} with id {{{_.VarModel}.Id}} already exists"";
-                throw new ValidationException(message, new []
-                {{
-                    new ValidationFailure(nameof({_.ClassModel}), message)
-                }});
-            }}
-
-            var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
-            return await {_.FieldModelRepository}.CreateAsync({_.VarModelDto});
-        }}
-
-        public async Task<{_.ClassModel}?> GetAsync(Guid id)
-        {{
-            var {_.VarModelDto} = await {_.FieldModelRepository}.GetAsync(id);
-            return {_.VarModelDto}?.{_.MethodToModel}();
-        }}
-
-        public async Task<IEnumerable<{_.ClassModel}>> GetAllAsync()
-        {{
-            var {_.VarModelDtos} = await {_.FieldModelRepository}.GetAllAsync();
-            return {_.VarModelDtos}.Select(x => x.{_.MethodToModel}());
-        }}
-
-        public async Task<bool> UpdateAsync({_.ClassModel} {_.VarModel})
-        {{
-            var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
-            return await {_.FieldModelRepository}.UpdateAsync({_.VarModelDto});
-        }}
-
-        public async Task<bool> DeleteAsync(Guid id)
-        {{
-            return await {_.FieldModelRepository}.DeleteAsync(id);
-        }}
+        {_.FieldModelRepository} = {_.VarModelRepository};
     }}
-{(ns is null ? null : @"}
-")}";
+
+    public async Task<bool> CreateAsync({_.ClassModel} {_.VarModel})
+    {{
+        // TODO: rename existingUser variable
+        var {_.VarExistingModel} = await {_.FieldModelRepository}.GetAsync({_.VarModel}.Id.Value);
+        if ({_.VarExistingModel} is not null)
+        {{
+            var message = $""A {_.ModelHumanized} with id {{{_.VarModel}.Id}} already exists"";
+            throw new ValidationException(message, new []
+            {{
+                new ValidationFailure(nameof({_.ClassModel}), message)
+            }});
+        }}
+
+        var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
+        return await {_.FieldModelRepository}.CreateAsync({_.VarModelDto});
+    }}
+
+    public async Task<{_.ClassModel}?> GetAsync(Guid id)
+    {{
+        var {_.VarModelDto} = await {_.FieldModelRepository}.GetAsync(id);
+        return {_.VarModelDto}?.{_.MethodToModel}();
+    }}
+
+    public async Task<IEnumerable<{_.ClassModel}>> GetAllAsync()
+    {{
+        var {_.VarModelDtos} = await {_.FieldModelRepository}.GetAllAsync();
+        return {_.VarModelDtos}.Select(x => x.{_.MethodToModel}());
+    }}
+
+    public async Task<bool> UpdateAsync({_.ClassModel} {_.VarModel})
+    {{
+        var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
+        return await {_.FieldModelRepository}.UpdateAsync({_.VarModelDto});
+    }}
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {{
+        return await {_.FieldModelRepository}.DeleteAsync(id);
+    }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

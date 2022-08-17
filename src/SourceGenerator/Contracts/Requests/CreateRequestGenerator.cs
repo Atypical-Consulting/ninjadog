@@ -45,22 +45,20 @@ public sealed class CreateRequestGenerator : IIncrementalGenerator
         StringTokens _ = new(type.Name);
 
         var code = @$"
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassCreateModelRequest}
-    {{
-        // TODO: Generate properties
+{Utilities.WriteFileScopedNamespace(ns)}
 
-        // public string Username {{ get; init; }} = default!;
+public partial class {_.ClassCreateModelRequest}
+{{
+    // TODO: Generate properties
 
-        // public string FullName {{ get; init; }} = default!;
+    // public string Username {{ get; init; }} = default!;
 
-        // public string Email {{ get; init; }} = default!;
+    // public string FullName {{ get; init; }} = default!;
 
-        // public DateTime DateOfBirth {{ get; init; }}
-    }}
-{(ns is null ? null : @"}
-")}";
+    // public string Email {{ get; init; }} = default!;
+
+    // public DateTime DateOfBirth {{ get; init; }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

@@ -49,13 +49,11 @@ using System.Collections.Generic;
 using {rootNs}.Database;
 using Dapper;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassModelDto}
-    {{
-    }}
-{(ns is null ? null : @"}
-")}";
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassModelDto}
+{{
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

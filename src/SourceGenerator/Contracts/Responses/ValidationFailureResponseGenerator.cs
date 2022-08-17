@@ -40,14 +40,12 @@ public sealed class ValidationFailureResponseGenerator : IIncrementalGenerator
         string? ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
 
         var code = @$"
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public class ValidationFailureResponse
-    {{
-        public List<string> Errors {{ get; init; }} = new();
-    }}
-{(ns is null ? null : @"}
-")}";
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public class ValidationFailureResponse
+{{
+    public List<string> Errors {{ get; init; }} = new();
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

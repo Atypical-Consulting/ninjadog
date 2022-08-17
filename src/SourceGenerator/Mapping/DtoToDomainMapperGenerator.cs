@@ -50,24 +50,22 @@ using {rootNs}.Contracts.Data;
 using {rootNs}.Domain;
 using {rootNs}.Domain.Common;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public static class DtoToDomainMapper
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public static class DtoToDomainMapper
+{{
+    public static Customer ToCustomer(this CustomerDto customerDto)
     {{
-        public static Customer ToCustomer(this CustomerDto customerDto)
+        return new Customer
         {{
-            return new Customer
-            {{
-                Id = CustomerId.From(Guid.Parse(customerDto.Id)),
-                Email = EmailAddress.From(customerDto.Email),
-                Username = Username.From(customerDto.Username),
-                FullName = FullName.From(customerDto.FullName),
-                DateOfBirth = DateOfBirth.From(DateOnly.FromDateTime(customerDto.DateOfBirth))
-            }};
-        }}
+            Id = CustomerId.From(Guid.Parse(customerDto.Id)),
+            Email = EmailAddress.From(customerDto.Email),
+            Username = Username.From(customerDto.Username),
+            FullName = FullName.From(customerDto.FullName),
+            DateOfBirth = DateOfBirth.From(DateOnly.FromDateTime(customerDto.DateOfBirth))
+        }};
     }}
-{(ns is null ? null : @"}
-")}";
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

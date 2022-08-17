@@ -50,20 +50,18 @@ using {rootNs}.Endpoints;
 using DemoLibrary.Contracts.Responses;
 using FastEndpoints;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassCreateModelSummary} : Summary<{_.ClassCreateModelEndpoint}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassCreateModelSummary} : Summary<{_.ClassCreateModelEndpoint}>
+{{
+    public {_.ClassCreateModelSummary}()
     {{
-        public {_.ClassCreateModelSummary}()
-        {{
-            Summary = ""Creates a new {_.ModelHumanized} in the system"";
-            Description = ""Creates a new {_.ModelHumanized} in the system"";
-            Response<{_.ClassModelResponse}>(201, ""{_.ModelHumanized} was successfully created"");
-            Response<ValidationFailureResponse>(400, ""The request did not pass validation checks"");
-        }}
+        Summary = ""Creates a new {_.ModelHumanized} in the system"";
+        Description = ""Creates a new {_.ModelHumanized} in the system"";
+        Response<{_.ClassModelResponse}>(201, ""{_.ModelHumanized} was successfully created"");
+        Response<ValidationFailureResponse>(400, ""The request did not pass validation checks"");
     }}
-{(ns is null ? null : @"}
-")}";
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

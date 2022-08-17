@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 namespace SourceGenerator.Database;
 
 [Generator]
-public sealed class CreateEndpointGenerator : IIncrementalGenerator
+public sealed class DatabaseInitializerGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -42,30 +42,29 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
         var code = @$"
 using Dapper;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class DatabaseInitializer
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class DatabaseInitializer
+{{
+    private readonly IDbConnectionFactory _connectionFactory;
+
+    public DatabaseInitializer(IDbConnectionFactory connectionFactory)
     {{
-        private readonly IDbConnectionFactory _connectionFactory;
+        _connectionFactory = connectionFactory;
+    }}
 
-        public DatabaseInitializer(IDbConnectionFactory connectionFactory)
-        {{
-            _connectionFactory = connectionFactory;
-        }}
-
-        public async Task InitializeAsync()
-        {{
-            using var connection = await _connectionFactory.CreateConnectionAsync();
-            // TODO: Generate SQL query for database creation
-            // await connection.ExecuteAsync(@""CREATE TABLE IF NOT EXISTS Customers (
-            // Id CHAR(36) PRIMARY KEY,
-            // Username TEXT NOT NULL,
-            // FullName TEXT NOT NULL,
-            // Email TEXT NOT NULL,
-            // DateOfBirth TEXT NOT NULL)"");
-        }}
-{(ns is null ? null : @"}
-")}";
+    public async Task InitializeAsync()
+    {{
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        // TODO: Generate SQL query for database creation
+        // await connection.ExecuteAsync(@""CREATE TABLE IF NOT EXISTS Customers (
+        // Id CHAR(36) PRIMARY KEY,
+        // Username TEXT NOT NULL,
+        // FullName TEXT NOT NULL,
+        // Email TEXT NOT NULL,
+        // DateOfBirth TEXT NOT NULL)"");
+    }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

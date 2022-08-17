@@ -49,20 +49,18 @@ using {rootNs}.Contracts.Responses;
 using {rootNs}.Endpoints;
 using FastEndpoints;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassUpdateModelSummary} : Summary<{_.ClassUpdateModelEndpoint}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassUpdateModelSummary} : Summary<{_.ClassUpdateModelEndpoint}>
+{{
+    public {_.ClassUpdateModelSummary}()
     {{
-        public {_.ClassUpdateModelSummary}()
-        {{
-            Summary = ""Updates an existing {_.ModelHumanized} in the system"";
-            Description = ""Updates an existing {_.ModelHumanized} in the system"";
-            Response<{_.ClassModelResponse}>(201, ""{_.ModelHumanized} was successfully updated"");
-            Response<ValidationFailureResponse>(400, ""The request did not pass validation checks"");
-        }}
+        Summary = ""Updates an existing {_.ModelHumanized} in the system"";
+        Description = ""Updates an existing {_.ModelHumanized} in the system"";
+        Response<{_.ClassModelResponse}>(201, ""{_.ModelHumanized} was successfully updated"");
+        Response<ValidationFailureResponse>(400, ""The request did not pass validation checks"");
     }}
-{(ns is null ? null : @"}
-")}";
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

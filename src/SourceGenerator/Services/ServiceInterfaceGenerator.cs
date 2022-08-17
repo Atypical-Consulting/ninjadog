@@ -47,22 +47,20 @@ public sealed class ServiceInterfaceGenerator : IIncrementalGenerator
         var code = @$"
 using {rootNs}.Domain;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial interface {_.InterfaceModelService}
-    {{
-        Task<bool> CreateAsync({_.ClassModel} {_.VarModel});
+{Utilities.WriteFileScopedNamespace(ns)}
 
-        Task<{_.ClassModel}?> GetAsync(Guid id);
+public partial interface {_.InterfaceModelService}
+{{
+    Task<bool> CreateAsync({_.ClassModel} {_.VarModel});
 
-        Task<IEnumerable<{_.ClassModel}>> GetAllAsync();
+    Task<{_.ClassModel}?> GetAsync(Guid id);
 
-        Task<bool> UpdateAsync({_.ClassModel} {_.VarModel});
+    Task<IEnumerable<{_.ClassModel}>> GetAllAsync();
 
-        Task<bool> DeleteAsync(Guid id);
-    }}
-{(ns is null ? null : @"}
-")}";
+    Task<bool> UpdateAsync({_.ClassModel} {_.VarModel});
+
+    Task<bool> DeleteAsync(Guid id);
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

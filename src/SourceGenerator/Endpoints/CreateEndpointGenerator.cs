@@ -52,31 +52,29 @@ using {rootNs}.Services;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    [HttpPost(""{_.EndpointModels}""), AllowAnonymous]
-    public partial class {_.ClassCreateModelEndpoint} : Endpoint<{_.ClassCreateModelRequest}, {_.ClassModelResponse}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+[HttpPost(""{_.EndpointModels}""), AllowAnonymous]
+public partial class {_.ClassCreateModelEndpoint} : Endpoint<{_.ClassCreateModelRequest}, {_.ClassModelResponse}>
+{{
+    private readonly {_.InterfaceModelService} {_.FieldModelService};
+
+    public {_.ClassCreateModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
     {{
-        private readonly {_.InterfaceModelService} {_.FieldModelService};
-
-        public {_.ClassCreateModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
-        {{
-            {_.FieldModelService} = {_.VarModelService};
-        }}
-
-        public override async Task HandleAsync({_.ClassCreateModelRequest} req, CancellationToken ct)
-        {{
-            var {_.VarModel} = req.{_.MethodToModel}();
-
-            await {_.FieldModelService}.CreateAsync({_.VarModel});
-
-            var {_.VarModelResponse} = {_.VarModel}.{_.MethodToModelResponse}();
-            await SendCreatedAtAsync<{_.ClassGetModelEndpoint}>(
-                new {{ Id = {_.VarModel}.Id.Value }}, {_.VarModelResponse}, generateAbsoluteUrl: true, cancellation: ct);
-        }}
+        {_.FieldModelService} = {_.VarModelService};
     }}
-{(ns is null ? null : @"}
-")}";
+
+    public override async Task HandleAsync({_.ClassCreateModelRequest} req, CancellationToken ct)
+    {{
+        var {_.VarModel} = req.{_.MethodToModel}();
+
+        await {_.FieldModelService}.CreateAsync({_.VarModel});
+
+        var {_.VarModelResponse} = {_.VarModel}.{_.MethodToModelResponse}();
+        await SendCreatedAtAsync<{_.ClassGetModelEndpoint}>(
+            new {{ Id = {_.VarModel}.Id.Value }}, {_.VarModelResponse}, generateAbsoluteUrl: true, cancellation: ct);
+    }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

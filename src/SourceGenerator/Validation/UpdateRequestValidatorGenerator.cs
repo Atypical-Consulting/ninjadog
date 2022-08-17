@@ -54,21 +54,19 @@ using {rootNs}.Contracts.Requests;
 using FastEndpoints;
 using FluentValidation;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassUpdateModelRequestValidator} : Validator<{_.ClassUpdateModelRequest}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassUpdateModelRequestValidator} : Validator<{_.ClassUpdateModelRequest}>
+{{
+    public {_.ClassUpdateModelRequestValidator}()
     {{
-        public {_.ClassUpdateModelRequestValidator}()
-        {{
-            // TODO: Generate rules for properties
-            // RuleFor(x => x.FullName).NotEmpty();
-            // RuleFor(x => x.Email).NotEmpty();
-            // RuleFor(x => x.Username).NotEmpty();
-            // RuleFor(x => x.DateOfBirth).NotEmpty();
-        }}
+        // TODO: Generate rules for properties
+        // RuleFor(x => x.FullName).NotEmpty();
+        // RuleFor(x => x.Email).NotEmpty();
+        // RuleFor(x => x.Username).NotEmpty();
+        // RuleFor(x => x.DateOfBirth).NotEmpty();
     }}
-{(ns is null ? null : @"}
-")}";
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

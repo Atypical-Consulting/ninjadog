@@ -51,27 +51,25 @@ using {rootNs}.Services;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    [HttpGet(""{_.EndpointModels}""), AllowAnonymous]
-    public partial class {_.ClassGetAllModelsEndpoint} : EndpointWithoutRequest<{_.ClassGetAllModelsResponse}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+[HttpGet(""{_.EndpointModels}""), AllowAnonymous]
+public partial class {_.ClassGetAllModelsEndpoint} : EndpointWithoutRequest<{_.ClassGetAllModelsResponse}>
+{{
+    private readonly {_.InterfaceModelService} {_.FieldModelService};
+
+    public {_.ClassGetAllModelsEndpoint}({_.InterfaceModelService} {_.VarModelService})
     {{
-        private readonly {_.InterfaceModelService} {_.FieldModelService};
-
-        public {_.ClassGetAllModelsEndpoint}({_.InterfaceModelService} {_.VarModelService})
-        {{
-            {_.FieldModelService} = {_.VarModelService};
-        }}
-
-        public override async Task HandleAsync(CancellationToken ct)
-        {{
-            var {_.VarModels} = await {_.FieldModelService}.GetAllAsync();
-            var {_.VarModelsResponse} = {_.VarModels}.{_.MethodToModelsResponse}();
-            await SendOkAsync({_.VarModelsResponse}, ct);
-        }}
+        {_.FieldModelService} = {_.VarModelService};
     }}
-{(ns is null ? null : @"}
-")}";
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {{
+        var {_.VarModels} = await {_.FieldModelService}.GetAllAsync();
+        var {_.VarModelsResponse} = {_.VarModels}.{_.MethodToModelsResponse}();
+        await SendOkAsync({_.VarModelsResponse}, ct);
+    }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

@@ -48,20 +48,18 @@ public sealed class DeleteSummaryGenerator : IIncrementalGenerator
 using {rootNs}.Endpoints;
 using FastEndpoints;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassDeleteModelSummary} : Summary<{_.ClassDeleteModelEndpoint}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassDeleteModelSummary} : Summary<{_.ClassDeleteModelEndpoint}>
+{{
+    public {_.ClassDeleteModelSummary}()
     {{
-        public {_.ClassDeleteModelSummary}()
-        {{
-            Summary = ""Delete a {_.ModelHumanized} in the system"";
-            Description = ""Delete a {_.ModelHumanized} in the system"";
-            Response(204, ""The {_.ModelHumanized} was deleted successfully"");
-            Response(404, ""The {_.ModelHumanized} was not found in the system"");
-        }}
+        Summary = ""Delete a {_.ModelHumanized} in the system"";
+        Description = ""Delete a {_.ModelHumanized} in the system"";
+        Response(204, ""The {_.ModelHumanized} was deleted successfully"");
+        Response(404, ""The {_.ModelHumanized} was not found in the system"");
     }}
-{(ns is null ? null : @"}
-")}";
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

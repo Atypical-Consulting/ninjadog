@@ -49,19 +49,17 @@ using {rootNs}.Contracts.Responses;
 using {rootNs}.Endpoints;
 using FastEndpoints;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    public partial class {_.ClassGetAllModelsSummary} : Summary<{_.ClassGetAllModelsEndpoint}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+public partial class {_.ClassGetAllModelsSummary} : Summary<{_.ClassGetAllModelsEndpoint}>
+{{
+    public {_.ClassGetAllModelsSummary}()
     {{
-        public {_.ClassGetAllModelsSummary}()
-        {{
-            Summary = ""Returns all the {_.ModelHumanized} in the system"";
-            Description = ""Returns all the {_.ModelHumanized} in the system"";
-            Response<{_.ClassGetAllModelsResponse}>(200, ""All {_.ModelHumanized} in the system are returned"");
-        }}
+        Summary = ""Returns all the {_.ModelHumanized} in the system"";
+        Description = ""Returns all the {_.ModelHumanized} in the system"";
+        Response<{_.ClassGetAllModelsResponse}>(200, ""All {_.ModelHumanized} in the system are returned"");
     }}
-{(ns is null ? null : @"}
-")}";
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }

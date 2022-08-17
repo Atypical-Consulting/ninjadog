@@ -123,6 +123,14 @@ public static class Utilities
                StringConstants.NullableEnable +
                Environment.NewLine +
                code +
+               Environment.NewLine +
                StringConstants.NullableDisable;
+    }
+
+    internal static string? WriteFileScopedNamespace(string? ns)
+    {
+        return ns is not null
+            ? $@"namespace {ns};"
+            : null;
     }
 }

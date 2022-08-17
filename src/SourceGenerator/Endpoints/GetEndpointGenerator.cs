@@ -52,34 +52,32 @@ using {rootNs}.Services;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
 
-{(ns is null ? null : $@"namespace {ns}
-{{")}
-    [HttpGet(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
-    public partial class {_.ClassGetModelEndpoint} : Endpoint<{_.ClassGetModelRequest}, {_.ClassModelResponse}>
+{Utilities.WriteFileScopedNamespace(ns)}
+
+[HttpGet(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
+public partial class {_.ClassGetModelEndpoint} : Endpoint<{_.ClassGetModelRequest}, {_.ClassModelResponse}>
+{{
+    private readonly {_.InterfaceModelService} {_.FieldModelService};
+
+    public {_.ClassGetModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
     {{
-        private readonly {_.InterfaceModelService} {_.FieldModelService};
-
-        public {_.ClassGetModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
-        {{
-            {_.FieldModelService}= {_.VarModelService};
-        }}
-
-        public override async Task HandleAsync({_.ClassGetModelRequest} req, CancellationToken ct)
-        {{
-            var {_.VarModel} = await {_.FieldModelService}.GetAsync(req.Id);
-
-            if ({_.VarModel} is null)
-            {{
-                await SendNotFoundAsync(ct);
-                return;
-            }}
-
-            var {_.VarModelResponse} = {_.VarModel}.{_.MethodToModelResponse}();
-            await SendOkAsync({_.VarModelResponse}, ct);
-        }}
+        {_.FieldModelService}= {_.VarModelService};
     }}
-{(ns is null ? null : @"}
-")}";
+
+    public override async Task HandleAsync({_.ClassGetModelRequest} req, CancellationToken ct)
+    {{
+        var {_.VarModel} = await {_.FieldModelService}.GetAsync(req.Id);
+
+        if ({_.VarModel} is null)
+        {{
+            await SendNotFoundAsync(ct);
+            return;
+        }}
+
+        var {_.VarModelResponse} = {_.VarModel}.{_.MethodToModelResponse}();
+        await SendOkAsync({_.VarModelResponse}, ct);
+    }}
+}}";
 
         return Utilities.DefaultCodeLayout(code);
     }
