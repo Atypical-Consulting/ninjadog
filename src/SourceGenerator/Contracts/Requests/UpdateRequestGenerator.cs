@@ -40,25 +40,51 @@ public sealed class UpdateRequestGenerator : IIncrementalGenerator
         var ns = rootNs is not null ? $"{rootNs}.Contracts.Requests" : null;
 
         StringTokens _ = new(type.Name);
+        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+
+        var properties = string.Join(
+            Environment.NewLine,
+            modelProperties.Select(property => GenerateProperties(property, _)));
 
         var code = @$"
 {Utilities.WriteFileScopedNamespace(ns)}
 
 public partial class {_.ClassUpdateModelRequest}
 {{
-    // TODO: Generate properties
-
-    // public Guid Id {{ get; init; }}
-
-    // public string Username {{ get; init; }} = default!;
-
-    // public string FullName {{ get; init; }} = default!;
-
-    // public string Email {{ get; init; }} = default!;
-
-    // public DateTime DateOfBirth {{ get; init; }}
+{properties}
 }}";
 
         return Utilities.DefaultCodeLayout(code);
+    }
+
+    private static string GenerateProperties(IPropertySymbol p, StringTokens _)
+    {
+        IndentedStringBuilder sb = new();
+        sb.Indent();
+
+        var baseTypeName = p.Type.BaseType?.Name;
+        var isValueOf = baseTypeName is "ValueOf";
+        var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
+
+        var realType = isValueOf
+            ? valueOfArgument
+            : p.Type.ToString();
+
+        var propertyType = realType switch
+        {
+            "System.DateOnly" => "DateTime",
+            _ => realType
+        };
+
+        sb.Append($"public {propertyType} {p.Name} {{ get; init; }}");
+
+        if (propertyType is "string" && p.Name is not "Id")
+        {
+            sb.Append($" = default!;");
+        }
+
+        sb.AppendLine();
+
+        return sb.ToString();
     }
 }
