@@ -41,12 +41,8 @@ public sealed class ServiceGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Services" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -58,52 +54,53 @@ using FluentValidation.Results;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class {name}Service : I{name}Service
+    public partial class {_.ClassModelService} : {_.InterfaceModelService}
     {{
-        private readonly I{name}Repository _{lower}Repository;
+        private readonly {_.InterfaceModelRepository} {_.FieldModelRepository};
 
-        public {name}Service(I{name}Repository {lower}Repository)
+        public {_.ClassModelService}({_.InterfaceModelRepository} {_.VarModelRepository})
         {{
-            _{lower}Repository = {lower}Repository;
+            {_.FieldModelRepository} = {_.VarModelRepository};
         }}
 
-        public async Task<bool> CreateAsync({name} {lower})
+        public async Task<bool> CreateAsync({_.ClassModel} {_.VarModel})
         {{
-            var existingUser = await _{lower}Repository.GetAsync({lower}.Id.Value);
-            if (existingUser is not null)
+            // TODO: rename existingUser variable
+            var {_.VarExistingModel} = await {_.FieldModelRepository}.GetAsync({_.VarModel}.Id.Value);
+            if ({_.VarExistingModel} is not null)
             {{
-                var message = $""A user with id {{{lower}.Id}} already exists"";
+                var message = $""A {_.ModelHumanized} with id {{{_.VarModel}.Id}} already exists"";
                 throw new ValidationException(message, new []
                 {{
-                    new ValidationFailure(nameof({name}), message)
+                    new ValidationFailure(nameof({_.ClassModel}), message)
                 }});
             }}
 
-            var {lower}Dto = {lower}.To{name}Dto();
-            return await _{lower}Repository.CreateAsync({lower}Dto);
+            var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
+            return await {_.FieldModelRepository}.CreateAsync({_.VarModelDto});
         }}
 
-        public async Task<{name}?> GetAsync(Guid id)
+        public async Task<{_.ClassModel}?> GetAsync(Guid id)
         {{
-            var {lower}Dto = await _{lower}Repository.GetAsync(id);
-            return {lower}Dto?.To{name}();
+            var {_.VarModelDto} = await {_.FieldModelRepository}.GetAsync(id);
+            return {_.VarModelDto}?.{_.MethodToModel}();
         }}
 
-        public async Task<IEnumerable<{name}>> GetAllAsync()
+        public async Task<IEnumerable<{_.ClassModel}>> GetAllAsync()
         {{
-            var {lower}Dtos = await _{lower}Repository.GetAllAsync();
-            return {lower}Dtos.Select(x => x.To{name}());
+            var {_.VarModelDtos} = await {_.FieldModelRepository}.GetAllAsync();
+            return {_.VarModelDtos}.Select(x => x.{_.MethodToModel}());
         }}
 
-        public async Task<bool> UpdateAsync({name} {lower})
+        public async Task<bool> UpdateAsync({_.ClassModel} {_.VarModel})
         {{
-            var {lower}Dto = {lower}.To{name}Dto();
-            return await _{lower}Repository.UpdateAsync({lower}Dto);
+            var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
+            return await {_.FieldModelRepository}.UpdateAsync({_.VarModelDto});
         }}
 
         public async Task<bool> DeleteAsync(Guid id)
         {{
-            return await _{lower}Repository.DeleteAsync(id);
+            return await {_.FieldModelRepository}.DeleteAsync(id);
         }}
     }}
 {(ns is null ? null : @"}

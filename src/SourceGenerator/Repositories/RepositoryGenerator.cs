@@ -37,64 +37,61 @@ public sealed class RepositoryGenerator : IIncrementalGenerator
         }
     }
 
+
     private static string GenerateCode(ITypeSymbol type)
     {
         string? rootNs = Utilities.GetRootNamespace(type);
-        string? ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
-        StringVariations sv = new(type.Name);
+        string? ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
-using {rootNs}.Contracts.Data;
+using System.Collections.Generic;
 using {rootNs}.Database;
 using Dapper;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class {name}Repository : I{name}Repository
+    public partial class {_.ClassModelRepository} : {_.InterfaceModelRepository}
     {{
         private readonly IDbConnectionFactory _connectionFactory;
 
-        public {name}Repository(IDbConnectionFactory connectionFactory)
+        public {_.ClassModelRepository}(IDbConnectionFactory connectionFactory)
         {{
             _connectionFactory = connectionFactory;
         }}
 
-        public async Task<bool> CreateAsync({dto} {lower})
+        public async Task<bool> CreateAsync({_.ClassModelDto} {_.VarModel})
         {{
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var result = await connection.ExecuteAsync(
                 @""INSERT INTO Customers (Id, Username, FullName, Email, DateOfBirth)
                 VALUES (@Id, @Username, @FullName, @Email, @DateOfBirth)"",
-                {lower});
+                {_.VarModel});
             return result > 0;
         }}
 
-        public async Task<{dto}?> GetAsync(Guid id)
+        public async Task<{_.ClassModelDto}?> GetAsync(Guid id)
         {{
             using var connection = await _connectionFactory.CreateConnectionAsync();
-            return await connection.QuerySingleOrDefaultAsync<{dto}>(
+            return await connection.QuerySingleOrDefaultAsync<{_.ClassModelDto}>(
                 ""SELECT * FROM Customers WHERE Id = @Id LIMIT 1"", new {{ Id = id.ToString() }});
         }}
 
-        public async Task<IEnumerable<{dto}>> GetAllAsync()
+        public async Task<IEnumerable<{_.ClassModelDto}>> GetAllAsync()
         {{
             using var connection = await _connectionFactory.CreateConnectionAsync();
-            return await connection.QueryAsync<{dto}>(""SELECT * FROM Customers"");
+            return await connection.QueryAsync<{_.ClassModelDto}>(""SELECT * FROM Customers"");
         }}
 
-        public async Task<bool> UpdateAsync({dto} {lower})
+        public async Task<bool> UpdateAsync({_.ClassModelDto} {_.VarModel})
         {{
             using var connection = await _connectionFactory.CreateConnectionAsync();
             var result = await connection.ExecuteAsync(
                 @""UPDATE Customers SET Username = @Username, FullName = @FullName, Email = @Email,
                      DateOfBirth = @DateOfBirth WHERE Id = @Id"",
-                {lower});
+                {_.VarModel});
             return result > 0;
         }}
 

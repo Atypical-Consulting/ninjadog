@@ -41,12 +41,8 @@ public sealed class GetAllSummaryGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
-        StringVariations sv = new(type.Name);
 
-        string className = $"GetAll{sv.PascalPlural}Summary";
-        string getAllEndpoint = $"GetAll{sv.PascalPlural}Endpoint";
-        string getAllResponse = $"GetAll{sv.PascalPlural}Response";
-        string humanized = sv.HumanizedPlural;
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -56,13 +52,13 @@ using FastEndpoints;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class {className} : Summary<{getAllEndpoint}>
+    public partial class {_.ClassGetAllModelsSummary} : Summary<{_.ClassGetAllModelsEndpoint}>
     {{
-        public {className}()
+        public {_.ClassGetAllModelsSummary}()
         {{
-            Summary = ""Returns all the {humanized} in the system"";
-            Description = ""Returns all the {humanized} in the system"";
-            Response<{getAllResponse}>(200, ""All {humanized} in the system are returned"");
+            Summary = ""Returns all the {_.ModelHumanized} in the system"";
+            Description = ""Returns all the {_.ModelHumanized} in the system"";
+            Response<{_.ClassGetAllModelsResponse}>(200, ""All {_.ModelHumanized} in the system are returned"");
         }}
     }}
 {(ns is null ? null : @"}

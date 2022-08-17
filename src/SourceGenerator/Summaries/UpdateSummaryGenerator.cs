@@ -41,12 +41,8 @@ public sealed class UpdateSummaryGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
-        StringVariations sv = new(type.Name);
 
-        string className = $"Update{sv.Pascal}Summary";
-        string updateModelEndpoint = $"Update{sv.Pascal}Endpoint";
-        string modelResponse = $"{sv.Pascal}Response";
-        string humanized = sv.Humanized;
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -56,13 +52,13 @@ using FastEndpoints;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class {className} : Summary<{updateModelEndpoint}>
+    public partial class {_.ClassUpdateModelSummary} : Summary<{_.ClassUpdateModelEndpoint}>
     {{
-        public {className}()
+        public {_.ClassUpdateModelSummary}()
         {{
-            Summary = ""Updates an existing {humanized} in the system"";
-            Description = ""Updates an existing {humanized} in the system"";
-            Response<{modelResponse}>(201, ""{humanized} was successfully updated"");
+            Summary = ""Updates an existing {_.ModelHumanized} in the system"";
+            Description = ""Updates an existing {_.ModelHumanized} in the system"";
+            Response<{_.ClassModelResponse}>(201, ""{_.ModelHumanized} was successfully updated"");
             Response<ValidationFailureResponse>(400, ""The request did not pass validation checks"");
         }}
     }}

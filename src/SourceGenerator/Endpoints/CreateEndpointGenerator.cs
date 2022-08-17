@@ -41,12 +41,8 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -59,25 +55,25 @@ using Microsoft.AspNetCore.Authorization;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    [HttpPost(""customers""), AllowAnonymous]
-    public partial class Create{name}Endpoint : Endpoint<Create{name}Request, {name}Response>
+    [HttpPost(""{_.EndpointModels}""), AllowAnonymous]
+    public partial class {_.ClassCreateModelEndpoint} : Endpoint<{_.ClassCreateModelRequest}, {_.ClassModelResponse}>
     {{
-        private readonly I{name}Service _{lower}Service;
+        private readonly {_.InterfaceModelService} {_.FieldModelService};
 
-        public Create{name}Endpoint(I{name}Service {lower}Service)
+        public {_.ClassCreateModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
         {{
-            _{lower}Service = {lower}Service;
+            {_.FieldModelService} = {_.VarModelService};
         }}
 
-        public override async Task HandleAsync(Create{name}Request req, CancellationToken ct)
+        public override async Task HandleAsync({_.ClassCreateModelRequest} req, CancellationToken ct)
         {{
-            var {lower} = req.To{name}();
+            var {_.VarModel} = req.{_.MethodToModel}();
 
-            await _{lower}Service.CreateAsync({lower});
+            await {_.FieldModelService}.CreateAsync({_.VarModel});
 
-            var {lower}Response = {lower}.To{name}Response();
-            await SendCreatedAtAsync<Get{name}Endpoint>(
-                new {{ Id = {lower}.Id.Value }}, {lower}Response, generateAbsoluteUrl: true, cancellation: ct);
+            var {_.VarModelResponse} = {_.VarModel}.{_.MethodToModelResponse}();
+            await SendCreatedAtAsync<{_.ClassGetModelEndpoint}>(
+                new {{ Id = {_.VarModel}.Id.Value }}, {_.VarModelResponse}, generateAbsoluteUrl: true, cancellation: ct);
         }}
     }}
 {(ns is null ? null : @"}

@@ -38,12 +38,6 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Database" : null;
-        StringVariations sv = new(type.Name);
-
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
 
         return StringConstants.FileHeader + @$"
 

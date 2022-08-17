@@ -41,12 +41,8 @@ public sealed class GetEndpointGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
-        StringVariations sv = new(type.Name);
 
-        string name = type.Name;
-        string lower = name.ToLower();
-        string dto = $"{name}Dto";
-        IEnumerable<string> items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -59,28 +55,28 @@ using Microsoft.AspNetCore.Authorization;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    [HttpGet(""customers/{{id:guid}}""), AllowAnonymous]
-    public partial class Get{name}Endpoint : Endpoint<Get{name}Request, {name}Response>
+    [HttpGet(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
+    public partial class {_.ClassGetModelEndpoint} : Endpoint<{_.ClassGetModelRequest}, {_.ClassModelResponse}>
     {{
-        private readonly I{name}Service _{lower}Service;
+        private readonly {_.InterfaceModelService} {_.FieldModelService};
 
-        public Get{name}Endpoint(I{name}Service {lower}Service)
+        public {_.ClassGetModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
         {{
-            _{lower}Service = {lower}Service;
+            {_.FieldModelService}= {_.VarModelService};
         }}
 
-        public override async Task HandleAsync(Get{name}Request req, CancellationToken ct)
+        public override async Task HandleAsync({_.ClassGetModelRequest} req, CancellationToken ct)
         {{
-            var {lower} = await _{lower}Service.GetAsync(req.Id);
+            var {_.VarModel} = await {_.FieldModelService}.GetAsync(req.Id);
 
-            if ({lower} is null)
+            if ({_.VarModel} is null)
             {{
                 await SendNotFoundAsync(ct);
                 return;
             }}
 
-            var {lower}Response = {lower}.To{name}Response();
-            await SendOkAsync({lower}Response, ct);
+            var {_.VarModelResponse} = {_.VarModel}.{_.MethodToModelResponse}();
+            await SendOkAsync({_.VarModelResponse}, ct);
         }}
     }}
 {(ns is null ? null : @"}

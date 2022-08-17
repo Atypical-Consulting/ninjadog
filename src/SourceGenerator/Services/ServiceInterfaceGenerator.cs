@@ -41,12 +41,8 @@ public sealed class ServiceInterfaceGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Services" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -56,15 +52,15 @@ using Dapper;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial interface I{name}Service
+    public partial interface {_.InterfaceModelService}
     {{
-        Task<bool> CreateAsync({name} {lower});
+        Task<bool> CreateAsync({_.ClassModel} {_.VarModel});
 
-        Task<{name}?> GetAsync(Guid id);
+        Task<{_.ClassModel}?> GetAsync(Guid id);
 
-        Task<IEnumerable<{name}>> GetAllAsync();
+        Task<IEnumerable<{_.ClassModel}>> GetAllAsync();
 
-        Task<bool> UpdateAsync({name} {lower});
+        Task<bool> UpdateAsync({_.ClassModel} {_.VarModel});
 
         Task<bool> DeleteAsync(Guid id);
     }}

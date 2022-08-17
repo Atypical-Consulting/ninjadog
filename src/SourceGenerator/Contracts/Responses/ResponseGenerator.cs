@@ -41,28 +41,26 @@ public sealed class ResponseGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class {name}Response
+    public partial class {_.ClassModelResponse}
     {{
-        public Guid Id {{ get; init; }}
+        // TODO: Generate properties
 
-        public string Username {{ get; init; }} = default!;
+        // public Guid Id {{ get; init; }}
 
-        public string FullName {{ get; init; }} = default!;
+        // public string Username {{ get; init; }} = default!;
 
-        public string Email {{ get; init; }} = default!;
+        // public string FullName {{ get; init; }} = default!;
 
-        public DateTime DateOfBirth {{ get; init; }}
+        // public string Email {{ get; init; }} = default!;
+
+        // public DateTime DateOfBirth {{ get; init; }}
     }}
 {(ns is null ? null : @"}
 ")}";

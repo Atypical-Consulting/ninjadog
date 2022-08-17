@@ -41,12 +41,8 @@ public sealed class CreateRequestValidatorGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Validation" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -56,9 +52,9 @@ using FluentValidation;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class Create{name}RequestValidator : Validator<Create{name}Request>
+    public partial class {_.ClassCreateModelRequestValidator} : Validator<{_.ClassCreateModelRequest}>
     {{
-        public Create{name}RequestValidator()
+        public {_.ClassCreateModelRequestValidator}()
         {{
             // TODO: Generate rules for properties
             // RuleFor(x => x.FullName).NotEmpty();

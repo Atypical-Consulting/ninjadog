@@ -41,17 +41,8 @@ public sealed class GetAllEndpointGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
-        StringVariations sv = new(type.Name);
 
-        string endpointAddress = sv.Dashed;
-        string className = $"GetAll{sv.PascalPlural}Endpoint";
-        string response = $"GetAll{sv.PascalPlural}Response";
-        string interfaceService = $"I{sv.Pascal}Service";
-        string fieldService = $"_{sv.Camel}Service";
-        string varService = $"{sv.Camel}Service";
-        string varModels = sv.CamelPlural;
-        string varModelsResponse = $"{sv.CamelPlural}Response";
-        string methodToModelsResponse = $"To{sv.PascalPlural}Response()";
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -63,21 +54,21 @@ using Microsoft.AspNetCore.Authorization;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    [HttpGet(""{endpointAddress}""), AllowAnonymous]
-    public partial class {className} : EndpointWithoutRequest<{response}>
+    [HttpGet(""{_.EndpointModels}""), AllowAnonymous]
+    public partial class {_.ClassGetAllModelsEndpoint} : EndpointWithoutRequest<{_.ClassGetAllModelsResponse}>
     {{
-        private readonly {interfaceService} {fieldService};
+        private readonly {_.InterfaceModelService} {_.FieldModelService};
 
-        public {className}({interfaceService} {varService})
+        public {_.ClassGetAllModelsEndpoint}({_.InterfaceModelService} {_.VarModelService})
         {{
-            {fieldService} = {varService};
+            {_.FieldModelService} = {_.VarModelService};
         }}
 
         public override async Task HandleAsync(CancellationToken ct)
         {{
-            var {varModels} = await {fieldService}.GetAllAsync();
-            var {varModelsResponse} = {varModels}.{methodToModelsResponse};
-            await SendOkAsync({varModelsResponse}, ct);
+            var {_.VarModels} = await {_.FieldModelService}.GetAllAsync();
+            var {_.VarModelsResponse} = {_.VarModels}.{_.MethodToModelsResponse}();
+            await SendOkAsync({_.VarModelsResponse}, ct);
         }}
     }}
 {(ns is null ? null : @"}

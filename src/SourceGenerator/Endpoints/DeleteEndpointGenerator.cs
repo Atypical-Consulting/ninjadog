@@ -41,12 +41,8 @@ public sealed class DeleteEndpointGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -57,19 +53,19 @@ using Microsoft.AspNetCore.Authorization;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    [HttpDelete(""customers/{{id:guid}}""), AllowAnonymous]
-    public partial class Delete{name}Endpoint : Endpoint<Delete{name}Request>
+    [HttpDelete(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
+    public partial class {_.ClassDeleteModelEndpoint} : Endpoint<{_.ClassDeleteModelRequest}>
     {{
-        private readonly I{name}Service _{lower}Service;
+        private readonly {_.InterfaceModelService} {_.FieldModelService};
 
-        public Delete{name}Endpoint(I{name}Service {lower}Service)
+        public {_.ClassDeleteModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
         {{
-            _{lower}Service = {lower}Service;
+            {_.FieldModelService} = {_.VarModelService};
         }}
 
-        public override async Task HandleAsync(Delete{name}Request req, CancellationToken ct)
+        public override async Task HandleAsync({_.ClassDeleteModelRequest} req, CancellationToken ct)
         {{
-            var deleted = await _{lower}Service.DeleteAsync(req.Id);
+            var deleted = await {_.FieldModelService}.DeleteAsync(req.Id);
             if (!deleted)
             {{
                 await SendNotFoundAsync(ct);

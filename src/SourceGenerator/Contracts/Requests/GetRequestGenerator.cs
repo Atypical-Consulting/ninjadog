@@ -41,18 +41,14 @@ public sealed class GetRequestGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Contracts.Requests" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class Get{name}Request
+    public partial class {_.ClassGetModelRequest}
     {{
         public Guid Id {{ get; init; }}
     }}

@@ -1,6 +1,6 @@
 namespace SourceGenerator;
 
-public sealed record StringVariations(string Pascal)
+internal sealed record StringVariations(string Pascal)
 {
     public string Camel { get; } = Pascal.Camelize();
     public string CamelPlural { get; } = Pascal.Camelize().Pluralize();

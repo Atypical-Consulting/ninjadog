@@ -41,12 +41,8 @@ public sealed class GetSummaryGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
-        StringVariations sv = new(type.Name);
 
-        string className = $"Get{sv.Pascal}Summary";
-        string getModelEndpoint = $"Get{sv.Pascal}Endpoint";
-        string getModelResponse = $"Get{sv.Pascal}Response";
-        string humanized = sv.Humanized;
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -56,14 +52,14 @@ using FastEndpoints;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class {className} : Summary<{getModelEndpoint}>
+    public partial class {_.ClassGetModelSummary} : Summary<{_.ClassGetModelEndpoint}>
     {{
-        public {className}()
+        public {_.ClassGetModelSummary}()
         {{
-            Summary = ""Returns a single {humanized} by id"";
-            Description = ""Returns a single {humanized} by id"";
-            Response<{getModelResponse}>(200, ""Successfully found and returned the {humanized}"");
-            Response(404, ""The {humanized} does not exist in the system"");
+            Summary = ""Returns a single {_.ModelHumanized} by id"";
+            Description = ""Returns a single {_.ModelHumanized} by id"";
+            Response<{_.ClassModelResponse}>(200, ""Successfully found and returned the {_.ModelHumanized}"");
+            Response(404, ""The {_.ModelHumanized} does not exist in the system"");
         }}
     }}
 {(ns is null ? null : @"}

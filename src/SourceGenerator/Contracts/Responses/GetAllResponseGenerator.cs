@@ -41,18 +41,16 @@ public sealed class GetAllResponseGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
-        StringVariations sv = new(type.Name);
 
-        string modelResponse = $"{sv.Pascal}Response";
-        string getAllModelsResponse = $"GetAll{sv.PascalPlural}Response";
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class {getAllModelsResponse}
+    public partial class {_.ClassGetAllModelsResponse}
     {{
-        public IEnumerable<{modelResponse}> {sv.PascalPlural} {{ get; init; }} = Enumerable.Empty<{modelResponse}>();
+        public IEnumerable<{_.ClassModelResponse}> {_.Models} {{ get; init; }} = Enumerable.Empty<{_.ClassModelResponse}>();
     }}
 {(ns is null ? null : @"}
 ")}";

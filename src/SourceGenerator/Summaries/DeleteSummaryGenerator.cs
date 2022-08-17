@@ -41,11 +41,8 @@ public sealed class DeleteSummaryGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
-        StringVariations sv = new(type.Name);
 
-        string className = $"Delete{sv.Pascal}Summary";
-        string deleteEndpoint = $"Delete{sv.Pascal}Endpoint";
-        string humanized = sv.Humanized;
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -54,14 +51,14 @@ using FastEndpoints;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial class {className} : Summary<{deleteEndpoint}>
+    public partial class {_.ClassDeleteModelSummary} : Summary<{_.ClassDeleteModelEndpoint}>
     {{
-        public {className}()
+        public {_.ClassDeleteModelSummary}()
         {{
-            Summary = ""Delete a {humanized} in the system"";
-            Description = ""Delete a {humanized} in the system"";
-            Response(204, ""The {humanized} was deleted successfully"");
-            Response(404, ""The {humanized} was not found in the system"");
+            Summary = ""Delete a {_.ModelHumanized} in the system"";
+            Description = ""Delete a {_.ModelHumanized} in the system"";
+            Response(204, ""The {_.ModelHumanized} was deleted successfully"");
+            Response(404, ""The {_.ModelHumanized} was not found in the system"");
         }}
     }}
 {(ns is null ? null : @"}

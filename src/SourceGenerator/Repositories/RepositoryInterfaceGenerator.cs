@@ -41,12 +41,8 @@ public sealed class RepositoryInterfaceGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -56,15 +52,15 @@ using Dapper;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    public partial interface I{name}Repository
+    public partial interface {_.InterfaceModelRepository}
     {{
-        Task<bool> CreateAsync({dto} {lower});
+        Task<bool> CreateAsync({_.ClassModelDto} {_.VarModel});
 
-        Task<{dto}?> GetAsync(Guid id);
+        Task<{_.ClassModelDto}?> GetAsync(Guid id);
 
-        Task<IEnumerable<{dto}>> GetAllAsync();
+        Task<IEnumerable<{_.ClassModelDto}>> GetAllAsync();
 
-        Task<bool> UpdateAsync({dto} {lower});
+        Task<bool> UpdateAsync({_.ClassModelDto} {_.VarModel});
 
         Task<bool> DeleteAsync(Guid id);
     }}

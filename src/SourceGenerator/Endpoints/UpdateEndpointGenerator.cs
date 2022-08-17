@@ -41,12 +41,8 @@ public sealed class UpdateEndpointGenerator : IIncrementalGenerator
     {
         string? rootNs = Utilities.GetRootNamespace(type);
         string? ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
-        StringVariations sv = new(type.Name);
 
-        var name = type.Name;
-        var lower = name.ToLower();
-        var dto = $"{name}Dto";
-        var items = Utilities.GetItemNames(type);
+        StringTokens _ = new(type.Name);
 
         return StringConstants.FileHeader + @$"
 
@@ -59,31 +55,31 @@ using Microsoft.AspNetCore.Authorization;
 
 {(ns is null ? null : $@"namespace {ns}
 {{")}
-    [HttpPut(""customers/{{id:guid}}""), AllowAnonymous]
-    public partial class Update{name}Endpoint : Endpoint<Update{name}Request, {name}Response>
+    [HttpPut(""{_.EndpointModels}/{{id:guid}}""), AllowAnonymous]
+    public partial class {_.ClassUpdateModelEndpoint} : Endpoint<{_.ClassUpdateModelRequest}, {_.ClassModelResponse}>
     {{
-        private readonly I{name}Service _{lower}Service;
+        private readonly {_.InterfaceModelService} {_.FieldModelService};
 
-        public Update{name}Endpoint(I{name}Service {lower}Service)
+        public {_.ClassUpdateModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
         {{
-            _{lower}Service = {lower}Service;
+            {_.FieldModelService} = {_.VarModelService};
         }}
 
-        public override async Task HandleAsync(Update{name}Request req, CancellationToken ct)
+        public override async Task HandleAsync({_.ClassUpdateModelRequest} req, CancellationToken ct)
         {{
-            var existing{name} = await _{lower}Service.GetAsync(req.Id);
+            var {_.VarExistingModel} = await {_.FieldModelService}.GetAsync(req.Id);
 
-            if (existing{name} is null)
+            if ({_.VarExistingModel} is null)
             {{
                 await SendNotFoundAsync(ct);
                 return;
             }}
 
-            var {lower} = req.To{name}();
-            await _{lower}Service.UpdateAsync({lower});
+            var {_.VarModel} = req.{_.MethodToModel}();
+            await {_.FieldModelService}.UpdateAsync({_.VarModel});
 
-            var {lower}Response = {lower}.To{name}Response();
-            await SendOkAsync({lower}Response, ct);
+            var {_.VarModelResponse} = {_.VarModel}.{_.MethodToModelResponse}();
+            await SendOkAsync({_.VarModelResponse}, ct);
         }}
     }}
 {(ns is null ? null : @"}
