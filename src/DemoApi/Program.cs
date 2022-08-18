@@ -1,13 +1,19 @@
 using DemoApi;
 
-var builder = WebApplication.CreateBuilder(args);
-var services = builder.Services;
-var config = builder.Configuration;
+class Program
+{
+    public static void Main(string [] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        var services = builder.Services;
+        var config = builder.Configuration;
 
-services.AddNinjadog(config);
+        NinjadogExtensions.AddNinjadog(services, config);
 
-var app = builder.Build();
+        var app = builder.Build();
 
-await app.UseNinjadog();
+        NinjadogExtensions.UseNinjadog(app);
 
-app.Run();
+        app.Run();
+    }
+}

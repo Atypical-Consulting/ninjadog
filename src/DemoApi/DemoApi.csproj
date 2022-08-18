@@ -13,7 +13,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SourceGenerator\SourceGenerator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\Ninjadog.Attributes\Ninjadog.Attributes.csproj" />
+        <ProjectReference Include="..\Ninjadog\Ninjadog.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,7 +22,7 @@
         <PackageReference Include="FastEndpoints" Version="4.4.0" />
         <PackageReference Include="FastEndpoints.Swagger" Version="4.4.0" />
         <PackageReference Include="ValueOf" Version="2.0.31" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.7" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.8" />
     </ItemGroup>
 
 </Project>
