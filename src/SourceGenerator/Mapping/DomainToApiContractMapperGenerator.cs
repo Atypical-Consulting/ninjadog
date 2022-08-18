@@ -108,7 +108,7 @@ public static class DomainToApiContractMapper
     {{
         return new {_.ClassModelResponse}
         {{
-{sb.ToString()}
+{sb}
         }};
     }}";
     }
@@ -165,7 +165,7 @@ public static class DomainToApiContractMapper
         {{
             {_.Models} = {_.VarModels}.Select(x => new {_.ClassModelResponse}
             {{
-{sb.ToString()}
+{sb}
             }})
         }};
     }}";

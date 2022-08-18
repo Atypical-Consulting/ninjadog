@@ -128,7 +128,7 @@ public static class ApiContractToDomainMapper
     {{
         return new {_.Model}
         {{
-{sb.ToString()}
+{sb}
         }};
     }}";
     }
@@ -196,7 +196,7 @@ public static class ApiContractToDomainMapper
     {{
         return new {_.Model}
         {{
-{sb.ToString()}
+{sb}
         }};
     }}";
     }

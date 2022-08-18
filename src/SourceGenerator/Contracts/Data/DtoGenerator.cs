@@ -44,7 +44,7 @@ public sealed class DtoGenerator : IIncrementalGenerator
 
         var properties = string.Join(
             Environment.NewLine,
-            modelProperties.Select(property => GenerateDtoProperties(property, _)));
+            modelProperties.Select(property => GenerateDtoProperties(property)));
 
         var code = @$"
 using System.Collections.Generic;
@@ -61,7 +61,7 @@ public partial class {_.ClassModelDto}
         return Utilities.DefaultCodeLayout(code);
     }
 
-    private static string GenerateDtoProperties(IPropertySymbol p, StringTokens _)
+    private static string GenerateDtoProperties(IPropertySymbol p)
     {
         IndentedStringBuilder sb = new();
         sb.Indent();

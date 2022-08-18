@@ -44,7 +44,7 @@ public sealed class CreateRequestGenerator : IIncrementalGenerator
 
         var properties = string.Join(
             Environment.NewLine,
-            modelProperties.Select(property => GenerateProperties(property, _)));
+            modelProperties.Select(property => GenerateProperties(property)));
 
         var code = @$"
 {Utilities.WriteFileScopedNamespace(ns)}
@@ -57,7 +57,7 @@ public partial class {_.ClassCreateModelRequest}
         return Utilities.DefaultCodeLayout(code);
     }
 
-    private static string GenerateProperties(IPropertySymbol p, StringTokens _)
+    private static string GenerateProperties(IPropertySymbol p)
     {
         if (p.Name is "Id")
         {

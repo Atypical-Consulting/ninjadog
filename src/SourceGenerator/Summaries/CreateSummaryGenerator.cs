@@ -44,7 +44,6 @@ public sealed class CreateSummaryGenerator : IIncrementalGenerator
         var code = @$"
 using {rootNs}.Contracts.Responses;
 using {rootNs}.Endpoints;
-using DemoLibrary.Contracts.Responses;
 using FastEndpoints;
 
 {Utilities.WriteFileScopedNamespace(ns)}

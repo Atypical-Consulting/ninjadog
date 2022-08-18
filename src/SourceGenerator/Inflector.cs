@@ -102,29 +102,29 @@ public static class Inflector
     }
 
     private static void AddUncountable(string word)
-        => _uncountables.Add(word.ToLower());
+        => Uncountables.Add(word.ToLower());
 
     private static void AddPlural(string rule, string replacement)
-        => _plurals.Add(new Rule(rule, replacement));
+        => Plurals.Add(new Rule(rule, replacement));
 
     private static void AddSingular(string rule, string replacement)
-        => _singulars.Add(new Rule(rule, replacement));
+        => Singulars.Add(new Rule(rule, replacement));
 
-    private static readonly List<Rule> _plurals = new();
-    private static readonly List<Rule> _singulars = new();
-    private static readonly List<string> _uncountables = new();
+    private static readonly List<Rule> Plurals = new();
+    private static readonly List<Rule> Singulars = new();
+    private static readonly List<string> Uncountables = new();
 
     public static string Pluralize(this string word)
-        => ApplyRules(_plurals, word)!;
+        => ApplyRules(Plurals, word)!;
 
     public static string Singularize(this string word)
-        => ApplyRules(_singulars, word)!;
+        => ApplyRules(Singulars, word)!;
 
     private static string? ApplyRules(List<Rule> rules, string word)
     {
         var result = word;
 
-        if (_uncountables.Contains(word.ToLower()))
+        if (Uncountables.Contains(word.ToLower()))
         {
             return result;
         }

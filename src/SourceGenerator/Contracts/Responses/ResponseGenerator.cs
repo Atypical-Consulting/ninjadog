@@ -44,7 +44,7 @@ public sealed class ResponseGenerator : IIncrementalGenerator
 
         var properties = string.Join(
             Environment.NewLine,
-            modelProperties.Select(property => GenerateDtoProperties(property, _)));
+            modelProperties.Select(property => GenerateDtoProperties(property)));
 
         var code = @$"
 {Utilities.WriteFileScopedNamespace(ns)}
@@ -57,7 +57,7 @@ public partial class {_.ClassModelResponse}
         return Utilities.DefaultCodeLayout(code);
     }
 
-    private static string GenerateDtoProperties(IPropertySymbol p, StringTokens _)
+    private static string GenerateDtoProperties(IPropertySymbol p)
     {
         IndentedStringBuilder sb = new();
         sb.Indent();

@@ -116,7 +116,7 @@ public static class DomainToDtoMapper
     {{
         return new {_.ClassModelDto}
         {{
-{sb.ToString()}
+{sb}
         }};
     }}";
     }

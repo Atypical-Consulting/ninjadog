@@ -68,7 +68,7 @@ public static class DtoToDomainMapper
 
         for (var i = 0; i < modelProperties.Length; i++)
         {
-            bool isLastItem = i == modelProperties.Length - 1;
+            var isLastItem = i == modelProperties.Length - 1;
 
             var p = modelProperties[i];
 
@@ -121,7 +121,7 @@ public static class DtoToDomainMapper
     {{
         return new {_.Model}
         {{
-{sb.ToString()}
+{sb}
         }};
     }}";
     }
