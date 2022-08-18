@@ -118,12 +118,12 @@ public static class Utilities
 
     internal static string DefaultCodeLayout(string code)
     {
-        return StringConstants.FileHeader +
-               StringConstants.NullableEnable +
+        return SourceGenerationHelper.Header +
+               SourceGenerationHelper.NullableEnable +
                Environment.NewLine +
                code +
                Environment.NewLine +
-               StringConstants.NullableDisable;
+               SourceGenerationHelper.NullableDisable;
     }
 
     internal static string? WriteFileScopedNamespace(string? ns)

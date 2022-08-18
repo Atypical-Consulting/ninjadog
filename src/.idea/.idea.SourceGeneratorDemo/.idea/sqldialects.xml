@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SqlDialectMappings">
-    <file url="file:///tmp/JetBrainsPerUserTemp-1000-1/SourceGeneratedDocuments/21DF66EF395557063F291974/SourceGenerator/SourceGenerator.Repositories.RepositoryGenerator/DemoApi.Repositories.CustomerRepository.g.cs" dialect="GenericSQL" />
-    <file url="PROJECT" dialect="SQLite" />
-  </component>
-</project>

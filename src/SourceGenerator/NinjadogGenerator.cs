@@ -1,5 +1,7 @@
 using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 namespace SourceGenerator;
 
@@ -8,6 +10,11 @@ public sealed class NinjadogGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        // Add the marker attribute to the compilation
+        context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
+            "NinjadogModelAttribute.g.cs",
+            SourceText.From(SourceGenerationHelper.Attribute, Encoding.UTF8)));
+
         var modelTypes = Utilities.CollectNinjadogModelTypes(context);
 
         context.RegisterSourceOutput(modelTypes, GenerateCode);

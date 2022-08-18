@@ -1,5 +1,5 @@
 using DemoApi.Domain.Common;
-using DemoLibrary;
+using Ninjadog;
 
 namespace DemoApi.Domain;
 
