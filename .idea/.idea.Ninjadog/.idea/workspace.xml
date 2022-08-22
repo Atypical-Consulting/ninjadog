@@ -6,8 +6,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b753d110-741b-4413-9969-595c060ba3cb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Ninjadog/Helpers/StringTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Helpers/StringTokens.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Ninjadog/Helpers/StringVariations.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Ninjadog/Helpers/Utilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Helpers/Utilities.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +90,7 @@
       <workItem from="1660823938250" duration="3741000" />
       <workItem from="1660828851613" duration="1590000" />
       <workItem from="1660830458473" duration="1097000" />
-      <workItem from="1661190748809" duration="337000" />
+      <workItem from="1661190748809" duration="603000" />
     </task>
     <servers />
   </component>

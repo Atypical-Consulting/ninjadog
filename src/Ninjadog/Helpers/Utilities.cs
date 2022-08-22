@@ -137,7 +137,7 @@ public static class Utilities
         IncrementalGeneratorInitializationContext context)
     {
         return context.SyntaxProvider
-            .CreateSyntaxProvider(Utilities.CouldBeNinjadogModelAsync, Utilities.GetNinjadogModelTypeOrNull)
+            .CreateSyntaxProvider(CouldBeNinjadogModelAsync, GetNinjadogModelTypeOrNull)
             .Where(type => type is not null)
             .Collect()!;
     }
