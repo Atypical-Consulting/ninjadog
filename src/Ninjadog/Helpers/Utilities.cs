@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Ninjadog;
+namespace Ninjadog.Helpers;
 
 public static class Utilities
 {

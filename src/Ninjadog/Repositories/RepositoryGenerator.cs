@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Ninjadog.Helpers;
 
 namespace Ninjadog.Repositories;
 

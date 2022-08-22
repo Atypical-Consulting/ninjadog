@@ -1,4 +1,4 @@
-namespace Ninjadog;
+namespace Ninjadog.Helpers;
 
 internal sealed record StringVariations(string Pascal)
 {

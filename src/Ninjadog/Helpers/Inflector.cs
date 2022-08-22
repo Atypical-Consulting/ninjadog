@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Ninjadog;
+namespace Ninjadog.Helpers;
 
 // see: https://github.com/srkirkland/Inflector/blob/master/Inflector/Inflector.cs
 // adapted for .NET6 by Philippe Matray

@@ -6,72 +6,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b753d110-741b-4413-9969-595c060ba3cb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/indexLayout.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Ninjadog.sln" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Ninjadog.sln.DotSettings" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DemoApi/Domain/Product.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DemoApi/customer.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Ninjadog.Attributes/Ninjadog.Attributes.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Ninjadog.Attributes/NinjadogModelAttribute.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Ninjadog.Tests/ModuleInitializer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Ninjadog.Tests/Ninjadog.Tests.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Ninjadog.Tests/NinjadogModelSnapshotTests.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Ninjadog.Tests/TestHelper.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/Ninjadog.Tests/Toto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SourceGeneratorDemo/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SourceGeneratorDemo/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SourceGeneratorDemo/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SourceGeneratorDemo/.idea/projectSettingsUpdater.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SourceGeneratorDemo/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.SourceGeneratorDemo/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SourceGeneratorDemo.sln" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DemoApi/DemoApi.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/DemoApi/DemoApi.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DemoApi/Domain/ProductCategory.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DemoApi/Domain/WeatherForecast.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DemoApi/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/DemoApi/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Data/DtoGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Contracts/Data/DtoGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Requests/CreateRequestGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Contracts/Requests/CreateRequestGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Requests/DeleteRequestGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Contracts/Requests/DeleteRequestGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Requests/GetRequestGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Contracts/Requests/GetRequestGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Requests/UpdateRequestGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Contracts/Requests/UpdateRequestGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Responses/GetAllResponseGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Contracts/Responses/GetAllResponseGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Responses/ResponseGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Contracts/Responses/ResponseGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Responses/ValidationFailureResponseGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Contracts/Responses/ValidationFailureResponseGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Database/DatabaseInitializerGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Database/DatabaseInitializerGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Database/DbConnectionFactoryGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Database/DbConnectionFactoryGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Endpoints/CreateEndpointGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Endpoints/CreateEndpointGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Endpoints/DeleteEndpointGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Endpoints/DeleteEndpointGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Endpoints/GetAllEndpointGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Endpoints/GetAllEndpointGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Endpoints/GetEndpointGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Endpoints/GetEndpointGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Endpoints/UpdateEndpointGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Endpoints/UpdateEndpointGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/IndentedStringBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/IndentedStringBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Inflector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Inflector.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Mapping/ApiContractToDomainMapperGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Mapping/ApiContractToDomainMapperGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Mapping/DomainToApiContractMapperGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Mapping/DomainToApiContractMapperGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Mapping/DomainToDtoMapperGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Mapping/DomainToDtoMapperGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Mapping/DtoToDomainMapperGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Mapping/DtoToDomainMapperGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/NinjadogGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/NinjadogGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Repositories/RepositoryGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Repositories/RepositoryGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Repositories/RepositoryInterfaceGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Repositories/RepositoryInterfaceGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Services/ServiceGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Services/ServiceGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Services/ServiceInterfaceGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Services/ServiceInterfaceGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/SourceGenerationHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/SourceGenerationHelper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/SourceGenerator.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Ninjadog.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/StringTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/StringTokens.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/StringVariations.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/StringVariations.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Summaries/CreateSummaryGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Summaries/CreateSummaryGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Summaries/DeleteSummaryGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Summaries/DeleteSummaryGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Summaries/GetAllSummaryGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Summaries/GetAllSummaryGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Summaries/GetSummaryGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Summaries/GetSummaryGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Summaries/UpdateSummaryGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Summaries/UpdateSummaryGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Utilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Utilities.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Validation/CreateRequestValidatorGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Validation/CreateRequestValidatorGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Validation/UpdateRequestValidatorGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Validation/UpdateRequestValidatorGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SourceGenerator/Validation/ValidationExceptionMiddlewareGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Validation/ValidationExceptionMiddlewareGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Ninjadog/Ninjadog.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Ninjadog.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,6 +92,7 @@
       <workItem from="1660817804352" duration="4476000" />
       <workItem from="1660823938250" duration="3741000" />
       <workItem from="1660828851613" duration="1590000" />
+      <workItem from="1660830458473" duration="1097000" />
     </task>
     <servers />
   </component>

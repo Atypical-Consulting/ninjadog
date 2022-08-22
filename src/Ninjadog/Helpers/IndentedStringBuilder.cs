@@ -4,7 +4,7 @@
 
 using System.Text;
 
-namespace Ninjadog;
+namespace Ninjadog.Helpers;
 
 /// <summary>
 ///     <para>

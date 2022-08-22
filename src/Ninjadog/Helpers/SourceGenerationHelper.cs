@@ -1,4 +1,4 @@
-namespace Ninjadog;
+namespace Ninjadog.Helpers;
 
 public static class SourceGenerationHelper
 {
