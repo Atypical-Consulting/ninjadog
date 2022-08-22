@@ -28,8 +28,8 @@ public sealed class CreateEndpointGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Endpoints";
 
-            StringVariations sv = new(type.Name);
-            var className = $"Create{sv.Pascal}Endpoint";
+            StringTokens st = new(type.Name);
+            var className = $"Create{st.Model}Endpoint";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }

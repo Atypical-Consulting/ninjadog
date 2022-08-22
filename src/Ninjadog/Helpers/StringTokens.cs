@@ -7,76 +7,83 @@ internal sealed record StringTokens
 {
     public StringTokens(string modelNameInPascalCase)
     {
-        var sv = new StringVariations(modelNameInPascalCase);
+        string pascal = modelNameInPascalCase;
+        string pascalPlural = pascal.Pluralize();
+        string camel = pascal.Camelize();
+        string camelPlural = pascal.Camelize().Pluralize();
+        string dashed = pascal.Underscore().Dasherize();
+        string dashedPlural = pascal.Pluralize().Underscore().Dasherize();
+        string humanized = pascal.Underscore().Humanize().ToLower();
+        string humanizedPlural = pascal.Pluralize().Underscore().Humanize().ToLower();
 
         // model
-        Model = sv.Pascal;
-        ModelHumanized = sv.Humanized;
-        ModelEndpoint = sv.DashedPlural;
-        VarModel = sv.Camel;
-        VarExistingModel = $"existing{sv.Pascal}";
+        Model = pascal;
+        ModelHumanized = humanized;
+        ModelEndpoint = dashedPlural;
+        VarModel = camel;
+        VarExistingModel = $"existing{pascal}";
 
         // models
-        Models = sv.PascalPlural;
-        ModelsHumanized = sv.HumanizedPlural;
-        VarModels = sv.CamelPlural;
+        Models = pascalPlural;
+        ModelsHumanized = humanizedPlural;
+        VarModels = camelPlural;
 
         // dto
-        ClassModelDto = $"{sv.Pascal}Dto";
-        VarModelDto = $"{sv.Camel}Dto";
-        VarModelDtos = $"{sv.Camel}Dtos";
+        ClassModelDto = $"{pascal}Dto";
+        VarModelDto = $"{camel}Dto";
+        VarModelDtos = $"{camel}Dtos";
 
         // model response
-        ClassModelResponse = $"{sv.Pascal}Response";
-        VarModelResponse = $"{sv.Camel}Response";
+        ClassModelResponse = $"{pascal}Response";
+        VarModelResponse = $"{camel}Response";
 
         // models response
-        ClassGetAllModelsResponse = $"GetAll{sv.PascalPlural}Response";
-        VarModelsResponse = $"{sv.CamelPlural}Response";
+        ClassGetAllModelsResponse = $"GetAll{pascalPlural}Response";
+        VarModelsResponse = $"{camelPlural}Response";
 
         // repository
-        InterfaceModelRepository = $"I{sv.Pascal}Repository";
-        ClassModelRepository = $"{sv.Pascal}Repository";
-        FieldModelRepository = $"_{sv.Camel}Repository";
-        VarModelRepository = $"{sv.Camel}Repository";
+        InterfaceModelRepository = $"I{pascal}Repository";
+        ClassModelRepository = $"{pascal}Repository";
+        FieldModelRepository = $"_{camel}Repository";
+        VarModelRepository = $"{camel}Repository";
 
         // service
-        InterfaceModelService = $"I{sv.Pascal}Service";
-        ClassModelService = $"{sv.Pascal}Service";
-        FieldModelService = $"_{sv.Camel}Service";
-        VarModelService = $"{sv.Camel}Service";
+        InterfaceModelService = $"I{pascal}Service";
+        ClassModelService = $"{pascal}Service";
+        FieldModelService = $"_{camel}Service";
+        VarModelService = $"{camel}Service";
 
         // get all endpoint
-        ClassGetAllModelsSummary = $"GetAll{sv.PascalPlural}Summary";
-        ClassGetAllModelsEndpoint = $"GetAll{sv.PascalPlural}Endpoint";
+        ClassGetAllModelsSummary = $"GetAll{pascalPlural}Summary";
+        ClassGetAllModelsEndpoint = $"GetAll{pascalPlural}Endpoint";
 
         // get endpoint
-        ClassGetModelSummary = $"Get{sv.Pascal}Summary";
-        ClassGetModelRequest = $"Get{sv.Pascal}Request";
-        ClassGetModelEndpoint = $"Get{sv.Pascal}Endpoint";
+        ClassGetModelSummary = $"Get{pascal}Summary";
+        ClassGetModelRequest = $"Get{pascal}Request";
+        ClassGetModelEndpoint = $"Get{pascal}Endpoint";
 
         // delete endpoint
-        ClassDeleteModelSummary = $"Delete{sv.Pascal}Summary";
-        ClassDeleteModelRequest = $"Delete{sv.Pascal}Request";
-        ClassDeleteModelEndpoint = $"Delete{sv.Pascal}Endpoint";
+        ClassDeleteModelSummary = $"Delete{pascal}Summary";
+        ClassDeleteModelRequest = $"Delete{pascal}Request";
+        ClassDeleteModelEndpoint = $"Delete{pascal}Endpoint";
 
         // create endpoint
-        ClassCreateModelSummary = $"Create{sv.Pascal}Summary";
-        ClassCreateModelRequest = $"Create{sv.Pascal}Request";
-        ClassCreateModelRequestValidator = $"Create{sv.Pascal}RequestValidator";
-        ClassCreateModelEndpoint = $"Create{sv.Pascal}Endpoint";
+        ClassCreateModelSummary = $"Create{pascal}Summary";
+        ClassCreateModelRequest = $"Create{pascal}Request";
+        ClassCreateModelRequestValidator = $"Create{pascal}RequestValidator";
+        ClassCreateModelEndpoint = $"Create{pascal}Endpoint";
 
         // update endpoint
-        ClassUpdateModelSummary = $"Update{sv.Pascal}Summary";
-        ClassUpdateModelRequest = $"Update{sv.Pascal}Request";
-        ClassUpdateModelRequestValidator = $"Update{sv.Pascal}RequestValidator";
-        ClassUpdateModelEndpoint = $"Update{sv.Pascal}Endpoint";
+        ClassUpdateModelSummary = $"Update{pascal}Summary";
+        ClassUpdateModelRequest = $"Update{pascal}Request";
+        ClassUpdateModelRequestValidator = $"Update{pascal}RequestValidator";
+        ClassUpdateModelEndpoint = $"Update{pascal}Endpoint";
 
         // methods
-        MethodToModel = $"To{sv.Pascal}";
-        MethodToModelDto = $"To{sv.Pascal}Dto";
-        MethodToModelResponse = $"To{sv.Pascal}Response";
-        MethodToModelsResponse = $"To{sv.PascalPlural}Response";
+        MethodToModel = $"To{pascal}";
+        MethodToModelDto = $"To{pascal}Dto";
+        MethodToModelResponse = $"To{pascal}Response";
+        MethodToModelsResponse = $"To{pascalPlural}Response";
     }
 
     public string Model { get; }

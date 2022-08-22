@@ -28,8 +28,8 @@ public sealed class DeleteSummaryGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Summaries";
 
-            StringVariations sv = new(type.Name);
-            var className = $"Delete{sv.Pascal}Summary";
+            StringTokens st = new(type.Name);
+            var className = $"Delete{st.Model}Summary";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }

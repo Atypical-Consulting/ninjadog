@@ -28,8 +28,8 @@ public sealed class UpdateRequestValidatorGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Validation";
 
-            StringVariations sv = new(type.Name);
-            var className = $"Update{sv.Pascal}RequestValidator";
+            StringTokens st = new(type.Name);
+            var className = $"Update{st.Model}RequestValidator";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
@@ -43,9 +43,9 @@ public sealed class UpdateRequestValidatorGenerator : IIncrementalGenerator
         StringTokens _ = new(type.Name);
 
 
-        // StringVariations sv = new(type.Name);
-        // string classNameUpdateRequestValidator = $"Update{sv.Pascal}RequestValidator";
-        // string classNameUpdateRequest = $"Update{sv.Pascal}Request";
+        // StringTokens st = new(type.Name);
+        // string classNameUpdateRequestValidator = $"Update{st.Model}RequestValidator";
+        // string classNameUpdateRequest = $"Update{st.Model}Request";
 
         var code = @$"
 using {rootNs}.Contracts.Requests;

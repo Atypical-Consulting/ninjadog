@@ -28,8 +28,8 @@ public sealed class CreateRequestGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Contracts.Requests";
 
-            StringVariations sv = new(type.Name);
-            var className = $"Create{sv.Pascal}Request";
+            StringTokens st = new(type.Name);
+            var className = $"Create{st.Model}Request";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }

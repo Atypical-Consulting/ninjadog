@@ -28,8 +28,8 @@ public sealed class ServiceInterfaceGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Services";
 
-            StringVariations sv = new(type.Name);
-            var className = $"I{sv.Pascal}Service";
+            StringTokens st = new(type.Name);
+            var className = $"I{st.Model}Service";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }

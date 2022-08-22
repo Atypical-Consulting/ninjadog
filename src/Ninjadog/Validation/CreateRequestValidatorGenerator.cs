@@ -28,8 +28,8 @@ public sealed class CreateRequestValidatorGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Validation";
 
-            StringVariations sv = new(type.Name);
-            var className = $"Create{sv.Pascal}RequestValidator";
+            StringTokens st = new(type.Name);
+            var className = $"Create{st.Model}RequestValidator";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }

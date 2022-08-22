@@ -28,8 +28,8 @@ public sealed class ResponseGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Contracts.Responses";
 
-            StringVariations sv = new(type.Name);
-            var className = $"{sv.Pascal}Response";
+            StringTokens st = new(type.Name);
+            var className = $"{st.Model}Response";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }

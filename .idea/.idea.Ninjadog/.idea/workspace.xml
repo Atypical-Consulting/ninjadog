@@ -6,10 +6,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b753d110-741b-4413-9969-595c060ba3cb" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Ninjadog/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DemoApi/Domain/ProductCategory.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DemoApi/Domain/WeatherForecast.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Ninjadog/Ninjadog.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Ninjadog.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Ninjadog/Helpers/StringTokens.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/Ninjadog/Helpers/StringTokens.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Ninjadog/Helpers/StringVariations.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +91,7 @@
       <workItem from="1660823938250" duration="3741000" />
       <workItem from="1660828851613" duration="1590000" />
       <workItem from="1660830458473" duration="1097000" />
+      <workItem from="1661190748809" duration="337000" />
     </task>
     <servers />
   </component>
@@ -146,13 +145,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/Ninjadog/Contracts/Data/DtoGenerator.cs</url>
-          <line>18</line>
+          <line>19</line>
           <properties documentPath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Data/DtoGenerator.cs" initialLine="18" containingFunctionPresentation="method 'GenerateCode'" />
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/src/Ninjadog/Contracts/Data/DtoGenerator.cs</url>
-          <line>10</line>
+          <line>11</line>
           <properties documentPath="$PROJECT_DIR$/src/SourceGenerator/Contracts/Data/DtoGenerator.cs" initialLine="10" containingFunctionPresentation="method 'Initialize'" />
           <option name="timeStamp" value="6" />
         </line-breakpoint>

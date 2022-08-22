@@ -28,8 +28,8 @@ public sealed class GetAllSummaryGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Summaries";
 
-            StringVariations sv = new(type.Name);
-            var className = $"GetAll{sv.PascalPlural}Summary";
+            StringTokens st = new(type.Name);
+            var className = $"GetAll{st.Models}Summary";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }

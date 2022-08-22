@@ -28,8 +28,8 @@ public sealed class DeleteEndpointGenerator : IIncrementalGenerator
             var code = GenerateCode(type);
             var typeNamespace = Utilities.GetRootNamespace(type) + ".Endpoints";
 
-            StringVariations sv = new(type.Name);
-            var className = $"Delete{sv.Pascal}Endpoint";
+            StringTokens st = new(type.Name);
+            var className = $"Delete{st.Model}Endpoint";
 
             context.AddSource($"{typeNamespace}.{className}.g.cs", code);
         }
