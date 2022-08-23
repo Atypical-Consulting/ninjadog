@@ -5,16 +5,9 @@ using Ninjadog.Helpers;
 namespace Ninjadog.Database;
 
 [Generator]
-public sealed class DbConnectionFactoryGenerator : IIncrementalGenerator
+public sealed class DbConnectionFactoryGenerator : NinjadogBaseGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        var modelTypes = Utilities.CollectNinjadogModelTypes(context);
-
-        context.RegisterSourceOutput(modelTypes, GenerateCode);
-    }
-
-    private static void GenerateCode(
+    protected override void GenerateCode(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)
     {

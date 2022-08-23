@@ -5,16 +5,9 @@ using Ninjadog.Helpers;
 namespace Ninjadog.Validation;
 
 [Generator]
-public sealed class UpdateRequestValidatorGenerator : IIncrementalGenerator
+public sealed class UpdateRequestValidatorGenerator : NinjadogBaseGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        var modelTypes = Utilities.CollectNinjadogModelTypes(context);
-
-        context.RegisterSourceOutput(modelTypes, GenerateCode);
-    }
-
-    private static void GenerateCode(
+    protected override void GenerateCode(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)
     {

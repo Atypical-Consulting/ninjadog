@@ -5,16 +5,9 @@ using Ninjadog.Helpers;
 namespace Ninjadog.Summaries;
 
 [Generator]
-public sealed class DeleteSummaryGenerator : IIncrementalGenerator
+public sealed class DeleteSummaryGenerator : NinjadogBaseGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        var modelTypes = Utilities.CollectNinjadogModelTypes(context);
-
-        context.RegisterSourceOutput(modelTypes, GenerateCode);
-    }
-
-    private static void GenerateCode(
+    protected override void GenerateCode(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)
     {

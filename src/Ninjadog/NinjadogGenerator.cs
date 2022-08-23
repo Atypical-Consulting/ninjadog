@@ -1,27 +1,14 @@
 using System.Collections.Immutable;
-using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using Ninjadog.Helpers;
 
 namespace Ninjadog;
 
 [Generator]
-public sealed class NinjadogGenerator : IIncrementalGenerator
+public sealed class NinjadogGenerator : NinjadogBaseGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        // // Add the marker attribute to the compilation
-        // context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
-        //     "NinjadogModelAttribute.g.cs",
-        //     SourceText.From(SourceGenerationHelper.Attribute, Encoding.UTF8)));
-
-        var modelTypes = Utilities.CollectNinjadogModelTypes(context);
-
-        context.RegisterSourceOutput(modelTypes, GenerateCode);
-    }
-
-    private static void GenerateCode(
+    /// <inheritdoc />
+    protected override void GenerateCode(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)
     {

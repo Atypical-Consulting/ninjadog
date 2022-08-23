@@ -5,16 +5,9 @@ using Ninjadog.Helpers;
 namespace Ninjadog.Endpoints;
 
 [Generator]
-public sealed class CreateEndpointGenerator : IIncrementalGenerator
+public sealed class CreateEndpointGenerator : NinjadogBaseGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        var modelTypes = Utilities.CollectNinjadogModelTypes(context);
-
-        context.RegisterSourceOutput(modelTypes, GenerateCode);
-    }
-
-    private static void GenerateCode(
+    protected override void GenerateCode(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)
     {

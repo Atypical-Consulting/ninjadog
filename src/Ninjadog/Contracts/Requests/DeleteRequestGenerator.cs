@@ -5,16 +5,9 @@ using Ninjadog.Helpers;
 namespace Ninjadog.Contracts.Requests;
 
 [Generator]
-public sealed class DeleteRequestGenerator : IIncrementalGenerator
+public sealed class DeleteRequestGenerator : NinjadogBaseGenerator
 {
-    public void Initialize(IncrementalGeneratorInitializationContext context)
-    {
-        var modelTypes = Utilities.CollectNinjadogModelTypes(context);
-
-        context.RegisterSourceOutput(modelTypes, GenerateCode);
-    }
-
-    private static void GenerateCode(
+    protected override void GenerateCode(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)
     {
