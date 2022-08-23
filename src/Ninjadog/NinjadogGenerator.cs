@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog;
 
@@ -18,18 +19,17 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
         }
 
         var type = models[0];
-        var code = GenerateCode(models);
-        var typeNamespace = Utilities.GetRootNamespace(type);
-
         const string className = "NinjadogExtensions";
 
-        context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+        context.AddSource(
+            $"{GetRootNamespace(type)}.{className}.g.cs",
+            GenerateCode(models));
     }
 
     private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
     {
         var type = models[0];
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
 
         var code = @$"
 using {rootNs}.Contracts.Responses;
@@ -41,7 +41,7 @@ using {rootNs}.Validation;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 
-{Utilities.WriteFileScopedNamespace(rootNs)}
+{WriteFileScopedNamespace(rootNs)}
 
 public static class NinjadogExtensions
 {{
@@ -84,7 +84,7 @@ public static class NinjadogExtensions
     }}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 
     private static string GenerateModelDependenciesInjection(ImmutableArray<ITypeSymbol> models)

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Contracts.Data;
 
@@ -18,23 +19,22 @@ public sealed class DtoGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Contracts.Data";
-
             StringTokens st = new(type.Name);
             var className = $"{st.Model}Dto";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Contracts.Data.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Contracts.Data" : null;
 
         StringTokens _ = new(type.Name);
-        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+        var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         var properties = string.Join(
             Environment.NewLine,
@@ -45,14 +45,14 @@ using System.Collections.Generic;
 using {rootNs}.Database;
 using Dapper;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial class {_.ClassModelDto}
 {{
 {properties}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 
     private static string GenerateDtoProperties(IPropertySymbol p)

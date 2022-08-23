@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Contracts.Requests;
 
@@ -18,31 +19,30 @@ public sealed class GetRequestGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Contracts.Requests";
-
             StringTokens st = new(type.Name);
             var className = $"Get{st.Model}Request";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Contracts.Requests.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Contracts.Requests" : null;
 
         StringTokens _ = new(type.Name);
 
         var code = @$"
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial class {_.ClassGetModelRequest}
 {{
     public Guid Id {{ get; init; }}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }

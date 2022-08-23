@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Repositories;
 
@@ -18,20 +19,19 @@ public sealed class RepositoryGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Repositories";
-
             StringTokens st = new(type.Name);
             var className = $"{st.Model}Repository";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Repositories.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
 
         StringTokens _ = new(type.Name);
@@ -41,7 +41,7 @@ using {rootNs}.Contracts.Data;
 using {rootNs}.Database;
 using Dapper;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial class {_.ClassModelRepository} : {_.InterfaceModelRepository}
 {{
@@ -94,6 +94,6 @@ public partial class {_.ClassModelRepository} : {_.InterfaceModelRepository}
     }}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }

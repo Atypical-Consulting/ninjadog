@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Endpoints;
 
@@ -18,19 +19,18 @@ public sealed class DeleteEndpointGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Endpoints";
-
             StringTokens st = new(type.Name);
             var className = $"Delete{st.Model}Endpoint";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Endpoints.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
 
         StringTokens _ = new(type.Name);
@@ -41,7 +41,7 @@ using {rootNs}.Services;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 [HttpDelete(""{_.ModelEndpoint}/{{id:guid}}""), AllowAnonymous]
 public partial class {_.ClassDeleteModelEndpoint} : Endpoint<{_.ClassDeleteModelRequest}>
@@ -66,6 +66,6 @@ public partial class {_.ClassDeleteModelEndpoint} : Endpoint<{_.ClassDeleteModel
     }}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }

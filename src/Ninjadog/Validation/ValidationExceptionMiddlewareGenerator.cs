@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Validation;
 
@@ -17,24 +17,23 @@ public sealed class ValidationExceptionMiddlewareGenerator : NinjadogBaseGenerat
         }
 
         var type = models[0];
-        var code = GenerateCode(type);
-        var typeNamespace = Utilities.GetRootNamespace(type) + ".Validation";
-
         const string className = "ValidationExceptionMiddlewareGenerator";
 
-        context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+        context.AddSource(
+            $"{GetRootNamespace(type)}.Validation.{className}.g.cs",
+            GenerateCode(type));
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Validation" : null;
 
         var code = @$"
 using {rootNs}.Contracts.Responses;
 using FluentValidation;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public class ValidationExceptionMiddleware
 {{
@@ -64,6 +63,6 @@ public class ValidationExceptionMiddleware
     }}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }

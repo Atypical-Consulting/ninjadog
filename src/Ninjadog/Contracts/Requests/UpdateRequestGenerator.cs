@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Contracts.Requests;
 
@@ -18,37 +19,36 @@ public sealed class UpdateRequestGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Contracts.Requests";
-
             StringTokens st = new(type.Name);
             var className = $"Update{st.Model}Request";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Contracts.Requests.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Contracts.Requests" : null;
 
         StringTokens _ = new(type.Name);
-        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+        var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         var properties = string.Join(
             Environment.NewLine,
             modelProperties.Select(GenerateProperties));
 
         var code = @$"
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial class {_.ClassUpdateModelRequest}
 {{
 {properties}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 
     private static string GenerateProperties(IPropertySymbol p)

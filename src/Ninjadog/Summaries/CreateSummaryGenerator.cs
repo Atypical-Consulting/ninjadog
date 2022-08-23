@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Summaries;
 
@@ -18,19 +19,18 @@ public sealed class CreateSummaryGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Summaries";
-
             StringTokens st = new(type.Name);
             var className = $"Create{st.Model}Summary";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Summaries.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
 
         StringTokens _ = new(type.Name);
@@ -40,7 +40,7 @@ using {rootNs}.Contracts.Responses;
 using {rootNs}.Endpoints;
 using FastEndpoints;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial class {_.ClassCreateModelSummary} : Summary<{_.ClassCreateModelEndpoint}>
 {{
@@ -53,6 +53,6 @@ public partial class {_.ClassCreateModelSummary} : Summary<{_.ClassCreateModelEn
     }}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }

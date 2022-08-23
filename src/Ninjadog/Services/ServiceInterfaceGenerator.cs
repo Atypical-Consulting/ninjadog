@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Services;
 
@@ -18,19 +19,18 @@ public sealed class ServiceInterfaceGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Services";
-
             StringTokens st = new(type.Name);
             var className = $"I{st.Model}Service";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Services.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Services" : null;
 
         StringTokens _ = new(type.Name);
@@ -38,7 +38,7 @@ public sealed class ServiceInterfaceGenerator : NinjadogBaseGenerator
         var code = @$"
 using {rootNs}.Domain;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial interface {_.InterfaceModelService}
 {{
@@ -53,6 +53,6 @@ public partial interface {_.InterfaceModelService}
     Task<bool> DeleteAsync(Guid id);
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }

@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Database;
 
@@ -17,23 +17,22 @@ public sealed class DatabaseInitializerGenerator : NinjadogBaseGenerator
         }
 
         var type = models[0];
-        var code = GenerateCode(type);
-        var typeNamespace = Utilities.GetRootNamespace(type) + ".Database";
-
         const string className = "DatabaseInitializer";
 
-        context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+        context.AddSource(
+            $"{GetRootNamespace(type)}.Database.{className}.g.cs",
+            GenerateCode(type));
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Database" : null;
 
         var code = @$"
 using Dapper;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial class DatabaseInitializer
 {{
@@ -57,6 +56,6 @@ public partial class DatabaseInitializer
     }}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }

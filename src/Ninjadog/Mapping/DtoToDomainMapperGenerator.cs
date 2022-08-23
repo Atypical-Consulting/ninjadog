@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Mapping;
 
@@ -17,17 +18,16 @@ public sealed class DtoToDomainMapperGenerator : NinjadogBaseGenerator
         }
 
         var type = models[0];
-        var code = GenerateCode(models);
-        var typeNamespace = Utilities.GetRootNamespace(type) + ".Mapping";
-
         const string className = "DtoToDomainMapperGenerator";
 
-        context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+        context.AddSource(
+            $"{GetRootNamespace(type)}.Mapping.{className}.g.cs",
+            GenerateCode(models));
     }
 
     private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
     {
-        var rootNs = Utilities.GetRootNamespace(models[0]);
+        var rootNs = GetRootNamespace(models[0]);
         var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
 
         var methods = string.Join(
@@ -39,20 +39,20 @@ using {rootNs}.Contracts.Data;
 using {rootNs}.Domain;
 using {rootNs}.Domain.Common;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public static class DtoToDomainMapper
 {{
     {methods}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 
     private static string GenerateToModelMethods(ITypeSymbol type)
     {
         StringTokens _ = new(type.Name);
-        var modelProperties = Utilities.GetPropertiesWithGetSet(type).ToArray();
+        var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         IndentedStringBuilder sb = new();
 

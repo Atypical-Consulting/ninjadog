@@ -13,8 +13,8 @@ public abstract class NinjadogBaseGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterSourceOutput(
-            source: Utilities.CollectNinjadogModelTypes(context),
-            action: GenerateCode);
+            Utilities.CollectNinjadogModelTypes(context),
+            GenerateCode);
     }
 
     protected abstract void GenerateCode(

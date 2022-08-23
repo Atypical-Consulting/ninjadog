@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Validation;
 
@@ -18,19 +19,18 @@ public sealed class UpdateRequestValidatorGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Validation";
-
             StringTokens st = new(type.Name);
             var className = $"Update{st.Model}RequestValidator";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Validation.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Validation" : null;
 
         StringTokens _ = new(type.Name);
@@ -45,7 +45,7 @@ using {rootNs}.Contracts.Requests;
 using FastEndpoints;
 using FluentValidation;
 
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial class {_.ClassUpdateModelRequestValidator} : Validator<{_.ClassUpdateModelRequest}>
 {{
@@ -59,6 +59,6 @@ public partial class {_.ClassUpdateModelRequestValidator} : Validator<{_.ClassUp
     }}
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }

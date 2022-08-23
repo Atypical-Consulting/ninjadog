@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Ninjadog.Helpers;
+using static Ninjadog.Helpers.Utilities;
 
 namespace Ninjadog.Contracts.Responses;
 
@@ -18,31 +19,30 @@ public sealed class GetAllResponseGenerator : NinjadogBaseGenerator
 
         foreach (var type in models)
         {
-            var code = GenerateCode(type);
-            var typeNamespace = Utilities.GetRootNamespace(type) + ".Contracts.Responses";
-
             StringTokens st = new(type.Name);
             var className = $"GetAll{st.Models}Response";
 
-            context.AddSource($"{typeNamespace}.{className}.g.cs", code);
+            context.AddSource(
+                $"{GetRootNamespace(type)}.Contracts.Responses.{className}.g.cs",
+                GenerateCode(type));
         }
     }
 
     private static string GenerateCode(ITypeSymbol type)
     {
-        var rootNs = Utilities.GetRootNamespace(type);
+        var rootNs = GetRootNamespace(type);
         var ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
 
         StringTokens _ = new(type.Name);
 
         var code = @$"
-{Utilities.WriteFileScopedNamespace(ns)}
+{WriteFileScopedNamespace(ns)}
 
 public partial class {_.ClassGetAllModelsResponse}
 {{
     public IEnumerable<{_.ClassModelResponse}> {_.Models} {{ get; init; }} = Enumerable.Empty<{_.ClassModelResponse}>();
 }}";
 
-        return Utilities.DefaultCodeLayout(code);
+        return DefaultCodeLayout(code);
     }
 }
