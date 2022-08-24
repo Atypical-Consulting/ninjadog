@@ -20,10 +20,14 @@ public sealed record TypeContext
         string? subNamespace = null,
         StringTokens? stringTokens = null)
     {
+        string rootNamespace = GetRootNamespace(type) ?? "Ninjadog";
+
         Type = type;
         Tokens = stringTokens ?? new StringTokens(type.Name);
-        RootNamespace = GetRootNamespace(type) ?? "Ninjadog";
-        Ns = RootNamespace is not null ? $"{RootNamespace}.{subNamespace}" : null;
+        RootNamespace = rootNamespace;
+        Ns = subNamespace is not null
+            ? $"{rootNamespace}.{subNamespace}"
+            : rootNamespace;
         HintName = $"{Ns}.{className}.g.cs";
         PropertyContexts = new PropertyContexts(type);
     }
