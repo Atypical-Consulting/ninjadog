@@ -59,9 +59,6 @@ public static class NinjadogExtensions
         app.UseOpenApi();
         app.UseSwaggerUi3(s => s.ConfigureDefaults());
 
-        // var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
-        // await databaseInitializer.InitializeAsync();
-
         return app;
     }}
 }}";
