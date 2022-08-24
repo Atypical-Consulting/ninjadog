@@ -1,39 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Endpoints;
+﻿namespace Ninjadog.Endpoints;
 
 [Generator]
 public sealed class GetAllEndpointGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"GetAll{st.Models}Endpoint",
+            GenerateCode,
+            "Endpoints");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"GetAll{st.Models}Endpoint";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Endpoints.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Responses;
@@ -44,21 +24,21 @@ using Microsoft.AspNetCore.Authorization;
 
 {WriteFileScopedNamespace(ns)}
 
-[HttpGet(""{_.ModelEndpoint}""), AllowAnonymous]
-public partial class {_.ClassGetAllModelsEndpoint} : EndpointWithoutRequest<{_.ClassGetAllModelsResponse}>
+[HttpGet(""{st.ModelEndpoint}""), AllowAnonymous]
+public partial class {st.ClassGetAllModelsEndpoint} : EndpointWithoutRequest<{st.ClassGetAllModelsResponse}>
 {{
-    private readonly {_.InterfaceModelService} {_.FieldModelService};
+    private readonly {st.InterfaceModelService} {st.FieldModelService};
 
-    public {_.ClassGetAllModelsEndpoint}({_.InterfaceModelService} {_.VarModelService})
+    public {st.ClassGetAllModelsEndpoint}({st.InterfaceModelService} {st.VarModelService})
     {{
-        {_.FieldModelService} = {_.VarModelService};
+        {st.FieldModelService} = {st.VarModelService};
     }}
 
     public override async Task HandleAsync(CancellationToken ct)
     {{
-        var {_.VarModels} = await {_.FieldModelService}.GetAllAsync();
-        var {_.VarModelsResponse} = {_.VarModels}.{_.MethodToModelsResponse}();
-        await SendOkAsync({_.VarModelsResponse}, ct);
+        var {st.VarModels} = await {st.FieldModelService}.GetAllAsync();
+        var {st.VarModelsResponse} = {st.VarModels}.{st.MethodToModelsResponse}();
+        await SendOkAsync({st.VarModelsResponse}, ct);
     }}
 }}";
 

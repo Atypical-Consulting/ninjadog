@@ -1,39 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Endpoints;
+﻿namespace Ninjadog.Endpoints;
 
 [Generator]
 public sealed class CreateEndpointGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"Create{st.Model}Endpoint",
+            GenerateCode,
+            "Endpoints");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"Create{st.Model}Endpoint";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Endpoints.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Requests;
@@ -45,25 +25,25 @@ using Microsoft.AspNetCore.Authorization;
 
 {WriteFileScopedNamespace(ns)}
 
-[HttpPost(""{_.ModelEndpoint}""), AllowAnonymous]
-public partial class {_.ClassCreateModelEndpoint} : Endpoint<{_.ClassCreateModelRequest}, {_.ClassModelResponse}>
+[HttpPost(""{st.ModelEndpoint}""), AllowAnonymous]
+public partial class {st.ClassCreateModelEndpoint} : Endpoint<{st.ClassCreateModelRequest}, {st.ClassModelResponse}>
 {{
-    private readonly {_.InterfaceModelService} {_.FieldModelService};
+    private readonly {st.InterfaceModelService} {st.FieldModelService};
 
-    public {_.ClassCreateModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
+    public {st.ClassCreateModelEndpoint}({st.InterfaceModelService} {st.VarModelService})
     {{
-        {_.FieldModelService} = {_.VarModelService};
+        {st.FieldModelService} = {st.VarModelService};
     }}
 
-    public override async Task HandleAsync({_.ClassCreateModelRequest} req, CancellationToken ct)
+    public override async Task HandleAsync({st.ClassCreateModelRequest} req, CancellationToken ct)
     {{
-        var {_.VarModel} = req.{_.MethodToModel}();
+        var {st.VarModel} = req.{st.MethodToModel}();
 
-        await {_.FieldModelService}.CreateAsync({_.VarModel});
+        await {st.FieldModelService}.CreateAsync({st.VarModel});
 
-        var {_.VarModelResponse} = {_.VarModel}.{_.MethodToModelResponse}();
-        await SendCreatedAtAsync<{_.ClassGetModelEndpoint}>(
-            new {{ Id = {_.VarModel}.Id.Value }}, {_.VarModelResponse}, generateAbsoluteUrl: true, cancellation: ct);
+        var {st.VarModelResponse} = {st.VarModel}.{st.MethodToModelResponse}();
+        await SendCreatedAtAsync<{st.ClassGetModelEndpoint}>(
+            new {{ Id = {st.VarModel}.Id.Value }}, {st.VarModelResponse}, generateAbsoluteUrl: true, cancellation: ct);
     }}
 }}";
 

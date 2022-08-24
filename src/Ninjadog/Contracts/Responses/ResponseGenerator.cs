@@ -1,39 +1,20 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Contracts.Responses;
+﻿namespace Ninjadog.Contracts.Responses;
 
 [Generator]
 public sealed class ResponseGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"{st.Model}Response",
+            GenerateCode,
+            "Contracts.Responses");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
+        var (st, ns) = typeContext;
+        var type = typeContext.Type;
 
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"{st.Model}Response";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Contracts.Responses.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
-
-        StringTokens _ = new(type.Name);
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         var properties = string.Join(
@@ -43,7 +24,7 @@ public sealed class ResponseGenerator : NinjadogBaseGenerator
         var code = @$"
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassModelResponse}
+public partial class {st.ClassModelResponse}
 {{
 {properties}
 }}";
@@ -74,7 +55,7 @@ public partial class {_.ClassModelResponse}
 
         if (propertyType == "string")
         {
-            sb.Append($" = default!;");
+            sb.Append(" = default!;");
         }
 
         sb.AppendLine();

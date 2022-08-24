@@ -1,39 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Summaries;
+﻿namespace Ninjadog.Summaries;
 
 [Generator]
 public sealed class GetSummaryGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"Get{st.Model}Summary",
+            GenerateCode,
+            "Summaries");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"Get{st.Model}Summary";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Summaries.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Responses;
@@ -42,14 +22,14 @@ using FastEndpoints;
 
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassGetModelSummary} : Summary<{_.ClassGetModelEndpoint}>
+public partial class {st.ClassGetModelSummary} : Summary<{st.ClassGetModelEndpoint}>
 {{
-    public {_.ClassGetModelSummary}()
+    public {st.ClassGetModelSummary}()
     {{
-        Summary = ""Returns a single {_.ModelHumanized} by id"";
-        Description = ""Returns a single {_.ModelHumanized} by id"";
-        Response<{_.ClassModelResponse}>(200, ""Successfully found and returned the {_.ModelHumanized}"");
-        Response(404, ""The {_.ModelHumanized} does not exist in the system"");
+        Summary = ""Returns a single {st.ModelHumanized} by id"";
+        Description = ""Returns a single {st.ModelHumanized} by id"";
+        Response<{st.ClassModelResponse}>(200, ""Successfully found and returned the {st.ModelHumanized}"");
+        Response(404, ""The {st.ModelHumanized} does not exist in the system"");
     }}
 }}";
 

@@ -1,39 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Repositories;
+﻿namespace Ninjadog.Repositories;
 
 [Generator]
 public sealed class RepositoryInterfaceGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"I{st.Model}Repository",
+            GenerateCode,
+            "Repositories");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"I{st.Model}Repository";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Repositories.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Data;
@@ -42,15 +22,15 @@ using Dapper;
 
 {WriteFileScopedNamespace(ns)}
 
-public partial interface {_.InterfaceModelRepository}
+public partial interface {st.InterfaceModelRepository}
 {{
-    Task<bool> CreateAsync({_.ClassModelDto} {_.VarModel});
+    Task<bool> CreateAsync({st.ClassModelDto} {st.VarModel});
 
-    Task<{_.ClassModelDto}?> GetAsync(Guid id);
+    Task<{st.ClassModelDto}?> GetAsync(Guid id);
 
-    Task<IEnumerable<{_.ClassModelDto}>> GetAllAsync();
+    Task<IEnumerable<{st.ClassModelDto}>> GetAllAsync();
 
-    Task<bool> UpdateAsync({_.ClassModelDto} {_.VarModel});
+    Task<bool> UpdateAsync({st.ClassModelDto} {st.VarModel});
 
     Task<bool> DeleteAsync(Guid id);
 }}";

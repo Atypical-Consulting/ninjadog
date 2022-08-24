@@ -1,33 +1,19 @@
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using static Ninjadog.Helpers.Utilities;
-
 namespace Ninjadog.Validation;
 
 [Generator]
 public sealed class ValidationExceptionMiddlewareGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            "ValidationExceptionMiddlewareGenerator",
+            GenerateCode,
+            "Validation");
+
+    private static string GenerateCode(ImmutableArray<TypeContext> typeContexts)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        var type = models[0];
-        const string className = "ValidationExceptionMiddlewareGenerator";
-
-        context.AddSource(
-            $"{GetRootNamespace(type)}.Validation.{className}.g.cs",
-            GenerateCode(type));
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Validation" : null;
+        var typeContext = typeContexts[0];
+        var (_, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Responses;

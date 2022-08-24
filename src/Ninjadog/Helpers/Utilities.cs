@@ -1,10 +1,8 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Ninjadog.Helpers;
 
-public static class Utilities
+internal static class Utilities
 {
     internal static bool CouldBeNinjadogModelAsync(
         SyntaxNode syntaxNode,
@@ -108,7 +106,7 @@ public static class Utilities
         }
         else
         {
-            string [] strings = type.ContainingNamespace.ToString().Split('.');
+            string[] strings = type.ContainingNamespace.ToString().Split('.');
             strings = strings.Take(strings.Length - 1).ToArray();
             ns = strings.Aggregate((s1, s2) => s1 + "." + s2);
         }

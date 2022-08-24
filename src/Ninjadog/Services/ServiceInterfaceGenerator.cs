@@ -1,54 +1,34 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Services;
+﻿namespace Ninjadog.Services;
 
 [Generator]
 public sealed class ServiceInterfaceGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"I{st.Model}Service",
+            GenerateCode,
+            "Services");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"I{st.Model}Service";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Services.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Services" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Domain;
 
 {WriteFileScopedNamespace(ns)}
 
-public partial interface {_.InterfaceModelService}
+public partial interface {st.InterfaceModelService}
 {{
-    Task<bool> CreateAsync({_.Model} {_.VarModel});
+    Task<bool> CreateAsync({st.Model} {st.VarModel});
 
-    Task<{_.Model}?> GetAsync(Guid id);
+    Task<{st.Model}?> GetAsync(Guid id);
 
-    Task<IEnumerable<{_.Model}>> GetAllAsync();
+    Task<IEnumerable<{st.Model}>> GetAllAsync();
 
-    Task<bool> UpdateAsync({_.Model} {_.VarModel});
+    Task<bool> UpdateAsync({st.Model} {st.VarModel});
 
     Task<bool> DeleteAsync(Guid id);
 }}";

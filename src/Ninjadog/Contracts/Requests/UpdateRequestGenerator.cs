@@ -1,39 +1,20 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Contracts.Requests;
+﻿namespace Ninjadog.Contracts.Requests;
 
 [Generator]
 public sealed class UpdateRequestGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"Update{st.Model}Request",
+            GenerateCode,
+            "Contracts.Requests");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
+        var (st, ns) = typeContext;
+        var type = typeContext.Type;
 
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"Update{st.Model}Request";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Contracts.Requests.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Contracts.Requests" : null;
-
-        StringTokens _ = new(type.Name);
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         var properties = string.Join(
@@ -43,7 +24,7 @@ public sealed class UpdateRequestGenerator : NinjadogBaseGenerator
         var code = @$"
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassUpdateModelRequest}
+public partial class {st.ClassUpdateModelRequest}
 {{
 {properties}
 }}";
@@ -74,7 +55,7 @@ public partial class {_.ClassUpdateModelRequest}
 
         if (propertyType is "string" && p.Name is not "Id")
         {
-            sb.Append($" = default!;");
+            sb.Append(" = default!;");
         }
 
         sb.AppendLine();

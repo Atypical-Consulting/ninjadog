@@ -1,44 +1,28 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Mapping;
+﻿namespace Ninjadog.Mapping;
 
 [Generator]
 public sealed class ApiContractToDomainMapperGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            "ApiContractToDomainMapperGenerator",
+            GenerateCode,
+            "Mapping");
+
+    private static string GenerateCode(ImmutableArray<TypeContext> typeContexts)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        var type = models[0];
-        const string className = "ApiContractToDomainMapperGenerator";
-
-        context.AddSource(
-            $"{GetRootNamespace(type)}.Mapping.{className}.g.cs",
-            GenerateCode(models));
-    }
-
-    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
-    {
-        var rootNs = GetRootNamespace(models[0]);
-        var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
+        var typeContext = typeContexts[0];
+        var ns = typeContext.Ns;
+        var rootNs = typeContext.RootNamespace;
 
         var toModelFromCreateMethods = string.Join(
             Environment.NewLine,
-            models.Select(GenerateToModelFromCreateMethods));
+            typeContexts.Select(GenerateToModelFromCreateMethods));
 
         var toModelFromUpdateMethods = string.Join(
             Environment.NewLine,
-            models.Select(GenerateToModelFromUpdateMethods));
-
-        // StringTokens _ = new(type.Name);
+            typeContexts.Select(GenerateToModelFromUpdateMethods));
 
         var code = @$"
 using {rootNs}.Contracts.Requests;
@@ -56,9 +40,11 @@ public static class ApiContractToDomainMapper
         return DefaultCodeLayout(code);
     }
 
-    private static string GenerateToModelFromCreateMethods(ITypeSymbol type)
+    private static string GenerateToModelFromCreateMethods(TypeContext typeContext)
     {
-        StringTokens _ = new(type.Name);
+        var st = typeContext.Tokens;
+        var type = typeContext.Type;
+
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         IndentedStringBuilder sb = new();
@@ -96,7 +82,7 @@ public static class ApiContractToDomainMapper
             switch (realType)
             {
                 case "System.Guid":
-                    sb.Append($"Guid.NewGuid()");
+                    sb.Append("Guid.NewGuid()");
                     break;
                 case "System.DateOnly":
                     sb.Append($"DateOnly.FromDateTime(request.{p.Name})");
@@ -118,18 +104,20 @@ public static class ApiContractToDomainMapper
         }
 
         return @$"
-    public static {_.Model} {_.MethodToModel}(this {_.ClassCreateModelRequest} request)
+    public static {st.Model} {st.MethodToModel}(this {st.ClassCreateModelRequest} request)
     {{
-        return new {_.Model}
+        return new {st.Model}
         {{
 {sb}
         }};
     }}";
     }
 
-    private static string GenerateToModelFromUpdateMethods(ITypeSymbol type)
+    private static string GenerateToModelFromUpdateMethods(TypeContext typeContext)
     {
-        StringTokens _ = new(type.Name);
+        var st = typeContext.Tokens;
+        var type = typeContext.Type;
+
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         IndentedStringBuilder sb = new();
@@ -186,9 +174,9 @@ public static class ApiContractToDomainMapper
         }
 
         return @$"
-    public static {_.Model} {_.MethodToModel}(this {_.ClassUpdateModelRequest} request)
+    public static {st.Model} {st.MethodToModel}(this {st.ClassUpdateModelRequest} request)
     {{
-        return new {_.Model}
+        return new {st.Model}
         {{
 {sb}
         }};

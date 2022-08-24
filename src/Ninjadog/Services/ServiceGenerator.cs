@@ -1,39 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Services;
+﻿namespace Ninjadog.Services;
 
 [Generator]
 public sealed class ServiceGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"{st.Model}Service",
+            GenerateCode,
+            "Services");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"{st.Model}Service";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Services.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Services" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Domain;
@@ -44,53 +24,53 @@ using FluentValidation.Results;
 
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassModelService} : {_.InterfaceModelService}
+public partial class {st.ClassModelService} : {st.InterfaceModelService}
 {{
-    private readonly {_.InterfaceModelRepository} {_.FieldModelRepository};
+    private readonly {st.InterfaceModelRepository} {st.FieldModelRepository};
 
-    public {_.ClassModelService}({_.InterfaceModelRepository} {_.VarModelRepository})
+    public {st.ClassModelService}({st.InterfaceModelRepository} {st.VarModelRepository})
     {{
-        {_.FieldModelRepository} = {_.VarModelRepository};
+        {st.FieldModelRepository} = {st.VarModelRepository};
     }}
 
-    public async Task<bool> CreateAsync({_.Model} {_.VarModel})
+    public async Task<bool> CreateAsync({st.Model} {st.VarModel})
     {{
         // TODO: rename existingUser variable
-        var {_.VarExistingModel} = await {_.FieldModelRepository}.GetAsync({_.VarModel}.Id.Value);
-        if ({_.VarExistingModel} is not null)
+        var {st.VarExistingModel} = await {st.FieldModelRepository}.GetAsync({st.VarModel}.Id.Value);
+        if ({st.VarExistingModel} is not null)
         {{
-            var message = $""A {_.ModelHumanized} with id {{{_.VarModel}.Id}} already exists"";
+            var message = $""A {st.ModelHumanized} with id {{{st.VarModel}.Id}} already exists"";
             throw new ValidationException(message, new []
             {{
-                new ValidationFailure(nameof({_.Model}), message)
+                new ValidationFailure(nameof({st.Model}), message)
             }});
         }}
 
-        var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
-        return await {_.FieldModelRepository}.CreateAsync({_.VarModelDto});
+        var {st.VarModelDto} = {st.VarModel}.{st.MethodToModelDto}();
+        return await {st.FieldModelRepository}.CreateAsync({st.VarModelDto});
     }}
 
-    public async Task<{_.Model}?> GetAsync(Guid id)
+    public async Task<{st.Model}?> GetAsync(Guid id)
     {{
-        var {_.VarModelDto} = await {_.FieldModelRepository}.GetAsync(id);
-        return {_.VarModelDto}?.{_.MethodToModel}();
+        var {st.VarModelDto} = await {st.FieldModelRepository}.GetAsync(id);
+        return {st.VarModelDto}?.{st.MethodToModel}();
     }}
 
-    public async Task<IEnumerable<{_.Model}>> GetAllAsync()
+    public async Task<IEnumerable<{st.Model}>> GetAllAsync()
     {{
-        var {_.VarModelDtos} = await {_.FieldModelRepository}.GetAllAsync();
-        return {_.VarModelDtos}.Select(x => x.{_.MethodToModel}());
+        var {st.VarModelDtos} = await {st.FieldModelRepository}.GetAllAsync();
+        return {st.VarModelDtos}.Select(x => x.{st.MethodToModel}());
     }}
 
-    public async Task<bool> UpdateAsync({_.Model} {_.VarModel})
+    public async Task<bool> UpdateAsync({st.Model} {st.VarModel})
     {{
-        var {_.VarModelDto} = {_.VarModel}.{_.MethodToModelDto}();
-        return await {_.FieldModelRepository}.UpdateAsync({_.VarModelDto});
+        var {st.VarModelDto} = {st.VarModel}.{st.MethodToModelDto}();
+        return await {st.FieldModelRepository}.UpdateAsync({st.VarModelDto});
     }}
 
     public async Task<bool> DeleteAsync(Guid id)
     {{
-        return await {_.FieldModelRepository}.DeleteAsync(id);
+        return await {st.FieldModelRepository}.DeleteAsync(id);
     }}
 }}";
 

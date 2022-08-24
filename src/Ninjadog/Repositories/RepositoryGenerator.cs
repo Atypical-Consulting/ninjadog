@@ -1,40 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Repositories;
+﻿namespace Ninjadog.Repositories;
 
 [Generator]
 public sealed class RepositoryGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"{st.Model}Repository",
+            GenerateCode,
+            "Repositories");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"{st.Model}Repository";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Repositories.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Repositories" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Data;
@@ -43,45 +22,45 @@ using Dapper;
 
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassModelRepository} : {_.InterfaceModelRepository}
+public partial class {st.ClassModelRepository} : {st.InterfaceModelRepository}
 {{
     private readonly IDbConnectionFactory _connectionFactory;
 
-    public {_.ClassModelRepository}(IDbConnectionFactory connectionFactory)
+    public {st.ClassModelRepository}(IDbConnectionFactory connectionFactory)
     {{
         _connectionFactory = connectionFactory;
     }}
 
-    public async Task<bool> CreateAsync({_.ClassModelDto} {_.VarModel})
+    public async Task<bool> CreateAsync({st.ClassModelDto} {st.VarModel})
     {{
         using var connection = await _connectionFactory.CreateConnectionAsync();
         var result = await connection.ExecuteAsync(
             @""INSERT INTO Customers (Id, Username, FullName, Email, DateOfBirth)
             VALUES (@Id, @Username, @FullName, @Email, @DateOfBirth)"",
-            {_.VarModel});
+            {st.VarModel});
         return result > 0;
     }}
 
-    public async Task<{_.ClassModelDto}?> GetAsync(Guid id)
+    public async Task<{st.ClassModelDto}?> GetAsync(Guid id)
     {{
         using var connection = await _connectionFactory.CreateConnectionAsync();
-        return await connection.QuerySingleOrDefaultAsync<{_.ClassModelDto}>(
+        return await connection.QuerySingleOrDefaultAsync<{st.ClassModelDto}>(
             ""SELECT * FROM Customers WHERE Id = @Id LIMIT 1"", new {{ Id = id.ToString() }});
     }}
 
-    public async Task<IEnumerable<{_.ClassModelDto}>> GetAllAsync()
+    public async Task<IEnumerable<{st.ClassModelDto}>> GetAllAsync()
     {{
         using var connection = await _connectionFactory.CreateConnectionAsync();
-        return await connection.QueryAsync<{_.ClassModelDto}>(""SELECT * FROM Customers"");
+        return await connection.QueryAsync<{st.ClassModelDto}>(""SELECT * FROM Customers"");
     }}
 
-    public async Task<bool> UpdateAsync({_.ClassModelDto} {_.VarModel})
+    public async Task<bool> UpdateAsync({st.ClassModelDto} {st.VarModel})
     {{
         using var connection = await _connectionFactory.CreateConnectionAsync();
         var result = await connection.ExecuteAsync(
             @""UPDATE Customers SET Username = @Username, FullName = @FullName, Email = @Email,
                  DateOfBirth = @DateOfBirth WHERE Id = @Id"",
-            {_.VarModel});
+            {st.VarModel});
         return result > 0;
     }}
 

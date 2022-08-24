@@ -1,39 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Endpoints;
+﻿namespace Ninjadog.Endpoints;
 
 [Generator]
 public sealed class DeleteEndpointGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"Delete{st.Model}Endpoint",
+            GenerateCode,
+            "Endpoints");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"Delete{st.Model}Endpoint";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Endpoints.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Endpoints" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Requests;
@@ -43,19 +23,19 @@ using Microsoft.AspNetCore.Authorization;
 
 {WriteFileScopedNamespace(ns)}
 
-[HttpDelete(""{_.ModelEndpoint}/{{id:guid}}""), AllowAnonymous]
-public partial class {_.ClassDeleteModelEndpoint} : Endpoint<{_.ClassDeleteModelRequest}>
+[HttpDelete(""{st.ModelEndpoint}/{{id:guid}}""), AllowAnonymous]
+public partial class {st.ClassDeleteModelEndpoint} : Endpoint<{st.ClassDeleteModelRequest}>
 {{
-    private readonly {_.InterfaceModelService} {_.FieldModelService};
+    private readonly {st.InterfaceModelService} {st.FieldModelService};
 
-    public {_.ClassDeleteModelEndpoint}({_.InterfaceModelService} {_.VarModelService})
+    public {st.ClassDeleteModelEndpoint}({st.InterfaceModelService} {st.VarModelService})
     {{
-        {_.FieldModelService} = {_.VarModelService};
+        {st.FieldModelService} = {st.VarModelService};
     }}
 
-    public override async Task HandleAsync({_.ClassDeleteModelRequest} req, CancellationToken ct)
+    public override async Task HandleAsync({st.ClassDeleteModelRequest} req, CancellationToken ct)
     {{
-        var deleted = await {_.FieldModelService}.DeleteAsync(req.Id);
+        var deleted = await {st.FieldModelService}.DeleteAsync(req.Id);
         if (!deleted)
         {{
             await SendNotFoundAsync(ct);

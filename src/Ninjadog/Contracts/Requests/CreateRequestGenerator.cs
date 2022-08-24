@@ -1,39 +1,20 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Contracts.Requests;
+﻿namespace Ninjadog.Contracts.Requests;
 
 [Generator]
 public sealed class CreateRequestGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"Create{st.Model}Request",
+            GenerateCode,
+            "Contracts.Requests");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
+        var (st, ns) = typeContext;
+        var type = typeContext.Type;
 
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"Create{st.Model}Request";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Contracts.Requests.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Contracts.Requests" : null;
-
-        StringTokens _ = new(type.Name);
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         var properties = string.Join(
@@ -43,7 +24,7 @@ public sealed class CreateRequestGenerator : NinjadogBaseGenerator
         var code = @$"
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassCreateModelRequest}
+public partial class {st.ClassCreateModelRequest}
 {{
 {properties}
 }}";
@@ -80,7 +61,7 @@ public partial class {_.ClassCreateModelRequest}
 
         if (propertyType == "string")
         {
-            sb.Append($" = default!;");
+            sb.Append(" = default!;");
         }
 
         sb.AppendLine();

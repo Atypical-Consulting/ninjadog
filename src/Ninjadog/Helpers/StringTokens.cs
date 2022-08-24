@@ -3,7 +3,7 @@
 
 namespace Ninjadog.Helpers;
 
-internal sealed record StringTokens
+public sealed record StringTokens
 {
     public StringTokens(string modelNameInPascalCase)
     {

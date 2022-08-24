@@ -1,46 +1,25 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Contracts.Responses;
+﻿namespace Ninjadog.Contracts.Responses;
 
 [Generator]
 public sealed class GetAllResponseGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"GetAll{st.Models}Response",
+            GenerateCode,
+            "Contracts.Responses");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"GetAll{st.Models}Response";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Contracts.Responses.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
 
         var code = @$"
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassGetAllModelsResponse}
+public partial class {st.ClassGetAllModelsResponse}
 {{
-    public IEnumerable<{_.ClassModelResponse}> {_.Models} {{ get; init; }} = Enumerable.Empty<{_.ClassModelResponse}>();
+    public IEnumerable<{st.ClassModelResponse}> {st.Models} {{ get; init; }} = Enumerable.Empty<{st.ClassModelResponse}>();
 }}";
 
         return DefaultCodeLayout(code);

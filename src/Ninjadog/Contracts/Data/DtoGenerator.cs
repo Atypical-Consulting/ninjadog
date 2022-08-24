@@ -1,39 +1,21 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Contracts.Data;
+﻿namespace Ninjadog.Contracts.Data;
 
 [Generator]
 public sealed class DtoGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"{st.Model}Dto",
+            GenerateCode,
+            "Contracts.Data");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
+        var type = typeContext.Type;
 
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"{st.Model}Dto";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Contracts.Data.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Contracts.Data" : null;
-
-        StringTokens _ = new(type.Name);
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         var properties = string.Join(
@@ -47,7 +29,7 @@ using Dapper;
 
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassModelDto}
+public partial class {st.ClassModelDto}
 {{
 {properties}
 }}";
@@ -79,7 +61,7 @@ public partial class {_.ClassModelDto}
 
         if (propertyType == "string")
         {
-            sb.Append($" = default!;");
+            sb.Append(" = default!;");
         }
 
         sb.AppendLine();

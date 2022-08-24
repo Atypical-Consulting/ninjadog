@@ -1,42 +1,28 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Mapping;
+﻿namespace Ninjadog.Mapping;
 
 [Generator]
 public sealed class DomainToApiContractMapperGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            "DomainToApiContractMapperGenerator",
+            GenerateCode,
+            "Mapping");
+
+    private static string GenerateCode(ImmutableArray<TypeContext> typeContexts)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        var type = models[0];
-        const string className = "DomainToApiContractMapperGenerator";
-
-        context.AddSource(
-            $"{GetRootNamespace(type)}.Mapping.{className}.g.cs",
-            GenerateCode(models));
-    }
-
-    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
-    {
-        var rootNs = GetRootNamespace(models[0]);
-        var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
+        var typeContext = typeContexts[0];
+        var ns = typeContext.Ns;
+        var rootNs = typeContext.RootNamespace;
 
         var toModelResponseMethods = string.Join(
             Environment.NewLine,
-            models.Select(GenerateToModelResponseMethods));
+            typeContexts.Select(GenerateToModelResponseMethods));
 
         var toModelsResponseMethods = string.Join(
             Environment.NewLine,
-            models.Select(GenerateToModelsResponseMethods));
+            typeContexts.Select(GenerateToModelsResponseMethods));
 
         var code = @$"
 using {rootNs}.Contracts.Responses;
@@ -53,9 +39,11 @@ public static class DomainToApiContractMapper
         return DefaultCodeLayout(code);
     }
 
-    private static string GenerateToModelResponseMethods(ITypeSymbol type)
+    private static string GenerateToModelResponseMethods(TypeContext typeContext)
     {
-        StringTokens _ = new(type.Name);
+        var st = typeContext.Tokens;
+        var type = typeContext.Type;
+
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         IndentedStringBuilder sb = new();
@@ -74,13 +62,13 @@ public static class DomainToApiContractMapper
             var isValueOf = baseTypeName is "ValueOf";
             var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
 
-            sb.Append($"{p.Name} = {_.VarModel}.{p.Name}");
+            sb.Append($"{p.Name} = {st.VarModel}.{p.Name}");
 
             var realType = p.Type.ToString();
 
             if (isValueOf)
             {
-                sb.Append($".Value");
+                sb.Append(".Value");
                 realType = valueOfArgument;
             }
 
@@ -98,18 +86,20 @@ public static class DomainToApiContractMapper
         }
 
         return @$"
-    public static {_.ClassModelResponse} {_.MethodToModelResponse}(this {_.Model} {_.VarModel})
+    public static {st.ClassModelResponse} {st.MethodToModelResponse}(this {st.Model} {st.VarModel})
     {{
-        return new {_.ClassModelResponse}
+        return new {st.ClassModelResponse}
         {{
 {sb}
         }};
     }}";
     }
 
-    private static string GenerateToModelsResponseMethods(ITypeSymbol type)
+    private static string GenerateToModelsResponseMethods(TypeContext typeContext)
     {
-        StringTokens _ = new(type.Name);
+        var st = typeContext.Tokens;
+        var type = typeContext.Type;
+
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         IndentedStringBuilder sb = new();
@@ -135,7 +125,7 @@ public static class DomainToApiContractMapper
 
             if (isValueOf)
             {
-                sb.Append($".Value");
+                sb.Append(".Value");
                 realType = valueOfArgument;
             }
 
@@ -153,11 +143,11 @@ public static class DomainToApiContractMapper
         }
 
         return @$"
-    public static {_.ClassGetAllModelsResponse} {_.MethodToModelsResponse}(this IEnumerable<{_.Model}> {_.VarModels})
+    public static {st.ClassGetAllModelsResponse} {st.MethodToModelsResponse}(this IEnumerable<{st.Model}> {st.VarModels})
     {{
-        return new {_.ClassGetAllModelsResponse}
+        return new {st.ClassGetAllModelsResponse}
         {{
-            {_.Models} = {_.VarModels}.Select(x => new {_.ClassModelResponse}
+            {st.Models} = {st.VarModels}.Select(x => new {st.ClassModelResponse}
             {{
 {sb}
             }})

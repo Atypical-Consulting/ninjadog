@@ -1,39 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Validation;
+﻿namespace Ninjadog.Validation;
 
 [Generator]
 public sealed class CreateRequestValidatorGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"Create{st.Model}RequestValidator",
+            GenerateCode,
+            "Validation");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"Create{st.Model}RequestValidator";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Validation.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Validation" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Requests;
@@ -42,9 +22,9 @@ using FluentValidation;
 
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassCreateModelRequestValidator} : Validator<{_.ClassCreateModelRequest}>
+public partial class {st.ClassCreateModelRequestValidator} : Validator<{st.ClassCreateModelRequest}>
 {{
-    public {_.ClassCreateModelRequestValidator}()
+    public {st.ClassCreateModelRequestValidator}()
     {{
         // TODO: Generate rules for properties
         // RuleFor(x => x.FullName).NotEmpty();

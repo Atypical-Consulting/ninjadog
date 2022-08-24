@@ -1,39 +1,19 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Summaries;
+﻿namespace Ninjadog.Summaries;
 
 [Generator]
 public sealed class CreateSummaryGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            st => $"Create{st.Model}Summary",
+            GenerateCode,
+            "Summaries");
+
+    private static string GenerateCode(TypeContext typeContext)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        foreach (var type in models)
-        {
-            StringTokens st = new(type.Name);
-            var className = $"Create{st.Model}Summary";
-
-            context.AddSource(
-                $"{GetRootNamespace(type)}.Summaries.{className}.g.cs",
-                GenerateCode(type));
-        }
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Summaries" : null;
-
-        StringTokens _ = new(type.Name);
+        var (st, ns) = typeContext;
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Responses;
@@ -42,13 +22,13 @@ using FastEndpoints;
 
 {WriteFileScopedNamespace(ns)}
 
-public partial class {_.ClassCreateModelSummary} : Summary<{_.ClassCreateModelEndpoint}>
+public partial class {st.ClassCreateModelSummary} : Summary<{st.ClassCreateModelEndpoint}>
 {{
-    public {_.ClassCreateModelSummary}()
+    public {st.ClassCreateModelSummary}()
     {{
-        Summary = ""Creates a new {_.ModelHumanized} in the system"";
-        Description = ""Creates a new {_.ModelHumanized} in the system"";
-        Response<{_.ClassModelResponse}>(201, ""{_.ModelHumanized} was successfully created"");
+        Summary = ""Creates a new {st.ModelHumanized} in the system"";
+        Description = ""Creates a new {st.ModelHumanized} in the system"";
+        Response<{st.ClassModelResponse}>(201, ""{st.ModelHumanized} was successfully created"");
         Response<ValidationFailureResponse>(400, ""The request did not pass validation checks"");
     }}
 }}";

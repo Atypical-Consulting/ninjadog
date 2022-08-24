@@ -1,35 +1,17 @@
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
 namespace Ninjadog;
 
 [Generator]
 public sealed class NinjadogGenerator : NinjadogBaseGenerator
 {
-    /// <inheritdoc />
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            "NinjadogExtensions",
+            GenerateCode);
+
+    private static string GenerateCode(ImmutableArray<TypeContext> typeContexts)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        var type = models[0];
-        const string className = "NinjadogExtensions";
-
-        context.AddSource(
-            $"{GetRootNamespace(type)}.{className}.g.cs",
-            GenerateCode(models));
-    }
-
-    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
-    {
-        var type = models[0];
-        var rootNs = GetRootNamespace(type);
+        var typeContext = typeContexts[0];
+        var rootNs = typeContext.RootNamespace;
 
         var code = @$"
 using {rootNs}.Contracts.Responses;
@@ -56,7 +38,7 @@ public static class NinjadogExtensions
             new SqliteConnectionFactory(config.GetValue<string>(""Database:ConnectionString"")));
         services.AddSingleton<DatabaseInitializer>();
 
-{GenerateModelDependenciesInjection(models)}
+{GenerateModelDependenciesInjection(typeContexts)}
         return services;
     }}
 
@@ -87,16 +69,16 @@ public static class NinjadogExtensions
         return DefaultCodeLayout(code);
     }
 
-    private static string GenerateModelDependenciesInjection(ImmutableArray<ITypeSymbol> models)
+    private static string GenerateModelDependenciesInjection(ImmutableArray<TypeContext> typeContexts)
     {
         IndentedStringBuilder sb = new();
         sb.Indent();
         sb.Indent();
 
-        foreach (var _ in models.Select(model => new StringTokens(model.Name)))
+        foreach (var st in typeContexts.Select(model => model.Tokens))
         {
-            sb.AppendLine($"services.AddSingleton<{_.InterfaceModelRepository}, {_.ClassModelRepository}>();");
-            sb.AppendLine($"services.AddSingleton<{_.InterfaceModelService}, {_.ClassModelService}>();");
+            sb.AppendLine($"services.AddSingleton<{st.InterfaceModelRepository}, {st.ClassModelRepository}>();");
+            sb.AppendLine($"services.AddSingleton<{st.InterfaceModelService}, {st.ClassModelService}>();");
         }
 
         return sb.ToString();

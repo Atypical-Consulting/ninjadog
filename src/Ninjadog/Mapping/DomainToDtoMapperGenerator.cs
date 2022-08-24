@@ -1,38 +1,24 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Mapping;
+﻿namespace Ninjadog.Mapping;
 
 [Generator]
 public sealed class DomainToDtoMapperGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            "DomainToDtoMapperGenerator",
+            GenerateCode,
+            "Mapping");
+
+    private static string GenerateCode(ImmutableArray<TypeContext> typeContexts)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        var type = models[0];
-        const string className = "DomainToDtoMapperGenerator";
-
-        context.AddSource(
-            $"{GetRootNamespace(type)}.Mapping.{className}.g.cs",
-            GenerateCode(models));
-    }
-
-    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
-    {
-        var rootNs = GetRootNamespace(models[0]);
-        var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
+        var typeContext = typeContexts[0];
+        var ns = typeContext.Ns;
+        var rootNs = typeContext.RootNamespace;
 
         var methods = string.Join(
             Environment.NewLine,
-            models.Select(GenerateToModelDtoMethods));
+            typeContexts.Select(GenerateToModelDtoMethods));
 
         var code = @$"
 using {rootNs}.Contracts.Data;
@@ -48,9 +34,11 @@ public static class DomainToDtoMapper
         return DefaultCodeLayout(code);
     }
 
-    private static string GenerateToModelDtoMethods(ITypeSymbol type)
+    private static string GenerateToModelDtoMethods(TypeContext typeContext)
     {
-        StringTokens _ = new(type.Name);
+        var st = typeContext.Tokens;
+        var type = typeContext.Type;
+
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         IndentedStringBuilder sb = new();
@@ -69,13 +57,13 @@ public static class DomainToDtoMapper
             var isValueOf = baseTypeName is "ValueOf";
             var valueOfArgument = p.Type.BaseType?.TypeArguments.FirstOrDefault()?.ToString() ?? "";
 
-            sb.Append($"{p.Name} = {_.VarModel}.{p.Name}");
+            sb.Append($"{p.Name} = {st.VarModel}.{p.Name}");
 
             var realType = p.Type.ToString();
 
             if (isValueOf)
             {
-                sb.Append($".Value");
+                sb.Append(".Value");
                 realType = valueOfArgument;
             }
 
@@ -106,9 +94,9 @@ public static class DomainToDtoMapper
         }
 
         return @$"
-    public static {_.ClassModelDto} {_.MethodToModelDto}(this {_.Model} {_.VarModel})
+    public static {st.ClassModelDto} {st.MethodToModelDto}(this {st.Model} {st.VarModel})
     {{
-        return new {_.ClassModelDto}
+        return new {st.ClassModelDto}
         {{
 {sb}
         }};

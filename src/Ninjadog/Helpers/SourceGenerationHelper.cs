@@ -23,11 +23,11 @@ public class NinjadogModelAttribute : System.Attribute
 {
 }";
 
-    public static string NullableEnable => @$"
+    public static string NullableEnable => @"
 
 #nullable enable";
 
-    public static string NullableDisable => @$"
+    public static string NullableDisable => @"
 #nullable disable";
 }
 

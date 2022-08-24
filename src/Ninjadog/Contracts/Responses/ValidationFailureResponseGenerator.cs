@@ -1,33 +1,19 @@
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using static Ninjadog.Helpers.Utilities;
-
 namespace Ninjadog.Contracts.Responses;
 
 [Generator]
 public sealed class ValidationFailureResponseGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            "ValidationFailureResponse",
+            GenerateCode,
+            "Contracts.Responses");
+
+    private static string GenerateCode(ImmutableArray<TypeContext> typeContexts)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        var type = models[0];
-        const string className = "ValidationFailureResponse";
-
-        context.AddSource(
-            $"{GetRootNamespace(type)}.Contracts.Responses.{className}.g.cs",
-            GenerateCode(type));
-    }
-
-    private static string GenerateCode(ITypeSymbol type)
-    {
-        var rootNs = GetRootNamespace(type);
-        var ns = rootNs is not null ? $"{rootNs}.Contracts.Responses" : null;
+        var typeContext = typeContexts[0];
+        var ns = typeContext.Ns;
 
         var code = @$"
 {WriteFileScopedNamespace(ns)}

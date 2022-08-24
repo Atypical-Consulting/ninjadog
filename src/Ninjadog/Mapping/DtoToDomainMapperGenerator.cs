@@ -1,38 +1,24 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
-using Ninjadog.Helpers;
-using static Ninjadog.Helpers.Utilities;
-
-namespace Ninjadog.Mapping;
+﻿namespace Ninjadog.Mapping;
 
 [Generator]
 public sealed class DtoToDomainMapperGenerator : NinjadogBaseGenerator
 {
-    protected override void GenerateCode(
-        SourceProductionContext context,
-        ImmutableArray<ITypeSymbol> models)
+    /// <inheritdoc />
+    protected override GeneratorSetup Setup
+        => new GeneratorSetup(
+            "DtoToDomainMapperGenerator",
+            GenerateCode,
+            "Mapping");
+
+    private static string GenerateCode(ImmutableArray<TypeContext> typeContexts)
     {
-        if (models.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        var type = models[0];
-        const string className = "DtoToDomainMapperGenerator";
-
-        context.AddSource(
-            $"{GetRootNamespace(type)}.Mapping.{className}.g.cs",
-            GenerateCode(models));
-    }
-
-    private static string GenerateCode(ImmutableArray<ITypeSymbol> models)
-    {
-        var rootNs = GetRootNamespace(models[0]);
-        var ns = rootNs is not null ? $"{rootNs}.Mapping" : null;
+        var typeContext = typeContexts[0];
+        var ns = typeContext.Ns;
+        var rootNs = typeContext.RootNamespace;
 
         var methods = string.Join(
             Environment.NewLine,
-            models.Select(GenerateToModelMethods));
+            typeContexts.Select(GenerateToModelMethods));
 
         var code = @$"
 using {rootNs}.Contracts.Data;
@@ -49,9 +35,10 @@ public static class DtoToDomainMapper
         return DefaultCodeLayout(code);
     }
 
-    private static string GenerateToModelMethods(ITypeSymbol type)
+    private static string GenerateToModelMethods(TypeContext typeContext)
     {
-        StringTokens _ = new(type.Name);
+        var st = typeContext.Tokens;
+        var type = typeContext.Type;
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
         IndentedStringBuilder sb = new();
@@ -89,13 +76,13 @@ public static class DtoToDomainMapper
             switch (realType)
             {
                 case "System.Guid":
-                    sb.Append($"Guid.Parse({_.VarModelDto}.{p.Name})");
+                    sb.Append($"Guid.Parse({st.VarModelDto}.{p.Name})");
                     break;
                 case "System.DateOnly":
-                    sb.Append($"DateOnly.FromDateTime({_.VarModelDto}.{p.Name})");
+                    sb.Append($"DateOnly.FromDateTime({st.VarModelDto}.{p.Name})");
                     break;
                 default:
-                    sb.Append($"{_.VarModelDto}.{p.Name}");
+                    sb.Append($"{st.VarModelDto}.{p.Name}");
                     break;
             }
 
@@ -111,9 +98,9 @@ public static class DtoToDomainMapper
         }
 
         return @$"
-    public static {_.Model} {_.MethodToModel}(this {_.ClassModelDto} {_.VarModelDto})
+    public static {st.Model} {st.MethodToModel}(this {st.ClassModelDto} {st.VarModelDto})
     {{
-        return new {_.Model}
+        return new {st.Model}
         {{
 {sb}
         }};
