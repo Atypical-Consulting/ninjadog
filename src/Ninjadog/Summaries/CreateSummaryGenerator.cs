@@ -29,7 +29,7 @@ public partial class {st.ClassCreateModelSummary} : Summary<{st.ClassCreateModel
         Summary = ""Creates a new {st.ModelHumanized} in the system"";
         Description = ""Creates a new {st.ModelHumanized} in the system"";
         Response<{st.ClassModelResponse}>(201, ""{st.ModelHumanized} was successfully created"");
-        Response<ValidationFailureResponse>(400, ""The request did not pass validation checks"");
+        Response<ErrorResponse>(400, ""The request did not pass validation checks"");
     }}
 }}";
 

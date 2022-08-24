@@ -5,22 +5,6 @@ using ValueOf;
 
 namespace DemoApi.Domain.Common;
 
-public class Price : ValueOf<decimal, Price>
-{
-    protected override void Validate()
-    {
-        if (Value < 0)
-        {
-            var message = $"{Value} cannot be negative";
-            throw new ValidationException(message, new []
-            {
-                new ValidationFailure(nameof(Price), message)
-            });
-        }
-    }
-}
-
-
 public class Username : ValueOf<string, Username>
 {
     private static readonly Regex UsernameRegex =

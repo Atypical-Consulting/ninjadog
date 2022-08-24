@@ -14,6 +14,7 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
         var rootNs = typeContext.RootNamespace;
 
         var code = @$"
+using Microsoft.AspNetCore.Diagnostics;
 using {rootNs}.Contracts.Responses;
 using {rootNs}.Database;
 using {rootNs}.Mapping;
@@ -22,6 +23,7 @@ using {rootNs}.Services;
 using {rootNs}.Validation;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using FluentValidation;
 
 {WriteFileScopedNamespace(rootNs)}
 
@@ -44,20 +46,40 @@ public static class NinjadogExtensions
 
     public static WebApplication UseNinjadog(this WebApplication app)
     {{
-        app.UseMiddleware<ValidationExceptionMiddleware>();
-        app.UseFastEndpoints(x =>
-        {{
-            x.ErrorResponseBuilder = (failures, _) =>
-            {{
-                return new ValidationFailureResponse
-                {{
-                    Errors = failures.Select(y => y.ErrorMessage).ToList()
-                }};
-            }};
-        }});
+        app.UseValidationExceptionHandler();
+        app.UseFastEndpoints();
 
         app.UseOpenApi();
         app.UseSwaggerUi3(s => s.ConfigureDefaults());
+
+        return app;
+    }}
+
+    public static WebApplication UseValidationExceptionHandler(this WebApplication app)
+    {{
+        app.UseExceptionHandler(errApp =>
+        {{
+            errApp.Run(async ctx =>
+            {{
+                var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
+
+                if (exHandlerFeature?.Error is ValidationException exception)
+                {{
+                    var validationFailureResponse = new ErrorResponse
+                    {{
+                        StatusCode = 400,
+                        Message = ""One or more errors occured!"",
+                        Errors = exception.Errors
+                            .GroupBy(failure => failure.PropertyName)
+                            .ToDictionary(
+                                failures => failures.Key,
+                                failures => failures.Select(failure => failure.ErrorMessage).ToList())
+                    }};
+
+                    await ctx.Response.WriteAsJsonAsync(validationFailureResponse);
+                }}
+            }});
+        }});
 
         return app;
     }}

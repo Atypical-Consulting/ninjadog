@@ -26,14 +26,36 @@ public partial class {st.ClassCreateModelRequestValidator} : Validator<{st.Class
 {{
     public {st.ClassCreateModelRequestValidator}()
     {{
-        // TODO: Generate rules for properties
-        // RuleFor(x => x.FullName).NotEmpty();
-        // RuleFor(x => x.Email).NotEmpty();
-        // RuleFor(x => x.Username).NotEmpty();
-        // RuleFor(x => x.DateOfBirth).NotEmpty();
+{GenerateValidationRules(typeContext)}
     }}
 }}";
 
         return DefaultCodeLayout(code);
+    }
+
+    private static string GenerateValidationRules(TypeContext typeContext)
+    {
+        var st = typeContext.Tokens;
+        var properties = typeContext.PropertyContexts;
+
+        IndentedStringBuilder sb = new();
+
+        sb.IncrementIndent().IncrementIndent();
+
+        foreach (var context in properties.Where(context => !context.IsId))
+        {
+            sb.AppendLine($"RuleFor(x => x.{context.Name})");
+            sb.IncrementIndent();
+            sb.AppendLine(".NotEmpty()");
+            sb.AppendLine(@$".WithMessage(""{context.Name} is required!"");");
+            sb.DecrementIndent();
+
+            if (!context.IsLast)
+            {
+                sb.AppendLine();
+            }
+        }
+
+        return sb.ToString();
     }
 }
