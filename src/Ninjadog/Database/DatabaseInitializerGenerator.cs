@@ -48,13 +48,13 @@ public partial class DatabaseInitializer
         foreach (var typeContext in immutableArray)
         {
             sb.AppendLine();
-            sb.AppendLine(@$"await connection.ExecuteAsync(@""{GenerateCreateTableSqlQuery(typeContext)}"");");
+            sb.AppendLine(@$"await connection.ExecuteAsync(@""{GenerateSqlCreateTableQuery(typeContext)}"");");
         }
 
         return sb.ToString();
     }
 
-    private static string GenerateCreateTableSqlQuery(TypeContext typeContext)
+    private static string GenerateSqlCreateTableQuery(TypeContext typeContext)
     {
         var st = typeContext.Tokens;
 
