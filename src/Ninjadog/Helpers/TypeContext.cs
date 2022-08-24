@@ -12,6 +12,8 @@ public sealed record TypeContext
 
     public string HintName { get; }
 
+    public PropertyContexts PropertyContexts { get; }
+
     public TypeContext(
         ITypeSymbol type,
         string className,
@@ -23,6 +25,7 @@ public sealed record TypeContext
         RootNamespace = GetRootNamespace(type) ?? "Ninjadog";
         Ns = RootNamespace is not null ? $"{RootNamespace}.{subNamespace}" : null;
         HintName = $"{Ns}.{className}.g.cs";
+        PropertyContexts = new PropertyContexts(type);
     }
 
     public void Deconstruct(

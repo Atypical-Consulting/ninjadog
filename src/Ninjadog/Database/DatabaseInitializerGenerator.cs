@@ -32,16 +32,52 @@ public partial class DatabaseInitializer
     public async Task InitializeAsync()
     {{
         using var connection = await _connectionFactory.CreateConnectionAsync();
-        // TODO: Generate SQL query for database creation
-        // await connection.ExecuteAsync(@""CREATE TABLE IF NOT EXISTS Customers (
-        // Id CHAR(36) PRIMARY KEY,
-        // Username TEXT NOT NULL,
-        // FullName TEXT NOT NULL,
-        // Email TEXT NOT NULL,
-        // DateOfBirth TEXT NOT NULL)"");
+        {GenerateCreateTableSqlQueries(typeContexts)}
     }}
 }}";
 
         return DefaultCodeLayout(code);
+    }
+
+    private static string GenerateCreateTableSqlQueries(ImmutableArray<TypeContext> immutableArray)
+    {
+        IndentedStringBuilder sb = new();
+
+        sb.IncrementIndent().IncrementIndent();
+
+        foreach (var typeContext in immutableArray)
+        {
+            sb.AppendLine();
+            sb.AppendLine(@$"await connection.ExecuteAsync(@""{GenerateCreateTableSqlQuery(typeContext)}"");");
+        }
+
+        return sb.ToString();
+    }
+
+    private static string GenerateCreateTableSqlQuery(TypeContext typeContext)
+    {
+        var st = typeContext.Tokens;
+
+        IndentedStringBuilder sb = new();
+
+        sb.AppendLine($@"CREATE TABLE IF NOT EXISTS {st.Models} (");
+        sb.IncrementIndent().IncrementIndent().IncrementIndent();
+        sb.AppendLine(@"Id CHAR(36) PRIMARY KEY,");
+
+        foreach (var context in typeContext.PropertyContexts.Where(context => !context.IsId))
+        {
+            sb.Append($@"{context.Name} TEXT NOT NULL");
+
+            if (!context.IsLast)
+            {
+                sb.AppendLine(",");
+            }
+            else
+            {
+                sb.Append(")");
+            }
+        }
+
+        return sb.ToString();
     }
 }
