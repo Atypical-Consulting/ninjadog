@@ -17,6 +17,9 @@ public sealed class GetRequestGenerator : NinjadogBaseGenerator
         var code = @$"
 {WriteFileScopedNamespace(ns)}
 
+/// <summary>
+///     Request to get a {st.Model}.
+/// </summary>
 public partial class {st.ClassGetModelRequest}
 {{
     public Guid Id {{ get; init; }}

@@ -24,6 +24,9 @@ public sealed class CreateRequestGenerator : NinjadogBaseGenerator
         var code = @$"
 {WriteFileScopedNamespace(ns)}
 
+/// <summary>
+///     Request to create a {st.Model}.
+/// </summary>
 public partial class {st.ClassCreateModelRequest}
 {{
 {properties}

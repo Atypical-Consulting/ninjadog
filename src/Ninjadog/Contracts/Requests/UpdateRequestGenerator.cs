@@ -24,6 +24,9 @@ public sealed class UpdateRequestGenerator : NinjadogBaseGenerator
         var code = @$"
 {WriteFileScopedNamespace(ns)}
 
+/// <summary>
+///     Request to update a {st.Model}.
+/// </summary>
 public partial class {st.ClassUpdateModelRequest}
 {{
 {properties}

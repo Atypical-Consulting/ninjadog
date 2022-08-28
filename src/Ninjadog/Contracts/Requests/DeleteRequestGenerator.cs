@@ -17,6 +17,9 @@ public sealed class DeleteRequestGenerator : NinjadogBaseGenerator
         var code = @$"
 {WriteFileScopedNamespace(ns)}
 
+/// <summary>
+///     Request to delete a {st.Model}.
+/// </summary>
 public partial class {st.ClassDeleteModelRequest}
 {{
     public Guid Id {{ get; init; }}
