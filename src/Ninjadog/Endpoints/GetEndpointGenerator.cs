@@ -28,7 +28,7 @@ using Microsoft.AspNetCore.Authorization;
 public partial class {st.ClassGetModelEndpoint}
     : Endpoint<{st.ClassGetModelRequest}, {st.ClassModelResponse}>
 {{
-    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }}
+    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }} = null!;
 
     public override void Configure()
     {{

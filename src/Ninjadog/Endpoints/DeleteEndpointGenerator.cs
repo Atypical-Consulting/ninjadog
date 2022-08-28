@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Authorization;
 public partial class {st.ClassDeleteModelEndpoint}
     : Endpoint<{st.ClassDeleteModelRequest}>
 {{
-    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }}
+    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }} = null!;
 
     public override void Configure()
     {{
