@@ -22,6 +22,7 @@ using {rootNs}.Repositories;
 using {rootNs}.Services;
 using {rootNs}.Validation;
 using FastEndpoints;
+using FastEndpoints.ClientGen;
 using FastEndpoints.Swagger;
 using FluentValidation;
 
@@ -34,7 +35,11 @@ public static class NinjadogExtensions
         ConfigurationManager config)
     {{
         services.AddFastEndpoints();
-        services.AddSwaggerDoc();
+
+        services.AddSwaggerDoc(s =>
+        {{
+            s.DocumentName = ""version 1"";
+        }});
 
         services.AddSingleton<IDbConnectionFactory>(_ =>
             new SqliteConnectionFactory(config.GetValue<string>(""Database:ConnectionString"")));
@@ -51,6 +56,18 @@ public static class NinjadogExtensions
 
         app.UseOpenApi();
         app.UseSwaggerUi3(s => s.ConfigureDefaults());
+
+        app.MapCSharpClientEndpoint(""/cs-client"", ""version 1"", s =>
+        {{
+            s.ClassName = ""ApiClient"";
+            s.CSharpGeneratorSettings.Namespace = ""{rootNs}.Client"";
+        }});
+
+        app.MapTypeScriptClientEndpoint(""/ts-client"", ""version 1"", s =>
+        {{
+            s.ClassName = ""ApiClient"";
+            s.TypeScriptGeneratorSettings.Namespace = ""{rootNs}.Client"";
+        }});
 
         return app;
     }}
