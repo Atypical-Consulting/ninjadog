@@ -25,19 +25,20 @@ using Microsoft.AspNetCore.Authorization;
 
 {WriteFileScopedNamespace(ns)}
 
-[HttpGet(""{st.ModelEndpoint}/{{id:guid}}""), AllowAnonymous]
-public partial class {st.ClassGetModelEndpoint} : Endpoint<{st.ClassGetModelRequest}, {st.ClassModelResponse}>
+public partial class {st.ClassGetModelEndpoint}
+    : Endpoint<{st.ClassGetModelRequest}, {st.ClassModelResponse}>
 {{
-    private readonly {st.InterfaceModelService} {st.FieldModelService};
+    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }}
 
-    public {st.ClassGetModelEndpoint}({st.InterfaceModelService} {st.VarModelService})
+    public override void Configure()
     {{
-        {st.FieldModelService}= {st.VarModelService};
+        Get(""{st.ModelEndpoint}/{{id:guid}}"");
+        AllowAnonymous();
     }}
 
     public override async Task HandleAsync({st.ClassGetModelRequest} req, CancellationToken ct)
     {{
-        var {st.VarModel} = await {st.FieldModelService}.GetAsync(req.Id);
+        var {st.VarModel} = await {st.PropertyModelService}.GetAsync(req.Id);
 
         if ({st.VarModel} is null)
         {{

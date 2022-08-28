@@ -25,19 +25,20 @@ using Microsoft.AspNetCore.Authorization;
 
 {WriteFileScopedNamespace(ns)}
 
-[HttpPut(""{st.ModelEndpoint}/{{id:guid}}""), AllowAnonymous]
-public partial class {st.ClassUpdateModelEndpoint} : Endpoint<{st.ClassUpdateModelRequest}, {st.ClassModelResponse}>
+public partial class {st.ClassUpdateModelEndpoint}
+    : Endpoint<{st.ClassUpdateModelRequest}, {st.ClassModelResponse}>
 {{
-    private readonly {st.InterfaceModelService} {st.FieldModelService};
+    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }}
 
-    public {st.ClassUpdateModelEndpoint}({st.InterfaceModelService} {st.VarModelService})
+    public override void Configure()
     {{
-        {st.FieldModelService} = {st.VarModelService};
+        Put(""{st.ModelEndpoint}/{{id:guid}}"");
+        AllowAnonymous();
     }}
 
     public override async Task HandleAsync({st.ClassUpdateModelRequest} req, CancellationToken ct)
     {{
-        var {st.VarExistingModel} = await {st.FieldModelService}.GetAsync(req.Id);
+        var {st.VarExistingModel} = await {st.PropertyModelService}.GetAsync(req.Id);
 
         if ({st.VarExistingModel} is null)
         {{
@@ -46,7 +47,7 @@ public partial class {st.ClassUpdateModelEndpoint} : Endpoint<{st.ClassUpdateMod
         }}
 
         var {st.VarModel} = req.{st.MethodToModel}();
-        await {st.FieldModelService}.UpdateAsync({st.VarModel});
+        await {st.PropertyModelService}.UpdateAsync({st.VarModel});
 
         var {st.VarModelResponse} = {st.VarModel}.{st.MethodToModelResponse}();
         await SendOkAsync({st.VarModelResponse}, ct);

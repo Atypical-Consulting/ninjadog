@@ -23,19 +23,20 @@ using Microsoft.AspNetCore.Authorization;
 
 {WriteFileScopedNamespace(ns)}
 
-[HttpDelete(""{st.ModelEndpoint}/{{id:guid}}""), AllowAnonymous]
-public partial class {st.ClassDeleteModelEndpoint} : Endpoint<{st.ClassDeleteModelRequest}>
+public partial class {st.ClassDeleteModelEndpoint}
+    : Endpoint<{st.ClassDeleteModelRequest}>
 {{
-    private readonly {st.InterfaceModelService} {st.FieldModelService};
+    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }}
 
-    public {st.ClassDeleteModelEndpoint}({st.InterfaceModelService} {st.VarModelService})
+    public override void Configure()
     {{
-        {st.FieldModelService} = {st.VarModelService};
+        Delete(""{st.ModelEndpoint}/{{id:guid}}"");
+        AllowAnonymous();
     }}
 
     public override async Task HandleAsync({st.ClassDeleteModelRequest} req, CancellationToken ct)
     {{
-        var deleted = await {st.FieldModelService}.DeleteAsync(req.Id);
+        var deleted = await {st.PropertyModelService}.DeleteAsync(req.Id);
         if (!deleted)
         {{
             await SendNotFoundAsync(ct);

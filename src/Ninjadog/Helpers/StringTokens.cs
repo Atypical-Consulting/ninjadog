@@ -19,7 +19,7 @@ public sealed record StringTokens
         // model
         Model = pascal;
         ModelHumanized = humanized;
-        ModelEndpoint = dashedPlural;
+        ModelEndpoint = $"/{dashedPlural}";
         VarModel = camel;
         VarExistingModel = $"existing{pascal}";
 
@@ -50,6 +50,7 @@ public sealed record StringTokens
         // service
         InterfaceModelService = $"I{pascal}Service";
         ClassModelService = $"{pascal}Service";
+        PropertyModelService = $"{pascal}Service";
         FieldModelService = $"_{camel}Service";
         VarModelService = $"{camel}Service";
 
@@ -127,6 +128,8 @@ public sealed record StringTokens
     public string InterfaceModelService { get; }
 
     public string ClassModelService { get; }
+
+    public string PropertyModelService { get; }
 
     public string FieldModelService { get; }
 
