@@ -20,17 +20,19 @@ public sealed class DtoToDomainMapperGenerator : NinjadogBaseGenerator
             Environment.NewLine,
             typeContexts.Select(GenerateToModelMethods));
 
-        var code = @$"
-using {rootNs}.Contracts.Data;
-using {rootNs}.Domain;
-using {rootNs}.Domain.Common;
+        var code = $$"""
 
-{WriteFileScopedNamespace(ns)}
+            using {{rootNs}}.Contracts.Data;
+            using {{rootNs}}.Domain;
+            using {{rootNs}}.Domain.Common;
 
-public static class DtoToDomainMapper
-{{
-    {methods}
-}}";
+            {{WriteFileScopedNamespace(ns)}}
+
+            public static class DtoToDomainMapper
+            {
+                {{methods}}
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }
@@ -97,13 +99,15 @@ public static class DtoToDomainMapper
             }
         }
 
-        return @$"
-    public static {st.Model} {st.MethodToModel}(this {st.ClassModelDto} {st.VarModelDto})
-    {{
-        return new {st.Model}
-        {{
-{sb}
-        }};
-    }}";
+        return $$"""
+
+                public static {{st.Model}} {{st.MethodToModel}}(this {{st.ClassModelDto}} {{st.VarModelDto}})
+                {
+                    return new {{st.Model}}
+                    {
+                        {{sb}}
+                    };
+                }
+            """;
     }
 }

@@ -21,16 +21,18 @@ public sealed class UpdateRequestGenerator : NinjadogBaseGenerator
             Environment.NewLine,
             modelProperties.Select(GenerateProperties));
 
-        var code = @$"
-{WriteFileScopedNamespace(ns)}
-
-/// <summary>
-///     Request to update a {st.Model}.
-/// </summary>
-public partial class {st.ClassUpdateModelRequest}
-{{
-{properties}
-}}";
+        var code = $$"""
+            
+            {{WriteFileScopedNamespace(ns)}}
+            
+            /// <summary>
+            ///     Request to update a {{st.Model}}.
+            /// </summary>
+            public partial class {{st.ClassUpdateModelRequest}}
+            {
+            {{properties}}
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

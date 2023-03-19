@@ -15,37 +15,39 @@ public sealed class DeleteEndpointGenerator : NinjadogBaseGenerator
         var (st, ns) = typeContext;
         var rootNs = typeContext.RootNamespace;
 
-        var code = @$"
-using {rootNs}.Contracts.Requests;
-using {rootNs}.Services;
-using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
-
-{WriteFileScopedNamespace(ns)}
-
-public partial class {st.ClassDeleteModelEndpoint}
-    : Endpoint<{st.ClassDeleteModelRequest}>
-{{
-    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }} = null!;
-
-    public override void Configure()
-    {{
-        Delete(""{st.ModelEndpoint}/{{id:guid}}"");
-        AllowAnonymous();
-    }}
-
-    public override async Task HandleAsync({st.ClassDeleteModelRequest} req, CancellationToken ct)
-    {{
-        var deleted = await {st.PropertyModelService}.DeleteAsync(req.Id);
-        if (!deleted)
-        {{
-            await SendNotFoundAsync(ct);
-            return;
-        }}
-
-        await SendNoContentAsync(ct);
-    }}
-}}";
+        var code = $$"""
+            
+            using {{rootNs}}.Contracts.Requests;
+            using {{rootNs}}.Services;
+            using FastEndpoints;
+            using Microsoft.AspNetCore.Authorization;
+            
+            {{WriteFileScopedNamespace(ns)}}
+            
+            public partial class {{st.ClassDeleteModelEndpoint}}
+                : Endpoint<{{st.ClassDeleteModelRequest}}>
+            {
+                public {{st.InterfaceModelService}} {{st.PropertyModelService}} { get; private set; } = null!;
+            
+                public override void Configure()
+                {
+                    Delete("{{st.ModelEndpoint}}/{id:guid}");
+                    AllowAnonymous();
+                }
+            
+                public override async Task HandleAsync({{st.ClassDeleteModelRequest}} req, CancellationToken ct)
+                {
+                    var deleted = await {{st.PropertyModelService}}.DeleteAsync(req.Id);
+                    if (!deleted)
+                    {
+                        await SendNotFoundAsync(ct);
+                        return;
+                    }
+            
+                    await SendNoContentAsync(ct);
+                }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

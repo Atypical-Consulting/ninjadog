@@ -22,17 +22,19 @@ public sealed class DtoGenerator : NinjadogBaseGenerator
             Environment.NewLine,
             modelProperties.Select(property => GenerateDtoProperties(property)));
 
-        var code = @$"
-using System.Collections.Generic;
-using {rootNs}.Database;
-using Dapper;
+        var code = $$"""
 
-{WriteFileScopedNamespace(ns)}
+            using System.Collections.Generic;
+            using {{rootNs}}.Database;
+            using Dapper;
 
-public partial class {st.ClassModelDto}
-{{
-{properties}
-}}";
+            {{WriteFileScopedNamespace(ns)}}
+
+            public partial class {{st.ClassModelDto}}
+            {
+            {{properties}}
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

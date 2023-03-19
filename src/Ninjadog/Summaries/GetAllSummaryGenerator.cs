@@ -15,22 +15,24 @@ public sealed class GetAllSummaryGenerator : NinjadogBaseGenerator
         var (st, ns) = typeContext;
         var rootNs = typeContext.RootNamespace;
 
-        var code = @$"
-using {rootNs}.Contracts.Responses;
-using {rootNs}.Endpoints;
-using FastEndpoints;
-
-{WriteFileScopedNamespace(ns)}
-
-public partial class {st.ClassGetAllModelsSummary} : Summary<{st.ClassGetAllModelsEndpoint}>
-{{
-    public {st.ClassGetAllModelsSummary}()
-    {{
-        Summary = ""Returns all the {st.ModelsHumanized} in the system"";
-        Description = ""Returns all the {st.ModelsHumanized} in the system"";
-        Response<{st.ClassGetAllModelsResponse}>(200, ""All {st.ModelsHumanized} in the system are returned"");
-    }}
-}}";
+        var code = $$"""
+            
+            using {{rootNs}}.Contracts.Responses;
+            using {{rootNs}}.Endpoints;
+            using FastEndpoints;
+            
+            {{WriteFileScopedNamespace(ns)}}
+            
+            public partial class {{st.ClassGetAllModelsSummary}} : Summary<{{st.ClassGetAllModelsEndpoint}}>
+            {
+                public {{st.ClassGetAllModelsSummary}}()
+                {
+                    Summary = "Returns all the {{st.ModelsHumanized}} in the system";
+                    Description = "Returns all the {{st.ModelsHumanized}} in the system";
+                    Response<{{st.ClassGetAllModelsResponse}}>(200, "All {{st.ModelsHumanized}} in the system are returned");
+                }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

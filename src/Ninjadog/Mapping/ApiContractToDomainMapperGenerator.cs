@@ -24,18 +24,20 @@ public sealed class ApiContractToDomainMapperGenerator : NinjadogBaseGenerator
             Environment.NewLine,
             typeContexts.Select(GenerateToModelFromUpdateMethods));
 
-        var code = @$"
-using {rootNs}.Contracts.Requests;
-using {rootNs}.Domain;
-using {rootNs}.Domain.Common;
+        var code = $$"""
 
-{WriteFileScopedNamespace(ns)}
+            using {{rootNs}}.Contracts.Requests;
+            using {{rootNs}}.Domain;
+            using {{rootNs}}.Domain.Common;
 
-public static class ApiContractToDomainMapper
-{{
-    {toModelFromCreateMethods}
-    {toModelFromUpdateMethods}
-}}";
+            {{WriteFileScopedNamespace(ns)}}
+
+            public static class ApiContractToDomainMapper
+            {
+                {{toModelFromCreateMethods}}
+                {{toModelFromUpdateMethods}}
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }
@@ -103,14 +105,16 @@ public static class ApiContractToDomainMapper
             }
         }
 
-        return @$"
-    public static {st.Model} {st.MethodToModel}(this {st.ClassCreateModelRequest} request)
-    {{
-        return new {st.Model}
-        {{
-{sb}
-        }};
-    }}";
+        return $$"""
+
+                public static {{st.Model}} {{st.MethodToModel}}(this {{st.ClassCreateModelRequest}} request)
+                {
+                    return new {{st.Model}}
+                    {
+                        {{sb}}
+                    };
+                }
+            """;
     }
 
     private static string GenerateToModelFromUpdateMethods(TypeContext typeContext)
@@ -173,13 +177,15 @@ public static class ApiContractToDomainMapper
             }
         }
 
-        return @$"
-    public static {st.Model} {st.MethodToModel}(this {st.ClassUpdateModelRequest} request)
-    {{
-        return new {st.Model}
-        {{
-{sb}
-        }};
-    }}";
+        return $$"""
+
+                public static {{st.Model}} {{st.MethodToModel}}(this {{st.ClassUpdateModelRequest}} request)
+                {
+                    return new {{st.Model}}
+                    {
+                        {{sb}}
+                    };
+                }
+            """;
     }
 }

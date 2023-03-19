@@ -13,94 +13,96 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
         var typeContext = typeContexts[0];
         var rootNs = typeContext.RootNamespace;
 
-        var code = @$"
-using Microsoft.AspNetCore.Diagnostics;
-using {rootNs}.Contracts.Responses;
-using {rootNs}.Database;
-using {rootNs}.Mapping;
-using {rootNs}.Repositories;
-using {rootNs}.Services;
-using {rootNs}.Validation;
-using FastEndpoints;
-using FastEndpoints.ClientGen;
-using FastEndpoints.Swagger;
-using FluentValidation;
-
-{WriteFileScopedNamespace(rootNs)}
-
-public static class NinjadogExtensions
-{{
-    public static IServiceCollection AddNinjadog(
-        this IServiceCollection services,
-        ConfigurationManager config)
-    {{
-        services.AddFastEndpoints();
-
-        services.AddSwaggerDoc(s =>
-        {{
-            s.DocumentName = ""version 1"";
-        }});
-
-        services.AddSingleton<IDbConnectionFactory>(_ =>
-            new SqliteConnectionFactory(config.GetValue<string>(""Database:ConnectionString"")));
-        services.AddSingleton<DatabaseInitializer>();
-
-{GenerateModelDependenciesInjection(typeContexts)}
-        return services;
-    }}
-
-    public static WebApplication UseNinjadog(this WebApplication app)
-    {{
-        app.UseValidationExceptionHandler();
-        app.UseFastEndpoints();
-
-        app.UseOpenApi();
-        app.UseSwaggerUi3(s => s.ConfigureDefaults());
-
-        app.MapCSharpClientEndpoint(""/cs-client"", ""version 1"", s =>
-        {{
-            s.ClassName = ""ApiClient"";
-            s.CSharpGeneratorSettings.Namespace = ""{rootNs}.Client"";
-        }});
-
-        app.MapTypeScriptClientEndpoint(""/ts-client"", ""version 1"", s =>
-        {{
-            s.ClassName = ""ApiClient"";
-            s.TypeScriptGeneratorSettings.Namespace = ""{rootNs}.Client"";
-        }});
-
-        return app;
-    }}
-
-    public static WebApplication UseValidationExceptionHandler(this WebApplication app)
-    {{
-        app.UseExceptionHandler(errApp =>
-        {{
-            errApp.Run(async ctx =>
-            {{
-                var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
-
-                if (exHandlerFeature?.Error is ValidationException exception)
-                {{
-                    var validationFailureResponse = new ErrorResponse
-                    {{
-                        StatusCode = 400,
-                        Message = ""One or more errors occured!"",
-                        Errors = exception.Errors
-                            .GroupBy(failure => failure.PropertyName)
-                            .ToDictionary(
-                                failures => failures.Key,
-                                failures => failures.Select(failure => failure.ErrorMessage).ToList())
-                    }};
-
-                    await ctx.Response.WriteAsJsonAsync(validationFailureResponse);
-                }}
-            }});
-        }});
-
-        return app;
-    }}
-}}";
+        var code = $$"""
+            
+            using Microsoft.AspNetCore.Diagnostics;
+            using {{rootNs}}.Contracts.Responses;
+            using {{rootNs}}.Database;
+            using {{rootNs}}.Mapping;
+            using {{rootNs}}.Repositories;
+            using {{rootNs}}.Services;
+            using {{rootNs}}.Validation;
+            using FastEndpoints;
+            using FastEndpoints.ClientGen;
+            using FastEndpoints.Swagger;
+            using FluentValidation;
+            
+            {{WriteFileScopedNamespace(rootNs)}}
+            
+            public static class NinjadogExtensions
+            {
+                public static IServiceCollection AddNinjadog(
+                    this IServiceCollection services,
+                    ConfigurationManager config)
+                {
+                    services.AddFastEndpoints();
+            
+                    services.AddSwaggerDoc(s =>
+                    {
+                        s.DocumentName = "version 1";
+                    });
+            
+                    services.AddSingleton<IDbConnectionFactory>(_ =>
+                        new SqliteConnectionFactory(config.GetValue<string>("Database:ConnectionString")));
+                    services.AddSingleton<DatabaseInitializer>();
+            
+            {{GenerateModelDependenciesInjection(typeContexts)}}
+                    return services;
+                }
+            
+                public static WebApplication UseNinjadog(this WebApplication app)
+                {
+                    app.UseValidationExceptionHandler();
+                    app.UseFastEndpoints();
+            
+                    app.UseOpenApi();
+                    app.UseSwaggerUi3(s => s.ConfigureDefaults());
+            
+                    app.MapCSharpClientEndpoint("/cs-client", "version 1", s =>
+                    {
+                        s.ClassName = "ApiClient";
+                        s.CSharpGeneratorSettings.Namespace = "{{rootNs}}.Client";
+                    });
+            
+                    app.MapTypeScriptClientEndpoint("/ts-client", "version 1", s =>
+                    {
+                        s.ClassName = "ApiClient";
+                        s.TypeScriptGeneratorSettings.Namespace = "{{rootNs}}.Client";
+                    });
+            
+                    return app;
+                }
+            
+                public static WebApplication UseValidationExceptionHandler(this WebApplication app)
+                {
+                    app.UseExceptionHandler(errApp =>
+                    {
+                        errApp.Run(async ctx =>
+                        {
+                            var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
+            
+                            if (exHandlerFeature?.Error is ValidationException exception)
+                            {
+                                var validationFailureResponse = new ErrorResponse
+                                {
+                                    StatusCode = 400,
+                                    Message = "One or more errors occured!",
+                                    Errors = exception.Errors
+                                        .GroupBy(failure => failure.PropertyName)
+                                        .ToDictionary(
+                                            failures => failures.Key,
+                                            failures => failures.Select(failure => failure.ErrorMessage).ToList())
+                                };
+            
+                                await ctx.Response.WriteAsJsonAsync(validationFailureResponse);
+                            }
+                        });
+                    });
+            
+                    return app;
+                }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

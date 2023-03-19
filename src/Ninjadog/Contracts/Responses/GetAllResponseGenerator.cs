@@ -14,13 +14,15 @@ public sealed class GetAllResponseGenerator : NinjadogBaseGenerator
     {
         var (st, ns) = typeContext;
 
-        var code = @$"
-{WriteFileScopedNamespace(ns)}
-
-public partial class {st.ClassGetAllModelsResponse}
-{{
-    public IEnumerable<{st.ClassModelResponse}> {st.Models} {{ get; init; }} = Enumerable.Empty<{st.ClassModelResponse}>();
-}}";
+        var code = $$"""
+            
+            {{WriteFileScopedNamespace(ns)}}
+            
+            public partial class {{st.ClassGetAllModelsResponse}}
+            {
+                public IEnumerable<{{st.ClassModelResponse}}> {{st.Models}} { get; init; } = Enumerable.Empty<{{st.ClassModelResponse}}>();
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

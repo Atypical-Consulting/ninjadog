@@ -15,20 +15,22 @@ public sealed class CreateRequestValidatorGenerator : NinjadogBaseGenerator
         var (st, ns) = typeContext;
         var rootNs = typeContext.RootNamespace;
 
-        var code = @$"
-using {rootNs}.Contracts.Requests;
-using FastEndpoints;
-using FluentValidation;
+        var code = $$"""
 
-{WriteFileScopedNamespace(ns)}
+            using {{rootNs}}.Contracts.Requests;
+            using FastEndpoints;
+            using FluentValidation;
 
-public partial class {st.ClassCreateModelRequestValidator} : Validator<{st.ClassCreateModelRequest}>
-{{
-    public {st.ClassCreateModelRequestValidator}()
-    {{
-{GenerateValidationRules(typeContext)}
-    }}
-}}";
+            {{WriteFileScopedNamespace(ns)}}
+
+            public partial class {{st.ClassCreateModelRequestValidator}} : Validator<{{st.ClassCreateModelRequest}}>
+            {
+                public {{st.ClassCreateModelRequestValidator}}()
+                {
+                    {{GenerateValidationRules(typeContext)}}
+                }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }
@@ -47,7 +49,7 @@ public partial class {st.ClassCreateModelRequestValidator} : Validator<{st.Class
             sb.AppendLine($"RuleFor(x => x.{context.Name})");
             sb.IncrementIndent();
             sb.AppendLine(".NotEmpty()");
-            sb.AppendLine(@$".WithMessage(""{context.Name} is required!"");");
+            sb.AppendLine($".WithMessage(\"{context.Name} is required!\");");
             sb.DecrementIndent();
 
             if (!context.IsLast)

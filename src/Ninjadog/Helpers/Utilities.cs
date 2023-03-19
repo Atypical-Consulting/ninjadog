@@ -127,7 +127,7 @@ internal static class Utilities
     internal static string? WriteFileScopedNamespace(string? ns)
     {
         return ns is not null
-            ? $@"namespace {ns};"
+            ? $"namespace {ns};"
             : null;
     }
 

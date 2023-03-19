@@ -4,7 +4,10 @@ public abstract class NinjadogBaseGenerator : IIncrementalGenerator
 {
     protected abstract GeneratorSetup Setup { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Initializes the incremental generator with the specified context.
+    /// </summary>
+    /// <param name="context">The incremental generator initialization context.</param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterSourceOutput(
@@ -12,6 +15,11 @@ public abstract class NinjadogBaseGenerator : IIncrementalGenerator
             GenerateCode);
     }
 
+    /// <summary>
+    /// Generates code based on the specified context and models.
+    /// </summary>
+    /// <param name="context">The source production context.</param>
+    /// <param name="models">The array of ITypeSymbol models.</param>
     private void GenerateCode(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)
@@ -41,6 +49,11 @@ public abstract class NinjadogBaseGenerator : IIncrementalGenerator
         }
     }
 
+    /// <summary>
+    /// Generates a single file containing the generated code for all models.
+    /// </summary>
+    /// <param name="context">The source production context.</param>
+    /// <param name="models">The array of ITypeSymbol models.</param>
     private void GenerateSingleFile(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)
@@ -62,6 +75,11 @@ public abstract class NinjadogBaseGenerator : IIncrementalGenerator
         context.AddSource(hintName, code);
     }
 
+    /// <summary>
+    /// Generates multiple files, with each file containing the generated code for a single model.
+    /// </summary>
+    /// <param name="context">The source production context.</param>
+    /// <param name="models">The array of ITypeSymbol models.</param>
     private void GenerateMultipleFiles(
         SourceProductionContext context,
         ImmutableArray<ITypeSymbol> models)

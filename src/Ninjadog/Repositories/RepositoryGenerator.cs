@@ -15,70 +15,72 @@ public sealed class RepositoryGenerator : NinjadogBaseGenerator
         var (st, ns) = typeContext;
         var rootNs = typeContext.RootNamespace;
 
-        var code = @$"
-using {rootNs}.Contracts.Data;
-using {rootNs}.Database;
-using Dapper;
+        var code = $$"""
 
-{WriteFileScopedNamespace(ns)}
+            using {{rootNs}}.Contracts.Data;
+            using {{rootNs}}.Database;
+            using Dapper;
 
-public partial class {st.ClassModelRepository} : {st.InterfaceModelRepository}
-{{
-    private readonly IDbConnectionFactory _connectionFactory;
+            {{WriteFileScopedNamespace(ns)}}
 
-    public {st.ClassModelRepository}(IDbConnectionFactory connectionFactory)
-    {{
-        _connectionFactory = connectionFactory;
-    }}
+            public partial class {{st.ClassModelRepository}} : {{st.InterfaceModelRepository}}
+            {
+                private readonly IDbConnectionFactory _connectionFactory;
 
-    public async Task<bool> CreateAsync({st.ClassModelDto} {st.VarModel})
-    {{
-        using var connection = await _connectionFactory.CreateConnectionAsync();
+                public {{st.ClassModelRepository}}(IDbConnectionFactory connectionFactory)
+                {
+                    _connectionFactory = connectionFactory;
+                }
 
-        var result = await connection.ExecuteAsync(
-            @""{GenerateSqlInsertQuery(typeContext)}"",
-            {st.VarModel});
+                public async Task<bool> CreateAsync({{st.ClassModelDto}} {{st.VarModel}})
+                {
+                    using var connection = await _connectionFactory.CreateConnectionAsync();
 
-        return result > 0;
-    }}
+                    var result = await connection.ExecuteAsync(
+                        @"{{GenerateSqlInsertQuery(typeContext)}}",
+                        {{st.VarModel}});
 
-    public async Task<{st.ClassModelDto}?> GetAsync(Guid id)
-    {{
-        using var connection = await _connectionFactory.CreateConnectionAsync();
+                    return result > 0;
+                }
 
-        return await connection.QuerySingleOrDefaultAsync<{st.ClassModelDto}>(
-            ""{GenerateSqlSelectOneQuery(typeContext)}"",
-            new {{ Id = id.ToString() }});
-    }}
+                public async Task<{{st.ClassModelDto}}?> GetAsync(Guid id)
+                {
+                    using var connection = await _connectionFactory.CreateConnectionAsync();
 
-    public async Task<IEnumerable<{st.ClassModelDto}>> GetAllAsync()
-    {{
-        using var connection = await _connectionFactory.CreateConnectionAsync();
-        return await connection.QueryAsync<{st.ClassModelDto}>(""{GenerateSqlSelectAllQuery(typeContext)}"");
-    }}
+                    return await connection.QuerySingleOrDefaultAsync<{{st.ClassModelDto}}>(
+                        "{{GenerateSqlSelectOneQuery(typeContext)}}",
+                        new { Id = id.ToString() });
+                }
 
-    public async Task<bool> UpdateAsync({st.ClassModelDto} {st.VarModel})
-    {{
-        using var connection = await _connectionFactory.CreateConnectionAsync();
+                public async Task<IEnumerable<{{st.ClassModelDto}}>> GetAllAsync()
+                {
+                    using var connection = await _connectionFactory.CreateConnectionAsync();
+                    return await connection.QueryAsync<{{st.ClassModelDto}}>("{{GenerateSqlSelectAllQuery(typeContext)}}");
+                }
 
-        var result = await connection.ExecuteAsync(
-            @""{GenerateSqlUpdateQuery(typeContext)}"",
-            {st.VarModel});
+                public async Task<bool> UpdateAsync({{st.ClassModelDto}} {{st.VarModel}})
+                {
+                    using var connection = await _connectionFactory.CreateConnectionAsync();
 
-            return result > 0;
-    }}
+                    var result = await connection.ExecuteAsync(
+                        @"{{GenerateSqlUpdateQuery(typeContext)}}",
+                        {{st.VarModel}});
 
-    public async Task<bool> DeleteAsync(Guid id)
-    {{
-        using var connection = await _connectionFactory.CreateConnectionAsync();
+                        return result > 0;
+                }
 
-        var result = await connection.ExecuteAsync(
-            @""{GenerateSqlDeleteQuery(typeContext)}"",
-            new {{Id = id.ToString()}});
+                public async Task<bool> DeleteAsync(Guid id)
+                {
+                    using var connection = await _connectionFactory.CreateConnectionAsync();
 
-        return result > 0;
-    }}
-}}";
+                    var result = await connection.ExecuteAsync(
+                        @"{{GenerateSqlDeleteQuery(typeContext)}}",
+                        new {Id = id.ToString()});
+
+                    return result > 0;
+                }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }
@@ -158,6 +160,6 @@ public partial class {st.ClassModelRepository} : {st.InterfaceModelRepository}
     private static string GenerateSqlDeleteQuery(TypeContext typeContext)
     {
         var st = typeContext.Tokens;
-        return @$"DELETE FROM {st.Models} WHERE Id = @Id";
+        return $"DELETE FROM {st.Models} WHERE Id = @Id";
     }
 }

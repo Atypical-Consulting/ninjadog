@@ -24,17 +24,19 @@ public sealed class DomainToApiContractMapperGenerator : NinjadogBaseGenerator
             Environment.NewLine,
             typeContexts.Select(GenerateToModelsResponseMethods));
 
-        var code = @$"
-using {rootNs}.Contracts.Responses;
-using {rootNs}.Domain;
+        var code = $$"""
 
-{WriteFileScopedNamespace(ns)}
+            using {{rootNs}}.Contracts.Responses;
+            using {{rootNs}}.Domain;
 
-public static class DomainToApiContractMapper
-{{
-    {toModelsResponseMethods}
-    {toModelResponseMethods}
-}}";
+            {{WriteFileScopedNamespace(ns)}}
+
+            public static class DomainToApiContractMapper
+            {
+                {{toModelsResponseMethods}}
+                {{toModelResponseMethods}}
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }
@@ -85,14 +87,16 @@ public static class DomainToApiContractMapper
             }
         }
 
-        return @$"
-    public static {st.ClassModelResponse} {st.MethodToModelResponse}(this {st.Model} {st.VarModel})
-    {{
-        return new {st.ClassModelResponse}
-        {{
-{sb}
-        }};
-    }}";
+        return $$"""
+
+                public static {{st.ClassModelResponse}} {{st.MethodToModelResponse}}(this {{st.Model}} {{st.VarModel}})
+                {
+                    return new {{st.ClassModelResponse}}
+                    {
+                        {{sb}}
+                    };
+                }
+            """;
     }
 
     private static string GenerateToModelsResponseMethods(TypeContext typeContext)
@@ -142,16 +146,18 @@ public static class DomainToApiContractMapper
             }
         }
 
-        return @$"
-    public static {st.ClassGetAllModelsResponse} {st.MethodToModelsResponse}(this IEnumerable<{st.Model}> {st.VarModels})
-    {{
-        return new {st.ClassGetAllModelsResponse}
-        {{
-            {st.Models} = {st.VarModels}.Select(x => new {st.ClassModelResponse}
-            {{
-{sb}
-            }})
-        }};
-    }}";
+        return $$"""
+
+                public static {{st.ClassGetAllModelsResponse}} {{st.MethodToModelsResponse}}(this IEnumerable<{{st.Model}}> {{st.VarModels}})
+                {
+                    return new {{st.ClassGetAllModelsResponse}}
+                    {
+                        {{st.Models}} = {{st.VarModels}}.Select(x => new {{st.ClassModelResponse}}
+                        {
+                            {{sb}}
+                        })
+                    };
+                }
+            """;
     }
 }

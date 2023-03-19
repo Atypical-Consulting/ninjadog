@@ -21,16 +21,18 @@ public sealed class CreateRequestGenerator : NinjadogBaseGenerator
             Environment.NewLine,
             modelProperties.Select(property => GenerateProperties(property)));
 
-        var code = @$"
-{WriteFileScopedNamespace(ns)}
+        var code = $$"""
 
-/// <summary>
-///     Request to create a {st.Model}.
-/// </summary>
-public partial class {st.ClassCreateModelRequest}
-{{
-{properties}
-}}";
+            {{WriteFileScopedNamespace(ns)}}
+
+            /// <summary>
+            ///     Request to create a {{st.Model}}.
+            /// </summary>
+            public partial class {{st.ClassCreateModelRequest}}
+            {
+            {{properties}}
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

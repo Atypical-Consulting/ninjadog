@@ -14,16 +14,18 @@ public sealed class DeleteRequestGenerator : NinjadogBaseGenerator
     {
         var (st, ns) = typeContext;
 
-        var code = @$"
-{WriteFileScopedNamespace(ns)}
-
-/// <summary>
-///     Request to delete a {st.Model}.
-/// </summary>
-public partial class {st.ClassDeleteModelRequest}
-{{
-    public Guid Id {{ get; init; }}
-}}";
+        var code = $$"""
+            
+            {{WriteFileScopedNamespace(ns)}}
+            
+            /// <summary>
+            ///     Request to delete a {{st.Model}}.
+            /// </summary>
+            public partial class {{st.ClassDeleteModelRequest}}
+            {
+                public Guid Id { get; init; }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

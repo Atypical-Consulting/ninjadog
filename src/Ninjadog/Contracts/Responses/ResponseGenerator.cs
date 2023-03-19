@@ -21,13 +21,15 @@ public sealed class ResponseGenerator : NinjadogBaseGenerator
             Environment.NewLine,
             modelProperties.Select(property => GenerateDtoProperties(property)));
 
-        var code = @$"
-{WriteFileScopedNamespace(ns)}
-
-public partial class {st.ClassModelResponse}
-{{
-{properties}
-}}";
+        var code = $$"""
+            
+            {{WriteFileScopedNamespace(ns)}}
+            
+            public partial class {{st.ClassModelResponse}}
+            {
+            {{properties}}
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

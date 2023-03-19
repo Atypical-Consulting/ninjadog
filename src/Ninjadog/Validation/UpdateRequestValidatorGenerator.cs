@@ -15,20 +15,22 @@ public sealed class UpdateRequestValidatorGenerator : NinjadogBaseGenerator
         var (st, ns) = typeContext;
         var rootNs = typeContext.RootNamespace;
 
-        var code = @$"
-using {rootNs}.Contracts.Requests;
-using FastEndpoints;
-using FluentValidation;
+        var code = $$"""
 
-{WriteFileScopedNamespace(ns)}
+            using {{rootNs}}.Contracts.Requests;
+            using FastEndpoints;
+            using FluentValidation;
 
-public partial class {st.ClassUpdateModelRequestValidator} : Validator<{st.ClassUpdateModelRequest}>
-{{
-    public {st.ClassUpdateModelRequestValidator}()
-    {{
-{GenerateValidationRules(typeContext)}
-    }}
-}}";
+            {{WriteFileScopedNamespace(ns)}}
+
+            public partial class {{st.ClassUpdateModelRequestValidator}} : Validator<{{st.ClassUpdateModelRequest}}>
+            {
+                public {{st.ClassUpdateModelRequestValidator}}()
+                {
+                    {{GenerateValidationRules(typeContext)}}
+                }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }

@@ -15,26 +15,28 @@ public sealed class DatabaseInitializerGenerator : NinjadogBaseGenerator
         var typeContext = typeContexts[0];
         var ns = typeContext.Ns;
 
-        var code = @$"
-using Dapper;
+        var code = $$"""
 
-{WriteFileScopedNamespace(ns)}
+            using Dapper;
 
-public partial class DatabaseInitializer
-{{
-    private readonly IDbConnectionFactory _connectionFactory;
+            {{WriteFileScopedNamespace(ns)}}
 
-    public DatabaseInitializer(IDbConnectionFactory connectionFactory)
-    {{
-        _connectionFactory = connectionFactory;
-    }}
+            public partial class DatabaseInitializer
+            {
+                private readonly IDbConnectionFactory _connectionFactory;
 
-    public async Task InitializeAsync()
-    {{
-        using var connection = await _connectionFactory.CreateConnectionAsync();
-        {GenerateCreateTableSqlQueries(typeContexts)}
-    }}
-}}";
+                public DatabaseInitializer(IDbConnectionFactory connectionFactory)
+                {
+                    _connectionFactory = connectionFactory;
+                }
+
+                public async Task InitializeAsync()
+                {
+                    using var connection = await _connectionFactory.CreateConnectionAsync();
+                    {{GenerateCreateTableSqlQueries(typeContexts)}}
+                }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }
@@ -48,7 +50,7 @@ public partial class DatabaseInitializer
         foreach (var typeContext in immutableArray)
         {
             sb.AppendLine();
-            sb.AppendLine(@$"await connection.ExecuteAsync(@""{GenerateSqlCreateTableQuery(typeContext)}"");");
+            sb.AppendLine($"await connection.ExecuteAsync(@\"{GenerateSqlCreateTableQuery(typeContext)}\");");
         }
 
         return sb.ToString();
@@ -60,13 +62,13 @@ public partial class DatabaseInitializer
 
         IndentedStringBuilder sb = new();
 
-        sb.AppendLine($@"CREATE TABLE IF NOT EXISTS {st.Models} (");
+        sb.AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (");
         sb.IncrementIndent().IncrementIndent().IncrementIndent();
         sb.AppendLine(@"Id CHAR(36) PRIMARY KEY,");
 
         foreach (var context in typeContext.PropertyContexts.Where(context => !context.IsId))
         {
-            sb.Append($@"{context.Name} TEXT NOT NULL");
+            sb.Append($"{context.Name} TEXT NOT NULL");
 
             if (!context.IsLast)
             {

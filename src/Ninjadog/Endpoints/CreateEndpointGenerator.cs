@@ -15,38 +15,40 @@ public sealed class CreateEndpointGenerator : NinjadogBaseGenerator
         var (st, ns) = typeContext;
         var rootNs = typeContext.RootNamespace;
 
-        var code = @$"
-using {rootNs}.Contracts.Requests;
-using {rootNs}.Contracts.Responses;
-using {rootNs}.Mapping;
-using {rootNs}.Services;
-using FastEndpoints;
-using Microsoft.AspNetCore.Authorization;
-
-{WriteFileScopedNamespace(ns)}
-
-public partial class {st.ClassCreateModelEndpoint}
-    : Endpoint<{st.ClassCreateModelRequest}, {st.ClassModelResponse}>
-{{
-    public {st.InterfaceModelService} {st.PropertyModelService} {{ get; private set; }} = null!;
-
-    public override void Configure()
-    {{
-        Post(""{st.ModelEndpoint}"");
-        AllowAnonymous();
-    }}
-
-    public override async Task HandleAsync({st.ClassCreateModelRequest} req, CancellationToken ct)
-    {{
-        var {st.VarModel} = req.{st.MethodToModel}();
-
-        await {st.PropertyModelService}.CreateAsync({st.VarModel});
-
-        var {st.VarModelResponse} = {st.VarModel}.{st.MethodToModelResponse}();
-        await SendCreatedAtAsync<{st.ClassGetModelEndpoint}>(
-            new {{ Id = {st.VarModel}.Id.Value }}, {st.VarModelResponse}, generateAbsoluteUrl: true, cancellation: ct);
-    }}
-}}";
+        var code = $$"""
+            
+            using {{rootNs}}.Contracts.Requests;
+            using {{rootNs}}.Contracts.Responses;
+            using {{rootNs}}.Mapping;
+            using {{rootNs}}.Services;
+            using FastEndpoints;
+            using Microsoft.AspNetCore.Authorization;
+            
+            {{WriteFileScopedNamespace(ns)}}
+            
+            public partial class {{st.ClassCreateModelEndpoint}}
+                : Endpoint<{{st.ClassCreateModelRequest}}, {{st.ClassModelResponse}}>
+            {
+                public {{st.InterfaceModelService}} {{st.PropertyModelService}} { get; private set; } = null!;
+            
+                public override void Configure()
+                {
+                    Post("{{st.ModelEndpoint}}");
+                    AllowAnonymous();
+                }
+            
+                public override async Task HandleAsync({{st.ClassCreateModelRequest}} req, CancellationToken ct)
+                {
+                    var {{st.VarModel}} = req.{{st.MethodToModel}}();
+            
+                    await {{st.PropertyModelService}}.CreateAsync({{st.VarModel}});
+            
+                    var {{st.VarModelResponse}} = {{st.VarModel}}.{{st.MethodToModelResponse}}();
+                    await SendCreatedAtAsync<{{st.ClassGetModelEndpoint}}>(
+                        new { Id = {{st.VarModel}}.Id.Value }, {{st.VarModelResponse}}, generateAbsoluteUrl: true, cancellation: ct);
+                }
+            }
+            """;
 
         return DefaultCodeLayout(code);
     }
