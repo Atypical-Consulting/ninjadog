@@ -118,9 +118,9 @@ internal static class Utilities
     {
         return SourceGenerationHelper.Header +
                SourceGenerationHelper.NullableEnable +
-               Environment.NewLine +
+               "\n" +
                code +
-               Environment.NewLine +
+               "\n" +
                SourceGenerationHelper.NullableDisable;
     }
 

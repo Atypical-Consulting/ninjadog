@@ -96,15 +96,7 @@ public sealed class RepositoryGenerator : NinjadogBaseGenerator
         foreach (var context in properties)
         {
             sb.Append($"{context.Name}");
-
-            if (!context.IsLast)
-            {
-                sb.Append(", ");
-            }
-            else
-            {
-                sb.Append(") ");
-            }
+            sb.Append(!context.IsLast ? ", " : ") ");
         }
 
         sb.IncrementIndent().IncrementIndent().IncrementIndent();
@@ -113,15 +105,7 @@ public sealed class RepositoryGenerator : NinjadogBaseGenerator
         foreach (var context in properties)
         {
             sb.Append($"@{context.Name}");
-
-            if (!context.IsLast)
-            {
-                sb.Append(", ");
-            }
-            else
-            {
-                sb.Append(")");
-            }
+            sb.Append(!context.IsLast ? ", " : ")");
         }
 
         return sb.ToString();

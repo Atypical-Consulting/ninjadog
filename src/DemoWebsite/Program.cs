@@ -9,11 +9,14 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient
 {
-    BaseAddress = new(builder.HostEnvironment.BaseAddress)
+    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 
 builder.Services.AddScoped(sp => new ApiClient(
     "https://localhost:7006/",
     sp.GetRequiredService<HttpClient>()));
 
-await builder.Build().RunAsync();
+await builder
+    .Build()
+    .RunAsync()
+    .ConfigureAwait(false);

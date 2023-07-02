@@ -14,7 +14,7 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
         var rootNs = typeContext.RootNamespace;
 
         var code = $$"""
-            
+
             using Microsoft.AspNetCore.Diagnostics;
             using {{rootNs}}.Contracts.Responses;
             using {{rootNs}}.Database;
@@ -26,9 +26,9 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
             using FastEndpoints.ClientGen;
             using FastEndpoints.Swagger;
             using FluentValidation;
-            
+
             {{WriteFileScopedNamespace(rootNs)}}
-            
+
             public static class NinjadogExtensions
             {
                 public static IServiceCollection AddNinjadog(
@@ -36,43 +36,47 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
                     ConfigurationManager config)
                 {
                     services.AddFastEndpoints();
-            
-                    services.AddSwaggerDoc(s =>
+                    services.SwaggerDocument(o =>
                     {
-                        s.DocumentName = "version 1";
+                        o.DocumentSettings = s =>
+                        {
+                            s.Title = "Ninjadog API";
+                            s.Version = "v1";
+                        };
                     });
-            
-                    services.AddSingleton<IDbConnectionFactory>(_ =>
-                        new SqliteConnectionFactory(config.GetValue<string>("Database:ConnectionString")));
+
+                    var connectionString =
+                        config.GetValue<string>("Database:ConnectionString")
+                        ?? throw new InvalidOperationException("Database:ConnectionString is not configured.");
+
+                    services.AddSingleton<IDbConnectionFactory>(_ => new SqliteConnectionFactory(connectionString));
                     services.AddSingleton<DatabaseInitializer>();
-            
+
             {{GenerateModelDependenciesInjection(typeContexts)}}
                     return services;
                 }
-            
+
                 public static WebApplication UseNinjadog(this WebApplication app)
                 {
                     app.UseValidationExceptionHandler();
                     app.UseFastEndpoints();
-            
-                    app.UseOpenApi();
-                    app.UseSwaggerUi3(s => s.ConfigureDefaults());
-            
+                    app.UseSwaggerGen();
+
                     app.MapCSharpClientEndpoint("/cs-client", "version 1", s =>
                     {
                         s.ClassName = "ApiClient";
                         s.CSharpGeneratorSettings.Namespace = "{{rootNs}}.Client";
                     });
-            
+
                     app.MapTypeScriptClientEndpoint("/ts-client", "version 1", s =>
                     {
                         s.ClassName = "ApiClient";
                         s.TypeScriptGeneratorSettings.Namespace = "{{rootNs}}.Client";
                     });
-            
+
                     return app;
                 }
-            
+
                 public static WebApplication UseValidationExceptionHandler(this WebApplication app)
                 {
                     app.UseExceptionHandler(errApp =>
@@ -80,7 +84,7 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
                         errApp.Run(async ctx =>
                         {
                             var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
-            
+
                             if (exHandlerFeature?.Error is ValidationException exception)
                             {
                                 var validationFailureResponse = new ErrorResponse
@@ -93,12 +97,12 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
                                             failures => failures.Key,
                                             failures => failures.Select(failure => failure.ErrorMessage).ToList())
                                 };
-            
+
                                 await ctx.Response.WriteAsJsonAsync(validationFailureResponse);
                             }
                         });
                     });
-            
+
                     return app;
                 }
             }

@@ -16,15 +16,12 @@ public sealed class UpdateRequestGenerator : NinjadogBaseGenerator
         var type = typeContext.Type;
 
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
-
-        var properties = string.Join(
-            Environment.NewLine,
-            modelProperties.Select(GenerateProperties));
+        var properties = string.Join("\n", modelProperties.Select(GenerateProperties));
 
         var code = $$"""
-            
+
             {{WriteFileScopedNamespace(ns)}}
-            
+
             /// <summary>
             ///     Request to update a {{st.Model}}.
             /// </summary>

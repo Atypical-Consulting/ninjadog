@@ -16,15 +16,12 @@ public sealed class ResponseGenerator : NinjadogBaseGenerator
         var type = typeContext.Type;
 
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
-
-        var properties = string.Join(
-            Environment.NewLine,
-            modelProperties.Select(property => GenerateDtoProperties(property)));
+        var properties = string.Join("\n", modelProperties.Select(GenerateDtoProperties));
 
         var code = $$"""
-            
+
             {{WriteFileScopedNamespace(ns)}}
-            
+
             public partial class {{st.ClassModelResponse}}
             {
             {{properties}}

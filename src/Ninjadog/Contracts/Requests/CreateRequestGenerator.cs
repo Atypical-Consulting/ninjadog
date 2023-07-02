@@ -16,10 +16,7 @@ public sealed class CreateRequestGenerator : NinjadogBaseGenerator
         var type = typeContext.Type;
 
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
-
-        var properties = string.Join(
-            Environment.NewLine,
-            modelProperties.Select(property => GenerateProperties(property)));
+        var properties = string.Join("\n", modelProperties.Select(GenerateProperties));
 
         var code = $$"""
 

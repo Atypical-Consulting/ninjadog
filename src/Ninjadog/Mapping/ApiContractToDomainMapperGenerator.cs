@@ -16,13 +16,8 @@ public sealed class ApiContractToDomainMapperGenerator : NinjadogBaseGenerator
         var ns = typeContext.Ns;
         var rootNs = typeContext.RootNamespace;
 
-        var toModelFromCreateMethods = string.Join(
-            Environment.NewLine,
-            typeContexts.Select(GenerateToModelFromCreateMethods));
-
-        var toModelFromUpdateMethods = string.Join(
-            Environment.NewLine,
-            typeContexts.Select(GenerateToModelFromUpdateMethods));
+        var toModelFromCreateMethods = string.Join("\n", typeContexts.Select(GenerateToModelFromCreateMethods));
+        var toModelFromUpdateMethods = string.Join("\n", typeContexts.Select(GenerateToModelFromUpdateMethods));
 
         var code = $$"""
 

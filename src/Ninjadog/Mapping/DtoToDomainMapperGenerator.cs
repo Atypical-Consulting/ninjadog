@@ -16,9 +16,7 @@ public sealed class DtoToDomainMapperGenerator : NinjadogBaseGenerator
         var ns = typeContext.Ns;
         var rootNs = typeContext.RootNamespace;
 
-        var methods = string.Join(
-            Environment.NewLine,
-            typeContexts.Select(GenerateToModelMethods));
+        var methods = string.Join("\n", typeContexts.Select(GenerateToModelMethods));
 
         var code = $$"""
 
