@@ -23,7 +23,7 @@
         <PackageReference Include="FastEndpoints" Version="5.13.0" />
         <PackageReference Include="FastEndpoints.ClientGen" Version="5.13.0" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.13.0" />
-        <PackageReference Include="FluentValidation" Version="11.5.2" />
+        <PackageReference Include="FluentValidation" Version="11.6.0" />
         <PackageReference Include="ValueOf" Version="2.0.31" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.8" />
     </ItemGroup>
