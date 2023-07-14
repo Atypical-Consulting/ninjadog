@@ -8,7 +8,9 @@ public class Product
 {
     public ProductId Id { get; init; } = ProductId.From(Guid.NewGuid());
 
-    public ProductName Name { get; init; } = default!;
+    public required ProductName Name { get; init; }
 
-    public Price Price { get; init; } = default!;
+    public required ProductDescription Description { get; init; }
+
+    public required Price Price { get; init; }
 }

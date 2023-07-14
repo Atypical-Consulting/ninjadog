@@ -8,11 +8,11 @@ public class Customer
 {
     public CustomerId Id { get; init; } = CustomerId.From(Guid.NewGuid());
 
-    public Username Username { get; init; } = default!;
+    public required Username Username { get; init; }
 
-    public FullName FullName { get; init; } = default!;
+    public required FullName FullName { get; init; }
 
-    public EmailAddress Email { get; init; } = default!;
+    public required EmailAddress Email { get; init; }
 
-    public DateOfBirth DateOfBirth { get; init; } = default!;
+    public required DateOfBirth DateOfBirth { get; init; }
 }
