@@ -13,13 +13,15 @@ public class ProductDescription : ValueOf<string, ProductDescription>
 
     protected override void Validate()
     {
-        if (Value.Length > MaxLength)
+        if (Value.Length <= MaxLength)
         {
-            var message = $"{Value} is not a valid product description";
-            throw new ValidationException(message, new []
-            {
-                new ValidationFailure(nameof(ProductDescription), message)
-            });
+            return;
         }
+
+        var message = $"{Value} is not a valid product description";
+        throw new ValidationException(message, new []
+        {
+            new ValidationFailure(nameof(ProductDescription), message)
+        });
     }
 }

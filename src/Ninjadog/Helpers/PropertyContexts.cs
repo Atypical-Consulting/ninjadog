@@ -6,7 +6,7 @@ public sealed class PropertyContexts : List<PropertyContext>
     {
         var propertySymbols = GetPropertiesWithGetSet(type).ToArray();
 
-        for (int i = 0; i < propertySymbols.Length; i++)
+        for (var i = 0; i < propertySymbols.Length; i++)
         {
             var property = propertySymbols[i];
 

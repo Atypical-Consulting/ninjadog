@@ -5,7 +5,7 @@ public sealed class DtoToDomainMapperGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             "DtoToDomainMapperGenerator",
             GenerateCode,
             "Mapping");

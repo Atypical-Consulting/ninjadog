@@ -41,9 +41,9 @@ internal static class Utilities
             return null;
         }
 
-        var type = context.SemanticModel.GetDeclaredSymbol(classDeclaration) as ITypeSymbol;
-
-        return type is null || !IsNinjadogModel(type) ? null : type;
+        return context.SemanticModel.GetDeclaredSymbol(classDeclaration) is not ITypeSymbol type || !IsNinjadogModel(type)
+            ? null
+            : type;
     }
 
     internal static bool IsNinjadogModel(ISymbol type)
@@ -106,7 +106,7 @@ internal static class Utilities
         }
         else
         {
-            string[] strings = type.ContainingNamespace.ToString().Split('.');
+            var strings = type.ContainingNamespace.ToString().Split('.');
             strings = strings.Take(strings.Length - 1).ToArray();
             ns = strings.Aggregate((s1, s2) => s1 + "." + s2);
         }

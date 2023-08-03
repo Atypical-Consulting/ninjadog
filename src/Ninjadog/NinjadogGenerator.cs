@@ -4,9 +4,10 @@ namespace Ninjadog;
 public sealed class NinjadogGenerator : NinjadogBaseGenerator
 {
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             "NinjadogExtensions",
-            GenerateCode);
+            GenerateCode,
+            null);
 
     private static string GenerateCode(ImmutableArray<TypeContext> typeContexts)
     {

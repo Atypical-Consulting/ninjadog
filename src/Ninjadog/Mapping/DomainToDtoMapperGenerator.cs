@@ -5,7 +5,7 @@ public sealed class DomainToDtoMapperGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             "DomainToDtoMapperGenerator",
             GenerateCode,
             "Mapping");
@@ -49,7 +49,7 @@ public sealed class DomainToDtoMapperGenerator : NinjadogBaseGenerator
 
         for (var i = 0; i < modelProperties.Length; i++)
         {
-            bool isLastItem = i == modelProperties.Length - 1;
+            var isLastItem = i == modelProperties.Length - 1;
 
             var p = modelProperties[i];
 

@@ -5,7 +5,7 @@ public sealed class DeleteEndpointGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"Delete{st.Model}Endpoint",
             GenerateCode,
             "Endpoints");

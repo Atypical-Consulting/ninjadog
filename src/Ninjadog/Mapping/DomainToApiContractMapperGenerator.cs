@@ -5,7 +5,7 @@ public sealed class DomainToApiContractMapperGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             "DomainToApiContractMapperGenerator",
             GenerateCode,
             "Mapping");
@@ -51,7 +51,7 @@ public sealed class DomainToApiContractMapperGenerator : NinjadogBaseGenerator
 
         for (var i = 0; i < modelProperties.Length; i++)
         {
-            bool isLastItem = i == modelProperties.Length - 1;
+            var isLastItem = i == modelProperties.Length - 1;
 
             var p = modelProperties[i];
 
@@ -110,7 +110,7 @@ public sealed class DomainToApiContractMapperGenerator : NinjadogBaseGenerator
 
         for (var i = 0; i < modelProperties.Length; i++)
         {
-            bool isLastItem = i == modelProperties.Length - 1;
+            var isLastItem = i == modelProperties.Length - 1;
 
             var p = modelProperties[i];
 

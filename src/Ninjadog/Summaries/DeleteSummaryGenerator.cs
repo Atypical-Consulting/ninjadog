@@ -5,7 +5,7 @@ public sealed class DeleteSummaryGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"Delete{st.Model}Summary",
             GenerateCode,
             "Summaries");

@@ -5,7 +5,7 @@ public sealed class DbConnectionFactoryGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             "DbConnectionFactory",
             GenerateCode,
             "Database");

@@ -20,7 +20,7 @@ public sealed record TypeContext
         string? subNamespace = null,
         StringTokens? stringTokens = null)
     {
-        string rootNamespace = GetRootNamespace(type) ?? "Ninjadog";
+        var rootNamespace = GetRootNamespace(type) ?? "Ninjadog";
 
         Type = type;
         Tokens = stringTokens ?? new StringTokens(type.Name);

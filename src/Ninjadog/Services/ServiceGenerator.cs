@@ -5,7 +5,7 @@ public sealed class ServiceGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"{st.Model}Service",
             GenerateCode,
             "Services");

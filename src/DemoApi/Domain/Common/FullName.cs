@@ -12,13 +12,15 @@ public class FullName : ValueOf<string, FullName>
 
     protected override void Validate()
     {
-        if (!FullNameRegex.IsMatch(Value))
+        if (FullNameRegex.IsMatch(Value))
         {
-            var message = $"{Value} is not a valid full name";
-            throw new ValidationException(message, new []
-            {
-                new ValidationFailure(nameof(FullName), message)
-            });
+            return;
         }
+
+        var message = $"{Value} is not a valid full name";
+        throw new ValidationException(message, new []
+        {
+            new ValidationFailure(nameof(FullName), message)
+        });
     }
 }
