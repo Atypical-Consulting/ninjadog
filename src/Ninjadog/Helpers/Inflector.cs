@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+// ReSharper disable UnusedMember.Global
 
 namespace Ninjadog.Helpers;
 
@@ -120,7 +121,7 @@ public static class Inflector
     public static string Singularize(this string word)
         => ApplyRules(Singulars, word)!;
 
-    private static string? ApplyRules(List<Rule> rules, string word)
+    private static string? ApplyRules(IReadOnlyList<Rule> rules, string word)
     {
         var result = word;
 
@@ -147,7 +148,7 @@ public static class Inflector
             match => match.Captures[0].Value.ToUpper());
 
     public static string Humanize(this string lowercaseAndUnderscoredWord)
-        => Capitalize(Regex.Replace(lowercaseAndUnderscoredWord, @"_", " "));
+        => Capitalize(Regex.Replace(lowercaseAndUnderscoredWord, "_", " "));
 
     public static string Pascalize(this string lowercaseAndUnderscoredWord)
         => Regex.Replace(
@@ -161,7 +162,7 @@ public static class Inflector
     public static string Underscore(this string pascalCasedWord)
         => Regex.Replace(
             Regex.Replace(
-                Regex.Replace(pascalCasedWord, @"([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])",
+                Regex.Replace(pascalCasedWord, "([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])",
                 "$1_$2"), @"[-\s]", "_").ToLower();
 
     public static string Capitalize(this string word)

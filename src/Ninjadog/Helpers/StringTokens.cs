@@ -5,16 +5,16 @@ namespace Ninjadog.Helpers;
 
 public sealed record StringTokens
 {
-    public StringTokens(string modelNameInPascalCase)
+    public StringTokens(string pascal)
     {
-        string pascal = modelNameInPascalCase;
-        string pascalPlural = pascal.Pluralize();
-        string camel = pascal.Camelize();
-        string camelPlural = pascal.Camelize().Pluralize();
-        string dashed = pascal.Underscore().Dasherize();
-        string dashedPlural = pascal.Pluralize().Underscore().Dasherize();
-        string humanized = pascal.Underscore().Humanize().ToLower();
-        string humanizedPlural = pascal.Pluralize().Underscore().Humanize().ToLower();
+        var pascalPlural = pascal.Pluralize();
+        var camel = pascal.Camelize();
+        var camelPlural = pascal.Camelize().Pluralize();
+        // TODO: uncomment if needed
+        // var dashed = pascal.Underscore().Dasherize();
+        var dashedPlural = pascal.Pluralize().Underscore().Dasherize();
+        var humanized = pascal.Underscore().Humanize().ToLower();
+        var humanizedPlural = pascal.Pluralize().Underscore().Humanize().ToLower();
 
         // model
         Model = pascal;

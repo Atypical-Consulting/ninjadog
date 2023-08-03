@@ -5,7 +5,7 @@ public sealed class GetAllSummaryGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"GetAll{st.Models}Summary",
             GenerateCode,
             "Summaries");

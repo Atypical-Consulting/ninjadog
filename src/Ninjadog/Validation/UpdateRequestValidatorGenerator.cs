@@ -5,7 +5,7 @@ public sealed class UpdateRequestValidatorGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"Update{st.Model}RequestValidator",
             GenerateCode,
             "Validation");
@@ -37,7 +37,6 @@ public sealed class UpdateRequestValidatorGenerator : NinjadogBaseGenerator
 
     private static string GenerateValidationRules(TypeContext typeContext)
     {
-        var st = typeContext.Tokens;
         var properties = typeContext.PropertyContexts;
 
         IndentedStringBuilder sb = new();

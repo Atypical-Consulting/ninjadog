@@ -5,7 +5,7 @@ public sealed class RepositoryGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"{st.Model}Repository",
             GenerateCode,
             "Repositories");

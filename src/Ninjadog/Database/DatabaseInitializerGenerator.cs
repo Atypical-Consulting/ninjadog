@@ -5,7 +5,7 @@ public sealed class DatabaseInitializerGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             "DatabaseInitializer",
             GenerateCode,
             "Database");
@@ -64,7 +64,7 @@ public sealed class DatabaseInitializerGenerator : NinjadogBaseGenerator
 
         sb.AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (");
         sb.IncrementIndent().IncrementIndent().IncrementIndent();
-        sb.AppendLine(@"Id CHAR(36) PRIMARY KEY,");
+        sb.AppendLine("Id CHAR(36) PRIMARY KEY,");
 
         foreach (var context in typeContext.PropertyContexts.Where(context => !context.IsId))
         {

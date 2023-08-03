@@ -24,7 +24,7 @@ public class GeneratorSetup
     public GeneratorSetup(
         string className,
         Func<ImmutableArray<TypeContext>, string> generateCode,
-        string? subNamespace = null)
+        string? subNamespace)
     {
         CodeGenerationMode = CodeGenerationMode.SingleFile;
         SubNamespace = subNamespace;

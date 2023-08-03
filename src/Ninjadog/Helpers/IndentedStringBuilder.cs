@@ -3,6 +3,8 @@
 // https://raw.githubusercontent.com/dotnet/efcore/4a2e4ebc03f07536e400843105b8ed3c9a32a10b/src/EFCore/Infrastructure/IndentedStringBuilder.cs
 
 using System.Text;
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable UnusedMember.Global
 
 namespace Ninjadog.Helpers;
 
@@ -140,9 +142,8 @@ internal class IndentedStringBuilder
         using (var reader = new StringReader(value))
         {
             var first = true;
-            string? line;
 
-            while ((line = reader.ReadLine()) != null)
+            while (reader.ReadLine() is { } line)
             {
                 if (first)
                 {

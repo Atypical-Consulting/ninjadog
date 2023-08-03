@@ -5,7 +5,7 @@ public sealed class GetAllResponseGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"GetAll{st.Models}Response",
             GenerateCode,
             "Contracts.Responses");

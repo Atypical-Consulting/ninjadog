@@ -5,7 +5,7 @@ public sealed class GetAllEndpointGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"GetAll{st.Models}Endpoint",
             GenerateCode,
             "Endpoints");

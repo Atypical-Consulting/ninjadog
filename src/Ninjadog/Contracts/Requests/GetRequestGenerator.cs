@@ -5,7 +5,7 @@ public sealed class GetRequestGenerator : NinjadogBaseGenerator
 {
     /// <inheritdoc />
     protected override GeneratorSetup Setup
-        => new GeneratorSetup(
+        => new(
             st => $"Get{st.Model}Request",
             GenerateCode,
             "Contracts.Requests");

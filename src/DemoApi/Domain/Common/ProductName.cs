@@ -12,13 +12,15 @@ public class ProductName : ValueOf<string, ProductName>
 
     protected override void Validate()
     {
-        if (!ProductNameRegex.IsMatch(Value))
+        if (ProductNameRegex.IsMatch(Value))
         {
-            var message = $"{Value} is not a valid product name";
-            throw new ValidationException(message, new []
-            {
-                new ValidationFailure(nameof(ProductName), message)
-            });
+            return;
         }
+
+        var message = $"{Value} is not a valid product name";
+        throw new ValidationException(message, new []
+        {
+            new ValidationFailure(nameof(ProductName), message)
+        });
     }
 }
