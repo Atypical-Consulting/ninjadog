@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.6.0" />
+    <PackageReference Include="FluentValidation" Version="11.7.0" />
     <PackageReference Include="ValueOf" Version="2.0.31" />
     <PackageReference Include="Verify.XUnit" Version="20.6.0" />
     <PackageReference Include="Verify.SourceGenerators" Version="2.1.0" />
