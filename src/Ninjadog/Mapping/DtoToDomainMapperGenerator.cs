@@ -43,9 +43,7 @@ public sealed class DtoToDomainMapperGenerator : NinjadogBaseGenerator
 
         IndentedStringBuilder sb = new();
 
-        sb.IncrementIndent();
-        sb.IncrementIndent();
-        sb.IncrementIndent();
+        sb.IncrementIndent(3);
 
         for (var i = 0; i < modelProperties.Length; i++)
         {

@@ -193,6 +193,18 @@ internal class IndentedStringBuilder
     }
 
     /// <summary>
+    ///     Increments the indent.
+    /// </summary>
+    /// <param name="count">The number of times to increment the indent.</param>
+    /// <returns>This builder so that additional calls can be chained.</returns>
+    public virtual IndentedStringBuilder IncrementIndent(byte count)
+    {
+        _indent += count;
+
+        return this;
+    }
+
+    /// <summary>
     ///     Decrements the indent.
     /// </summary>
     /// <returns>This builder so that additional calls can be chained.</returns>
@@ -201,6 +213,21 @@ internal class IndentedStringBuilder
         if (_indent > 0)
         {
             _indent--;
+        }
+
+        return this;
+    }
+
+    /// <summary>
+    ///     Decrements the indent.
+    /// </summary>
+    /// <param name="count">The number of times to decrement the indent.</param>
+    /// <returns>This builder so that additional calls can be chained.</returns>
+    public virtual IndentedStringBuilder DecrementIndent(byte count)
+    {
+        if (_indent > 0)
+        {
+            _indent -= count;
         }
 
         return this;

@@ -45,9 +45,7 @@ public sealed class DomainToApiContractMapperGenerator : NinjadogBaseGenerator
 
         IndentedStringBuilder sb = new();
 
-        sb.IncrementIndent();
-        sb.IncrementIndent();
-        sb.IncrementIndent();
+        sb.IncrementIndent(3);
 
         for (var i = 0; i < modelProperties.Length; i++)
         {
@@ -103,10 +101,7 @@ public sealed class DomainToApiContractMapperGenerator : NinjadogBaseGenerator
 
         IndentedStringBuilder sb = new();
 
-        sb.IncrementIndent();
-        sb.IncrementIndent();
-        sb.IncrementIndent();
-        sb.IncrementIndent();
+        sb.IncrementIndent(4);
 
         for (var i = 0; i < modelProperties.Length; i++)
         {
