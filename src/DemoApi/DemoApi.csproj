@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.1.11" />
+        <PackageReference Include="Dapper" Version="2.1.15" />
         <PackageReference Include="FastEndpoints" Version="5.18.0" />
         <PackageReference Include="FastEndpoints.ClientGen" Version="5.18.0" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.18.0" />
