@@ -36,8 +36,7 @@ public sealed class UpdateRequestGenerator : NinjadogBaseGenerator
 
     private static string GenerateProperties(IPropertySymbol p)
     {
-        IndentedStringBuilder sb = new();
-        sb.Indent();
+        IndentedStringBuilder sb = new(1);
 
         var baseTypeName = p.Type.BaseType?.Name;
         var isValueOf = baseTypeName is "ValueOf";

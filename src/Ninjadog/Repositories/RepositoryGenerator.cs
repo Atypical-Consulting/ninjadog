@@ -90,7 +90,7 @@ public sealed class RepositoryGenerator : NinjadogBaseGenerator
         var st = typeContext.Tokens;
         var properties = typeContext.PropertyContexts;
 
-        IndentedStringBuilder sb = new();
+        IndentedStringBuilder sb = new(0);
         sb.Append($"INSERT INTO {st.Models} (");
 
         foreach (var context in properties)
@@ -128,7 +128,7 @@ public sealed class RepositoryGenerator : NinjadogBaseGenerator
         var st = typeContext.Tokens;
         var properties = typeContext.PropertyContexts;
 
-        IndentedStringBuilder sb = new();
+        IndentedStringBuilder sb = new(0);
 
         sb.Append($"UPDATE {st.Models} SET ");
 

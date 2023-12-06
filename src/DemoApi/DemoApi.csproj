@@ -4,8 +4,8 @@
         <OutputType>Exe</OutputType>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <LangVersion>11</LangVersion>
-        <TargetFramework>net7.0</TargetFramework>
+        <LangVersion>12</LangVersion>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -19,13 +19,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.1.11" />
-        <PackageReference Include="FastEndpoints" Version="5.18.0" />
-        <PackageReference Include="FastEndpoints.ClientGen" Version="5.18.0" />
-        <PackageReference Include="FastEndpoints.Swagger" Version="5.18.0" />
-        <PackageReference Include="FluentValidation" Version="11.7.1" />
+        <PackageReference Include="Dapper" Version="2.1.24" />
+        <PackageReference Include="FastEndpoints" Version="5.20.1" />
+        <PackageReference Include="FastEndpoints.ClientGen" Version="5.20.1" />
+        <PackageReference Include="FastEndpoints.Swagger" Version="5.20.1" />
+        <PackageReference Include="FluentValidation" Version="11.8.1" />
         <PackageReference Include="ValueOf" Version="2.0.31" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.12" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     </ItemGroup>
 
 </Project>

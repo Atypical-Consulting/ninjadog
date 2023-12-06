@@ -29,6 +29,11 @@ internal class IndentedStringBuilder
 
     private readonly StringBuilder _stringBuilder = new();
 
+    public IndentedStringBuilder(byte indent)
+    {
+        _indent = indent;
+    }
+
     /// <summary>
     ///     The current length of the built string.
     /// </summary>

@@ -15,7 +15,7 @@
         @if (_customers is not null)
         {
           <ul role="list" class="space-y-12 sm:grid sm:grid-cols-2 sm:gap-12 sm:space-y-0 lg:gap-x-8">
-            @foreach (DemoApiContractsResponsesCustomerResponse customer in _customers)
+            @foreach (var customer in _customers)
             {
               <li>
                 <div class="flex items-center space-x-4 lg:space-x-6">
@@ -45,7 +45,7 @@
   /// <inheritdoc />
   protected override async Task OnInitializedAsync()
   {
-    DemoApiContractsResponsesGetAllCustomersResponse? response = await ApiClient.DemoApiEndpointsGetAllCustomersEndpointAsync();
+    var response = await ApiClient.DemoApiEndpointsGetAllCustomersEndpointAsync();
     _customers = response.Customers.ToList();
     await base.OnInitializedAsync();
   }

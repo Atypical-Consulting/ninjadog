@@ -114,9 +114,7 @@ public sealed class NinjadogGenerator : NinjadogBaseGenerator
 
     private static string GenerateModelDependenciesInjection(ImmutableArray<TypeContext> typeContexts)
     {
-        IndentedStringBuilder sb = new();
-        sb.Indent();
-        sb.Indent();
+        IndentedStringBuilder sb = new(2);
 
         foreach (var st in typeContexts.Select(model => model.Tokens))
         {

@@ -39,9 +39,7 @@ public sealed class CreateRequestValidatorGenerator : NinjadogBaseGenerator
     {
         var properties = typeContext.PropertyContexts;
 
-        IndentedStringBuilder sb = new();
-
-        sb.IncrementIndent().IncrementIndent();
+        IndentedStringBuilder sb = new(2);
 
         foreach (var context in properties.Where(context => !context.IsId))
         {

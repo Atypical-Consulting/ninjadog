@@ -33,8 +33,7 @@ public sealed class ResponseGenerator : NinjadogBaseGenerator
 
     private static string GenerateDtoProperties(IPropertySymbol p)
     {
-        IndentedStringBuilder sb = new();
-        sb.Indent();
+        IndentedStringBuilder sb = new(1);
 
         var baseTypeName = p.Type.BaseType?.Name;
         var isValueOf = baseTypeName is "ValueOf";

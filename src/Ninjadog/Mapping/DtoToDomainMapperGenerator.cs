@@ -41,7 +41,7 @@ public sealed class DtoToDomainMapperGenerator : NinjadogBaseGenerator
         var type = typeContext.Type;
         var modelProperties = GetPropertiesWithGetSet(type).ToArray();
 
-        IndentedStringBuilder sb = new();
+        IndentedStringBuilder sb = new(3);
 
         sb.IncrementIndent(3);
 

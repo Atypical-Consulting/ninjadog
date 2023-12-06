@@ -1,7 +1,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Ninjadog.Contracts.Data;
-using VerifyXunit;
 
 namespace Ninjadog.Tests;
 
@@ -20,7 +19,7 @@ public static class TestHelper
         };
 
         // Create a Roslyn compilation for the syntax tree.
-        CSharpCompilation compilation = CSharpCompilation.Create(
+        var compilation = CSharpCompilation.Create(
             assemblyName: "Tests",
             syntaxTrees: new[] { syntaxTree },
             references: references); // 👈 pass the references to the compilation

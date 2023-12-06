@@ -43,9 +43,7 @@ public sealed class DatabaseInitializerGenerator : NinjadogBaseGenerator
 
     private static string GenerateCreateTableSqlQueries(ImmutableArray<TypeContext> immutableArray)
     {
-        IndentedStringBuilder sb = new();
-
-        sb.IncrementIndent().IncrementIndent();
+        IndentedStringBuilder sb = new(2);
 
         foreach (var typeContext in immutableArray)
         {
@@ -60,7 +58,7 @@ public sealed class DatabaseInitializerGenerator : NinjadogBaseGenerator
     {
         var st = typeContext.Tokens;
 
-        IndentedStringBuilder sb = new();
+        IndentedStringBuilder sb = new(0);
 
         sb.AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (");
         sb.IncrementIndent().IncrementIndent().IncrementIndent();

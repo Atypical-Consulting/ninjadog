@@ -41,8 +41,7 @@ public sealed class CreateRequestGenerator : NinjadogBaseGenerator
             return "";
         }
 
-        IndentedStringBuilder sb = new();
-        sb.Indent();
+        IndentedStringBuilder sb = new(1);
 
         var baseTypeName = p.Type.BaseType?.Name;
         var isValueOf = baseTypeName is "ValueOf";
