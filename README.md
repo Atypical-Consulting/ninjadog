@@ -2,15 +2,17 @@
 
 The .NET REST API Source Generator
 
+Ninjadog is a .NET REST API source generator that aims to save developers' time by automating the creation of boilerplate code. It follows the Domain Driven Design (DDD) approach and generates REST endpoints, API clients in C# and TypeScript, and much more. With Ninjadog, developers can focus on what's really important: the business logic.
+
 <!-- TOC -->
 * [Ninjadog](#ninjadog)
   * [The long road to MVP](#the-long-road-to-mvp)
   * [How to start](#how-to-start)
   * [The Goal](#the-goal)
-  * [Fonctionalites](#fonctionalites)
-  * [Avantages](#avantages)
-  * [Liste des generateurs](#liste-des-generateurs)
-    * [Ninjadog](#ninjadog)
+  * [Features](#features)
+  * [Benefits](#benefits)
+  * [List of generators](#list-of-generators)
+    * [Ninjadog](#ninjadog-1)
     * [Ninjadog.Contracts.Data](#ninjadogcontractsdata)
     * [Ninjadog.Contracts.Requests](#ninjadogcontractsrequests)
     * [Ninjadog.Contracts.Responses](#ninjadogcontractsresponses)
@@ -21,60 +23,51 @@ The .NET REST API Source Generator
     * [Ninjadog.Services](#ninjadogservices)
     * [Ninjadog.Summaries](#ninjadogsummaries)
     * [Ninjadog.Validation](#ninjadogvalidation)
-  * [Diagrams](#diagrams)
-    * [Request/Response Flow](#requestresponse-flow)
 <!-- TOC -->
 
 ## The long road to MVP
-- [x] Solution qui compile
-- [ ] BMC
-- [ ] SWOT
-- [ ] Plan financier
-- [ ] Tarification
+- [x] Solution that compiles
 - [ ] Branding
-  - [x] Nom
-  - [ ] Logo
-  - [ ] TagLine
-  - [ ] Fichiers de presentations (Word, PowerPoint...)
-- [ ] Avantages de la solution
-- [ ] Audience cible
-- [ ] Ecrire une documentation
-- [ ] Site web Shopify avec vente de produit dematerialise
-- [ ] Une demo client
-- [ ] Une demo pour les institutions financieres (Noshak...)
+    - [x] Name
+    - [ ] Logo
+    - [ ] TagLine
+- [ ] Benefits of the solution
+- [ ] Target audience
+- [ ] Write documentation
+- [ ] A client demo
 
 ## How to start
-- Creation d'un projet .NET6 Web API vide
-- Installez le package NuGet Ninjadog
-- Creez vos entites en suivant le pattern DDD
-- Ajoutez un attribut au dessus de vos entites
-- Compilez :-)
+- Create a .NET8 Web API empty project
+- Install the NuGet package Ninjadog
+- Create your entities following the DDD pattern
+- Add an attribute above your entities
+- Compile :-)
 
 ## The Goal
 
-Permettre a chaque developpeur .NET de garder son temps pour ce qui est vraiment important: **le business et non pas le code plomberie**.
+Allow every .NET developer to save their time for what is really important: **the business and not the plumbing code**.
 
-## Fonctionalites
+## Features
 
-- Genere les endpoints REST en se basant sur une approche DDD (Domain Driven Design).
-  - Create
-  - Read All
-  - Read One
-  - Update
-  - Delete
-- Genere les clients d'API en C# et TypeScript.
-  - Client C# accessible via le endpoint: `/cs-client`
-  - Client TypeScript accessible via le endpoint: `/ts-client`
+- Generates REST endpoints based on a DDD approach.
+    - Create
+    - Read All
+    - Read One
+    - Update
+    - Delete
+- Generates API clients in C# and TypeScript.
+    - C# client accessible via the endpoint: `/cs-client`
+    - TypeScript client accessible via the endpoint: `/ts-client`
 
-## Avantages
-- BEAUCOUP de temps gagne
-- MOINS de code a maintenir
-- MOINS d'erreur
-- FINI le "code plomberie"
-- REDUIT la duree de la mise en production
-- Genere egalement les clients d'API en C# et TypeScript
+## Benefits
+- A LOT of time saved
+- LESS code to maintain
+- LESS error
+- FINISHED the "plumbing code"
+- REDUCES the duration of the production launch
+- Also generates API clients in C# and TypeScript
 
-## Liste des generateurs
+## List of generators
 
 ### Ninjadog
 - [x] [Ninjadog](./doc/generators/NinjadogGenerator.md) | Single File
