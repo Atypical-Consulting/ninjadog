@@ -1,10 +1,11 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 // ReSharper disable UnusedMember.Global
 
 namespace Ninjadog.Helpers;
 
 // see: https://github.com/srkirkland/Inflector/blob/master/Inflector/Inflector.cs
-// adapted for .NET6 by Philippe Matray
+// adapted for .NET8 by Philippe Matray
 
 public static class Inflector
 {
@@ -77,21 +78,14 @@ public static class Inflector
 
     #endregion
 
-    private class Rule
+    private class Rule(string pattern, string replacement)
     {
-        private readonly Regex _regex;
-        private readonly string _replacement;
-
-        public Rule(string pattern, string replacement)
-        {
-            _regex = new Regex(pattern, RegexOptions.IgnoreCase);
-            _replacement = replacement;
-        }
+        private readonly Regex _regex = new(pattern, RegexOptions.IgnoreCase);
 
         public string? Apply(string word)
         {
             return _regex.IsMatch(word)
-                ? _regex.Replace(word, _replacement)
+                ? _regex.Replace(word, replacement)
                 : null;
         }
     }
@@ -125,7 +119,7 @@ public static class Inflector
     {
         var result = word;
 
-        if (Uncountables.Contains(word.ToLower()))
+        if (Uncountables.Contains(word.ToLower(CultureInfo.InvariantCulture)))
         {
             return result;
         }

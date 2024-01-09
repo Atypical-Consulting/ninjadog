@@ -1,6 +1,8 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Globalization;
+
 namespace Ninjadog.Helpers;
 
 public sealed record StringTokens
@@ -13,8 +15,8 @@ public sealed record StringTokens
         // TODO: uncomment if needed
         // var dashed = pascal.Underscore().Dasherize();
         var dashedPlural = pascal.Pluralize().Underscore().Dasherize();
-        var humanized = pascal.Underscore().Humanize().ToLower();
-        var humanizedPlural = pascal.Pluralize().Underscore().Humanize().ToLower();
+        var humanized = pascal.Underscore().Humanize().ToLower(CultureInfo.InvariantCulture);
+        var humanizedPlural = pascal.Pluralize().Underscore().Humanize().ToLower(CultureInfo.InvariantCulture);
 
         // model
         Model = pascal;

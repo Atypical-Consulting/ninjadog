@@ -1,5 +1,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
+
 // https://raw.githubusercontent.com/dotnet/efcore/4a2e4ebc03f07536e400843105b8ed3c9a32a10b/src/EFCore/Infrastructure/IndentedStringBuilder.cs
 
 using System.Text;

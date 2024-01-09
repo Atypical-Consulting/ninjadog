@@ -41,7 +41,6 @@ public static class SourceGenerationHelper
 public class Generator
 {
     public const string DeveloperName = "Philippe Matray";
-
     public const string CompanyName = "Atypical Consulting SRL";
 
     public static string GenerationDate

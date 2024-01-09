@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Attributes", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWebsite", "src\DemoWebsite\DemoWebsite.csproj", "{58EB49CE-6844-452C-AB03-40B8F0ACE6EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceGenerators1.Tests", "SourceGenerators1\SourceGenerators1.Tests\SourceGenerators1.Tests.csproj", "{75D178A5-5C1C-4333-926C-84483CA8C9D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{58EB49CE-6844-452C-AB03-40B8F0ACE6EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58EB49CE-6844-452C-AB03-40B8F0ACE6EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58EB49CE-6844-452C-AB03-40B8F0ACE6EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75D178A5-5C1C-4333-926C-84483CA8C9D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75D178A5-5C1C-4333-926C-84483CA8C9D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75D178A5-5C1C-4333-926C-84483CA8C9D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75D178A5-5C1C-4333-926C-84483CA8C9D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8A41D0FD-254D-4684-BC68-E33591C835FA} = {E4D768EA-BAB7-4CF8-9189-4BC93AD46D14}
