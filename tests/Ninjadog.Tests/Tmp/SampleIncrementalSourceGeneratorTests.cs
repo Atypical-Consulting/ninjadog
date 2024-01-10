@@ -50,7 +50,7 @@ public class SampleIncrementalSourceGeneratorTests
         var driver = CSharpGeneratorDriver.Create(generator);
 
         // We need to create a compilation with the required source code.
-        var compilation = CSharpCompilation.Create(nameof(SampleSourceGeneratorTests),
+        var compilation = CSharpCompilation.Create(nameof(NinjadogSettingsGeneratorTests),
             new[] { CSharpSyntaxTree.ParseText(VectorClassText) },
             new[]
             {

@@ -9,7 +9,7 @@ public static class TestHelper
     public static Task Verify(string source)
     {
         // Parse the provided string into a C# syntax tree
-        SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
+        var syntaxTree = CSharpSyntaxTree.ParseText(source);
 
         // Create references for assemblies we require
         // We could add multiple references if required
@@ -35,6 +35,5 @@ public static class TestHelper
 
         // Use verify to snapshot test the source generator output!
         return Verifier.Verify(driver);
-
     }
 }

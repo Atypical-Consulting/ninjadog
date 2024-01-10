@@ -1,3 +1,9 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
+using System.Text.Json;
+using Ninjadog.Configuration;
+
 namespace Ninjadog;
 
 /// <summary>
@@ -5,7 +11,7 @@ namespace Ninjadog;
 /// When using a simple text file as a baseline, we can create a non-incremental source generator.
 /// </summary>
 [Generator]
-public class SampleSourceGenerator : ISourceGenerator
+public class NinjadogSettingsGenerator : ISourceGenerator
 {
     public void Initialize(GeneratorInitializationContext context)
     {
@@ -14,7 +20,7 @@ public class SampleSourceGenerator : ISourceGenerator
 
     public void Execute(GeneratorExecutionContext context)
     {
-        // If you would like to put some data to non-compilable file (e.g. a .txt file), mark it as an Additional File.
+        // If you would like to put some data to non-compilable file (e.g. a .json file), mark it as an Additional File.
 
         // Go through all files marked as an Additional File in file properties.
         foreach (var additionalFile in context.AdditionalFiles)
@@ -25,7 +31,7 @@ public class SampleSourceGenerator : ISourceGenerator
             }
 
             // Check if the file name is the specific file that we expect.
-            if (Path.GetFileName(additionalFile.Path) != "DDD.UbiquitousLanguageRegistry.txt")
+            if (Path.GetFileName(additionalFile.Path) != "ninjadogsettings.json")
             {
                 continue;
             }
@@ -36,9 +42,17 @@ public class SampleSourceGenerator : ISourceGenerator
                 continue;
             }
 
-            foreach (var line in text.Lines)
+            if (JsonSerializer.Deserialize(
+                text.ToString(),
+                typeof(NinjadogConfig),
+                JsonSerializationContext.Default) is not NinjadogConfig json)
             {
-                var className = line.ToString().Trim();
+                continue;
+            }
+
+            foreach (var entity in json.Entities)
+            {
+                var className = entity.Key;
 
                 // Build up the source code.
                 var source =
