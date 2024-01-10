@@ -36,14 +36,12 @@ internal static class Utilities
 
         // "attribute.Parent" is "AttributeListSyntax"
         // "attribute.Parent.Parent" is a C# fragment the attributes are applied to
-        if (attributeSyntax.Parent?.Parent is not ClassDeclarationSyntax classDeclaration)
-        {
-            return null;
-        }
-
-        return context.SemanticModel.GetDeclaredSymbol(classDeclaration) is not ITypeSymbol type || !IsNinjadogModel(type)
+        return attributeSyntax.Parent?.Parent is not ClassDeclarationSyntax classDeclaration
             ? null
-            : type;
+            : context.SemanticModel.GetDeclaredSymbol(classDeclaration, cancellationToken) is not ITypeSymbol type ||
+              !IsNinjadogModel(type)
+                ? null
+                : type;
     }
 
     internal static bool IsNinjadogModel(ISymbol type)
@@ -63,36 +61,24 @@ internal static class Utilities
     internal static IEnumerable<string> GetItemNames(ITypeSymbol type)
     {
         return type.GetMembers()
-            .Select(m =>
-            {
-                if (!m.IsStatic ||
-                    m.DeclaredAccessibility != Accessibility.Public ||
-                    m is not IFieldSymbol field)
-                {
-                    return null;
-                }
-
-                return SymbolEqualityComparer.Default.Equals(field.Type, type)
+            .Select(m => !m.IsStatic ||
+                         m.DeclaredAccessibility != Accessibility.Public ||
+                         m is not IFieldSymbol field
+                ? null
+                : SymbolEqualityComparer.Default.Equals(field.Type, type)
                     ? field.Name
-                    : null;
-            })
+                    : null)
             .Where(field => field is not null)!;
     }
 
     internal static IEnumerable<IPropertySymbol> GetPropertiesWithGetSet(ITypeSymbol type)
     {
         return type.GetMembers()
-            .Select(m =>
-            {
-                if (m.IsStatic ||
-                    m.DeclaredAccessibility != Accessibility.Public ||
-                    m is not IPropertySymbol property)
-                {
-                    return null;
-                }
-
-                return property;
-            })
+            .Select(m => m.IsStatic ||
+                         m.DeclaredAccessibility != Accessibility.Public ||
+                         m is not IPropertySymbol property
+                ? null
+                : property)
             .Where(property => property is not null)!;
     }
 

@@ -14,8 +14,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Ninjadog.Attributes\Ninjadog.Attributes.csproj" />
-        <ProjectReference Include="..\Ninjadog\Ninjadog.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\..\library\Ninjadog.Attributes\Ninjadog.Attributes.csproj" />
+        <ProjectReference Include="..\..\library\Ninjadog\Ninjadog.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     </ItemGroup>
 
     <ItemGroup>

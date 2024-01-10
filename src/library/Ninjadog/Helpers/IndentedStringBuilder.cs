@@ -22,23 +22,18 @@ namespace Ninjadog.Helpers;
 ///     See <see href="https://aka.ms/efcore-docs-providers">Implementation of database providers and extensions</see>
 ///     for more information and examples.
 /// </remarks>
-internal class IndentedStringBuilder
+internal sealed class IndentedStringBuilder(byte indent)
 {
     private const byte IndentSize = 4;
-    private byte _indent;
+    private byte _indent = indent;
     private bool _indentPending = true;
 
     private readonly StringBuilder _stringBuilder = new();
 
-    public IndentedStringBuilder(byte indent)
-    {
-        _indent = indent;
-    }
-
     /// <summary>
     ///     The current length of the built string.
     /// </summary>
-    public virtual int Length
+    public int Length
         => _stringBuilder.Length;
 
     /// <summary>
@@ -46,7 +41,7 @@ internal class IndentedStringBuilder
     /// </summary>
     /// <param name="value">The string to append.</param>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder Append(string value)
+    public IndentedStringBuilder Append(string value)
     {
         DoIndent();
 
@@ -60,7 +55,7 @@ internal class IndentedStringBuilder
     /// </summary>
     /// <param name="value">The char to append.</param>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder Append(char value)
+    public IndentedStringBuilder Append(char value)
     {
         DoIndent();
 
@@ -74,7 +69,7 @@ internal class IndentedStringBuilder
     /// </summary>
     /// <param name="value">The strings to append.</param>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder Append(IEnumerable<string> value)
+    public IndentedStringBuilder Append(IEnumerable<string> value)
     {
         DoIndent();
 
@@ -91,7 +86,7 @@ internal class IndentedStringBuilder
     /// </summary>
     /// <param name="value">The chars to append.</param>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder Append(IEnumerable<char> value)
+    public IndentedStringBuilder Append(IEnumerable<char> value)
     {
         DoIndent();
 
@@ -107,7 +102,7 @@ internal class IndentedStringBuilder
     ///     Appends a new line to the string being built.
     /// </summary>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder AppendLine()
+    public IndentedStringBuilder AppendLine()
     {
         AppendLine(string.Empty);
 
@@ -122,7 +117,7 @@ internal class IndentedStringBuilder
     /// </remarks>
     /// <param name="value">The string to append.</param>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder AppendLine(string value)
+    public IndentedStringBuilder AppendLine(string value)
     {
         if (value.Length != 0)
         {
@@ -143,7 +138,7 @@ internal class IndentedStringBuilder
     /// <param name="value">The string to append.</param>
     /// <param name="skipFinalNewline">If <see langword="true" />, then the terminating new line is not added after the last line.</param>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder AppendLines(string value, bool skipFinalNewline = false)
+    public IndentedStringBuilder AppendLines(string value, bool skipFinalNewline = false)
     {
         using (var reader = new StringReader(value))
         {
@@ -179,7 +174,7 @@ internal class IndentedStringBuilder
     ///     Resets this builder ready to build a new string.
     /// </summary>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder Clear()
+    public IndentedStringBuilder Clear()
     {
         _stringBuilder.Clear();
         _indent = 0;
@@ -191,7 +186,7 @@ internal class IndentedStringBuilder
     ///     Increments the indent.
     /// </summary>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder IncrementIndent()
+    public IndentedStringBuilder IncrementIndent()
     {
         _indent++;
 
@@ -203,7 +198,7 @@ internal class IndentedStringBuilder
     /// </summary>
     /// <param name="count">The number of times to increment the indent.</param>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder IncrementIndent(byte count)
+    public IndentedStringBuilder IncrementIndent(byte count)
     {
         _indent += count;
 
@@ -214,7 +209,7 @@ internal class IndentedStringBuilder
     ///     Decrements the indent.
     /// </summary>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder DecrementIndent()
+    public IndentedStringBuilder DecrementIndent()
     {
         if (_indent > 0)
         {
@@ -229,7 +224,7 @@ internal class IndentedStringBuilder
     /// </summary>
     /// <param name="count">The number of times to decrement the indent.</param>
     /// <returns>This builder so that additional calls can be chained.</returns>
-    public virtual IndentedStringBuilder DecrementIndent(byte count)
+    public IndentedStringBuilder DecrementIndent(byte count)
     {
         if (_indent > 0)
         {
@@ -243,22 +238,28 @@ internal class IndentedStringBuilder
     ///     Creates a scoped indenter that will increment the indent, then decrement it when disposed.
     /// </summary>
     /// <returns>An indenter.</returns>
-    public virtual IDisposable Indent()
-        => new Indenter(this);
+    public IDisposable Indent()
+    {
+        return new Indenter(this);
+    }
 
     /// <summary>
     ///     Temporarily disables all indentation. Restores the original indentation when the returned object is disposed.
     /// </summary>
     /// <returns>An object that restores the original indentation when disposed.</returns>
-    public virtual IDisposable SuspendIndent()
-        => new IndentSuspender(this);
+    public IDisposable SuspendIndent()
+    {
+        return new IndentSuspender(this);
+    }
 
     /// <summary>
     ///     Returns the built string.
     /// </summary>
     /// <returns>The built string.</returns>
     public override string ToString()
-        => _stringBuilder.ToString();
+    {
+        return _stringBuilder.ToString();
+    }
 
     private void DoIndent()
     {
@@ -298,6 +299,8 @@ internal class IndentedStringBuilder
         }
 
         public void Dispose()
-            => _stringBuilder._indent = _indent;
+        {
+            _stringBuilder._indent = _indent;
+        }
     }
 }

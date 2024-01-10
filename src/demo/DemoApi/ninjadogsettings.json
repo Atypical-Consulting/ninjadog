@@ -1,0 +1,35 @@
+{
+  "General": {
+    "name": "TodoApp"
+  },
+  "Entities": {
+    "TodoList": {
+      "Properties": {
+        "Id": {
+          "Type": "Guid",
+          "IsKey": true
+        },
+        "Title": {
+          "Type": "string"
+        },
+        "Items": {
+          "Type": "Collection<TodoItem>"
+        }
+      }
+    },
+    "TodoItem": {
+      "Properties": {
+        "Id": {
+          "Type": "Guid",
+          "IsKey": true
+        },
+        "Description": {
+          "Type": "string"
+        },
+        "IsCompleted": {
+          "Type": "bool"
+        }
+      }
+    }
+  }
+}

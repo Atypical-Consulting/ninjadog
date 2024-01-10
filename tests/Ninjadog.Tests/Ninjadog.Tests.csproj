@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Ninjadog\Ninjadog.csproj" />
+    <ProjectReference Include="..\..\src\library\Ninjadog\Ninjadog.csproj" />
   </ItemGroup>
 
 </Project>

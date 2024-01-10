@@ -97,23 +97,33 @@ public static class Inflector
     }
 
     private static void AddUncountable(string word)
-        => Uncountables.Add(word.ToLower());
+    {
+        Uncountables.Add(word.ToLower());
+    }
 
     private static void AddPlural(string rule, string replacement)
-        => Plurals.Add(new Rule(rule, replacement));
+    {
+        Plurals.Add(new Rule(rule, replacement));
+    }
 
     private static void AddSingular(string rule, string replacement)
-        => Singulars.Add(new Rule(rule, replacement));
+    {
+        Singulars.Add(new Rule(rule, replacement));
+    }
 
-    private static readonly List<Rule> Plurals = new();
-    private static readonly List<Rule> Singulars = new();
-    private static readonly List<string> Uncountables = new();
+    private static readonly List<Rule> Plurals = [];
+    private static readonly List<Rule> Singulars = [];
+    private static readonly List<string> Uncountables = [];
 
     public static string Pluralize(this string word)
-        => ApplyRules(Plurals, word)!;
+    {
+        return ApplyRules(Plurals, word)!;
+    }
 
     public static string Singularize(this string word)
-        => ApplyRules(Singulars, word)!;
+    {
+        return ApplyRules(Singulars, word)!;
+    }
 
     private static string? ApplyRules(IReadOnlyList<Rule> rules, string word)
     {
@@ -136,59 +146,76 @@ public static class Inflector
     }
 
     public static string Titleize(this string word)
-        => Regex.Replace(
-            Humanize(Underscore(word)),
-            @"\b([a-z])",
-            match => match.Captures[0].Value.ToUpper());
+    {
+        return Regex.Replace(
+                Humanize(Underscore(word)),
+                @"\b([a-z])",
+                match => match.Captures[0].Value.ToUpper());
+    }
 
     public static string Humanize(this string lowercaseAndUnderscoredWord)
-        => Capitalize(Regex.Replace(lowercaseAndUnderscoredWord, "_", " "));
+    {
+        return Capitalize(Regex.Replace(lowercaseAndUnderscoredWord, "_", " "));
+    }
 
     public static string Pascalize(this string lowercaseAndUnderscoredWord)
-        => Regex.Replace(
-            lowercaseAndUnderscoredWord,
-            "(?:^|_)(.)",
-            match => match.Groups[1].Value.ToUpper());
+    {
+        return Regex.Replace(
+                lowercaseAndUnderscoredWord,
+                "(?:^|_)(.)",
+                match => match.Groups[1].Value.ToUpper());
+    }
 
     public static string Camelize(this string lowercaseAndUnderscoredWord)
-        => Uncapitalize(Pascalize(lowercaseAndUnderscoredWord));
+    {
+        return Uncapitalize(Pascalize(lowercaseAndUnderscoredWord));
+    }
 
     public static string Underscore(this string pascalCasedWord)
-        => Regex.Replace(
-            Regex.Replace(
-                Regex.Replace(pascalCasedWord, "([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])",
-                "$1_$2"), @"[-\s]", "_").ToLower();
+    {
+        return Regex.Replace(
+                Regex.Replace(
+                    Regex.Replace(pascalCasedWord, "([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])",
+                    "$1_$2"), @"[-\s]", "_").ToLower();
+    }
 
     public static string Capitalize(this string word)
-        => word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
+    {
+        return word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
+    }
 
     public static string Uncapitalize(this string word)
-        => word.Substring(0, 1).ToLower() + word.Substring(1);
+    {
+        return word.Substring(0, 1).ToLower() + word.Substring(1);
+    }
 
     public static string Ordinalize(this string numberString)
-        => Ordanize(int.Parse(numberString), numberString);
+    {
+        return Ordanize(int.Parse(numberString), numberString);
+    }
 
     public static string Ordinalize(this int number)
-        => Ordanize(number, number.ToString());
+    {
+        return Ordanize(number, number.ToString());
+    }
 
     private static string Ordanize(int number, string numberString)
     {
         var nMod100 = number % 100;
 
-        if (nMod100 is >= 11 and <= 13)
-        {
-            return $"{numberString}th";
-        }
-
-        return (number % 10) switch
-        {
-            1 => $"{numberString}st",
-            2 => $"{numberString}nd",
-            3 => $"{numberString}rd",
-            _ => $"{numberString}th"
-        };
+        return nMod100 is >= 11 and <= 13
+            ? $"{numberString}th"
+            : (number % 10) switch
+            {
+                1 => $"{numberString}st",
+                2 => $"{numberString}nd",
+                3 => $"{numberString}rd",
+                _ => $"{numberString}th"
+            };
     }
 
     public static string Dasherize(this string underscoredWord)
-        => underscoredWord.Replace('_', '-');
+    {
+        return underscoredWord.Replace('_', '-');
+    }
 }

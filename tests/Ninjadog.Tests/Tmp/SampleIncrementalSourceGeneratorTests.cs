@@ -1,10 +1,7 @@
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Ninjadog;
-using Xunit;
 
-namespace SourceGenerators1.Tests;
+namespace Ninjadog.Tests.Tmp;
 
 public class SampleIncrementalSourceGeneratorTests
 {
