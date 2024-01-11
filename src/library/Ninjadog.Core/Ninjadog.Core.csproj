@@ -12,11 +12,10 @@
 
   <ItemGroup>
     <AdditionalFiles Include="ninjadogsettings.json" />
-    <AdditionalFiles Include="Templates\WebApi\ninjadog.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\Ninjadog.Settings\Ninjadog.Settings.csproj" />
   </ItemGroup>
 
 </Project>

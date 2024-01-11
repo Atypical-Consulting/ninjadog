@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Ninjadog.Core.Settings;
+namespace Ninjadog.Settings;
 
 [JsonSourceGenerationOptions(
     WriteIndented = true,

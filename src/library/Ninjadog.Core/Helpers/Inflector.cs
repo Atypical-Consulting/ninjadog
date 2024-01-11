@@ -93,13 +93,13 @@ public static class Inflector
 
     private static void AddIrregular(string singular, string plural)
     {
-        AddPlural($"({singular[0]}){singular.Substring(1)}$", $"$1{plural.Substring(1)}");
-        AddSingular($"({plural[0]}){plural.Substring(1)}$", $"$1{singular.Substring(1)}");
+        AddPlural($"({singular[0]}){singular[1..]}$", $"$1{plural[1..]}");
+        AddSingular($"({plural[0]}){plural[1..]}$", $"$1{singular[1..]}");
     }
 
     private static void AddUncountable(string word)
     {
-        Uncountables.Add(word.ToLower());
+        Uncountables.Add(word.ToLowerInvariant());
     }
 
     private static void AddPlural(string rule, string replacement)
@@ -151,7 +151,7 @@ public static class Inflector
         return Regex.Replace(
                 Humanize(Underscore(word)),
                 @"\b([a-z])",
-                match => match.Captures[0].Value.ToUpper());
+                match => match.Captures[0].Value.ToUpperInvariant());
     }
 
     public static string Humanize(this string lowercaseAndUnderscoredWord)
@@ -177,17 +177,20 @@ public static class Inflector
         return Regex.Replace(
                 Regex.Replace(
                     Regex.Replace(pascalCasedWord, "([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])",
-                    "$1_$2"), @"[-\s]", "_").ToLower();
+                    "$1_$2"),
+                @"[-\s]",
+                "_")
+            .ToLowerInvariant();
     }
 
     public static string Capitalize(this string word)
     {
-        return word.Substring(0, 1).ToUpper() + word.Substring(1).ToLower();
+        return word[..1].ToUpperInvariant() + word[1..].ToLowerInvariant();
     }
 
     public static string Uncapitalize(this string word)
     {
-        return word.Substring(0, 1).ToLower() + word.Substring(1);
+        return word[..1].ToLowerInvariant() + word[1..];
     }
 
     public static string Ordinalize(this string numberString)

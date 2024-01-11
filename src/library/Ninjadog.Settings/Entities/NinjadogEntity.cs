@@ -1,4 +1,4 @@
-namespace Ninjadog.Core.Settings;
+namespace Ninjadog.Settings;
 
 public record NinjadogEntity(
     NinjadogEntityProperties Properties);

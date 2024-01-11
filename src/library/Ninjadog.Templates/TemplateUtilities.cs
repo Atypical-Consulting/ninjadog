@@ -1,8 +1,10 @@
-﻿namespace Ninjadog.Core.Helpers;
+﻿using Ninjadog.Core.Helpers;
 
-internal static class Utilities
+namespace Ninjadog.Templates;
+
+public static class TemplateUtilities
 {
-    internal static string DefaultCodeLayout(string code)
+    public static string DefaultCodeLayout(string code)
     {
         return SourceGenerationHelper.Header +
                SourceGenerationHelper.NullableEnable +
@@ -12,7 +14,7 @@ internal static class Utilities
                SourceGenerationHelper.NullableDisable;
     }
 
-    internal static string? WriteFileScopedNamespace(string? ns)
+    public static string? WriteFileScopedNamespace(string? ns)
     {
         return ns is not null
             ? $"namespace {ns};"

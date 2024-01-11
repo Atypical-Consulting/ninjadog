@@ -8,7 +8,7 @@ using System.Text;
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable UnusedMember.Global
 
-namespace Ninjadog.Core.Helpers;
+namespace Ninjadog.Templates;
 
 /// <summary>
 ///     <para>
@@ -23,7 +23,7 @@ namespace Ninjadog.Core.Helpers;
 ///     See <see href="https://aka.ms/efcore-docs-providers">Implementation of database providers and extensions</see>
 ///     for more information and examples.
 /// </remarks>
-internal sealed class IndentedStringBuilder(byte indent)
+public sealed class IndentedStringBuilder(byte indent)
 {
     private const byte IndentSize = 4;
     private byte _indent = indent;
@@ -284,7 +284,9 @@ internal sealed class IndentedStringBuilder(byte indent)
         }
 
         public void Dispose()
-            => _stringBuilder.DecrementIndent();
+        {
+            _stringBuilder.DecrementIndent();
+        }
     }
 
     private sealed class IndentSuspender : IDisposable
