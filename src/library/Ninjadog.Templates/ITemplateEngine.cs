@@ -2,6 +2,6 @@ namespace Ninjadog.Templates;
 
 public interface ITemplateEngine
 {
-    Dictionary<string, string> GeneratedFiles { get; }
+    List<string> GeneratedContents { get; }
     void Run();
 }

@@ -5,7 +5,7 @@ namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 public record TodoAppConfiguration()
     : NinjadogConfiguration(
-        "CrudWebAPI",
-        "1.0.0-alpha.1",
-        "Your ASP.NET Core Web API project with CRUD operations",
+        "TodoApp",
+        "1.0.0",
+        "A application to manage todo lists.",
         "MyCompany.TodoApp");

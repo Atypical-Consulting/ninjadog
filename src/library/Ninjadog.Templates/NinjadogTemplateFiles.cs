@@ -4,4 +4,4 @@
 namespace Ninjadog.Templates;
 
 public class NinjadogTemplateFiles
-    : Dictionary<string, NinjadogTemplate>;
+    : List<NinjadogTemplate>;
