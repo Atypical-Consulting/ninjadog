@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Validation;
 
 [Generator]
-public sealed class UpdateRequestValidatorGenerator : NinjadogBaseGenerator
+public sealed class UpdateRequestValidatorGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"Update{st.Model}RequestValidator",
             GenerateCode,

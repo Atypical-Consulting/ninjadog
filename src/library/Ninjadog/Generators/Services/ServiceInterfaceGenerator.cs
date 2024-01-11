@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Services;
 
 [Generator]
-public sealed class ServiceInterfaceGenerator : NinjadogBaseGenerator
+public sealed class ServiceInterfaceGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"I{st.Model}Service",
             GenerateCode,

@@ -1,10 +1,10 @@
 namespace Ninjadog.Database;
 
 [Generator]
-public sealed class DbConnectionFactoryGenerator : NinjadogBaseGenerator
+public sealed class DbConnectionFactoryGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             "DbConnectionFactory",
             GenerateCode,

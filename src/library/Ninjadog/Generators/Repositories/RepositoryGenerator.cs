@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Repositories;
 
 [Generator]
-public sealed class RepositoryGenerator : NinjadogBaseGenerator
+public sealed class RepositoryGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"{st.Model}Repository",
             GenerateCode,

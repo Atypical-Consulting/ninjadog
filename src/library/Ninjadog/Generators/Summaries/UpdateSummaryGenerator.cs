@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Summaries;
 
 [Generator]
-public sealed class UpdateSummaryGenerator : NinjadogBaseGenerator
+public sealed class UpdateSummaryGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"Update{st.Model}Summary",
             GenerateCode,

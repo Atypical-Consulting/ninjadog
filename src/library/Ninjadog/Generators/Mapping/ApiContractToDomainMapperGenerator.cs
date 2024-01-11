@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Mapping;
 
 [Generator]
-public sealed class ApiContractToDomainMapperGenerator : NinjadogBaseGenerator
+public sealed class ApiContractToDomainMapperGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             "ApiContractToDomainMapperGenerator",
             GenerateCode,

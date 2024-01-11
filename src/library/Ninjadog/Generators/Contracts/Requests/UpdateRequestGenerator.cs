@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Contracts.Requests;
 
 [Generator]
-public sealed class UpdateRequestGenerator : NinjadogBaseGenerator
+public sealed class UpdateRequestGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"Update{st.Model}Request",
             GenerateCode,

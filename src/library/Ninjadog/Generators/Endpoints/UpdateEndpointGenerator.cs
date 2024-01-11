@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Endpoints;
 
 [Generator]
-public sealed class UpdateEndpointGenerator : NinjadogBaseGenerator
+public sealed class UpdateEndpointGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"Update{st.Model}Endpoint",
             GenerateCode,

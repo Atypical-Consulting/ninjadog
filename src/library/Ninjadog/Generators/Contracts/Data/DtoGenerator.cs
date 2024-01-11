@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Contracts.Data;
 
 [Generator]
-public sealed class DtoGenerator : NinjadogBaseGenerator
+public sealed class DtoGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"{st.Model}Dto",
             GenerateCode,

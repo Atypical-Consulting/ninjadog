@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Endpoints;
 
 [Generator]
-public sealed class DeleteEndpointGenerator : NinjadogBaseGenerator
+public sealed class DeleteEndpointGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"Delete{st.Model}Endpoint",
             GenerateCode,

@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Summaries;
 
 [Generator]
-public sealed class DeleteSummaryGenerator : NinjadogBaseGenerator
+public sealed class DeleteSummaryGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"Delete{st.Model}Summary",
             GenerateCode,

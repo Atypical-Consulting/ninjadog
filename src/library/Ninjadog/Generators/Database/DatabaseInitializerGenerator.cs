@@ -1,10 +1,10 @@
 namespace Ninjadog.Database;
 
 [Generator]
-public sealed class DatabaseInitializerGenerator : NinjadogBaseGenerator
+public sealed class DatabaseInitializerGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             "DatabaseInitializer",
             GenerateCode,

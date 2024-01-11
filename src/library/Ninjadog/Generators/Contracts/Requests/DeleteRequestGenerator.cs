@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Contracts.Requests;
 
 [Generator]
-public sealed class DeleteRequestGenerator : NinjadogBaseGenerator
+public sealed class DeleteRequestGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"Delete{st.Model}Request",
             GenerateCode,

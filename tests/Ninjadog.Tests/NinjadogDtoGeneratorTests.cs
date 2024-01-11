@@ -6,13 +6,16 @@ using Ninjadog.Tests.Utils;
 
 namespace Ninjadog.Tests;
 
-public class NinjadogSettingsGeneratorTests
+public class NinjadogDtoGeneratorTests
 {
     private const string NinjadogSettingsText =
         """
         {
-          "general": {
-            "name": "TodoApp"
+          "config": {
+            "name": "TodoApp",
+            "version": "1.0.0",
+            "description": "A simple todo app",
+            "rootNamespace": "MyCustomer.TodoApp"
           },
           "entities": {
             "TodoList": {
@@ -25,7 +28,7 @@ public class NinjadogSettingsGeneratorTests
                   "type": "string"
                 },
                 "Items": {
-                  "type": "Collection<TodoItem>"
+                  "type": "List<TodoItem>"
                 }
               }
             },
@@ -47,7 +50,7 @@ public class NinjadogSettingsGeneratorTests
         }
         """;
 
-    private static readonly string[] Expected =
+    private static readonly string[] ExpectedFiles =
     [
         "TodoList.g.cs",
         "TodoItem.g.cs"
@@ -57,7 +60,7 @@ public class NinjadogSettingsGeneratorTests
     public void GenerateClassesBasedOnNinjadogSettings()
     {
         // Create an instance of the source generator.
-        var generator = new NinjadogSettingsGenerator();
+        var generator = new NinjadogDtoGenerator();
 
         // Source generators should be tested using 'GeneratorDriver'.
         var driver = CSharpGeneratorDriver.Create(new[] { generator },
@@ -68,7 +71,7 @@ public class NinjadogSettingsGeneratorTests
             });
 
         // To run generators, we can use an empty compilation.
-        var compilation = CSharpCompilation.Create(nameof(NinjadogSettingsGeneratorTests));
+        var compilation = CSharpCompilation.Create(nameof(NinjadogDtoGeneratorTests));
 
         // Run generators. Don't forget to use the new compilation rather than the previous one.
         driver.RunGeneratorsAndUpdateCompilation(compilation, out var newCompilation, out _);
@@ -79,7 +82,7 @@ public class NinjadogSettingsGeneratorTests
             .ToArray();
 
         // In this case, it is enough to check the file name.
-        Assert.Equivalent(Expected, generatedFiles);
+        Assert.Equivalent(ExpectedFiles, generatedFiles);
         // TODO: Replace with FluentAssertions
         // generatedFiles.Should().HaveCount(2);
         // generatedFiles.Should().BeEquivalentTo(Expected);

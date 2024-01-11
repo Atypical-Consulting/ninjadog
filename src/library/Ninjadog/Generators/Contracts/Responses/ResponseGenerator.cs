@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Contracts.Responses;
 
 [Generator]
-public sealed class ResponseGenerator : NinjadogBaseGenerator
+public sealed class ResponseGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             st => $"{st.Model}Response",
             GenerateCode,

@@ -1,6 +1,6 @@
 namespace Ninjadog.Helpers;
 
-public class GeneratorSetup
+public class IncrementalGeneratorSetup
 {
     private readonly Func<StringTokens, string> _getClassName;
     private readonly Func<TypeContext, string>? _generateCode;
@@ -9,7 +9,7 @@ public class GeneratorSetup
     public CodeGenerationMode CodeGenerationMode { get; }
     public string? SubNamespace { get; }
 
-    public GeneratorSetup(
+    public IncrementalGeneratorSetup(
         Func<StringTokens, string> getClassName,
         Func<TypeContext, string> generateCode,
         string? subNamespace = null)
@@ -21,7 +21,7 @@ public class GeneratorSetup
         _generateCode = generateCode;
     }
 
-    public GeneratorSetup(
+    public IncrementalGeneratorSetup(
         string className,
         Func<ImmutableArray<TypeContext>, string> generateCode,
         string? subNamespace)

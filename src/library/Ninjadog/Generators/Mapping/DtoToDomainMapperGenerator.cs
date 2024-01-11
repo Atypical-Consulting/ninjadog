@@ -1,10 +1,10 @@
 ﻿namespace Ninjadog.Mapping;
 
 [Generator]
-public sealed class DtoToDomainMapperGenerator : NinjadogBaseGenerator
+public sealed class DtoToDomainMapperGenerator : NinjadogIncrementalGeneratorBase
 {
     /// <inheritdoc />
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             "DtoToDomainMapperGenerator",
             GenerateCode,

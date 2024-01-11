@@ -1,8 +1,8 @@
 namespace Ninjadog.Helpers;
 
-public abstract class NinjadogBaseGenerator : IIncrementalGenerator
+public abstract class NinjadogIncrementalGeneratorBase : IIncrementalGenerator
 {
-    protected abstract GeneratorSetup Setup { get; }
+    protected abstract IncrementalGeneratorSetup Setup { get; }
 
     /// <summary>
     /// Initializes the incremental generator with the specified context.

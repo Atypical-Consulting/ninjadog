@@ -1,9 +1,9 @@
 namespace Ninjadog;
 
 [Generator]
-public sealed class NinjadogGenerator : NinjadogBaseGenerator
+public sealed class NinjadogGenerator : NinjadogIncrementalGeneratorBase
 {
-    protected override GeneratorSetup Setup
+    protected override IncrementalGeneratorSetup Setup
         => new(
             "NinjadogExtensions",
             GenerateCode,
