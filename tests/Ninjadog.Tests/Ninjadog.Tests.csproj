@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\library\Ninjadog.Templates.CrudWebApi\Ninjadog.Templates.CrudWebApi.csproj" />
-    <ProjectReference Include="..\..\src\library\Ninjadog\Ninjadog.csproj" />
+    <ProjectReference Include="..\..\src\library\Ninjadog.Generators\Ninjadog.Generators.csproj" />
   </ItemGroup>
 
 </Project>

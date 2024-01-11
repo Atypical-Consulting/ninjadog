@@ -1,9 +1,9 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
-namespace Ninjadog.Templates.CrudWebAPI;
+namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
-public record TemplateConfiguration()
+public record TodoAppConfiguration()
     : NinjadogConfiguration(
         "CrudWebAPI",
         "1.0.0-alpha.1",

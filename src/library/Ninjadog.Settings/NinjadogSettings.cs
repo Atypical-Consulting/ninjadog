@@ -3,7 +3,8 @@
 
 namespace Ninjadog.Settings;
 
-public record NinjadogSettings(
-    NinjadogConfiguration Config,
-    NinjadogEntities Entities
-);
+public record NinjadogSettings
+{
+    public virtual NinjadogConfiguration Config { get; init; }
+    public virtual NinjadogEntities Entities { get; init; }
+}

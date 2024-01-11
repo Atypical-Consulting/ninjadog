@@ -1,15 +1,7 @@
-using Ninjadog.Core.SettingsExtensions;
-
-namespace Ninjadog.Templates.CrudWebAPI.Contracts.Data;
+namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 
 public class DtoTemplate : NinjadogTemplate
 {
-    protected override NinjadogConfiguration Config
-        => new TemplateConfiguration();
-
-    protected override NinjadogEntities Entities
-        => new TemplateEntities();
-
     protected override string GetClassName(StringTokens st)
     {
         return $"{st.Model}Dto";
@@ -20,11 +12,11 @@ public class DtoTemplate : NinjadogTemplate
         return "Contracts.Data";
     }
 
-    public override IEnumerable<string?> GenerateMultipleFiles(TemplateContext context)
+    public override IEnumerable<string?> GenerateMultipleFiles(NinjadogSettings ninjadogSettings)
     // TODO: The TemplateContext should be passed from a property on the NinjadogTemplateFile base class
     {
-        var entities = context.Entities.FromKeys();
-        var config = context.Config;
+        var entities = ninjadogSettings.Entities.FromKeys();
+        var config = ninjadogSettings.Config;
 
         foreach (var entity in entities)
         {

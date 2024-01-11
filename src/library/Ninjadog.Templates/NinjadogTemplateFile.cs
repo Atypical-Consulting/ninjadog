@@ -8,16 +8,13 @@ namespace Ninjadog.Templates;
 
 public abstract class NinjadogTemplate
 {
-    protected abstract NinjadogConfiguration Config { get; }
-    protected abstract NinjadogEntities Entities { get; }
-
     protected abstract string GetClassName(
         StringTokens stringTokens);
 
     protected abstract string GetSubNamespace(
         StringTokens stringTokens);
 
-    public virtual string? GenerateSingleFile(TemplateContext context)
+    public virtual string? GenerateSingleFile(NinjadogSettings ninjadogSettings)
     {
         // This method is intended to be overridden by derived classes
         // that generate code in a single file.
@@ -27,7 +24,7 @@ public abstract class NinjadogTemplate
         return null;
     }
 
-    public virtual IEnumerable<string?> GenerateMultipleFiles(TemplateContext context)
+    public virtual IEnumerable<string?> GenerateMultipleFiles(NinjadogSettings ninjadogSettings)
     {
         // This method is intended to be overridden by derived classes
         // that generate code in multiple files.

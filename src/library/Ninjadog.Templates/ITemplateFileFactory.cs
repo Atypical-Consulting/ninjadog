@@ -1,6 +1,8 @@
+using Ninjadog.Settings;
+
 namespace Ninjadog.Templates;
 
 public interface ITemplateFileFactory
 {
-    NinjadogTemplate Create(TemplateContext context);
+    NinjadogTemplate Create(NinjadogSettings ninjadogSettings);
 }

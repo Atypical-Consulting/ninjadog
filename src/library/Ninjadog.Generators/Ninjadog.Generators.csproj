@@ -9,9 +9,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>12</LangVersion>
-    <PackageId>Ninjadog</PackageId>
+    <PackageId>Ninjadog.Generators</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <RootNamespace>Ninjadog</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>

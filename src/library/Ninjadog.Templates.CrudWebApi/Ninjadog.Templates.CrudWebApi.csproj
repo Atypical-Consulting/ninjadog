@@ -8,11 +8,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="ninjadog.json" />
+      <ProjectReference Include="..\Ninjadog.Templates\Ninjadog.Templates.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Ninjadog.Templates\Ninjadog.Templates.csproj" />
+      <Folder Include="Template\" />
+      <Folder Include="UseCases\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="UseCases\TodoApp\ninjadog.json" />
     </ItemGroup>
 
 </Project>
