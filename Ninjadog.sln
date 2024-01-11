@@ -1,20 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 #
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3E8365A4-D9A5-4C5C-B0A2-03294F3C01A5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Generators", "src\library\Ninjadog.Generators\Ninjadog.Generators.csproj", "{364DE927-78B5-42EA-92AB-6BA6C8AE58E3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApi", "src\demo\DemoApi\DemoApi.csproj", "{F67A5393-23E8-468A-BF08-BE3E8808035D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E4D768EA-BAB7-4CF8-9189-4BC93AD46D14}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Tests", "tests\Ninjadog.Tests\Ninjadog.Tests.csproj", "{8A41D0FD-254D-4684-BC68-E33591C835FA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Attributes", "src\library\Ninjadog.Attributes\Ninjadog.Attributes.csproj", "{E3DC25F7-B594-4909-8EEB-1108F1438885}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWebsite", "src\demo\DemoWebsite\DemoWebsite.csproj", "{58EB49CE-6844-452C-AB03-40B8F0ACE6EC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{C6D2A66E-1AB0-48DC-AA26-47579E2069CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "library", "library", "{43446F05-6DEE-4EA7-AF81-A865BF739C08}"
@@ -22,17 +8,32 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "library", "library", "{4344
 		src\library\Directory.Build.props = src\library\Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E4D768EA-BAB7-4CF8-9189-4BC93AD46D14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{1EC9F5E6-B714-43F9-9A67-4A21E7A1E17B}"
+	ProjectSection(SolutionItems) = preProject
+		src\templates\Directory.Build.props = src\templates\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{75F08130-C72B-4D4D-AB9B-2C1235E192D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Generators", "src\library\Ninjadog.Generators\Ninjadog.Generators.csproj", "{364DE927-78B5-42EA-92AB-6BA6C8AE58E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApi", "src\demo\DemoApi\DemoApi.csproj", "{F67A5393-23E8-468A-BF08-BE3E8808035D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Tests", "src\tests\Ninjadog.Tests\Ninjadog.Tests.csproj", "{8A41D0FD-254D-4684-BC68-E33591C835FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Attributes", "src\library\Ninjadog.Attributes\Ninjadog.Attributes.csproj", "{E3DC25F7-B594-4909-8EEB-1108F1438885}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoWebsite", "src\demo\DemoWebsite\DemoWebsite.csproj", "{58EB49CE-6844-452C-AB03-40B8F0ACE6EC}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Settings", "src\library\Ninjadog.Settings\Ninjadog.Settings.csproj", "{4B1C50BD-3A9C-4608-9947-5EDFED1DD2EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Templates.CrudWebApi", "src\library\Ninjadog.Templates.CrudWebApi\Ninjadog.Templates.CrudWebApi.csproj", "{2C116F61-5FA0-4EC8-8110-90BD0647AFC8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Templates.CrudWebApi", "src\templates\Ninjadog.Templates.CrudWebApi\Ninjadog.Templates.CrudWebApi.csproj", "{2C116F61-5FA0-4EC8-8110-90BD0647AFC8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Templates", "src\library\Ninjadog.Templates\Ninjadog.Templates.csproj", "{A419649B-7C8F-44C3-8170-0E2BC34EC052}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{1EC9F5E6-B714-43F9-9A67-4A21E7A1E17B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.CLI", "src\Ninjadog.CLI\Ninjadog.CLI.csproj", "{646B1371-C292-4B14-89DA-E13356E5076E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{75F08130-C72B-4D4D-AB9B-2C1235E192D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.CLI", "src\tools\Ninjadog.CLI\Ninjadog.CLI.csproj", "{646B1371-C292-4B14-89DA-E13356E5076E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Engine", "src\library\Ninjadog.Engine\Ninjadog.Engine.csproj", "{BCB1B9D5-911C-4116-A089-C8B4386FDC1A}"
 EndProject
@@ -97,17 +98,13 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8A41D0FD-254D-4684-BC68-E33591C835FA} = {E4D768EA-BAB7-4CF8-9189-4BC93AD46D14}
-		{C6D2A66E-1AB0-48DC-AA26-47579E2069CE} = {3E8365A4-D9A5-4C5C-B0A2-03294F3C01A5}
-		{43446F05-6DEE-4EA7-AF81-A865BF739C08} = {3E8365A4-D9A5-4C5C-B0A2-03294F3C01A5}
 		{F67A5393-23E8-468A-BF08-BE3E8808035D} = {C6D2A66E-1AB0-48DC-AA26-47579E2069CE}
 		{58EB49CE-6844-452C-AB03-40B8F0ACE6EC} = {C6D2A66E-1AB0-48DC-AA26-47579E2069CE}
 		{364DE927-78B5-42EA-92AB-6BA6C8AE58E3} = {43446F05-6DEE-4EA7-AF81-A865BF739C08}
 		{E3DC25F7-B594-4909-8EEB-1108F1438885} = {43446F05-6DEE-4EA7-AF81-A865BF739C08}
 		{4B1C50BD-3A9C-4608-9947-5EDFED1DD2EA} = {43446F05-6DEE-4EA7-AF81-A865BF739C08}
 		{A419649B-7C8F-44C3-8170-0E2BC34EC052} = {43446F05-6DEE-4EA7-AF81-A865BF739C08}
-		{1EC9F5E6-B714-43F9-9A67-4A21E7A1E17B} = {3E8365A4-D9A5-4C5C-B0A2-03294F3C01A5}
 		{2C116F61-5FA0-4EC8-8110-90BD0647AFC8} = {1EC9F5E6-B714-43F9-9A67-4A21E7A1E17B}
-		{75F08130-C72B-4D4D-AB9B-2C1235E192D9} = {3E8365A4-D9A5-4C5C-B0A2-03294F3C01A5}
 		{646B1371-C292-4B14-89DA-E13356E5076E} = {75F08130-C72B-4D4D-AB9B-2C1235E192D9}
 		{BCB1B9D5-911C-4116-A089-C8B4386FDC1A} = {43446F05-6DEE-4EA7-AF81-A865BF739C08}
 		{0A3FA893-9DC0-460A-8A6A-997C53272D8D} = {43446F05-6DEE-4EA7-AF81-A865BF739C08}

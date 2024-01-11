@@ -24,9 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\library\Ninjadog.Engine\Ninjadog.Engine.csproj" />
-    <ProjectReference Include="..\library\Ninjadog.Templates.CrudWebApi\Ninjadog.Templates.CrudWebApi.csproj" />
-    <ProjectReference Include="..\library\Ninjadog.Templates\Ninjadog.Templates.csproj" />
+    <ProjectReference Include="..\..\library\Ninjadog.Engine\Ninjadog.Engine.csproj" />
+    <ProjectReference Include="..\..\templates\Ninjadog.Templates.CrudWebApi\Ninjadog.Templates.CrudWebApi.csproj" />
   </ItemGroup>
 
 </Project>
