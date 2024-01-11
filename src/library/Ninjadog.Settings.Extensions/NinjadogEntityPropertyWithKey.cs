@@ -1,6 +1,4 @@
-using Ninjadog.Settings;
-
-namespace Ninjadog.Core.SettingsExtensions;
+namespace Ninjadog.Settings.Extensions;
 
 public record NinjadogEntityPropertyWithKey(
     string Key,

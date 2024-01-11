@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 // ReSharper disable UnusedMember.Global
 
-namespace Ninjadog.Core.Helpers;
+namespace Ninjadog.Helpers;
 
 // see: https://github.com/srkirkland/Inflector/blob/master/Inflector/Inflector.cs
 // adapted for .NET8 by Philippe Matray

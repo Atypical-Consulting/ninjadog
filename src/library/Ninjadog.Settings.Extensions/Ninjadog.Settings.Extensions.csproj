@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="ninjadogsettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\Ninjadog.Helpers\Ninjadog.Helpers.csproj" />
     <ProjectReference Include="..\Ninjadog.Settings\Ninjadog.Settings.csproj" />
   </ItemGroup>
 

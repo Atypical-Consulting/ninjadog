@@ -3,7 +3,7 @@
 
 using System.Globalization;
 
-namespace Ninjadog.Core.Helpers;
+namespace Ninjadog.Helpers;
 
 public sealed record StringTokens
 {

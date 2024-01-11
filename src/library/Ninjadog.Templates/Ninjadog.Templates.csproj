@@ -7,7 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Ninjadog.Core\Ninjadog.Core.csproj" />
+      <ProjectReference Include="..\Ninjadog.Helpers\Ninjadog.Helpers.csproj" />
+      <ProjectReference Include="..\Ninjadog.Settings.Extensions\Ninjadog.Settings.Extensions.csproj" />
       <ProjectReference Include="..\Ninjadog.Settings\Ninjadog.Settings.csproj" />
     </ItemGroup>
 
