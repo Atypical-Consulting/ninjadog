@@ -2,18 +2,18 @@
 // The.NET Foundation licenses this file to you under the MIT license.
 
 using Ninjadog.Engine.Abstractions;
-using Ninjadog.Engine.OutputProcessor;
+using Ninjadog.Engine.Collections;
 using Ninjadog.Settings;
 using Ninjadog.Templates;
 
-namespace Ninjadog.Engine;
+namespace Ninjadog.Engine.Internals;
 
-public class NinjadogEngineBuilder
+internal class NinjadogEngineBuilder
     : INinjadogEngineBuilder
 {
     private NinjadogTemplateManifest? _templateManifest;
     private NinjadogSettings? _ninjadogSettings;
-    private readonly List<IOutputProcessor> _outputProcessors = [];
+    private readonly OutputProcessorCollection _outputProcessors = [];
 
     public INinjadogEngineBuilder WithManifest(NinjadogTemplateManifest templateManifest)
     {

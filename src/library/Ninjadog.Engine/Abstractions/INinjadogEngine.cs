@@ -1,4 +1,4 @@
-namespace Ninjadog.Engine;
+namespace Ninjadog.Engine.Abstractions;
 
 public interface INinjadogEngine
 {
