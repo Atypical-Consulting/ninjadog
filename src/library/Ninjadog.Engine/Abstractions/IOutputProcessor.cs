@@ -1,4 +1,4 @@
-namespace Ninjadog.Templates.Engine.OutputProcessor;
+namespace Ninjadog.Engine.Abstractions;
 
 public interface IOutputProcessor
 {

@@ -1,23 +1,21 @@
 // Licensed to the.NET Foundation under one or more agreements.
 // The.NET Foundation licenses this file to you under the MIT license.
 
+using Ninjadog.Engine.Abstractions;
+using Ninjadog.Engine.OutputProcessor;
 using Ninjadog.Settings;
-using Ninjadog.Templates.Engine.OutputProcessor;
+using Ninjadog.Templates;
 
-namespace Ninjadog.Templates.Engine;
+namespace Ninjadog.Engine;
 
-public class NinjadogTemplateEngine(
+internal class NinjadogEngine(
     NinjadogTemplateManifest templateManifest,
     NinjadogSettings ninjadogSettings,
     List<IOutputProcessor> outputProcessors)
-    : ITemplateEngine
+    : INinjadogEngine
 {
-    public List<string> GeneratedContents { get; } = [];
-
     public void Run()
     {
-        GeneratedContents.Clear();
-
         // For each template file in the manifest...
         foreach (var template in templateManifest.TemplateFiles)
         {
