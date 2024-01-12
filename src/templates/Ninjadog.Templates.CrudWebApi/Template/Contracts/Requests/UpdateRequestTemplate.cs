@@ -8,21 +8,11 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 public sealed class UpdateRequestTemplate
     : NinjadogTemplate
 {
-    public override IEnumerable<string> GenerateOneToMany(NinjadogSettings ninjadogSettings)
-    {
-        var entities = ninjadogSettings.Entities.FromKeys();
-        var rootNs = ninjadogSettings.Config.RootNamespace;
-
-        foreach (var entity in entities)
-        {
-            yield return GenerateUpdateRequest(entity, rootNs);
-        }
-    }
-
-    private static string GenerateUpdateRequest(NinjadogEntityWithKey entity, string rootNs)
+    public override string GenerateOneToManyForEntity(
+        NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
-        var ns = $"{rootNs}.Contracts.Requests";
+        var ns = $"{rootNamespace}.Contracts.Requests";
 
         return DefaultCodeLayout(
             $$"""

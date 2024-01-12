@@ -8,21 +8,11 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
 public sealed class GetAllResponseTemplate
     : NinjadogTemplate
 {
-    public override IEnumerable<string> GenerateOneToMany(NinjadogSettings ninjadogSettings)
-    {
-        var entities = ninjadogSettings.Entities.FromKeys();
-        var rootNs = ninjadogSettings.Config.RootNamespace;
-
-        foreach (var entity in entities)
-        {
-            yield return GenerateGetAllResponse(entity, rootNs);
-        }
-    }
-
-    private static string GenerateGetAllResponse(NinjadogEntityWithKey entity, string rootNs)
+    public override string GenerateOneToManyForEntity(
+        NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
-        var ns = $"{rootNs}.Contracts.Responses";
+        var ns = $"{rootNamespace}.Contracts.Responses";
 
         return DefaultCodeLayout(
             $$"""
