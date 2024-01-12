@@ -8,7 +8,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 public sealed class CreateRequestTemplate
     : NinjadogTemplate
 {
-    public override IEnumerable<string?> GenerateOneToMany(NinjadogSettings ninjadogSettings)
+    public override IEnumerable<string> GenerateOneToMany(NinjadogSettings ninjadogSettings)
     {
         var entities = ninjadogSettings.Entities.FromKeys();
         var rootNs = ninjadogSettings.Config.RootNamespace;

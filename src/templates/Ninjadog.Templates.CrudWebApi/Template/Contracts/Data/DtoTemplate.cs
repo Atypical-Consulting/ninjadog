@@ -7,7 +7,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 
 public sealed class DtoTemplate : NinjadogTemplate
 {
-    public override IEnumerable<string?> GenerateOneToMany(NinjadogSettings ninjadogSettings)
+    public override IEnumerable<string> GenerateOneToMany(NinjadogSettings ninjadogSettings)
     {
         var entities = ninjadogSettings.Entities.FromKeys();
         var rootNs = ninjadogSettings.Config.RootNamespace;

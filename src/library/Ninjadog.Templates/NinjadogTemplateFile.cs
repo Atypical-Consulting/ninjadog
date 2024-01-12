@@ -17,7 +17,7 @@ public abstract class NinjadogTemplate
         return null;
     }
 
-    public virtual IEnumerable<string?> GenerateOneToMany(NinjadogSettings ninjadogSettings)
+    public virtual IEnumerable<string> GenerateOneToMany(NinjadogSettings ninjadogSettings)
     {
         // This method is intended to be overridden by derived classes
         // that generate code in multiple files.
