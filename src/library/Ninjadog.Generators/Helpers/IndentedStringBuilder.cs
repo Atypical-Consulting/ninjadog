@@ -1,5 +1,7 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
+// This source code is proprietary and confidential.
+// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
+// without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 // https://raw.githubusercontent.com/dotnet/efcore/4a2e4ebc03f07536e400843105b8ed3c9a32a10b/src/EFCore/Infrastructure/IndentedStringBuilder.cs
 
@@ -283,7 +285,9 @@ internal sealed class IndentedStringBuilder(byte indent)
         }
 
         public void Dispose()
-            => _stringBuilder.DecrementIndent();
+        {
+            _stringBuilder.DecrementIndent();
+        }
     }
 
     private sealed class IndentSuspender : IDisposable

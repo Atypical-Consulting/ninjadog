@@ -26,17 +26,14 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
 
     public override int Execute(CommandContext context, Settings settings)
     {
-        var templateManifest = new CrudTemplateManifest();
-        var todoAppSettings = new TodoAppSettings();
+        CrudTemplateManifest templateManifest = new();
+        TodoAppSettings todoAppSettings = new();
 
-        var outputProcessors = new OutputProcessorCollection(
-            settings.InMemory,
-            settings.Disk);
+        OutputProcessorCollection outputProcessors = new(
+            settings.InMemory, settings.Disk);
 
-        var configuration = new NinjadogEngineConfiguration(
-            templateManifest,
-            todoAppSettings,
-            outputProcessors);
+        NinjadogEngineConfiguration configuration = new(
+            templateManifest, todoAppSettings, outputProcessors);
 
         NinjadogEngineFactory
             .CreateNinjadogEngine(configuration)

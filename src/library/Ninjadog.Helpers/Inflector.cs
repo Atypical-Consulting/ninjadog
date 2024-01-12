@@ -1,3 +1,8 @@
+// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
+// This source code is proprietary and confidential.
+// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
+// without express written permission from Atypical Consulting SRL is strictly prohibited.
+
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -79,7 +84,7 @@ public static class Inflector
 
     #endregion
 
-    private class Rule(string pattern, string replacement)
+    private sealed class Rule(string pattern, string replacement)
     {
         private readonly Regex _regex = new(pattern, RegexOptions.IgnoreCase);
 
@@ -164,7 +169,7 @@ public static class Inflector
         return Regex.Replace(
                 lowercaseAndUnderscoredWord,
                 "(?:^|_)(.)",
-                match => match.Groups[1].Value.ToUpper());
+                match => match.Groups[1].Value.ToUpperInvariant());
     }
 
     public static string Camelize(this string lowercaseAndUnderscoredWord)
