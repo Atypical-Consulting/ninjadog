@@ -1,61 +1,63 @@
+// Licensed to the.NET Foundation under one or more agreements.
+// The.NET Foundation licenses this file to you under the MIT license.
+
+using static Ninjadog.Templates.TemplateUtilities;
+
 namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 
 public class DtoTemplate : NinjadogTemplate
 {
-    protected override string GetClassName(StringTokens st)
-    {
-        return $"{st.Model}Dto";
-    }
-
-    protected override string GetSubNamespace(StringTokens st)
-    {
-        return "Contracts.Data";
-    }
-
-    public override IEnumerable<string?> GenerateMultipleFiles(NinjadogSettings ninjadogSettings)
-    // TODO: The TemplateContext should be passed from a property on the NinjadogTemplateFile base class
+    public override IEnumerable<string?> GenerateOneToMany(NinjadogSettings ninjadogSettings)
     {
         var entities = ninjadogSettings.Entities.FromKeys();
-        var config = ninjadogSettings.Config;
+        var rootNs = ninjadogSettings.Config.RootNamespace;
 
         foreach (var entity in entities)
         {
-            var st = entity.GetStringTokens();
-            var rootNs = config.RootNamespace;
-            var ns = $"{rootNs}.Contracts.Data";
-
-            var properties = entity
-                .Properties
-                .FromKeys()
-                .Select(GenerateDtoProperties)
-                .Aggregate((x, y) => $"{x}\n{y}");
-
-            var code =
-                $$"""
-
-                  using System.Collections.Generic;
-                  using {{rootNs}}.Database;
-                  using Dapper;
-
-                  {{TemplateUtilities.WriteFileScopedNamespace(ns)}}
-
-                  public partial class {{st.ClassModelDto}}
-                  {
-                  {{properties}}
-                  }
-                  """;
-
-            yield return TemplateUtilities.DefaultCodeLayout(code);
+            yield return GenerateDto(entity, rootNs);
         }
     }
 
-    private static string GenerateDtoProperties(NinjadogEntityPropertyWithKey p)
+    private static string GenerateDto(NinjadogEntityWithKey entity, string rootNs)
     {
+        var st = entity.GetStringTokens();
+        var ns = $"{rootNs}.Contracts.Data";
+
+        return DefaultCodeLayout(
+            $$"""
+
+              using System.Collections.Generic;
+              using {{rootNs}}.Database;
+              using Dapper;
+
+              {{WriteFileScopedNamespace(ns)}}
+
+              public partial class {{st.ClassModelDto}}
+              {
+              {{GenerateDtoProperties(entity)}}
+              }
+              """);
+    }
+
+    private static string GenerateDtoProperties(NinjadogEntityWithKey entity)
+    {
+        return entity
+            .Properties
+            .FromKeys()
+            .Select(GenerateDtoProperty)
+            .Aggregate((x, y) => $"{x}\n{y}");
+    }
+
+    private static string GenerateDtoProperty(NinjadogEntityPropertyWithKey property)
+    {
+        var propertyType = property.Type;
+        var propertyKey = property.Key;
+
         IndentedStringBuilder sb = new(1);
 
-        sb.Append($"public {p.Type} {p.Key} {{ get; init; }}");
+        sb.Append($"public {propertyType} {propertyKey} {{ get; init; }}");
 
-        if (p.Type == "string")
+        if (propertyType == "string")
         {
             sb.Append(" = default!;");
         }

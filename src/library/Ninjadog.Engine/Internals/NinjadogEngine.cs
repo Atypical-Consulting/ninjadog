@@ -25,11 +25,11 @@ internal class NinjadogEngine(
     private void Run(NinjadogTemplate template)
     {
         // First, add a single file based on the template and the settings...
-        var singleFileContent = template.GenerateSingleFile(ninjadogSettings);
+        var singleFileContent = template.GenerateOneToOne(ninjadogSettings);
         ProcessContent(singleFileContent);
 
         // ...then, add multiple files based on the template and the settings
-        foreach (var content in template.GenerateMultipleFiles(ninjadogSettings))
+        foreach (var content in template.GenerateOneToMany(ninjadogSettings))
         {
             ProcessContent(content);
         }
