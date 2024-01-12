@@ -3,11 +3,4 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
-
-public record TodoAppConfiguration()
-    : NinjadogConfiguration(
-        "TodoApp",
-        "1.0.0",
-        "A application to manage todo lists.",
-        "MyCompany.TodoApp");
+global using Ninjadog.Helpers;

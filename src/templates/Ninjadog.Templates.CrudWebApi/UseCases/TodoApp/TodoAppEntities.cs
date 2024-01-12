@@ -1,29 +1,31 @@
-// Licensed to the.NET Foundation under one or more agreements.
-// The.NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
+// This source code is proprietary and confidential.
+// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
+// without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 public class TodoAppEntities : NinjadogEntities
 {
-    private const string TodoItem = "TodoItem";
     private const string TodoList = "TodoList";
+    private const string TodoItem = "TodoItem";
 
     public TodoAppEntities()
     {
-        Add(TodoItem, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "Id", new NinjadogEntityId() },
-                { "Description", new NinjadogEntityProperty(nameof(String)) },
-                { "IsCompleted", new NinjadogEntityProperty(nameof(Boolean)) }
-            }));
-
         Add(TodoList, new NinjadogEntity(
             new NinjadogEntityProperties
             {
                 { "Id", new NinjadogEntityId() },
                 { "Title", new NinjadogEntityProperty(nameof(String)) },
                 { "Items", new NinjadogEntityProperty($"List<{TodoItem}>") }
+            }));
+
+        Add(TodoItem, new NinjadogEntity(
+            new NinjadogEntityProperties
+            {
+                { "Id", new NinjadogEntityId() },
+                { "Description", new NinjadogEntityProperty(nameof(String)) },
+                { "IsCompleted", new NinjadogEntityProperty(nameof(Boolean)) }
             }));
     }
 }
