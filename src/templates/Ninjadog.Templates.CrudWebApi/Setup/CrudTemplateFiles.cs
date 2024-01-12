@@ -9,61 +9,75 @@ using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
 
 namespace Ninjadog.Templates.CrudWebAPI.Setup;
 
-// this class is used to define the template files that will be used by the template engine
-
-// we could use a template with different destination paths.
-
+/// <summary>
+/// Represents a specific collection of templates for CRUD operations in a Web API.
+/// This class initializes various types of request, response, and data transfer object (DTO) templates.
+/// </summary>
 public class CrudTemplateFiles : NinjadogTemplateFiles
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CrudTemplateFiles"/> class,
+    /// adding templates for different CRUD operations.
+    /// </summary>
     public CrudTemplateFiles()
     {
-        // Contracts / Data
-        Add(new DtoTemplate());
+        AddTemplates(
+            "Contracts/Data",
+            new DtoTemplate());
 
-        // Contracts / Requests
-        Add(new CreateRequestTemplate());
-        Add(new DeleteRequestTemplate());
-        Add(new GetRequestTemplate());
-        Add(new UpdateRequestTemplate());
+        AddTemplates(
+            "Contracts/Requests",
+            new CreateRequestTemplate(),
+            new DeleteRequestTemplate(),
+            new GetRequestTemplate(),
+            new UpdateRequestTemplate());
 
-        // Contracts / Responses
-        Add(new GetAllResponseTemplate());
-        Add(new ResponseTemplate());
+        AddTemplates(
+            "Contracts/Responses",
+            new GetAllResponseTemplate(),
+            new ResponseTemplate());
 
-        // Database
-        // Add(new DatabaseInitializerTemplate());
-        // Add(new DbConnectionFactoryTemplate());
+        // AddTemplates(
+        //     "Database",
+        //     new DatabaseInitializerTemplate(),
+        //     new DbConnectionFactoryTemplate());
 
-        // Endpoints
-        // Add(new CreateEndpointTemplate());
-        // Add(new DeleteEndpointTemplate());
-        // Add(new GetAllEndpointTemplate());
-        // Add(new GetEndpointTemplate());
-        // Add(new UpdateEndpointTemplate());
+        // AddTemplates(
+        //     "Endpoints",
+        //     new CreateEndpointTemplate(),
+        //     new DeleteEndpointTemplate(),
+        //     new GetAllEndpointTemplate(),
+        //     new GetEndpointTemplate(),
+        //     new UpdateEndpointTemplate());
 
-        // Mapping
-        // Add(new ApiContractToDomainMapperTemplate());
-        // Add(new DomainToApiContractMapperTemplate());
-        // Add(new DomainToDtoMapperTemplate());
-        // Add(new DtoToDomainMapperTemplate());
+        // AddTemplates(
+        //     "Mapping",
+        //     new ApiContractToDomainMapperTemplate(),
+        //     new DomainToApiContractMapperTemplate(),
+        //     new DomainToDtoMapperTemplate(),
+        //     new DtoToDomainMapperTemplate());
 
-        // Repositories
-        // Add(new RepositoryTemplate());
-        // Add(new RepositoryInterfaceTemplate());
+        // AddTemplates(
+        //     "Repositories",
+        //     new RepositoryTemplate(),
+        //     new RepositoryInterfaceTemplate());
 
-        // Services
-        // Add(new ServiceTemplate());
-        // Add(new ServiceInterfaceTemplate());
+        // AddTemplates(
+        //     "Services",
+        //     new ServiceTemplate(),
+        //     new ServiceInterfaceTemplate());
 
-        // Summaries
-        // Add(new CreateSummaryTemplate());
-        // Add(new DeleteSummaryTemplate());
-        // Add(new GetAllSummaryTemplate());
-        // Add(new GetSummaryTemplate());
-        // Add(new UpdateSummaryTemplate());
+        // AddTemplates(
+        //     "Summaries",
+        //     new CreateSummaryTemplate(),
+        //     new DeleteSummaryTemplate(),
+        //     new GetAllSummaryTemplate(),
+        //     new GetSummaryTemplate(),
+        //     new UpdateSummaryTemplate());
 
-        // Validation
-        // Add(new CreateRequestValidatorTemplate());
-        // Add(new UpdateRequestValidatorTemplate());
+        // AddTemplates(
+        //     "Validation",
+        //     new CreateRequestValidatorTemplate(),
+        //     new UpdateRequestValidatorTemplate());
     }
 }
