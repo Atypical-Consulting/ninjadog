@@ -9,6 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "library", "library", "{4344
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E4D768EA-BAB7-4CF8-9189-4BC93AD46D14}"
+	ProjectSection(SolutionItems) = preProject
+		src\tests\Directory.Build.props = src\tests\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{1EC9F5E6-B714-43F9-9A67-4A21E7A1E17B}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,6 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{75F08130-C72B-4D4D-AB9B-2C1235E192D9}"
+	ProjectSection(SolutionItems) = preProject
+		src\tools\Directory.Build.props = src\tools\Directory.Build.props
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Generators", "src\library\Ninjadog.Generators\Ninjadog.Generators.csproj", "{364DE927-78B5-42EA-92AB-6BA6C8AE58E3}"
 EndProject

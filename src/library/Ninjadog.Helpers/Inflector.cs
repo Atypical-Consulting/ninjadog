@@ -200,12 +200,12 @@ public static class Inflector
 
     public static string Ordinalize(this string numberString)
     {
-        return Ordanize(int.Parse(numberString), numberString);
+        return Ordanize(int.Parse(numberString, null), numberString);
     }
 
     public static string Ordinalize(this int number)
     {
-        return Ordanize(number, number.ToString());
+        return Ordanize(number, number.ToString((IFormatProvider?)null));
     }
 
     private static string Ordanize(int number, string numberString)
