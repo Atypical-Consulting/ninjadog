@@ -5,6 +5,7 @@
 
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
+using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
 
 namespace Ninjadog.Templates.CrudWebAPI.Setup;
 
@@ -26,8 +27,8 @@ public class CrudTemplateFiles : NinjadogTemplateFiles
         Add(new UpdateRequestTemplate());
 
         // Contracts / Responses
-        // Add(new GetAllResponseTemplate());
-        // Add(new ResponseTemplate());
+        Add(new GetAllResponseTemplate());
+        Add(new ResponseTemplate());
 
         // Database
         // Add(new DatabaseInitializerTemplate());
