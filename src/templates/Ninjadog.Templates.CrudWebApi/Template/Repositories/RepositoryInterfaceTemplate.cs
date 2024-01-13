@@ -5,7 +5,7 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 
-public class RepositoryInterfaceTemplate
+public sealed class RepositoryInterfaceTemplate
     : NinjadogTemplate
 {
     public override string GenerateOneToManyForEntity(

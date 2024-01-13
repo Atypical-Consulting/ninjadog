@@ -7,7 +7,7 @@ using Ninjadog.Helpers;
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 
-public class RepositoryTemplate
+public sealed class RepositoryTemplate
     : NinjadogTemplate
 {
     public override string GenerateOneToManyForEntity(

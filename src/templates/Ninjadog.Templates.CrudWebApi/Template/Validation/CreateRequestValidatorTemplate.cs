@@ -2,7 +2,7 @@ using Ninjadog.Helpers;
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Validation;
 
-public class CreateRequestValidatorTemplate
+public sealed class CreateRequestValidatorTemplate
     : NinjadogTemplate
 {
     public override string GenerateOneToManyForEntity(

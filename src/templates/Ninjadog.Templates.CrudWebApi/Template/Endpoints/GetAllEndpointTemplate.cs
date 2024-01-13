@@ -5,7 +5,7 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 
-public class GetAllEndpointTemplate
+public sealed class GetAllEndpointTemplate
     : NinjadogTemplate
 {
     public override string GenerateOneToManyForEntity(

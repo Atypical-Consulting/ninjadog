@@ -5,7 +5,7 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Summaries;
 
-public class DeleteSummaryTemplate
+public sealed class DeleteSummaryTemplate
     : NinjadogTemplate
 {
     public override string GenerateOneToManyForEntity(
