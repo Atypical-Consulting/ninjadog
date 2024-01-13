@@ -6,6 +6,11 @@
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
+using Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
+using Ninjadog.Templates.CrudWebAPI.Template.Repositories;
+using Ninjadog.Templates.CrudWebAPI.Template.Services;
+using Ninjadog.Templates.CrudWebAPI.Template.Summaries;
+using Ninjadog.Templates.CrudWebAPI.Template.Validation;
 
 namespace Ninjadog.Templates.CrudWebAPI.Setup;
 
@@ -42,13 +47,13 @@ public class CrudTemplateFiles : NinjadogTemplateFiles
         //     new DatabaseInitializerTemplate(),
         //     new DbConnectionFactoryTemplate());
 
-        // AddTemplates(
-        //     "Endpoints",
-        //     new CreateEndpointTemplate(),
-        //     new DeleteEndpointTemplate(),
-        //     new GetAllEndpointTemplate(),
-        //     new GetEndpointTemplate(),
-        //     new UpdateEndpointTemplate());
+        AddTemplates(
+            "Endpoints",
+            new CreateEndpointTemplate(),
+            new DeleteEndpointTemplate(),
+            new GetAllEndpointTemplate(),
+            new GetEndpointTemplate(),
+            new UpdateEndpointTemplate());
 
         // AddTemplates(
         //     "Mapping",
@@ -57,27 +62,27 @@ public class CrudTemplateFiles : NinjadogTemplateFiles
         //     new DomainToDtoMapperTemplate(),
         //     new DtoToDomainMapperTemplate());
 
-        // AddTemplates(
-        //     "Repositories",
-        //     new RepositoryTemplate(),
-        //     new RepositoryInterfaceTemplate());
+        AddTemplates(
+            "Repositories",
+            new RepositoryTemplate(),
+            new RepositoryInterfaceTemplate());
 
-        // AddTemplates(
-        //     "Services",
-        //     new ServiceTemplate(),
-        //     new ServiceInterfaceTemplate());
+        AddTemplates(
+            "Services",
+            new ServiceTemplate(),
+            new ServiceInterfaceTemplate());
 
-        // AddTemplates(
-        //     "Summaries",
-        //     new CreateSummaryTemplate(),
-        //     new DeleteSummaryTemplate(),
-        //     new GetAllSummaryTemplate(),
-        //     new GetSummaryTemplate(),
-        //     new UpdateSummaryTemplate());
+        AddTemplates(
+            "Summaries",
+            new CreateSummaryTemplate(),
+            new DeleteSummaryTemplate(),
+            new GetAllSummaryTemplate(),
+            new GetSummaryTemplate(),
+            new UpdateSummaryTemplate());
 
-        // AddTemplates(
-        //     "Validation",
-        //     new CreateRequestValidatorTemplate(),
-        //     new UpdateRequestValidatorTemplate());
+        AddTemplates(
+            "Validation",
+            new CreateRequestValidatorTemplate(),
+            new UpdateRequestValidatorTemplate());
     }
 }
