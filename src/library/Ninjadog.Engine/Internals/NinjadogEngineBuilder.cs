@@ -32,9 +32,20 @@ internal sealed class NinjadogEngineBuilder
     }
 
     /// <inheritdoc />
-    public INinjadogEngineBuilder AddOutputProcessor(IOutputProcessor outputProcessor)
+    public INinjadogEngineBuilder WithOutputProcessor(IOutputProcessor outputProcessor)
     {
         _outputProcessors.Add(outputProcessor);
+        return this;
+    }
+
+    /// <inheritdoc />
+    public INinjadogEngineBuilder WithOutputProcessors(OutputProcessorCollection outputProcessors)
+    {
+        foreach (var outputProcessor in _outputProcessors)
+        {
+            WithOutputProcessor(outputProcessor);
+        }
+
         return this;
     }
 

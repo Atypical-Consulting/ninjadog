@@ -27,15 +27,10 @@ public static class NinjadogEngineFactory
     public static INinjadogEngine CreateNinjadogEngine(
         NinjadogEngineConfiguration configuration)
     {
-        var ninjadogEngine = new NinjadogEngineBuilder()
+        return new NinjadogEngineBuilder()
             .WithManifest(configuration.TemplateManifest)
-            .WithSettings(configuration.NinjadogSettings);
-
-        foreach (var outputProcessor in configuration.OutputProcessors)
-        {
-            ninjadogEngine.AddOutputProcessor(outputProcessor);
-        }
-
-        return ninjadogEngine.Build();
+            .WithSettings(configuration.NinjadogSettings)
+            .WithOutputProcessors(configuration.OutputProcessors)
+            .Build();
     }
 }

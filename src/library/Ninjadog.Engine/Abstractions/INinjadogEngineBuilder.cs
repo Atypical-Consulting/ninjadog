@@ -3,6 +3,7 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Ninjadog.Engine.Collections;
 using Ninjadog.Settings;
 using Ninjadog.Templates;
 
@@ -29,11 +30,18 @@ public interface INinjadogEngineBuilder
     INinjadogEngineBuilder WithSettings(NinjadogSettings ninjadogSettings);
 
     /// <summary>
-    /// Adds an output processor to the Ninjadog Engine.
+    /// Specifies the output processor to use with the Ninjadog Engine.
     /// </summary>
-    /// <param name="outputProcessor">The output processor to be added to the engine.</param>
+    /// <param name="outputProcessor">The output processor to be used by the engine.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
-    INinjadogEngineBuilder AddOutputProcessor(IOutputProcessor outputProcessor);
+    INinjadogEngineBuilder WithOutputProcessor(IOutputProcessor outputProcessor);
+
+    /// <summary>
+    /// Specifies the output processors to use with the Ninjadog Engine.
+    /// </summary>
+    /// <param name="outputProcessors">The output processors to be used by the engine.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
+    INinjadogEngineBuilder WithOutputProcessors(OutputProcessorCollection outputProcessors);
 
     /// <summary>
     /// Builds and returns a configured instance of the Ninjadog Engine.
