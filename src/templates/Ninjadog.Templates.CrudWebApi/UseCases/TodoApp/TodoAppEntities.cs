@@ -17,10 +17,12 @@ public sealed class TodoAppEntities : NinjadogEntities
 {
     private const string TodoList = "TodoList";
     private const string TodoItem = "TodoItem";
+    private const string TodoCategory = "TodoCategory";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TodoAppEntities"/> class,
-    /// defining the structure and properties of <see cref="TodoList"/> and <see cref="TodoItem"/> entities.
+    /// defining the structure and properties of <see cref="TodoList"/>,
+    /// <see cref="TodoItem"/>, and <see cref="TodoCategory"/> entities.
     /// </summary>
     public TodoAppEntities()
     {
@@ -29,7 +31,11 @@ public sealed class TodoAppEntities : NinjadogEntities
             {
                 { "Id", new NinjadogEntityId() },
                 { "Title", new NinjadogEntityProperty(nameof(String)) },
-                { "Items", new NinjadogEntityProperty($"List<{TodoItem}>") }
+                { "Items", new NinjadogEntityProperty($"List<{TodoItem}>") },
+                { "Categories", new NinjadogEntityProperty($"List<{TodoCategory}>") },
+                // TODO: Implement the following properties
+                // { "Items", new NinjadogEntityRelationship(TodoItem, NinjadogEntityRelationshipType.OneToMany) },
+                // { "Categories", new NinjadogEntityRelationship(TodoCategory, NinjadogEntityRelationshipType.OneToMany) }
             }));
 
         Add(TodoItem, new NinjadogEntity(
@@ -37,7 +43,17 @@ public sealed class TodoAppEntities : NinjadogEntities
             {
                 { "Id", new NinjadogEntityId() },
                 { "Description", new NinjadogEntityProperty(nameof(String)) },
-                { "IsCompleted", new NinjadogEntityProperty(nameof(Boolean)) }
+                { "IsCompleted", new NinjadogEntityProperty(nameof(Boolean)) },
+                { "DueDate", new NinjadogEntityProperty(nameof(DateTime)) }
+            }));
+
+        Add(TodoCategory, new NinjadogEntity(
+            new NinjadogEntityProperties
+            {
+                { "Id", new NinjadogEntityId() },
+                { "Name", new NinjadogEntityProperty(nameof(String)) },
+                { "Color", new NinjadogEntityProperty(nameof(String)) },
+                { "Icon", new NinjadogEntityProperty(nameof(String)) },
             }));
     }
 }

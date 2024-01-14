@@ -16,6 +16,7 @@ internal sealed class NinjadogEngineBuilder
     private NinjadogTemplateManifest? _templateManifest;
     private NinjadogSettings? _ninjadogSettings;
     private readonly OutputProcessorCollection _outputProcessors = [];
+    private IDotnetCommandService? _dotnetCommandService;
 
     /// <inheritdoc />
     public INinjadogEngineBuilder WithManifest(NinjadogTemplateManifest templateManifest)
@@ -46,12 +47,20 @@ internal sealed class NinjadogEngineBuilder
     }
 
     /// <inheritdoc />
+    public INinjadogEngineBuilder WithDotnetCommandService(IDotnetCommandService dotnetCommandService)
+    {
+        _dotnetCommandService = dotnetCommandService;
+        return this;
+    }
+
+    /// <inheritdoc />
     public INinjadogEngine Build()
     {
         return new NinjadogEngine(
             EnsureTemplateManifestIsSet(),
             EnsureNinjadogSettingsAreSet(),
-            EnsureOutputProcessorsAreSet());
+            EnsureOutputProcessorsAreSet(),
+            EnsureDotnetCommandServiceIsSet());
     }
 
     private NinjadogTemplateManifest EnsureTemplateManifestIsSet()
@@ -70,5 +79,11 @@ internal sealed class NinjadogEngineBuilder
     {
         return _outputProcessors
                ?? throw new InvalidOperationException("No output processors are set.");
+    }
+
+    private IDotnetCommandService EnsureDotnetCommandServiceIsSet()
+    {
+        return _dotnetCommandService
+               ?? throw new InvalidOperationException("No dotnet command service is set.");
     }
 }

@@ -19,6 +19,11 @@ public interface INinjadogEngine
     event EventHandler<NinjadogContentFile>? FileGenerated;
 
     /// <summary>
+    /// Occurs when the .NET CLI version is checked by the Ninjadog Engine.
+    /// </summary>
+    event EventHandler<Version>? DotnetVersionChecked;
+
+    /// <summary>
     /// Runs the Ninjadog Engine to process and generate templates.
     /// This method triggers the execution of the template generation logic encapsulated by the engine.
     /// </summary>

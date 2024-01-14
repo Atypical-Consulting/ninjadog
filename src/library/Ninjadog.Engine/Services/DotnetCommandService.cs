@@ -16,53 +16,25 @@ namespace Ninjadog.Engine.Services;
 public sealed class DotnetCommandService : IDotnetCommandService
 {
     /// <summary>
-    /// Initializes a new instance of the DotnetCommandService.
+    /// Initializes a new instance of the <see cref="DotnetCommandService"/>.
     /// During initialization, it checks the availability of the .NET CLI on the system.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if the .NET CLI is not available or fails to execute.</exception>
     public DotnetCommandService()
     {
-        EnsureDotnetIsAvailable();
-    }
-
-    /// <inheritdoc />
-    public void EnsureDotnetIsAvailable()
-    {
-        try
+        if (string.IsNullOrEmpty(Version()))
         {
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "dotnet",
-                Arguments = "--version",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            using var process =
-                Process.Start(startInfo)
-                ?? throw new InvalidOperationException("Failed to execute 'dotnet --version'.");
-
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-            {
-                throw new InvalidOperationException("dotnet CLI is not available.");
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("Failed to execute 'dotnet --version'.", ex);
+            throw new InvalidOperationException("The .NET CLI is not available.");
         }
     }
 
     /// <inheritdoc />
-    public void ExecuteCommand(string command, string args)
+    public string ExecuteCommand(string command, string? args = null)
     {
         var startInfo = new ProcessStartInfo
         {
             FileName = "dotnet",
-            Arguments = $"{command} {args}",
+            Arguments = $"{command} {args}".Trim(),
             RedirectStandardOutput = true,
             UseShellExecute = false,
             CreateNoWindow = true
@@ -72,13 +44,24 @@ public sealed class DotnetCommandService : IDotnetCommandService
             Process.Start(startInfo)
             ?? throw new InvalidOperationException($"Failed to execute 'dotnet {command} {args}'.");
 
-        using (var reader = process.StandardOutput)
-        {
-            var result = reader.ReadToEnd();
-            Console.WriteLine(result);
-        }
+        using var reader = process.StandardOutput;
+        var result = reader.ReadToEnd();
 
         process.WaitForExit();
+
+        return result;
+    }
+
+    /// <inheritdoc />
+    public string Build(string projectPath)
+    {
+        return ExecuteCommand("build", projectPath);
+    }
+
+    /// <inheritdoc />
+    public string? Version()
+    {
+        return ExecuteCommand("--version");
     }
 }
 

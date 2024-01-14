@@ -13,13 +13,20 @@ namespace Ninjadog.Engine.Internals;
 internal sealed class NinjadogEngine(
     NinjadogTemplateManifest templateManifest,
     NinjadogSettings ninjadogSettings,
-    OutputProcessorCollection outputProcessors)
+    OutputProcessorCollection outputProcessors,
+    IDotnetCommandService dotnetCommandService)
     : INinjadogEngine
 {
     public event EventHandler<NinjadogContentFile>? FileGenerated;
+    public event EventHandler<Version>? DotnetVersionChecked;
 
     public void Run()
     {
+        // ensure the .NET CLI is available
+        var version = dotnetCommandService.Version();
+        OnDotnetVersionChecked(version);
+
+        // run the engine for each template in the manifest
         foreach (var template in templateManifest.Templates)
         {
             Run(template);
@@ -57,5 +64,10 @@ internal sealed class NinjadogEngine(
     private void OnFileGenerated(NinjadogContentFile contentFile)
     {
         FileGenerated?.Invoke(this, contentFile);
+    }
+
+    private void OnDotnetVersionChecked(string? version)
+    {
+        DotnetVersionChecked?.Invoke(this, Version.Parse(version ?? "0.0.0"));
     }
 }

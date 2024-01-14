@@ -28,26 +28,67 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
         public bool Disk { get; init; }
     }
 
+    private int _totalFilesGenerated;
+    private int _totalCharactersGenerated;
+
     public override int Execute(CommandContext context, Settings settings)
     {
-        AnsiConsole.MarkupLine("[bold]Using the following settings:[/]");
-        AnsiConsole.MarkupLine($"- InMemory: [green]{settings.InMemory}[/]");
-        AnsiConsole.MarkupLine($"- Disk    : [green]{settings.Disk}[/]");
-        AnsiConsole.WriteLine();
-
         CrudTemplateManifest templateManifest = new();
         TodoAppSettings todoAppSettings = new();
         OutputProcessorCollection outputProcessors = new(settings.InMemory, settings.Disk);
         NinjadogEngineConfiguration configuration = new(templateManifest, todoAppSettings, outputProcessors);
 
+        AnsiConsole.MarkupLine("[bold]Using the following settings:[/]");
+        AnsiConsole.MarkupLine($"- App name         : [green]{todoAppSettings.Config.Name}[/] v{todoAppSettings.Config.Version} with [green]{todoAppSettings.Entities.Count}[/] entities");
+        AnsiConsole.MarkupLine($"- App entities     : [green]{string.Join(", ", todoAppSettings.Entities.Keys)}[/]");
+        AnsiConsole.MarkupLine($"- Template         : [green]{templateManifest.Name}[/] v{templateManifest.Version}");
+        AnsiConsole.MarkupLine($"- Authentification : [yellow]False[/]");
+        AnsiConsole.MarkupLine($"- Persistence      : [green]SQLite[/]");
+
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[bold]Output processors:[/]");
+        AnsiConsole.MarkupLine($"- InMemory         : [green]{settings.InMemory}[/]");
+        AnsiConsole.MarkupLine($"- Disk             : [green]{settings.Disk}[/]");
+        AnsiConsole.MarkupLine($"- Zip              : [yellow]False[/]");
+
+        AnsiConsole.WriteLine();
+        AnsiConsole.MarkupLine("[bold]Git integration:[/]");
+        AnsiConsole.MarkupLine($"- Git repository   : [yellow]False[/]");
+        AnsiConsole.MarkupLine($"- GitHub Actions   : [yellow]False[/]");
+        AnsiConsole.MarkupLine($"- Push on GitHub   : [yellow]False[/]");
+
+
+        AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[bold]Building the Ninjadog Engine...[/]");
         var ninjadogEngine = NinjadogEngineFactory.CreateNinjadogEngine(configuration);
         ninjadogEngine.FileGenerated += OnFileGenerated;
+        ninjadogEngine.DotnetVersionChecked += OnDotnetVersionChecked;
 
         try
         {
+            AnsiConsole.WriteLine();
             AnsiConsole.MarkupLine("[bold]Generating files...[/]");
             ninjadogEngine.Run();
+
+            // TODO: Add a summary of the run:
+            // Ninjadog Engine run summary:
+            // - Total files generated: 10
+            //     - Total time elapsed: 10 minutes
+            //     - Errors encountered: 0
+            // AnsiConsole.MarkupLine("[bold]Ninjadog Engine run summary:[/]");
+            // AnsiConsole.MarkupLine($"- Total files generated: [green]{ninjadogEngine.TotalFilesGenerated}[/]");
+            // AnsiConsole.MarkupLine($"- Total time elapsed: [green]{ninjadogEngine.TotalTimeElapsed}[/]");
+            // AnsiConsole.MarkupLine($"- Errors encountered: [green]{ninjadogEngine.ErrorsEncountered}[/]");
+
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("[bold]Ninjadog Engine run summary:[/]");
+            AnsiConsole.MarkupLine($"- Total files generated: [green]{_totalFilesGenerated}[/] files");
+            AnsiConsole.MarkupLine($"- Total characters generated in files: [green]{_totalCharactersGenerated}[/] characters");
+            AnsiConsole.MarkupLine($"  - It represents ~[green]{_totalCharactersGenerated / 5}[/] words or ~[green]{_totalCharactersGenerated / 150}[/] minutes saved");
+
+            AnsiConsole.WriteLine();
+            AnsiConsole.MarkupLine("[bold]Ninjadog Engine shutting down.[/]");
+            AnsiConsole.MarkupLine("[bold]Have a great day![/]");
         }
         catch (Exception e)
         {
@@ -59,8 +100,15 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
         return 0;
     }
 
-    private static void OnFileGenerated(object? _, NinjadogContentFile e)
+    private void OnFileGenerated(object? _, NinjadogContentFile e)
     {
+        _totalFilesGenerated++;
+        _totalCharactersGenerated += e.Content.Length;
         AnsiConsole.MarkupLine($"- File generated: [green]{e.OutputPath}[/] with a length of [green]{e.Content.Length}[/] characters.");
+    }
+
+    private void OnDotnetVersionChecked(object? _, Version version)
+    {
+        AnsiConsole.MarkupLine($"- .NET CLI version: [green]{version}[/] detected.");
     }
 }

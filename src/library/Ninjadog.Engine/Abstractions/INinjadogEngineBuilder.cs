@@ -44,6 +44,13 @@ public interface INinjadogEngineBuilder
     INinjadogEngineBuilder WithOutputProcessors(OutputProcessorCollection outputProcessors);
 
     /// <summary>
+    /// Specifies the dotnet command service to use with the Ninjadog Engine.
+    /// </summary>
+    /// <param name="dotnetCommandService">The dotnet command service to be used by the engine.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
+    INinjadogEngineBuilder WithDotnetCommandService(IDotnetCommandService dotnetCommandService);
+
+    /// <summary>
     /// Builds and returns a configured instance of the Ninjadog Engine.
     /// </summary>
     /// <returns>A fully configured instance of the Ninjadog Engine.</returns>

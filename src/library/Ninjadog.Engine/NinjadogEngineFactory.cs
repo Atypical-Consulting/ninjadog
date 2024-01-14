@@ -6,6 +6,7 @@
 using Ninjadog.Engine.Abstractions;
 using Ninjadog.Engine.Configuration;
 using Ninjadog.Engine.Internals;
+using Ninjadog.Engine.Services;
 
 namespace Ninjadog.Engine;
 
@@ -31,6 +32,7 @@ public static class NinjadogEngineFactory
             .WithManifest(configuration.TemplateManifest)
             .WithSettings(configuration.NinjadogSettings)
             .WithOutputProcessors(configuration.OutputProcessors)
+            .WithDotnetCommandService(new DotnetCommandService())
             .Build();
     }
 }
