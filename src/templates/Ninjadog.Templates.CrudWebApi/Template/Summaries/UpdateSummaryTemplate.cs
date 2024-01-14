@@ -8,7 +8,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Summaries;
 public sealed class UpdateSummaryTemplate
     : NinjadogTemplate
 {
-    public override string GenerateOneToManyForEntity(
+    public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;

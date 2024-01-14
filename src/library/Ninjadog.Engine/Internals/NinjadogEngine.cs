@@ -27,11 +27,11 @@ internal sealed class NinjadogEngine(
     private void Run(NinjadogTemplate template)
     {
         // First, add a single file based on the template and the settings...
-        var singleFileContent = template.GenerateOneToOne(ninjadogSettings);
+        var singleFileContent = template.GenerateOne(ninjadogSettings);
         ProcessContent(singleFileContent);
 
         // ...then, add multiple files based on the template and the settings
-        foreach (var content in template.GenerateOneToMany(ninjadogSettings))
+        foreach (var content in template.GenerateMany(ninjadogSettings))
         {
             ProcessContent(content);
         }

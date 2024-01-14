@@ -6,7 +6,9 @@
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
+using Ninjadog.Templates.CrudWebAPI.Template.Database;
 using Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
+using Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 using Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 using Ninjadog.Templates.CrudWebAPI.Template.Services;
 using Ninjadog.Templates.CrudWebAPI.Template.Summaries;
@@ -42,10 +44,10 @@ public class CrudTemplateFiles : NinjadogTemplateFiles
             new GetAllResponseTemplate(),
             new ResponseTemplate());
 
-        // AddTemplates(
-        //     "Database",
-        //     new DatabaseInitializerTemplate(),
-        //     new DbConnectionFactoryTemplate());
+        AddTemplates(
+            "Database",
+            new DatabaseInitializerTemplate(),
+            new DbConnectionFactoryTemplate());
 
         AddTemplates(
             "Endpoints",
@@ -55,12 +57,12 @@ public class CrudTemplateFiles : NinjadogTemplateFiles
             new GetEndpointTemplate(),
             new UpdateEndpointTemplate());
 
-        // AddTemplates(
-        //     "Mapping",
-        //     new ApiContractToDomainMapperTemplate(),
-        //     new DomainToApiContractMapperTemplate(),
-        //     new DomainToDtoMapperTemplate(),
-        //     new DtoToDomainMapperTemplate());
+        AddTemplates(
+            "Mapping",
+            new ApiContractToDomainMapperTemplate(),
+            new DomainToApiContractMapperTemplate(),
+            new DomainToDtoMapperTemplate(),
+            new DtoToDomainMapperTemplate());
 
         AddTemplates(
             "Repositories",

@@ -5,7 +5,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Validation;
 public sealed class UpdateRequestValidatorTemplate
     : NinjadogTemplate
 {
-    public override string GenerateOneToManyForEntity(
+    public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;

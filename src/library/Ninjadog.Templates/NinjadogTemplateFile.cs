@@ -21,11 +21,25 @@ public abstract class NinjadogTemplate
     /// </summary>
     /// <param name="ninjadogSettings">The settings to be used for code generation.</param>
     /// <returns>A string representing the generated code, or null if not implemented.</returns>
-    public virtual string? GenerateOneToOne(NinjadogSettings ninjadogSettings)
+    public virtual string? GenerateOne(NinjadogSettings ninjadogSettings)
     {
         // Default implementation: return null
         // Override this method in derived classes to implement specific logic
         // for generating code in a single file.
+        return null;
+    }
+
+    /// <summary>
+    /// Generates content for a single entity. This method can be overridden in derived classes
+    /// to provide specific generation logic for each entity.
+    /// </summary>
+    /// <param name="entity">The entity for which to generate content.</param>
+    /// <param name="rootNamespace">The root namespace to be used in content generation.</param>
+    /// <returns>A string representing the generated content for the specified entity.</returns>
+    public virtual string? GenerateOneByEntity(NinjadogEntityWithKey entity, string rootNamespace)
+    {
+        // Default implementation for generating content for a single entity.
+        // This can be overridden in derived classes for specific entity generation logic.
         return null;
     }
 
@@ -37,32 +51,18 @@ public abstract class NinjadogTemplate
     /// </summary>
     /// <param name="ninjadogSettings">The settings to be used for code generation.</param>
     /// <returns>An enumerable of strings, each representing generated code for an entity.</returns>
-    public virtual IEnumerable<string> GenerateOneToMany(NinjadogSettings ninjadogSettings)
+    public virtual IEnumerable<string> GenerateMany(NinjadogSettings ninjadogSettings)
     {
         var entities = ninjadogSettings.Entities.FromKeys();
         var rootNs = ninjadogSettings.Config.RootNamespace;
 
         foreach (var entity in entities)
         {
-            var content = GenerateOneToManyForEntity(entity, rootNs);
+            var content = GenerateOneByEntity(entity, rootNs);
             if (content != null)
             {
                 yield return content;
             }
         }
-    }
-
-    /// <summary>
-    /// Generates content for a single entity. This method can be overridden in derived classes
-    /// to provide specific generation logic for each entity.
-    /// </summary>
-    /// <param name="entity">The entity for which to generate content.</param>
-    /// <param name="rootNamespace">The root namespace to be used in content generation.</param>
-    /// <returns>A string representing the generated content for the specified entity.</returns>
-    public virtual string? GenerateOneToManyForEntity(NinjadogEntityWithKey entity, string rootNamespace)
-    {
-        // Default implementation for generating content for a single entity.
-        // This can be overridden in derived classes for specific entity generation logic.
-        return null;
     }
 }
