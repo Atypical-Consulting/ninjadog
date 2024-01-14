@@ -12,13 +12,14 @@ public sealed class DeleteEndpointTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
-    public override string GenerateOneByEntity(
+    public override NinjadogContentFile? GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Endpoints";
+        var fileName = $"{st.ClassDeleteModelEndpoint}.cs";
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               using {{rootNamespace}}.Contracts.Requests;

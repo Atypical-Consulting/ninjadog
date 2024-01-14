@@ -12,13 +12,14 @@ public sealed class RepositoryInterfaceTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc/>
-    public override string GenerateOneByEntity(
+    public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Repositories";
+        var fileName = $"{st.InterfaceModelRepository}.cs";
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               using {{rootNamespace}}.Contracts.Data;

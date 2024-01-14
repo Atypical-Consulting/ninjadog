@@ -9,7 +9,7 @@ namespace Ninjadog.Templates;
 /// Represents a collection of Ninjadog templates.
 /// This class provides functionalities to manage a list of template instances.
 /// </summary>
-public class NinjadogTemplateFiles : List<NinjadogTemplate>
+public class NinjadogTemplates : List<NinjadogTemplate>
 {
     /// <summary>
     /// Adds multiple templates to the collection, potentially under a specified category.
@@ -20,8 +20,11 @@ public class NinjadogTemplateFiles : List<NinjadogTemplate>
     {
         foreach (var template in templates)
         {
-            // The category can be used for organizational purposes
-            this.Add(template);
+            // Set the category for each template
+            template.Category = category;
+
+            // Add the template to the collection
+            Add(template);
         }
     }
 }

@@ -14,14 +14,15 @@ public sealed class DatabaseInitializerTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
-    public override string GenerateOne(
+    public override NinjadogContentFile? GenerateOne(
         NinjadogSettings ninjadogSettings)
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();
         var ns = $"{rootNamespace}.Database";
+        const string fileName = "DatabaseInitializer.cs";
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               using Dapper;

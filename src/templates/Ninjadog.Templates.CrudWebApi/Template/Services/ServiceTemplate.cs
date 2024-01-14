@@ -12,13 +12,14 @@ public sealed class ServiceTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
-    public override string GenerateOneByEntity(
+    public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Services";
+        var fileName = $"{st.ClassModelService}.cs";
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               using {{rootNamespace}}.Domain;

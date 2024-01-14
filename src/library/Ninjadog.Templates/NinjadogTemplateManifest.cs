@@ -45,5 +45,5 @@ public abstract class NinjadogTemplateManifest
     /// <summary>
     /// Gets the collection of template files associated with this manifest.
     /// </summary>
-    public virtual NinjadogTemplateFiles TemplateFiles { get; init; } = [];
+    public virtual NinjadogTemplates Templates { get; init; } = [];
 }

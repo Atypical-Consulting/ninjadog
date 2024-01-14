@@ -14,17 +14,19 @@ public sealed class ApiContractToDomainMapperTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
-    public override string GenerateOne(
+    public override NinjadogContentFile GenerateOne(
         NinjadogSettings ninjadogSettings)
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();
         var ns = $"{rootNamespace}.Mapping";
+        const string className = "ApiContractToDomainMapper";
+        const string fileName = $"{className}.cs";
 
         var toModelFromCreateMethods = string.Join("\n", entities.Select(GenerateToModelFromCreateMethods));
         var toModelFromUpdateMethods = string.Join("\n", entities.Select(GenerateToModelFromUpdateMethods));
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               using {{rootNamespace}}.Contracts.Requests;
@@ -33,7 +35,7 @@ public sealed class ApiContractToDomainMapperTemplate
 
               {{WriteFileScopedNamespace(ns)}}
 
-              public static class ApiContractToDomainMapper
+              public static class {{className}}
               {
                   {{toModelFromCreateMethods}}
                   {{toModelFromUpdateMethods}}

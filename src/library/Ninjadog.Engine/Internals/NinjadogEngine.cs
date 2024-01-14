@@ -18,7 +18,7 @@ internal sealed class NinjadogEngine(
 {
     public void Run()
     {
-        foreach (var template in templateManifest.TemplateFiles)
+        foreach (var template in templateManifest.Templates)
         {
             Run(template);
         }
@@ -37,16 +37,16 @@ internal sealed class NinjadogEngine(
         }
     }
 
-    private void ProcessContent(string? content)
+    private void ProcessContent(NinjadogContentFile? contentFile)
     {
-        if (string.IsNullOrEmpty(content))
+        if (contentFile is null || string.IsNullOrEmpty(contentFile.Content))
         {
             return;
         }
 
         foreach (var processor in outputProcessors)
         {
-            processor.ProcessOutput(content);
+            processor.ProcessOutput(contentFile);
         }
     }
 }

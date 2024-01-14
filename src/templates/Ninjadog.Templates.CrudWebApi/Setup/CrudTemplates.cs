@@ -20,13 +20,13 @@ namespace Ninjadog.Templates.CrudWebAPI.Setup;
 /// Represents a specific collection of templates for CRUD operations in a Web API.
 /// This class initializes various types of request, response, and data transfer object (DTO) templates.
 /// </summary>
-public class CrudTemplateFiles : NinjadogTemplateFiles
+public class CrudTemplates : NinjadogTemplates
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CrudTemplateFiles"/> class,
+    /// Initializes a new instance of the <see cref="CrudTemplates"/> class,
     /// adding templates for different CRUD operations.
     /// </summary>
-    public CrudTemplateFiles()
+    public CrudTemplates()
     {
         AddTemplates(
             "Contracts/Data",

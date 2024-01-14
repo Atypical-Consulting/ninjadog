@@ -12,71 +12,31 @@ public sealed class ServiceInterfaceTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc/>
-    public override string GenerateOneByEntity(
+    public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Services";
+        var fileName = $"{st.InterfaceModelService}.cs";
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               using {{rootNamespace}}.Domain;
-              using {{rootNamespace}}.Mapping;
-              using {{rootNamespace}}.Repositories;
-              using FluentValidation;
-              using FluentValidation.Results;
 
               {{WriteFileScopedNamespace(ns)}}
 
-              public partial class {{st.ClassModelService}} : {{st.InterfaceModelService}}
+              public partial interface {{st.InterfaceModelService}}
               {
-                  private readonly {{st.InterfaceModelRepository}} {{st.FieldModelRepository}};
+                  Task<bool> CreateAsync({{st.Model}} {{st.VarModel}});
 
-                  public {{st.ClassModelService}}({{st.InterfaceModelRepository}} {{st.VarModelRepository}})
-                  {
-                      {{st.FieldModelRepository}} = {{st.VarModelRepository}};
-                  }
+                  Task<{{st.Model}}?> GetAsync(Guid id);
 
-                  public async Task<bool> CreateAsync({{st.Model}} {{st.VarModel}})
-                  {
-                      // TODO: rename existingUser variable
-                      var {{st.VarExistingModel}} = await {{st.FieldModelRepository}}.GetAsync({{st.VarModel}}.Id.Value);
-                      if ({{st.VarExistingModel}} is not null)
-                      {
-                          var message = $"A {{st.ModelHumanized}} with id {{{st.VarModel}}.Id} already exists";
-                          throw new ValidationException(message, new []
-                          {
-                              new ValidationFailure(nameof({{st.Model}}), message)
-                          });
-                      }
+                  Task<IEnumerable<{{st.Model}}>> GetAllAsync();
 
-                      var {{st.VarModelDto}} = {{st.VarModel}}.{{st.MethodToModelDto}}();
-                      return await {{st.FieldModelRepository}}.CreateAsync({{st.VarModelDto}});
-                  }
+                  Task<bool> UpdateAsync({{st.Model}} {{st.VarModel}});
 
-                  public async Task<{{st.Model}}?> GetAsync(Guid id)
-                  {
-                      var {{st.VarModelDto}} = await {{st.FieldModelRepository}}.GetAsync(id);
-                      return {{st.VarModelDto}}?.{{st.MethodToModel}}();
-                  }
-
-                  public async Task<IEnumerable<{{st.Model}}>> GetAllAsync()
-                  {
-                      var {{st.VarModelDtos}} = await {{st.FieldModelRepository}}.GetAllAsync();
-                      return {{st.VarModelDtos}}.Select(x => x.{{st.MethodToModel}}());
-                  }
-
-                  public async Task<bool> UpdateAsync({{st.Model}} {{st.VarModel}})
-                  {
-                      var {{st.VarModelDto}} = {{st.VarModel}}.{{st.MethodToModelDto}}();
-                      return await {{st.FieldModelRepository}}.UpdateAsync({{st.VarModelDto}});
-                  }
-
-                  public async Task<bool> DeleteAsync(Guid id)
-                  {
-                      return await {{st.FieldModelRepository}}.DeleteAsync(id);
-                  }
+                  Task<bool> DeleteAsync(Guid id);
               }
               """);
     }

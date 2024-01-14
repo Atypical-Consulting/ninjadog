@@ -12,13 +12,14 @@ public sealed class UpdateRequestTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
-    public override string GenerateOneByEntity(
+    public override NinjadogContentFile? GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Contracts.Requests";
+        var fileName = $"{st.ClassUpdateModelRequest}.cs";
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               {{WriteFileScopedNamespace(ns)}}

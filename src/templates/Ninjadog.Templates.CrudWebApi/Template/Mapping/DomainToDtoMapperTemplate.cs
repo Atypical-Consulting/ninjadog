@@ -14,16 +14,18 @@ public sealed class DomainToDtoMapperTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
-    public override string GenerateOne(
+    public override NinjadogContentFile GenerateOne(
         NinjadogSettings ninjadogSettings)
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();
         var ns = $"{rootNamespace}.Mapping";
+        const string className = "DomainToDtoMapper";
+        const string fileName = $"{className}.cs";
 
         var methods = string.Join("\n", entities.Select(GenerateToModelDtoMethods));
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               using {{rootNamespace}}.Contracts.Data;
@@ -31,7 +33,7 @@ public sealed class DomainToDtoMapperTemplate
 
               {{WriteFileScopedNamespace(ns)}}
 
-              public static class DomainToDtoMapper
+              public static class {{className}}
               {
                   {{methods}}
               }

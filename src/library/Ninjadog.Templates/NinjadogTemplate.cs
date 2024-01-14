@@ -15,13 +15,18 @@ namespace Ninjadog.Templates;
 public abstract class NinjadogTemplate
 {
     /// <summary>
+    /// Gets or sets the category of the template.
+    /// </summary>
+    public string? Category { get; set; }
+
+    /// <summary>
     /// Generates code in a single file based on the provided settings.
     /// This method can be overridden by derived classes to implement specific logic
     /// for one-to-one code generation.
     /// </summary>
     /// <param name="ninjadogSettings">The settings to be used for code generation.</param>
     /// <returns>A string representing the generated code, or null if not implemented.</returns>
-    public virtual string? GenerateOne(NinjadogSettings ninjadogSettings)
+    public virtual NinjadogContentFile? GenerateOne(NinjadogSettings ninjadogSettings)
     {
         // Default implementation: return null
         // Override this method in derived classes to implement specific logic
@@ -36,7 +41,7 @@ public abstract class NinjadogTemplate
     /// <param name="entity">The entity for which to generate content.</param>
     /// <param name="rootNamespace">The root namespace to be used in content generation.</param>
     /// <returns>A string representing the generated content for the specified entity.</returns>
-    public virtual string? GenerateOneByEntity(NinjadogEntityWithKey entity, string rootNamespace)
+    public virtual NinjadogContentFile? GenerateOneByEntity(NinjadogEntityWithKey entity, string rootNamespace)
     {
         // Default implementation for generating content for a single entity.
         // This can be overridden in derived classes for specific entity generation logic.
@@ -51,7 +56,7 @@ public abstract class NinjadogTemplate
     /// </summary>
     /// <param name="ninjadogSettings">The settings to be used for code generation.</param>
     /// <returns>An enumerable of strings, each representing generated code for an entity.</returns>
-    public virtual IEnumerable<string> GenerateMany(NinjadogSettings ninjadogSettings)
+    public virtual IEnumerable<NinjadogContentFile> GenerateMany(NinjadogSettings ninjadogSettings)
     {
         var entities = ninjadogSettings.Entities.FromKeys();
         var rootNs = ninjadogSettings.Config.RootNamespace;
@@ -64,5 +69,16 @@ public abstract class NinjadogTemplate
                 yield return content;
             }
         }
+    }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="NinjadogContentFile"/> with the specified file name and content.
+    /// </summary>
+    /// <param name="fileName">The name of the file to be created.</param>
+    /// <param name="content">The content of the file to be created.</param>
+    /// <returns>A new instance of <see cref="NinjadogContentFile"/>.</returns>
+    protected NinjadogContentFile CreateNinjadogContentFile(string fileName, string content)
+    {
+        return new NinjadogContentFile(fileName, content, Category);
     }
 }

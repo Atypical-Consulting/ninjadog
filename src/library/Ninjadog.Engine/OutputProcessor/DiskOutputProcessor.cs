@@ -4,6 +4,7 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Ninjadog.Engine.Abstractions;
+using Ninjadog.Templates;
 
 namespace Ninjadog.Engine.OutputProcessor;
 
@@ -17,8 +18,8 @@ public class DiskOutputProcessor : IOutputProcessor
     /// <summary>
     /// Processes the given content by writing it to the filesystem.
     /// </summary>
-    /// <param name="content">The content to be processed and written to disk.</param>
-    public void ProcessOutput(string? content)
+    /// <param name="contentFile">The content file to be processed and written to disk.</param>
+    public void ProcessOutput(NinjadogContentFile contentFile)
     {
         // Logic to write to the filesystem
     }

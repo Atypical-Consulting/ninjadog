@@ -41,11 +41,7 @@ internal sealed class NinjadogEngineBuilder
     /// <inheritdoc />
     public INinjadogEngineBuilder WithOutputProcessors(OutputProcessorCollection outputProcessors)
     {
-        foreach (var outputProcessor in _outputProcessors)
-        {
-            WithOutputProcessor(outputProcessor);
-        }
-
+        _outputProcessors.AddRange(outputProcessors);
         return this;
     }
 

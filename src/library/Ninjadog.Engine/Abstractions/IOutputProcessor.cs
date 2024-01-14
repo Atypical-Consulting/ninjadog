@@ -3,6 +3,8 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Ninjadog.Templates;
+
 namespace Ninjadog.Engine.Abstractions;
 
 /// <summary>
@@ -16,6 +18,6 @@ public interface IOutputProcessor
     /// Processes the given output content.
     /// Implementations of this method should handle the content according to their specific processing logic.
     /// </summary>
-    /// <param name="content">The content to be processed.</param>
-    void ProcessOutput(string? content);
+    /// <param name="contentFile">The content file to process.</param>
+    void ProcessOutput(NinjadogContentFile contentFile);
 }

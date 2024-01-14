@@ -26,5 +26,5 @@ public class CrudTemplateManifest : NinjadogTemplateManifest
     public override string License { get; init; } = "All rights reserved";
 
     /// <inheritdoc />
-    public override NinjadogTemplateFiles TemplateFiles { get; init; } = new CrudTemplateFiles();
+    public override NinjadogTemplates Templates { get; init; } = new CrudTemplates();
 }

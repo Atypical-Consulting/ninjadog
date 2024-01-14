@@ -4,6 +4,7 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Ninjadog.Engine.Abstractions;
+using Ninjadog.Templates;
 
 namespace Ninjadog.Engine.OutputProcessor;
 
@@ -17,17 +18,21 @@ public class InMemoryOutputProcessor : IOutputProcessor
     /// <summary>
     /// Gets the memory storage that holds the processed content.
     /// </summary>
-    public List<string> MemoryStorage { get; } = [];
+    public Dictionary<string, string> MemoryStorage { get; } = [];
 
     /// <summary>
     /// Processes the given content by storing it in memory.
     /// </summary>
-    /// <param name="content">The content to be processed and stored.</param>
-    public void ProcessOutput(string? content)
+    /// <param name="contentFile">The content file to be processed and stored.</param>
+    public void ProcessOutput(NinjadogContentFile contentFile)
     {
-        if (content != null)
+        // raise an exception if the output path is already present in the memory storage
+        if (MemoryStorage.ContainsKey(contentFile.OutputPath))
         {
-            MemoryStorage.Add(content);
+            throw new InvalidOperationException(
+                $"The output path {contentFile.OutputPath} is already present in the memory storage.");
         }
+
+        MemoryStorage[contentFile.OutputPath] = contentFile.Content;
     }
 }

@@ -10,7 +10,8 @@ namespace Ninjadog.Engine.Services;
 
 /// <summary>
 /// A service for executing .NET CLI commands.
-/// This class provides functionality to programmatically run commands using the .NET CLI, ensuring the CLI is available upon initialization.
+/// This class provides functionality to programmatically run commands using the .NET CLI,
+/// ensuring the CLI is available upon initialization.
 /// </summary>
 public sealed class DotnetCommandService : IDotnetCommandService
 {

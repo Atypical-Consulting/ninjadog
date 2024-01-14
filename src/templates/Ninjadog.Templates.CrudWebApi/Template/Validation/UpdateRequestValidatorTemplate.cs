@@ -14,13 +14,14 @@ public sealed class UpdateRequestValidatorTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc/>
-    public override string GenerateOneByEntity(
+    public override NinjadogContentFile? GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Validation";
+        var fileName = $"{st.ClassUpdateModelRequestValidator}.cs";
 
-        return DefaultCodeLayout(
+        return CreateNinjadogContentFile(fileName,
             $$"""
 
               using {{rootNamespace}}.Contracts.Requests;

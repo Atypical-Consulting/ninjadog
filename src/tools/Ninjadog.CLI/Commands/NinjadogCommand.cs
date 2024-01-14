@@ -9,6 +9,7 @@ using Ninjadog.Engine.Collections;
 using Ninjadog.Engine.Configuration;
 using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Ninjadog.CLI.Commands;
@@ -37,9 +38,18 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
         NinjadogEngineConfiguration configuration = new(
             templateManifest, todoAppSettings, outputProcessors);
 
-        NinjadogEngineFactory
-            .CreateNinjadogEngine(configuration)
-            .Run();
+        try
+        {
+            NinjadogEngineFactory
+                .CreateNinjadogEngine(configuration)
+                .Run();
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.WriteLine();
+            AnsiConsole.WriteException(e);
+            return 1;
+        }
 
         return 0;
     }
