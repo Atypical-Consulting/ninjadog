@@ -16,6 +16,8 @@ internal sealed class NinjadogEngine(
     OutputProcessorCollection outputProcessors)
     : INinjadogEngine
 {
+    public event EventHandler<NinjadogContentFile>? FileGenerated;
+
     public void Run()
     {
         foreach (var template in templateManifest.Templates)
@@ -48,5 +50,12 @@ internal sealed class NinjadogEngine(
         {
             processor.ProcessOutput(contentFile);
         }
+
+        OnFileGenerated(contentFile);
+    }
+
+    private void OnFileGenerated(NinjadogContentFile contentFile)
+    {
+        FileGenerated?.Invoke(this, contentFile);
     }
 }

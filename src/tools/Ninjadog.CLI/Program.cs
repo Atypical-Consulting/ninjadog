@@ -7,7 +7,12 @@ using Ninjadog.CLI.Commands;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-AnsiConsole.Markup("[underline red]Hello[/] Ninjadog!");
+AnsiConsole.Write(
+    new FigletText("Ninjadog")
+        .LeftJustified()
+        .Color(Color.Red));
+AnsiConsole.MarkupLine("[bold]by Atypical Consulting SRL[/]");
+AnsiConsole.WriteLine();
 
 var app = new CommandApp<NinjadogCommand>();
 return app.Run(args);

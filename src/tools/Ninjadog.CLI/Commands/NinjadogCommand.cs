@@ -7,6 +7,7 @@ using System.ComponentModel;
 using Ninjadog.Engine;
 using Ninjadog.Engine.Collections;
 using Ninjadog.Engine.Configuration;
+using Ninjadog.Templates;
 using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 using Spectre.Console;
@@ -29,20 +30,24 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
 
     public override int Execute(CommandContext context, Settings settings)
     {
+        AnsiConsole.MarkupLine("[bold]Using the following settings:[/]");
+        AnsiConsole.MarkupLine($"- InMemory: [green]{settings.InMemory}[/]");
+        AnsiConsole.MarkupLine($"- Disk    : [green]{settings.Disk}[/]");
+        AnsiConsole.WriteLine();
+
         CrudTemplateManifest templateManifest = new();
         TodoAppSettings todoAppSettings = new();
+        OutputProcessorCollection outputProcessors = new(settings.InMemory, settings.Disk);
+        NinjadogEngineConfiguration configuration = new(templateManifest, todoAppSettings, outputProcessors);
 
-        OutputProcessorCollection outputProcessors = new(
-            settings.InMemory, settings.Disk);
-
-        NinjadogEngineConfiguration configuration = new(
-            templateManifest, todoAppSettings, outputProcessors);
+        AnsiConsole.MarkupLine("[bold]Building the Ninjadog Engine...[/]");
+        var ninjadogEngine = NinjadogEngineFactory.CreateNinjadogEngine(configuration);
+        ninjadogEngine.FileGenerated += OnFileGenerated;
 
         try
         {
-            NinjadogEngineFactory
-                .CreateNinjadogEngine(configuration)
-                .Run();
+            AnsiConsole.MarkupLine("[bold]Generating files...[/]");
+            ninjadogEngine.Run();
         }
         catch (Exception e)
         {
@@ -52,5 +57,10 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
         }
 
         return 0;
+    }
+
+    private static void OnFileGenerated(object? _, NinjadogContentFile e)
+    {
+        AnsiConsole.MarkupLine($"- File generated: [green]{e.OutputPath}[/] with a length of [green]{e.Content.Length}[/] characters.");
     }
 }
