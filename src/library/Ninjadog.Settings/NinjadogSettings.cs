@@ -13,17 +13,8 @@ namespace Ninjadog.Settings;
 /// This record includes both application-level configurations and entity definitions,
 /// enabling tailored behavior of the Ninjadog Engine based on these settings.
 /// </summary>
-public record NinjadogSettings
-{
-    /// <summary>
-    /// Gets the general configuration settings for the Ninjadog Engine.
-    /// This includes parameters like root namespace, output paths, and other global settings.
-    /// </summary>
-    public virtual NinjadogConfiguration? Config { get; init; }
-
-    /// <summary>
-    /// Gets the collection of entities that the Ninjadog Engine will use for template generation.
-    /// This encompasses the definitions and properties of all entities involved in the templating process.
-    /// </summary>
-    public virtual NinjadogEntities? Entities { get; init; }
-}
+/// <param name="Config">The general configuration settings for the Ninjadog Engine.</param>
+/// <param name="Entities">The collection of entities that the Ninjadog Engine will use for template generation.</param>
+public abstract record NinjadogSettings(
+    NinjadogConfiguration Config,
+    NinjadogEntities Entities);

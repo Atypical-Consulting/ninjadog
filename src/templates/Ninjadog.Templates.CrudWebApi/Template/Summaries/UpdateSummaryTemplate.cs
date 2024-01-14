@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Summaries;
 
+/// <summary>
+/// This template generates the summary for the update endpoint of a given entity.
+/// </summary>
 public sealed class UpdateSummaryTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc/>
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

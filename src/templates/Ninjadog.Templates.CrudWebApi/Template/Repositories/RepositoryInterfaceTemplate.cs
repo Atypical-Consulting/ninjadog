@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 
+/// <summary>
+/// This template generates the repository interface for a given entity.
+/// </summary>
 public sealed class RepositoryInterfaceTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc/>
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

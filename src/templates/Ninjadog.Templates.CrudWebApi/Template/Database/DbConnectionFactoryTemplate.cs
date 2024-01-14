@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Database;
 
+/// <summary>
+/// This template generates the DbConnectionFactory class.
+/// </summary>
 public sealed class DbConnectionFactoryTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOne(
         NinjadogSettings ninjadogSettings)
     {

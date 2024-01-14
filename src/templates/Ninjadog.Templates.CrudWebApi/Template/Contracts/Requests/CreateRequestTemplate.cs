@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 
+/// <summary>
+/// This template generates the Create request for a given entity.
+/// </summary>
 public sealed class CreateRequestTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

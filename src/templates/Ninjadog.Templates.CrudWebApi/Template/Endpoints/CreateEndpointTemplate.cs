@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 
+/// <summary>
+/// This template generates the Create endpoint for a given entity.
+/// </summary>
 public sealed class CreateEndpointTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

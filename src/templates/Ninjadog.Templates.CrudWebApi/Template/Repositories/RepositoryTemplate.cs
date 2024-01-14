@@ -7,9 +7,13 @@ using Ninjadog.Helpers;
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 
+/// <summary>
+/// This template generates the repository for a given entity.
+/// </summary>
 public sealed class RepositoryTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

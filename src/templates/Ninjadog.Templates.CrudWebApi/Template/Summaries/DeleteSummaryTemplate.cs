@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Summaries;
 
+/// <summary>
+/// This template generates the summary for the delete endpoint of a given entity.
+/// </summary>
 public sealed class DeleteSummaryTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Summaries;
 
+/// <summary>
+/// This template generates the summary for the get all endpoint of a given entity.
+/// </summary>
 public sealed class GetAllSummaryTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

@@ -13,6 +13,10 @@ namespace Ninjadog.Helpers;
 // see: https://github.com/srkirkland/Inflector/blob/master/Inflector/Inflector.cs
 // adapted for .NET8 by Philippe Matray
 
+/// <summary>
+/// Provides methods for string manipulations commonly used in inflecting words between different cases.
+/// This static class includes functionality for pluralization, singularization, and various case conversions.
+/// </summary>
 public static class Inflector
 {
     #region Default Rules
@@ -121,11 +125,21 @@ public static class Inflector
     private static readonly List<Rule> Singulars = [];
     private static readonly List<string> Uncountables = [];
 
+    /// <summary>
+    /// Converts a word to its plural form.
+    /// </summary>
+    /// <param name="word">The word to be pluralized.</param>
+    /// <returns>The plural form of the word.</returns>
     public static string Pluralize(this string word)
     {
         return ApplyRules(Plurals, word)!;
     }
 
+    /// <summary>
+    /// Converts a word to its singular form.
+    /// </summary>
+    /// <param name="word">The word to be singularized.</param>
+    /// <returns>The singular form of the word.</returns>
     public static string Singularize(this string word)
     {
         return ApplyRules(Singulars, word)!;
@@ -151,32 +165,57 @@ public static class Inflector
         return result;
     }
 
+    /// <summary>
+    /// Converts a word to title case.
+    /// </summary>
+    /// <param name="word">The word to be converted to title case.</param>
+    /// <returns>The word in title case.</returns>
     public static string Titleize(this string word)
     {
         return Regex.Replace(
-                Humanize(Underscore(word)),
-                @"\b([a-z])",
-                match => match.Captures[0].Value.ToUpperInvariant());
+            Humanize(Underscore(word)),
+            @"\b([a-z])",
+            match => match.Captures[0].Value.ToUpperInvariant());
     }
 
+    /// <summary>
+    /// Converts an underscored word to a human-readable form.
+    /// </summary>
+    /// <param name="lowercaseAndUnderscoredWord">The underscored word to be humanized.</param>
+    /// <returns>The humanized form of the word.</returns>
     public static string Humanize(this string lowercaseAndUnderscoredWord)
     {
         return Capitalize(Regex.Replace(lowercaseAndUnderscoredWord, "_", " "));
     }
 
+    /// <summary>
+    /// Converts an underscored word to Pascal case.
+    /// </summary>
+    /// <param name="lowercaseAndUnderscoredWord">The underscored word to be Pascalized.</param>
+    /// <returns>The Pascal case form of the word.</returns>
     public static string Pascalize(this string lowercaseAndUnderscoredWord)
     {
         return Regex.Replace(
-                lowercaseAndUnderscoredWord,
-                "(?:^|_)(.)",
-                match => match.Groups[1].Value.ToUpperInvariant());
+            lowercaseAndUnderscoredWord,
+            "(?:^|_)(.)",
+            match => match.Groups[1].Value.ToUpperInvariant());
     }
 
+    /// <summary>
+    /// Converts an underscored word to camel case.
+    /// </summary>
+    /// <param name="lowercaseAndUnderscoredWord">The underscored word to be camelized.</param>
+    /// <returns>The camel case form of the word.</returns>
     public static string Camelize(this string lowercaseAndUnderscoredWord)
     {
         return Uncapitalize(Pascalize(lowercaseAndUnderscoredWord));
     }
 
+    /// <summary>
+    /// Converts a Pascal case word to an underscored format.
+    /// </summary>
+    /// <param name="pascalCasedWord">The Pascal case word to be underscored.</param>
+    /// <returns>The underscored form of the word.</returns>
     public static string Underscore(this string pascalCasedWord)
     {
         return Regex.Replace(
@@ -188,21 +227,41 @@ public static class Inflector
             .ToLowerInvariant();
     }
 
+    /// <summary>
+    /// Capitalizes the first letter of a word.
+    /// </summary>
+    /// <param name="word">The word to be capitalized.</param>
+    /// <returns>The word with its first letter capitalized.</returns>
     public static string Capitalize(this string word)
     {
         return word[..1].ToUpperInvariant() + word[1..].ToLowerInvariant();
     }
 
+    /// <summary>
+    /// Converts the first letter of a word to lowercase.
+    /// </summary>
+    /// <param name="word">The word to be uncapitalized.</param>
+    /// <returns>The word with its first letter in lowercase.</returns>
     public static string Uncapitalize(this string word)
     {
         return word[..1].ToLowerInvariant() + word[1..];
     }
 
+    /// <summary>
+    /// Converts a numeric string to its ordinal representation.
+    /// </summary>
+    /// <param name="numberString">The numeric string to be ordinalized.</param>
+    /// <returns>The ordinal representation of the number.</returns>
     public static string Ordinalize(this string numberString)
     {
         return Ordanize(int.Parse(numberString, null), numberString);
     }
 
+    /// <summary>
+    /// Converts a number to its ordinal representation.
+    /// </summary>
+    /// <param name="number">The number to be ordinalized.</param>
+    /// <returns>The ordinal representation of the number.</returns>
     public static string Ordinalize(this int number)
     {
         return Ordanize(number, number.ToString((IFormatProvider?)null));
@@ -223,6 +282,11 @@ public static class Inflector
             };
     }
 
+    /// <summary>
+    /// Converts an underscored word to a dashed (kebab case) format.
+    /// </summary>
+    /// <param name="underscoredWord">The underscored word to be dasherized.</param>
+    /// <returns>The dashed form of the word.</returns>
     public static string Dasherize(this string underscoredWord)
     {
         return underscoredWord.Replace('_', '-');

@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 
+/// <summary>
+/// This template generates the Delete request for a given entity.
+/// </summary>
 public sealed class DeleteRequestTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

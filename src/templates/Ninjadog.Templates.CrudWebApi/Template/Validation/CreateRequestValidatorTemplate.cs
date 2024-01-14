@@ -7,9 +7,13 @@ using Ninjadog.Helpers;
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Validation;
 
+/// <summary>
+/// This template generates the validation rules for the create request of a given entity.
+/// </summary>
 public sealed class CreateRequestValidatorTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc/>
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

@@ -7,9 +7,13 @@ using Ninjadog.Helpers;
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 
+/// <summary>
+/// This template generates the DomainToDtoMapper class.
+/// </summary>
 public sealed class DomainToDtoMapperTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOne(
         NinjadogSettings ninjadogSettings)
     {
@@ -53,7 +57,7 @@ public sealed class DomainToDtoMapperTemplate
 
             sb.Append($"{p.Key} = {st.VarModel}.{p.Key}");
 
-            var realType = p.Type.ToString();
+            var realType = p.Type;
 
             if (isValueOf)
             {

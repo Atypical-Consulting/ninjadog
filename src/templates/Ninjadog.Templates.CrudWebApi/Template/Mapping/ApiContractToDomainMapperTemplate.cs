@@ -7,9 +7,13 @@ using Ninjadog.Helpers;
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 
+/// <summary>
+/// This template generates the ApiContractToDomainMapper class.
+/// </summary>
 public sealed class ApiContractToDomainMapperTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOne(
         NinjadogSettings ninjadogSettings)
     {
@@ -61,7 +65,7 @@ public sealed class ApiContractToDomainMapperTemplate
 
             var realType = isValueOf
                 ? valueOfArgument
-                : p.Type.ToString();
+                : p.Type;
 
             switch (realType)
             {

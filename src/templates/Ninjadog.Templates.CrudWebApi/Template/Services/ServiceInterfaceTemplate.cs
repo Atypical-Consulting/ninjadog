@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Services;
 
+/// <summary>
+/// This template generates the service interface for a given entity.
+/// </summary>
 public sealed class ServiceInterfaceTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc/>
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

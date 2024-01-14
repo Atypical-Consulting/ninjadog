@@ -3,14 +3,12 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Settings.Config;
-using Ninjadog.Settings.Entities;
-
 namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
-public record TodoAppSettings : NinjadogSettings
-{
-
-    public override NinjadogConfiguration Config { get; init; } = new TodoAppConfiguration();
-    public override NinjadogEntities Entities { get; init; } = new TodoAppEntities();
-}
+/// <summary>
+/// Represents the settings for the TodoApp template.
+/// </summary>
+public record TodoAppSettings()
+    : NinjadogSettings(
+        new TodoAppConfiguration(),
+        new TodoAppEntities());

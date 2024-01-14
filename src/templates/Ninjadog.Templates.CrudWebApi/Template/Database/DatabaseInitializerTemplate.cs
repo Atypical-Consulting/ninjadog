@@ -7,9 +7,13 @@ using Ninjadog.Helpers;
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Database;
 
+/// <summary>
+/// This template generates the DatabaseInitializer class.
+/// </summary>
 public sealed class DatabaseInitializerTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOne(
         NinjadogSettings ninjadogSettings)
     {

@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
 
+/// <summary>
+/// This template generates the GetAll response for a given entity.
+/// </summary>
 public sealed class GetAllResponseTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

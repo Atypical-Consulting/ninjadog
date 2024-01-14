@@ -7,9 +7,13 @@ using Ninjadog.Helpers;
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 
+/// <summary>
+/// This template generates the DtoToDomainMapper class.
+/// </summary>
 public sealed class DtoToDomainMapperTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc/>
     public override string GenerateOne(
         NinjadogSettings ninjadogSettings)
     {

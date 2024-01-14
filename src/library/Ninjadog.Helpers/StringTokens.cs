@@ -3,179 +3,278 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using System.Globalization;
-
 namespace Ninjadog.Helpers;
 
-public sealed record StringTokens
+/// <summary>
+/// Provides a set of naming conventions derived from a base model name for use in various parts of the code generation process.
+/// This record takes a PascalCase model name and generates various naming formats like camelCase, plural forms,
+/// human-readable formats, and specific patterns for DTOs, services, repositories, and API endpoints.
+/// </summary>
+/// <param name="Pascal">The PascalCase name of the model from which to derive other naming formats.</param>
+public sealed record StringTokens(string Pascal)
+    : NamingConventionBase(Pascal)
 {
-    public StringTokens(string pascal)
-    {
-        var pascalPlural = pascal.Pluralize();
-        var camel = pascal.Camelize();
-        var camelPlural = pascal.Camelize().Pluralize();
-        // TODO: uncomment if needed
-        // var dashed = pascal.Underscore().Dasherize();
-        var dashedPlural = pascal.Pluralize().Underscore().Dasherize();
-        var humanized = pascal.Underscore().Humanize().ToLower(CultureInfo.InvariantCulture);
-        var humanizedPlural = pascal.Pluralize().Underscore().Humanize().ToLower(CultureInfo.InvariantCulture);
+    /// <summary>
+    /// The original PascalCase model name.
+    /// </summary>
+    public string Model
+        => Pascal;
 
-        // model
-        Model = pascal;
-        ModelHumanized = humanized;
-        ModelEndpoint = $"/{dashedPlural}";
-        VarModel = camel;
-        VarExistingModel = $"existing{pascal}";
+    /// <summary>
+    /// The humanized, lowercase format of the model name.
+    /// </summary>
+    public string ModelHumanized
+        => Humanized;
 
-        // models
-        Models = pascalPlural;
-        ModelsHumanized = humanizedPlural;
-        VarModels = camelPlural;
+    /// <summary>
+    /// The endpoint name in dashed format, typically used for URL paths.
+    /// </summary>
+    public string ModelEndpoint
+        => $"/{DashedPlural}";
 
-        // dto
-        ClassModelDto = $"{pascal}Dto";
-        VarModelDto = $"{camel}Dto";
-        VarModelDtos = $"{camel}Dtos";
+    /// <summary>
+    /// The camelCase variant of the model name, commonly used for variable names.
+    /// </summary>
+    public string VarModel
+        => Camel;
 
-        // model response
-        ClassModelResponse = $"{pascal}Response";
-        VarModelResponse = $"{camel}Response";
+    /// <summary>
+    /// The PascalCase name prefixed with 'existing', used for distinguishing between new and existing instances.
+    /// </summary>
+    public string VarExistingModel
+        => $"existing{Pascal}";
 
-        // models response
-        ClassGetAllModelsResponse = $"GetAll{pascalPlural}Response";
-        VarModelsResponse = $"{camelPlural}Response";
+    /// <summary>
+    /// The pluralized PascalCase name of the model, used for collections or groups of the entity.
+    /// </summary>
+    public string Models
+        => PascalPlural;
 
-        // repository
-        InterfaceModelRepository = $"I{pascal}Repository";
-        ClassModelRepository = $"{pascal}Repository";
-        FieldModelRepository = $"_{camel}Repository";
-        VarModelRepository = $"{camel}Repository";
+    /// <summary>
+    /// The humanized and pluralized lowercased name of the model, for readable representations of collections.
+    /// </summary>
+    public string ModelsHumanized
+        => HumanizedPlural;
 
-        // service
-        InterfaceModelService = $"I{pascal}Service";
-        ClassModelService = $"{pascal}Service";
-        PropertyModelService = $"{pascal}Service";
-        FieldModelService = $"_{camel}Service";
-        VarModelService = $"{camel}Service";
+    /// <summary>
+    /// The pluralized camelCase name of the model, used for variables representing collections of the model.
+    /// </summary>
+    public string VarModels
+        => CamelPlural;
 
-        // get all endpoint
-        ClassGetAllModelsSummary = $"GetAll{pascalPlural}Summary";
-        ClassGetAllModelsEndpoint = $"GetAll{pascalPlural}Endpoint";
+    /// <summary>
+    /// The name of the model's DTO class, following the pattern [ModelName]Dto.
+    /// </summary>
+    public string ClassModelDto
+        => $"{Pascal}Dto";
 
-        // get endpoint
-        ClassGetModelSummary = $"Get{pascal}Summary";
-        ClassGetModelRequest = $"Get{pascal}Request";
-        ClassGetModelEndpoint = $"Get{pascal}Endpoint";
+    /// <summary>
+    /// The camelCase variable name for the model's DTO.
+    /// </summary>
+    public string VarModelDto
+        => $"{Camel}Dto";
 
-        // delete endpoint
-        ClassDeleteModelSummary = $"Delete{pascal}Summary";
-        ClassDeleteModelRequest = $"Delete{pascal}Request";
-        ClassDeleteModelEndpoint = $"Delete{pascal}Endpoint";
+    /// <summary>
+    /// The pluralized camelCase variable name for a collection of the model's DTOs.
+    /// </summary>
+    public string VarModelDtos
+        => $"{Camel}Dtos";
 
-        // create endpoint
-        ClassCreateModelSummary = $"Create{pascal}Summary";
-        ClassCreateModelRequest = $"Create{pascal}Request";
-        ClassCreateModelRequestValidator = $"Create{pascal}RequestValidator";
-        ClassCreateModelEndpoint = $"Create{pascal}Endpoint";
+    /// <summary>
+    /// The name of the class used for the model's response, following the pattern [ModelName]Response.
+    /// </summary>
+    public string ClassModelResponse
+        => $"{Pascal}Response";
 
-        // update endpoint
-        ClassUpdateModelSummary = $"Update{pascal}Summary";
-        ClassUpdateModelRequest = $"Update{pascal}Request";
-        ClassUpdateModelRequestValidator = $"Update{pascal}RequestValidator";
-        ClassUpdateModelEndpoint = $"Update{pascal}Endpoint";
+    /// <summary>
+    /// The camelCase variable name for the model's response.
+    /// </summary>
+    public string VarModelResponse
+        => $"{Camel}Response";
 
-        // methods
-        MethodToModel = $"To{pascal}";
-        MethodToModelDto = $"To{pascal}Dto";
-        MethodToModelResponse = $"To{pascal}Response";
-        MethodToModelsResponse = $"To{pascalPlural}Response";
-    }
+    /// <summary>
+    /// The name of the class used for the response of a collection of models, following the pattern GetAll[ModelName]Response.
+    /// </summary>
+    public string ClassGetAllModelsResponse
+        => $"GetAll{PascalPlural}Response";
 
-    public string Model { get; }
+    /// <summary>
+    /// The camelCase variable name for the response of a collection of models.
+    /// </summary>
+    public string VarModelsResponse
+        => $"{CamelPlural}Response";
 
-    public string ModelHumanized { get; }
+    /// <summary>
+    /// The interface name for the model's repository, following the pattern I[ModelName]Repository.
+    /// </summary>
+    public string InterfaceModelRepository
+        => $"I{Pascal}Repository";
 
-    public string ModelEndpoint { get; }
+    /// <summary>
+    /// The class name for the model's repository, following the pattern [ModelName]Repository.
+    /// </summary>
+    public string ClassModelRepository
+        => $"{Pascal}Repository";
 
-    public string VarModel { get; }
+    /// <summary>
+    /// Gets the name of the private repository field in camel case prefixed with an underscore.
+    /// </summary>
+    public string FieldModelRepository
+        => $"_{Camel}Repository";
 
-    public string VarExistingModel { get; }
+    /// <summary>
+    /// Gets the name of the repository variable in camel case.
+    /// </summary>
+    public string VarModelRepository
+        => $"{Camel}Repository";
 
-    public string Models { get; }
+    /// <summary>
+    /// Gets the name of the service interface in Pascal case prefixed with 'I'.
+    /// </summary>
+    public string InterfaceModelService
+        => $"I{Pascal}Service";
 
-    public string ModelsHumanized { get; }
+    /// <summary>
+    /// Gets the name of the service class in Pascal case.
+    /// </summary>
+    public string ClassModelService
+        => $"{Pascal}Service";
 
-    public string VarModels { get; }
+    /// <summary>
+    /// Gets the name of the service property in Pascal case.
+    /// </summary>
+    public string PropertyModelService
+        => $"{Pascal}Service";
 
-    public string ClassModelDto { get; }
+    /// <summary>
+    /// Gets the name of the private service field in camel case prefixed with an underscore.
+    /// </summary>
+    public string FieldModelService
+        => $"_{Camel}Service";
 
-    public string VarModelDto { get; }
+    /// <summary>
+    /// Gets the name of the service variable in camel case.
+    /// </summary>
+    public string VarModelService
+        => $"{Camel}Service";
 
-    public string VarModelDtos { get; }
+    /// <summary>
+    /// Gets the name of the class representing a summary of all models in Pascal case.
+    /// </summary>
+    public string ClassGetAllModelsSummary
+        => $"GetAll{PascalPlural}Summary";
 
-    public string ClassModelResponse { get; }
+    /// <summary>
+    /// Gets the name of the endpoint class for retrieving all models in Pascal case.
+    /// </summary>
+    public string ClassGetAllModelsEndpoint
+        => $"GetAll{PascalPlural}Endpoint";
 
-    public string VarModelResponse { get; }
+    /// <summary>
+    /// Gets the name of the class representing a summary of a single model in Pascal case.
+    /// </summary>
+    public string ClassGetModelSummary
+        => $"Get{Pascal}Summary";
 
-    public string ClassGetAllModelsResponse { get; }
+    /// <summary>
+    /// Gets the name of the class representing a request to get a single model in Pascal case.
+    /// </summary>
+    public string ClassGetModelRequest
+        => $"Get{Pascal}Request";
 
-    public string VarModelsResponse { get; }
+    /// <summary>
+    /// Gets the name of the endpoint class for retrieving a single model in Pascal case.
+    /// </summary>
+    public string ClassGetModelEndpoint
+        => $"Get{Pascal}Endpoint";
 
-    public string InterfaceModelRepository { get; }
+    /// <summary>
+    /// Gets the name of the class representing a summary for deleting a model in Pascal case.
+    /// </summary>
+    public string ClassDeleteModelSummary
+        => $"Delete{Pascal}Summary";
 
-    public string ClassModelRepository { get; }
+    /// <summary>
+    /// Gets the name of the class representing a request to delete a model in Pascal case.
+    /// </summary>
+    public string ClassDeleteModelRequest
+        => $"Delete{Pascal}Request";
 
-    public string FieldModelRepository { get; }
+    /// <summary>
+    /// Gets the name of the endpoint class for deleting a model in Pascal case.
+    /// </summary>
+    public string ClassDeleteModelEndpoint
+        => $"Delete{Pascal}Endpoint";
 
-    public string VarModelRepository { get; }
+    /// <summary>
+    /// Gets the name of the class representing a summary for creating a model in Pascal case.
+    /// </summary>
+    public string ClassCreateModelSummary
+        => $"Create{Pascal}Summary";
 
-    public string InterfaceModelService { get; }
+    /// <summary>
+    /// Gets the name of the class representing a request to create a model in Pascal case.
+    /// </summary>
+    public string ClassCreateModelRequest
+        => $"Create{Pascal}Request";
 
-    public string ClassModelService { get; }
+    /// <summary>
+    /// Gets the name of the class representing a validator for a request to create a model in Pascal case.
+    /// </summary>
+    public string ClassCreateModelRequestValidator
+        => $"Create{Pascal}RequestValidator";
 
-    public string PropertyModelService { get; }
+    /// <summary>
+    /// Gets the name of the endpoint class for creating a model in Pascal case.
+    /// </summary>
+    public string ClassCreateModelEndpoint
+        => $"Create{Pascal}Endpoint";
 
-    public string FieldModelService { get; }
+    /// <summary>
+    /// Gets the name of the class representing a summary for updating a model in Pascal case.
+    /// </summary>
+    public string ClassUpdateModelSummary
+        => $"Update{Pascal}Summary";
 
-    public string VarModelService { get; }
+    /// <summary>
+    /// Gets the name of the class representing a request to update a model in Pascal case.
+    /// </summary>
+    public string ClassUpdateModelRequest
+        => $"Update{Pascal}Request";
 
-    public string ClassGetAllModelsSummary { get; }
+    /// <summary>
+    /// Gets the name of the class representing a validator for a request to update a model in Pascal case.
+    /// </summary>
+    public string ClassUpdateModelRequestValidator
+        => $"Update{Pascal}RequestValidator";
 
-    public string ClassGetAllModelsEndpoint { get; }
+    /// <summary>
+    /// Gets the name of the endpoint class for updating a model in Pascal case.
+    /// </summary>
+    public string ClassUpdateModelEndpoint
+        => $"Update{Pascal}Endpoint";
 
-    public string ClassGetModelSummary { get; }
+    /// <summary>
+    /// Gets the method name for converting to the model type in Pascal case.
+    /// </summary>
+    public string MethodToModel
+        => $"To{Pascal}";
 
-    public string ClassGetModelRequest { get; }
+    /// <summary>
+    /// Gets the method name for converting to the model DTO (Data Transfer Object) type in Pascal case.
+    /// </summary>
+    public string MethodToModelDto
+        => $"To{Pascal}Dto";
 
-    public string ClassGetModelEndpoint { get; }
+    /// <summary>
+    /// Gets the method name for converting to the model response type in Pascal case.
+    /// </summary>
+    public string MethodToModelResponse
+        => $"To{Pascal}Response";
 
-    public string ClassDeleteModelSummary { get; }
-
-    public string ClassDeleteModelRequest { get; }
-
-    public string ClassDeleteModelEndpoint { get; }
-
-    public string ClassCreateModelSummary { get; }
-
-    public string ClassCreateModelRequest { get; }
-
-    public string ClassCreateModelRequestValidator { get; }
-
-    public string ClassCreateModelEndpoint { get; }
-
-    public string ClassUpdateModelSummary { get; }
-
-    public string ClassUpdateModelRequest { get; }
-
-    public string ClassUpdateModelRequestValidator { get; }
-
-    public string ClassUpdateModelEndpoint { get; }
-
-    public string MethodToModel { get; }
-
-    public string MethodToModelDto { get; }
-
-    public string MethodToModelResponse { get; }
-
-    public string MethodToModelsResponse { get; }
+    /// <summary>
+    /// Gets the method name for converting to the models response type in plural Pascal case.
+    /// </summary>
+    public string MethodToModelsResponse
+        => $"To{PascalPlural}Response";
 }

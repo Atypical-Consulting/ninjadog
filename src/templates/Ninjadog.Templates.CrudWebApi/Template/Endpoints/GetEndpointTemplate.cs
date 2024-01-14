@@ -5,9 +5,13 @@
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 
+/// <summary>
+/// This template generates the Get endpoint for a given entity.
+/// </summary>
 public sealed class GetEndpointTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
     public override string GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
