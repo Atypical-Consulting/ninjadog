@@ -34,7 +34,6 @@
 
     <ItemGroup>
       <Content Remove="ninjadogsettings.json" />
-      <AdditionalFiles Include="ninjadogsettings.json" />
     </ItemGroup>
 
 </Project>
