@@ -3,9 +3,12 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Ninjadog.Settings.Entities;
+using Ninjadog.Settings.Entities.Properties;
+
 namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
-public class TodoAppEntities : NinjadogEntities
+public sealed class TodoAppEntities : NinjadogEntities
 {
     private const string TodoList = "TodoList";
     private const string TodoItem = "TodoItem";

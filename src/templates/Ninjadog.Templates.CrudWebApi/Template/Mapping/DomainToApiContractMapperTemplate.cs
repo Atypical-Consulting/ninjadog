@@ -36,7 +36,6 @@ public sealed class DomainToApiContractMapperTemplate
               """);
     }
 
-
     private static string GenerateToModelResponseMethods(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;

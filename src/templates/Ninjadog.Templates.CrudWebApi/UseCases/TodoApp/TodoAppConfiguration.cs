@@ -3,11 +3,20 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Ninjadog.Settings.Config;
+
 namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
-public record TodoAppConfiguration()
+/// <summary>
+/// Provides the specific configuration for the "TodoApp" application.
+/// This sealed record inherits from NinjadogConfiguration and sets predefined values
+/// tailored for the TodoApp project, such as its name, version, description, and paths.
+/// It's an example of how specific project configurations can be defined using the Ninjadog framework.
+/// </summary>
+public sealed record TodoAppConfiguration()
     : NinjadogConfiguration(
-        "TodoApp",
-        "1.0.0",
-        "A application to manage todo lists.",
-        "MyCompany.TodoApp");
+        Name: "TodoApp",
+        Version: "1.0.0",
+        Description: "A application to manage todo lists.",
+        RootNamespace: "MyCompany.TodoApp",
+        OutputPath: "src/applications/TodoApp");

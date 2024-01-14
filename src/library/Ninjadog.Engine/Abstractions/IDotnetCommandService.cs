@@ -5,7 +5,22 @@
 
 namespace Ninjadog.Engine.Abstractions;
 
+/// <summary>
+/// Defines the interface for a service capable of executing dotnet CLI commands.
+/// This interface abstracts the functionality required to run various dotnet commands programmatically.
+/// </summary>
 public interface IDotnetCommandService
 {
+    /// <summary>
+    /// Ensures that the .NET CLI is available on the system.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if the .NET CLI is not available or the version check command fails.</exception>
+    void EnsureDotnetIsAvailable();
+
+    /// <summary>
+    /// Executes a specified dotnet CLI command with the given arguments.
+    /// </summary>
+    /// <param name="command">The dotnet command to be executed (e.g., "build", "run").</param>
+    /// <param name="args">The arguments to pass to the dotnet command.</param>
     void ExecuteCommand(string command, string args);
 }

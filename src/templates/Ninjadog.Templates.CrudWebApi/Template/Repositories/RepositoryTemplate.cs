@@ -107,7 +107,6 @@ public sealed class RepositoryTemplate
         return sb.ToString();
     }
 
-
     private static string GenerateSqlSelectOneQuery(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;

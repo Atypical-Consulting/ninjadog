@@ -35,7 +35,6 @@ public sealed class DtoToDomainMapperTemplate
               """);
     }
 
-
     private static string GenerateToModelMethods(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;

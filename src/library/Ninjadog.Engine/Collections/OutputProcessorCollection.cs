@@ -8,9 +8,17 @@ using Ninjadog.Engine.OutputProcessor;
 
 namespace Ninjadog.Engine.Collections;
 
-public class OutputProcessorCollection
-    : List<IOutputProcessor>
+/// <summary>
+/// Represents a collection of output processors. This class extends a list of IOutputProcessor
+/// and provides a convenient way to manage multiple output processors, including in-memory and disk-based processors.
+/// </summary>
+public class OutputProcessorCollection : List<IOutputProcessor>
 {
+    /// <summary>
+    /// Initializes a new instance of the OutputProcessorCollection with optional in-memory and disk output processors.
+    /// </summary>
+    /// <param name="inMemory">Indicates whether to include an in-memory output processor.</param>
+    /// <param name="disk">Indicates whether to include a disk output processor.</param>
     public OutputProcessorCollection(
         bool inMemory = true,
         bool disk = true)

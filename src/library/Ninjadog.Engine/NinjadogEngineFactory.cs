@@ -9,8 +9,21 @@ using Ninjadog.Engine.Internals;
 
 namespace Ninjadog.Engine;
 
+/// <summary>
+/// Provides functionality to create and configure instances of the Ninjadog Engine.
+/// This factory class abstracts the construction process of the Ninjadog Engine,
+/// allowing for flexible and streamlined engine setup based on given configurations.
+/// </summary>
 public static class NinjadogEngineFactory
 {
+    /// <summary>
+    /// Creates and configures a new instance of the Ninjadog Engine using the specified configuration.
+    /// This method initializes a Ninjadog Engine with the provided template manifest, settings,
+    /// and output processors. It facilitates the creation of a tailored engine instance
+    /// suitable for specific templating tasks.
+    /// </summary>
+    /// <param name="configuration">The configuration settings used to set up the Ninjadog Engine.</param>
+    /// <returns>A configured instance of the Ninjadog Engine.</returns>
     public static INinjadogEngine CreateNinjadogEngine(
         NinjadogEngineConfiguration configuration)
     {

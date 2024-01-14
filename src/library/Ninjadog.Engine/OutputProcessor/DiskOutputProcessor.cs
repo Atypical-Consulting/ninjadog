@@ -7,8 +7,17 @@ using Ninjadog.Engine.Abstractions;
 
 namespace Ninjadog.Engine.OutputProcessor;
 
+/// <summary>
+/// An output processor that writes generated content to the filesystem.
+/// This class implements the <see cref="IOutputProcessor"/> interface and provides functionality to write
+/// output content to disk, facilitating persistence and file-based operations.
+/// </summary>
 public class DiskOutputProcessor : IOutputProcessor
 {
+    /// <summary>
+    /// Processes the given content by writing it to the filesystem.
+    /// </summary>
+    /// <param name="content">The content to be processed and written to disk.</param>
     public void ProcessOutput(string? content)
     {
         // Logic to write to the filesystem

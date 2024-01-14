@@ -7,10 +7,22 @@ using Ninjadog.Engine.Abstractions;
 
 namespace Ninjadog.Engine.OutputProcessor;
 
+/// <summary>
+/// An output processor that stores generated content in memory.
+/// This class implements the IOutputProcessor interface and provides a mechanism for storing
+/// output content within an internal memory structure.
+/// </summary>
 public class InMemoryOutputProcessor : IOutputProcessor
 {
+    /// <summary>
+    /// Gets the memory storage that holds the processed content.
+    /// </summary>
     public List<string> MemoryStorage { get; } = [];
 
+    /// <summary>
+    /// Processes the given content by storing it in memory.
+    /// </summary>
+    /// <param name="content">The content to be processed and stored.</param>
     public void ProcessOutput(string? content)
     {
         if (content != null)

@@ -8,10 +8,36 @@ using Ninjadog.Templates;
 
 namespace Ninjadog.Engine.Abstractions;
 
+/// <summary>
+/// Defines the interface for a builder responsible for constructing and configuring instances of the Ninjadog Engine.
+/// This interface allows for a fluent, step-by-step configuration of the engine before its creation.
+/// </summary>
 public interface INinjadogEngineBuilder
 {
+    /// <summary>
+    /// Specifies the template manifest to use with the Ninjadog Engine.
+    /// </summary>
+    /// <param name="templateManifest">The template manifest to be used by the engine.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     INinjadogEngineBuilder WithManifest(NinjadogTemplateManifest templateManifest);
+
+    /// <summary>
+    /// Specifies the settings to use with the Ninjadog Engine.
+    /// </summary>
+    /// <param name="ninjadogSettings">The settings to configure the engine.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     INinjadogEngineBuilder WithSettings(NinjadogSettings ninjadogSettings);
+
+    /// <summary>
+    /// Adds an output processor to the Ninjadog Engine.
+    /// </summary>
+    /// <param name="outputProcessor">The output processor to be added to the engine.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     INinjadogEngineBuilder AddOutputProcessor(IOutputProcessor outputProcessor);
+
+    /// <summary>
+    /// Builds and returns a configured instance of the Ninjadog Engine.
+    /// </summary>
+    /// <returns>A fully configured instance of the Ninjadog Engine.</returns>
     INinjadogEngine Build();
 }

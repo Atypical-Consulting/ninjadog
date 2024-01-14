@@ -5,7 +5,15 @@
 
 namespace Ninjadog.Engine.Abstractions;
 
+/// <summary>
+/// Defines the interface for the Ninjadog Engine, which handles the execution of template generation processes.
+/// This interface encapsulates the core functionality of running the templating engine to produce output based on specified templates.
+/// </summary>
 public interface INinjadogEngine
 {
+    /// <summary>
+    /// Runs the Ninjadog Engine to process and generate templates.
+    /// This method triggers the execution of the template generation logic encapsulated by the engine.
+    /// </summary>
     void Run();
 }
