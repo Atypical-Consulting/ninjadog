@@ -64,4 +64,3 @@ public sealed class DotnetCommandService : IDotnetCommandService
         return ExecuteCommand("--version");
     }
 }
-

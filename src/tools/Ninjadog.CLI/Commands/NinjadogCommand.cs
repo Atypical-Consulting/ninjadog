@@ -28,21 +28,18 @@ internal sealed class NinjadogCommandSettings : CommandSettings
     public bool Disk { get; init; }
 }
 
-internal sealed class NinjadogCommand : Command<NinjadogCommandSettings>
+internal sealed class NinjadogCommand(
+    NinjadogTemplateManifest templateManifest,
+    NinjadogSettings settings)
+    : Command<NinjadogCommandSettings>
 {
-    private readonly NinjadogTemplateManifest _templateManifest;
-    private readonly NinjadogSettings _settings;
+    private readonly NinjadogTemplateManifest _templateManifest =
+        templateManifest
+        ?? throw new ArgumentNullException(nameof(templateManifest));
 
-    public NinjadogCommand(NinjadogTemplateManifest templateManifest, NinjadogSettings settings)
-    {
-        _templateManifest =
-            templateManifest
-            ?? throw new ArgumentNullException(nameof(templateManifest));
-
-        _settings =
-            settings
-            ?? throw new ArgumentNullException(nameof(settings));
-    }
+    private readonly NinjadogSettings _settings =
+        settings
+        ?? throw new ArgumentNullException(nameof(settings));
 
     public override int Execute(CommandContext context, NinjadogCommandSettings settings)
     {

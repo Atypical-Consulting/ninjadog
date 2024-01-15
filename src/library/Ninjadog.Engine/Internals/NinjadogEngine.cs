@@ -19,6 +19,7 @@ internal sealed class NinjadogEngine : INinjadogEngine
     private readonly NinjadogSettings _ninjadogSettings;
     private readonly OutputProcessorCollection _outputProcessors;
     private readonly IDotnetCommandService _dotnetCommandService;
+    private readonly IFileService _fileService;
 
     private int _totalFilesGenerated;
     private int _totalCharactersGenerated;
@@ -28,12 +29,14 @@ internal sealed class NinjadogEngine : INinjadogEngine
         NinjadogTemplateManifest templateManifest,
         NinjadogSettings ninjadogSettings,
         OutputProcessorCollection outputProcessors,
-        IDotnetCommandService dotnetCommandService)
+        IDotnetCommandService dotnetCommandService,
+        IFileService fileService)
     {
         _templateManifest = templateManifest ?? throw new ArgumentNullException(nameof(templateManifest));
         _ninjadogSettings = ninjadogSettings ?? throw new ArgumentNullException(nameof(ninjadogSettings));
         _outputProcessors = outputProcessors ?? throw new ArgumentNullException(nameof(outputProcessors));
         _dotnetCommandService = dotnetCommandService ?? throw new ArgumentNullException(nameof(dotnetCommandService));
+        _fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
 
         HandleInitialized();
     }
@@ -59,6 +62,15 @@ internal sealed class NinjadogEngine : INinjadogEngine
             // ensure the .NET CLI is available
             var dotnetVersion = _dotnetCommandService.Version();
             HandleDotnetVersionChecked(dotnetVersion);
+
+            // delete the app folder if it already exists and create it again
+            var appName = _ninjadogSettings.Config.Name;
+            _fileService.DeleteAppFolder(appName);
+            _fileService.CreateAppFolder(appName);
+
+            // create the template folder
+            var templateName = _templateManifest.Name;
+            _fileService.CreateSubFolder(appName, templateName);
 
             // run the engine for each template in the manifest
             foreach (var template in _templateManifest.Templates)
@@ -150,6 +162,11 @@ internal sealed class NinjadogEngine : INinjadogEngine
     {
         _totalFilesGenerated++;
         _totalCharactersGenerated += contentFile.Length;
+        var appName = _ninjadogSettings.Config.Name;
+        var templateName = _templateManifest.Name;
+        var path = Path.Combine(appName, templateName, contentFile.OutputPath);
+        _fileService.CreateFile(path, contentFile.Content);
+
         SafeInvokeEvent(() => OnAfterContentProcessed?.Invoke(this,
             new NinjadogContentEventArgs { ContentFile = contentFile }));
     }

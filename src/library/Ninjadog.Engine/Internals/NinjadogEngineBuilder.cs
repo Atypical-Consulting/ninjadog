@@ -17,6 +17,7 @@ internal sealed class NinjadogEngineBuilder
     private NinjadogSettings? _ninjadogSettings;
     private readonly OutputProcessorCollection _outputProcessors = [];
     private IDotnetCommandService? _dotnetCommandService;
+    private IFileService? _fileService;
 
     /// <inheritdoc />
     public INinjadogEngineBuilder WithManifest(NinjadogTemplateManifest templateManifest)
@@ -54,13 +55,21 @@ internal sealed class NinjadogEngineBuilder
     }
 
     /// <inheritdoc />
+    public INinjadogEngineBuilder WithFileService(IFileService fileService)
+    {
+        _fileService = fileService;
+        return this;
+    }
+
+    /// <inheritdoc />
     public INinjadogEngine Build()
     {
         return new NinjadogEngine(
             EnsureTemplateManifestIsSet(),
             EnsureNinjadogSettingsAreSet(),
             EnsureOutputProcessorsAreSet(),
-            EnsureDotnetCommandServiceIsSet());
+            EnsureDotnetCommandServiceIsSet(),
+            EnsureFileServiceIsSet());
     }
 
     private NinjadogTemplateManifest EnsureTemplateManifestIsSet()
@@ -85,5 +94,11 @@ internal sealed class NinjadogEngineBuilder
     {
         return _dotnetCommandService
                ?? throw new InvalidOperationException("No dotnet command service is set.");
+    }
+
+    private IFileService EnsureFileServiceIsSet()
+    {
+        return _fileService
+               ?? throw new InvalidOperationException("No file service is set.");
     }
 }

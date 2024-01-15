@@ -55,4 +55,7 @@ public interface INinjadogEngineBuilder
     /// </summary>
     /// <returns>A fully configured instance of the Ninjadog Engine.</returns>
     INinjadogEngine Build();
+
+    /// <inheritdoc />
+    INinjadogEngineBuilder WithFileService(IFileService fileService);
 }

@@ -33,6 +33,7 @@ public static class NinjadogEngineFactory
             .WithSettings(configuration.NinjadogSettings)
             .WithOutputProcessors(configuration.OutputProcessors)
             .WithDotnetCommandService(new DotnetCommandService())
+            .WithFileService(new FileService())
             .Build();
     }
 }
