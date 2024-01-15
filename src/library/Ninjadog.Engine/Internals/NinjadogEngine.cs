@@ -198,7 +198,7 @@ internal sealed class NinjadogEngine : INinjadogEngine
         {
             eventAction?.Invoke();
         }
-        catch (Exception _)
+        catch (Exception)
         {
             // Log the exception or handle it as necessary
         }

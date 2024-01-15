@@ -10,9 +10,18 @@ namespace Ninjadog.Engine.Internals;
 /// </summary>
 public static class NinjadogEngineExtensions
 {
-    public static void SafeInvoke<TEventArgs>(this EventHandler<TEventArgs>? eventHandler, object? sender, TEventArgs args)
+    /// <summary>
+    /// Safely invokes the <see cref="EventHandler"/> event handler.
+    /// </summary>
+    /// <param name="eventHandler">The event handler to invoke.</param>
+    /// <param name="sender">The object that raised the event.</param>
+    /// <param name="args">The event arguments.</param>
+    /// <typeparam name="TEventArgs">The type of the event arguments.</typeparam>
+    public static void SafeInvoke<TEventArgs>(
+        this EventHandler<TEventArgs>? eventHandler,
+        object? sender,
+        TEventArgs args)
     {
-
         SafeInvokeEvent(() => eventHandler?.Invoke(sender, args));
     }
 
@@ -22,7 +31,7 @@ public static class NinjadogEngineExtensions
         {
             eventAction?.Invoke();
         }
-        catch (Exception _)
+        catch (Exception)
         {
             // Log the exception or handle it as necessary
         }

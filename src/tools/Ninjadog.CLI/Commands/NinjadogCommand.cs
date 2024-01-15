@@ -12,6 +12,7 @@ using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using static Ninjadog.CLI.Utilities.SpectreWriteHelpers;
 using static Spectre.Console.AnsiConsole;
 
 namespace Ninjadog.CLI.Commands;
@@ -101,7 +102,7 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
         var length = e.ContentFile.Length;
 
         Write("- File generated: ");
-        Write(CreateTextPath(outputPath));
+        WriteTextPath(outputPath);
         Markup($" with a length of [green]{length:N0}[/] characters.");
         WriteLine();
     }
@@ -122,27 +123,5 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
         WriteLine();
         MarkupLine("[bold]Ninjadog Engine shutting down.[/]");
         MarkupLine("[bold]Have a great day![/]");
-    }
-
-    private static void WriteSettingsTable(Action<Table> action)
-    {
-        var table = new Table();
-        table.Border(TableBorder.Rounded);
-        table.AddColumn("");
-        table.AddColumn("");
-        table.Columns[0].Width(24);
-        table.Columns[1].Width(48);
-        table.HideHeaders();
-        action(table);
-        Write(table);
-    }
-
-    private static TextPath CreateTextPath(string path)
-    {
-        return new TextPath(path)
-            .RootStyle(new Style(foreground: Color.Red))
-            .SeparatorStyle(new Style(foreground: Color.Yellow))
-            .StemStyle(new Style(foreground: Color.Blue))
-            .LeafStyle(new Style(foreground: Color.Aqua));
     }
 }
