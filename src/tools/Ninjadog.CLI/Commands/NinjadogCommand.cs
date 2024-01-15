@@ -7,11 +7,12 @@ using System.ComponentModel;
 using Ninjadog.Engine;
 using Ninjadog.Engine.Collections;
 using Ninjadog.Engine.Configuration;
-using Ninjadog.Templates;
+using Ninjadog.Engine.EventArgs;
 using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using static Spectre.Console.AnsiConsole;
 
 namespace Ninjadog.CLI.Commands;
 
@@ -38,77 +39,149 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
         OutputProcessorCollection outputProcessors = new(settings.InMemory, settings.Disk);
         NinjadogEngineConfiguration configuration = new(templateManifest, todoAppSettings, outputProcessors);
 
-        AnsiConsole.MarkupLine("[bold]Using the following settings:[/]");
-        AnsiConsole.MarkupLine($"- App name         : [green]{todoAppSettings.Config.Name}[/] v{todoAppSettings.Config.Version} with [green]{todoAppSettings.Entities.Count}[/] entities");
-        AnsiConsole.MarkupLine($"- App entities     : [green]{string.Join(", ", todoAppSettings.Entities.Keys)}[/]");
-        AnsiConsole.MarkupLine($"- Template         : [green]{templateManifest.Name}[/] v{templateManifest.Version}");
-        AnsiConsole.MarkupLine($"- Authentification : [yellow]False[/]");
-        AnsiConsole.MarkupLine($"- Persistence      : [green]SQLite[/]");
+        MarkupLine("[bold]Using the following settings:[/]");
+        WriteSettingsTable(table => table
+            .AddRow("Engine", $"[green]Ninjadog.Engine[/] v2.0.0-alpha")
+            .AddRow("Template", $"[green]{templateManifest.Name}[/] v{templateManifest.Version}")
+            .AddRow("App name", $"[green]{todoAppSettings.Config.Name}[/] v{todoAppSettings.Config.Version} with [green]{todoAppSettings.Entities.Count}[/] entities")
+            .AddRow("App entities", $"[green]{string.Join(", ", todoAppSettings.Entities.Keys)}[/]")
+            .AddRow("Authentication", IsEnableMarkup(false))
+            .AddRow("Persistence", "[green]SQLite[/]"));
 
-        AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[bold]Output processors:[/]");
-        AnsiConsole.MarkupLine($"- InMemory         : [green]{settings.InMemory}[/]");
-        AnsiConsole.MarkupLine($"- Disk             : [green]{settings.Disk}[/]");
-        AnsiConsole.MarkupLine($"- Zip              : [yellow]False[/]");
+        WriteLine();
+        MarkupLine("[bold]Output processors:[/]");
+        WriteSettingsTable(table => table
+            .AddRow("InMemory", IsEnableMarkup(settings.InMemory))
+            .AddRow("Disk", IsEnableMarkup(settings.Disk))
+            .AddRow("Zip", IsEnableMarkup(false)));
 
-        AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[bold]Git integration:[/]");
-        AnsiConsole.MarkupLine($"- Git repository   : [yellow]False[/]");
-        AnsiConsole.MarkupLine($"- GitHub Actions   : [yellow]False[/]");
-        AnsiConsole.MarkupLine($"- Push on GitHub   : [yellow]False[/]");
+        WriteLine();
+        MarkupLine("[bold]Integrations:[/]");
+        WriteSettingsTable(table => table
+            .AddRow("Git repository", IsEnableMarkup(false))
+            .AddRow("GitHub Actions", IsEnableMarkup(false))
+            .AddRow("Push on GitHub", IsEnableMarkup(false))
+            .AddRow(".NET Aspire", IsEnableMarkup(false)));
 
-
-        AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLine("[bold]Building the Ninjadog Engine...[/]");
+        WriteLine();
+        MarkupLine("[bold]Building the Ninjadog Engine...[/]");
         var ninjadogEngine = NinjadogEngineFactory.CreateNinjadogEngine(configuration);
-        ninjadogEngine.FileGenerated += OnFileGenerated;
-        ninjadogEngine.DotnetVersionChecked += OnDotnetVersionChecked;
+        ninjadogEngine.OnAfterContentProcessed += OnAfterContentProcessed;
+        ninjadogEngine.OnDotnetVersionChecked += OnDotnetVersionChecked;
+        ninjadogEngine.OnRunCompleted += OnRunCompleted;
+        ninjadogEngine.OnShutdown += OnShutdown;
 
         try
         {
-            AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[bold]Generating files...[/]");
-            ninjadogEngine.Run();
+            WriteLine();
+            MarkupLine("[bold]Generating files...[/]");
 
-            // TODO: Add a summary of the run:
-            // Ninjadog Engine run summary:
-            // - Total files generated: 10
-            //     - Total time elapsed: 10 minutes
-            //     - Errors encountered: 0
-            // AnsiConsole.MarkupLine("[bold]Ninjadog Engine run summary:[/]");
-            // AnsiConsole.MarkupLine($"- Total files generated: [green]{ninjadogEngine.TotalFilesGenerated}[/]");
-            // AnsiConsole.MarkupLine($"- Total time elapsed: [green]{ninjadogEngine.TotalTimeElapsed}[/]");
-            // AnsiConsole.MarkupLine($"- Errors encountered: [green]{ninjadogEngine.ErrorsEncountered}[/]");
-
-            AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[bold]Ninjadog Engine run summary:[/]");
-            AnsiConsole.MarkupLine($"- Total files generated: [green]{_totalFilesGenerated}[/] files");
-            AnsiConsole.MarkupLine($"- Total characters generated in files: [green]{_totalCharactersGenerated}[/] characters");
-            AnsiConsole.MarkupLine($"  - It represents ~[green]{_totalCharactersGenerated / 5}[/] words or ~[green]{_totalCharactersGenerated / 150}[/] minutes saved");
-
-            AnsiConsole.WriteLine();
-            AnsiConsole.MarkupLine("[bold]Ninjadog Engine shutting down.[/]");
-            AnsiConsole.MarkupLine("[bold]Have a great day![/]");
+            _fileTree = new Tree("Generated files");
+            Live(_fileTree).AutoClear(false).Start(ctx =>
+            {
+                ninjadogEngine.Run();
+            });
         }
         catch (Exception e)
         {
-            AnsiConsole.WriteLine();
-            AnsiConsole.WriteException(e);
+            WriteLine();
+            WriteException(e);
             return 1;
         }
 
         return 0;
     }
 
-    private void OnFileGenerated(object? _, NinjadogContentFile e)
+    private static void WriteSettingsTable(Action<Table> action)
     {
-        _totalFilesGenerated++;
-        _totalCharactersGenerated += e.Content.Length;
-        AnsiConsole.MarkupLine($"- File generated: [green]{e.OutputPath}[/] with a length of [green]{e.Content.Length}[/] characters.");
+        var table = new Table();
+        table.Border(TableBorder.Rounded);
+        table.AddColumn("");
+        table.AddColumn("");
+        table.Columns[0].Width(24);
+        table.Columns[1].Width(48);
+        table.HideHeaders();
+        action(table);
+        Write(table);
     }
 
-    private void OnDotnetVersionChecked(object? _, Version version)
+    private static string IsEnableMarkup(bool enabled)
     {
-        AnsiConsole.MarkupLine($"- .NET CLI version: [green]{version}[/] detected.");
+        return enabled ? "[green]enabled[/]" : "[yellow]disabled[/]";
+    }
+
+    private static void OnDotnetVersionChecked(object? _, Version version)
+    {
+        MarkupLine($"- .NET CLI version: [green]{version}[/] detected.");
+    }
+
+
+    private Tree _fileTree = new("Root");
+    // private readonly Dictionary<string, IHasTreeNodes> _directoryNodes = [];
+    // private static readonly char[] Separators = ['/', '\\'];
+
+    private void OnAfterContentProcessed(object? _, NinjadogContentEventArgs e)
+    {
+        var length = e.ContentFile.Length;
+        var outputPath = e.ContentFile.OutputPath;
+
+        _totalFilesGenerated++;
+        _totalCharactersGenerated += length;
+
+        MarkupLine($"- File generated: [green]{outputPath}[/] with a length of [green]{length}[/] characters.");
+
+        // Add the file to the tree
+        // AddFileToTree(outputPath, $"[green]{outputPath}[/] ({length} characters)");
+    }
+
+    // private void AddFileToTree(string filePath, string displayText)
+    // {
+    //     var pathComponents = filePath.Split(Separators, StringSplitOptions.RemoveEmptyEntries);
+    //
+    //     // Build the full path incrementally and add directory nodes as needed
+    //     var currentPath = string.Empty;
+    //     IHasTreeNodes currentNode = _fileTree;
+    //
+    //     for (var i = 0; i < pathComponents.Length - 1; i++) // Exclude the last component as it's the file
+    //     {
+    //         var component = pathComponents[i];
+    //         currentPath = string.IsNullOrEmpty(currentPath) ? component : $"{currentPath}/{component}";
+    //
+    //         if (!_directoryNodes.TryGetValue(currentPath, out currentNode))
+    //         {
+    //             currentNode = currentNode.AddNode(component);
+    //             _directoryNodes[currentPath] = currentNode;
+    //         }
+    //     }
+    //
+    //     // Add the file as a leaf node
+    //     currentNode.AddNode(displayText);
+    // }
+
+    private void OnRunCompleted(object? _, NinjadogEngineRunEventArgs e)
+    {
+        // TODO: Add a summary of the run:
+        // Ninjadog Engine run summary:
+        // - Total files generated: 10
+        //     - Total time elapsed: 10 minutes
+        //     - Errors encountered: 0
+        // AnsiConsole.MarkupLine("[bold]Ninjadog Engine run summary:[/]");
+        // AnsiConsole.MarkupLine($"- Total files generated: [green]{ninjadogEngine.TotalFilesGenerated}[/]");
+        // AnsiConsole.MarkupLine($"- Total time elapsed: [green]{ninjadogEngine.TotalTimeElapsed}[/]");
+        // AnsiConsole.MarkupLine($"- Errors encountered: [green]{ninjadogEngine.ErrorsEncountered}[/]");
+
+        WriteLine();
+        MarkupLine("[bold]Ninjadog Engine run summary:[/]");
+        MarkupLine($"- Run completed in [green]{e.RunTime}[/].");
+        MarkupLine($"- Total files generated: [green]{_totalFilesGenerated}[/] files");
+        MarkupLine($"- Total characters generated in files: [green]{_totalCharactersGenerated}[/] characters");
+        MarkupLine($"  - It represents ~[green]{_totalCharactersGenerated / 5}[/] words or ~[green]{_totalCharactersGenerated / 150}[/] minutes saved");
+    }
+
+    private static void OnShutdown(object? _, EventArgs e)
+    {
+        WriteLine();
+        MarkupLine("[bold]Ninjadog Engine shutting down.[/]");
+        MarkupLine("[bold]Have a great day![/]");
     }
 }

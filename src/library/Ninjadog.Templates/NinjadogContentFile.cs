@@ -18,4 +18,10 @@ public record NinjadogContentFile(
     /// </summary>
     public string OutputPath
         => Path.Combine(Category ?? string.Empty, FileName);
+
+    /// <summary>
+    /// Gets the length of the content.
+    /// </summary>
+    public int Length
+        => Content.Length;
 }

@@ -3,46 +3,99 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using System.Diagnostics;
 using Ninjadog.Engine.Abstractions;
 using Ninjadog.Engine.Collections;
+using Ninjadog.Engine.EventArgs;
 using Ninjadog.Settings;
 using Ninjadog.Templates;
 
 namespace Ninjadog.Engine.Internals;
 
-internal sealed class NinjadogEngine(
-    NinjadogTemplateManifest templateManifest,
-    NinjadogSettings ninjadogSettings,
-    OutputProcessorCollection outputProcessors,
-    IDotnetCommandService dotnetCommandService)
-    : INinjadogEngine
+internal sealed class NinjadogEngine : INinjadogEngine
 {
-    public event EventHandler<NinjadogContentFile>? FileGenerated;
-    public event EventHandler<Version>? DotnetVersionChecked;
+    // Fields
+    private readonly NinjadogTemplateManifest _templateManifest;
+    private readonly NinjadogSettings _ninjadogSettings;
+    private readonly OutputProcessorCollection _outputProcessors;
+    private readonly IDotnetCommandService _dotnetCommandService;
+
+    public NinjadogEngine(
+        NinjadogTemplateManifest templateManifest,
+        NinjadogSettings ninjadogSettings,
+        OutputProcessorCollection outputProcessors,
+        IDotnetCommandService dotnetCommandService)
+    {
+        _templateManifest = templateManifest ?? throw new ArgumentNullException(nameof(templateManifest));
+        _ninjadogSettings = ninjadogSettings ?? throw new ArgumentNullException(nameof(ninjadogSettings));
+        _outputProcessors = outputProcessors ?? throw new ArgumentNullException(nameof(outputProcessors));
+        _dotnetCommandService = dotnetCommandService ?? throw new ArgumentNullException(nameof(dotnetCommandService));
+
+        HandleInitialized();
+    }
+
+    // Events
+    public event EventHandler<Version>? OnDotnetVersionChecked;
+    public event EventHandler<NinjadogEngineRunEventArgs>? OnRunCompleted;
+    public event EventHandler<NinjadogTemplateEventArgs>? OnBeforeTemplateProcessed;
+    public event EventHandler<NinjadogTemplateEventArgs>? OnAfterTemplateProcessed;
+    public event EventHandler<NinjadogErrorEventArgs>? OnErrorOccurred;
+    public event EventHandler<NinjadogContentEventArgs>? OnBeforeContentProcessed;
+    public event EventHandler<NinjadogContentEventArgs>? OnAfterContentProcessed;
+    public event EventHandler? OnInitialized;
+    public event EventHandler? OnShutdown;
 
     public void Run()
     {
-        // ensure the .NET CLI is available
-        var version = dotnetCommandService.Version();
-        OnDotnetVersionChecked(version);
+        var stopwatch = Stopwatch.StartNew();
 
-        // run the engine for each template in the manifest
-        foreach (var template in templateManifest.Templates)
+        try
         {
-            Run(template);
+            // ensure the .NET CLI is available
+            var version = _dotnetCommandService.Version();
+            HandleDotnetVersionChecked(version);
+
+            // run the engine for each template in the manifest
+            foreach (var template in _templateManifest.Templates)
+            {
+                ProcessTemplate(template);
+            }
+        }
+        catch (Exception ex)
+        {
+            HandleErrorOccurred(ex);
+        }
+        finally
+        {
+            stopwatch.Stop();
+            HandleRunCompleted(stopwatch.Elapsed);
+            HandleShutdown();
         }
     }
 
-    private void Run(NinjadogTemplate template)
+    private void ProcessTemplate(NinjadogTemplate template)
     {
-        // First, add a single file based on the template and the settings...
-        var singleFileContent = template.GenerateOne(ninjadogSettings);
-        ProcessContent(singleFileContent);
+        HandleBeforeTemplateProcessed(template);
 
-        // ...then, add multiple files based on the template and the settings
-        foreach (var content in template.GenerateMany(ninjadogSettings))
+        try
         {
-            ProcessContent(content);
+            // First, add a single file based on the template and the settings...
+            var singleFileContent = template.GenerateOne(_ninjadogSettings);
+            ProcessContent(singleFileContent);
+
+            // ...then, add multiple files based on the template and the settings
+            foreach (var content in template.GenerateMany(_ninjadogSettings))
+            {
+                ProcessContent(content);
+            }
+        }
+        catch (Exception ex)
+        {
+            HandleErrorOccurred(ex);
+        }
+        finally
+        {
+            HandleAfterTemplateProcessed(template);
         }
     }
 
@@ -53,21 +106,70 @@ internal sealed class NinjadogEngine(
             return;
         }
 
-        foreach (var processor in outputProcessors)
+        HandleBeforeContentProcessed(contentFile);
+
+        foreach (var processor in _outputProcessors)
         {
             processor.ProcessOutput(contentFile);
         }
 
-        OnFileGenerated(contentFile);
+        HandleAfterContentProcessed(contentFile);
     }
 
-    private void OnFileGenerated(NinjadogContentFile contentFile)
+    private void HandleBeforeTemplateProcessed(NinjadogTemplate template)
     {
-        FileGenerated?.Invoke(this, contentFile);
+        SafeInvokeEvent(() => OnBeforeTemplateProcessed?.Invoke(this, new NinjadogTemplateEventArgs(template)));
     }
 
-    private void OnDotnetVersionChecked(string? version)
+    private void HandleAfterTemplateProcessed(NinjadogTemplate template)
     {
-        DotnetVersionChecked?.Invoke(this, Version.Parse(version ?? "0.0.0"));
+        SafeInvokeEvent(() => OnAfterTemplateProcessed?.Invoke(this, new NinjadogTemplateEventArgs(template)));
+    }
+
+    private void HandleBeforeContentProcessed(NinjadogContentFile contentFile)
+    {
+        SafeInvokeEvent(() => OnBeforeContentProcessed?.Invoke(this, new NinjadogContentEventArgs(contentFile)));
+    }
+
+    private void HandleAfterContentProcessed(NinjadogContentFile contentFile)
+    {
+        SafeInvokeEvent(() => OnAfterContentProcessed?.Invoke(this, new NinjadogContentEventArgs(contentFile)));
+    }
+
+    private void HandleErrorOccurred(Exception exception)
+    {
+        SafeInvokeEvent(() => OnErrorOccurred?.Invoke(this, new NinjadogErrorEventArgs(exception)));
+    }
+
+    private void HandleInitialized()
+    {
+        SafeInvokeEvent(() => OnInitialized?.Invoke(this, System.EventArgs.Empty));
+    }
+
+    private void HandleShutdown()
+    {
+        SafeInvokeEvent(() => OnShutdown?.Invoke(this, System.EventArgs.Empty));
+    }
+
+    private void HandleDotnetVersionChecked(string? version)
+    {
+        SafeInvokeEvent(() => OnDotnetVersionChecked?.Invoke(this, Version.Parse(version ?? "0.0.0")));
+    }
+
+    private void HandleRunCompleted(TimeSpan runTime)
+    {
+        SafeInvokeEvent(() => OnRunCompleted?.Invoke(this, new NinjadogEngineRunEventArgs(runTime)));
+    }
+
+    private static void SafeInvokeEvent(Action? eventAction)
+    {
+        try
+        {
+            eventAction?.Invoke();
+        }
+        catch (Exception _)
+        {
+            // Log the exception or handle it as necessary
+        }
     }
 }
