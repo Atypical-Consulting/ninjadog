@@ -20,6 +20,10 @@ internal sealed class NinjadogEngine : INinjadogEngine
     private readonly OutputProcessorCollection _outputProcessors;
     private readonly IDotnetCommandService _dotnetCommandService;
 
+    private int _totalFilesGenerated;
+    private int _totalCharactersGenerated;
+    private readonly List<Exception> _exceptions = [];
+
     public NinjadogEngine(
         NinjadogTemplateManifest templateManifest,
         NinjadogSettings ninjadogSettings,
@@ -47,6 +51,7 @@ internal sealed class NinjadogEngine : INinjadogEngine
 
     public void Run()
     {
+        Reset();
         var stopwatch = Stopwatch.StartNew();
 
         try
@@ -68,9 +73,16 @@ internal sealed class NinjadogEngine : INinjadogEngine
         finally
         {
             stopwatch.Stop();
-            HandleRunCompleted(stopwatch.Elapsed);
+            HandleRunCompleted(stopwatch.Elapsed, _totalFilesGenerated, _totalCharactersGenerated, _exceptions);
             HandleShutdown();
         }
+    }
+
+    private void Reset()
+    {
+        _totalFilesGenerated = 0;
+        _totalCharactersGenerated = 0;
+        _exceptions.Clear();
     }
 
     private void ProcessTemplate(NinjadogTemplate template)
@@ -118,47 +130,69 @@ internal sealed class NinjadogEngine : INinjadogEngine
 
     private void HandleBeforeTemplateProcessed(NinjadogTemplate template)
     {
-        SafeInvokeEvent(() => OnBeforeTemplateProcessed?.Invoke(this, new NinjadogTemplateEventArgs(template)));
+        SafeInvokeEvent(() => OnBeforeTemplateProcessed?.Invoke(this,
+            new NinjadogTemplateEventArgs { Template = template }));
     }
 
     private void HandleAfterTemplateProcessed(NinjadogTemplate template)
     {
-        SafeInvokeEvent(() => OnAfterTemplateProcessed?.Invoke(this, new NinjadogTemplateEventArgs(template)));
+        SafeInvokeEvent(() => OnAfterTemplateProcessed?.Invoke(this,
+            new NinjadogTemplateEventArgs { Template = template }));
     }
 
     private void HandleBeforeContentProcessed(NinjadogContentFile contentFile)
     {
-        SafeInvokeEvent(() => OnBeforeContentProcessed?.Invoke(this, new NinjadogContentEventArgs(contentFile)));
+        SafeInvokeEvent(() => OnBeforeContentProcessed?.Invoke(this,
+            new NinjadogContentEventArgs { ContentFile = contentFile }));
     }
 
     private void HandleAfterContentProcessed(NinjadogContentFile contentFile)
     {
-        SafeInvokeEvent(() => OnAfterContentProcessed?.Invoke(this, new NinjadogContentEventArgs(contentFile)));
+        _totalFilesGenerated++;
+        _totalCharactersGenerated += contentFile.Length;
+        SafeInvokeEvent(() => OnAfterContentProcessed?.Invoke(this,
+            new NinjadogContentEventArgs { ContentFile = contentFile }));
     }
 
     private void HandleErrorOccurred(Exception exception)
     {
-        SafeInvokeEvent(() => OnErrorOccurred?.Invoke(this, new NinjadogErrorEventArgs(exception)));
+        _exceptions.Add(exception);
+        SafeInvokeEvent(() => OnErrorOccurred?.Invoke(this,
+            new NinjadogErrorEventArgs { Exception = exception }));
     }
 
     private void HandleInitialized()
     {
-        SafeInvokeEvent(() => OnInitialized?.Invoke(this, System.EventArgs.Empty));
+        SafeInvokeEvent(() => OnInitialized?.Invoke(this,
+            System.EventArgs.Empty));
     }
 
     private void HandleShutdown()
     {
-        SafeInvokeEvent(() => OnShutdown?.Invoke(this, System.EventArgs.Empty));
+        SafeInvokeEvent(() => OnShutdown?.Invoke(this,
+            System.EventArgs.Empty));
     }
 
     private void HandleDotnetVersionChecked(string? version)
     {
-        SafeInvokeEvent(() => OnDotnetVersionChecked?.Invoke(this, Version.Parse(version ?? "0.0.0")));
+        SafeInvokeEvent(() => OnDotnetVersionChecked?.Invoke(this,
+            Version.Parse(version ?? "0.0.0")));
     }
 
-    private void HandleRunCompleted(TimeSpan runTime)
+    private void HandleRunCompleted(
+        TimeSpan runTime,
+        int totalFilesGenerated,
+        int totalCharactersGenerated,
+        List<Exception> exceptions)
     {
-        SafeInvokeEvent(() => OnRunCompleted?.Invoke(this, new NinjadogEngineRunEventArgs(runTime)));
+        SafeInvokeEvent(() => OnRunCompleted?.Invoke(this,
+            new NinjadogEngineRunEventArgs
+            {
+                RunTime = runTime,
+                TotalFilesGenerated = totalFilesGenerated,
+                TotalCharactersGenerated = totalCharactersGenerated,
+                Exceptions = exceptions
+            }));
     }
 
     private static void SafeInvokeEvent(Action? eventAction)
