@@ -57,8 +57,8 @@ internal sealed class NinjadogEngine : INinjadogEngine
         try
         {
             // ensure the .NET CLI is available
-            var version = _dotnetCommandService.Version();
-            HandleDotnetVersionChecked(version);
+            var dotnetVersion = _dotnetCommandService.Version();
+            HandleDotnetVersionChecked(dotnetVersion);
 
             // run the engine for each template in the manifest
             foreach (var template in _templateManifest.Templates)
@@ -73,7 +73,7 @@ internal sealed class NinjadogEngine : INinjadogEngine
         finally
         {
             stopwatch.Stop();
-            HandleRunCompleted(stopwatch.Elapsed, _totalFilesGenerated, _totalCharactersGenerated, _exceptions);
+            HandleRunCompleted(stopwatch.Elapsed);
             HandleShutdown();
         }
     }
@@ -179,20 +179,17 @@ internal sealed class NinjadogEngine : INinjadogEngine
             Version.Parse(version ?? "0.0.0")));
     }
 
-    private void HandleRunCompleted(
-        TimeSpan runTime,
-        int totalFilesGenerated,
-        int totalCharactersGenerated,
-        List<Exception> exceptions)
+    private void HandleRunCompleted(TimeSpan runTime)
     {
-        SafeInvokeEvent(() => OnRunCompleted?.Invoke(this,
-            new NinjadogEngineRunEventArgs
-            {
-                RunTime = runTime,
-                TotalFilesGenerated = totalFilesGenerated,
-                TotalCharactersGenerated = totalCharactersGenerated,
-                Exceptions = exceptions
-            }));
+        var args = new NinjadogEngineRunEventArgs
+        {
+            RunTime = runTime,
+            TotalFilesGenerated = _totalFilesGenerated,
+            TotalCharactersGenerated = _totalCharactersGenerated,
+            Exceptions = _exceptions
+        };
+
+        OnRunCompleted?.SafeInvoke(this, args);
     }
 
     private static void SafeInvokeEvent(Action? eventAction)
