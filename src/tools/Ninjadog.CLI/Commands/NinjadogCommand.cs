@@ -8,8 +8,8 @@ using Ninjadog.Engine;
 using Ninjadog.Engine.Collections;
 using Ninjadog.Engine.Configuration;
 using Ninjadog.Engine.EventArgs;
-using Ninjadog.Templates.CrudWebAPI.Setup;
-using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
+using Ninjadog.Settings;
+using Ninjadog.Templates;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using static Ninjadog.CLI.Utilities.SpectreWriteHelpers;
@@ -17,32 +17,41 @@ using static Spectre.Console.AnsiConsole;
 
 namespace Ninjadog.CLI.Commands;
 
-internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
+internal sealed class NinjadogCommandSettings : CommandSettings
 {
-    public sealed class Settings : CommandSettings
-    {
-        [CommandOption("-i|--in-memory")]
-        [DefaultValue(true)]
-        public bool InMemory { get; init; }
+    [CommandOption("-i|--in-memory")]
+    [DefaultValue(true)]
+    public bool InMemory { get; init; }
 
-        [CommandOption("-d|--disk")]
-        [DefaultValue(true)]
-        public bool Disk { get; init; }
+    [CommandOption("-d|--disk")]
+    [DefaultValue(true)]
+    public bool Disk { get; init; }
+}
+
+internal sealed class NinjadogCommand : Command<NinjadogCommandSettings>
+{
+    private readonly NinjadogTemplateManifest _templateManifest;
+    private readonly NinjadogSettings _settings;
+
+    public NinjadogCommand(NinjadogTemplateManifest templateManifest, NinjadogSettings settings)
+    {
+        _templateManifest =
+            templateManifest
+            ?? throw new ArgumentNullException(nameof(templateManifest));
+
+        _settings =
+            settings
+            ?? throw new ArgumentNullException(nameof(settings));
     }
 
-    public override int Execute(CommandContext context, Settings settings)
+    public override int Execute(CommandContext context, NinjadogCommandSettings settings)
     {
-        CrudTemplateManifest templateManifest = new();
-        TodoAppSettings todoAppSettings = new();
-        OutputProcessorCollection outputProcessors = new(settings.InMemory, settings.Disk);
-        NinjadogEngineConfiguration configuration = new(templateManifest, todoAppSettings, outputProcessors);
-
         MarkupLine("[bold]Using the following settings:[/]");
         WriteSettingsTable(table => table
             .AddRow("Engine", $"[green]Ninjadog.Engine[/] v2.0.0-alpha")
-            .AddRow("Template", $"[green]{templateManifest.Name}[/] v{templateManifest.Version}")
-            .AddRow("App name", $"[green]{todoAppSettings.Config.Name}[/] v{todoAppSettings.Config.Version} with [green]{todoAppSettings.Entities.Count}[/] entities")
-            .AddRow("App entities", $"[green]{string.Join(", ", todoAppSettings.Entities.Keys)}[/]")
+            .AddRow("Template", $"[green]{_templateManifest.Name}[/] v{_templateManifest.Version}")
+            .AddRow("App name", $"[green]{_settings.Config.Name}[/] v{_settings.Config.Version} with [green]{_settings.Entities.Count}[/] entities")
+            .AddRow("App entities", $"[green]{string.Join(", ", _settings.Entities.Keys)}[/]")
             .AddRow("Authentication", IsEnableMarkup(false))
             .AddRow("Persistence", "[green]SQLite[/]"));
 
@@ -64,7 +73,11 @@ internal sealed class NinjadogCommand : Command<NinjadogCommand.Settings>
 
         WriteLine();
         MarkupLine("[bold]Building the Ninjadog Engine...[/]");
-        var ninjadogEngine = NinjadogEngineFactory.CreateNinjadogEngine(configuration);
+
+        var outputProcessors = new OutputProcessorCollection(settings.InMemory, settings.Disk);
+        var engineConfiguration = new NinjadogEngineConfiguration(_templateManifest, _settings, outputProcessors);
+        var ninjadogEngine = NinjadogEngineFactory.CreateNinjadogEngine(engineConfiguration);
+
         ninjadogEngine.OnAfterContentProcessed += OnAfterContentProcessed;
         ninjadogEngine.OnDotnetVersionChecked += OnDotnetVersionChecked;
         ninjadogEngine.OnRunCompleted += OnRunCompleted;
