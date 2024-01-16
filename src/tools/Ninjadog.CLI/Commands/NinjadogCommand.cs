@@ -113,13 +113,29 @@ internal sealed class NinjadogCommand(
 
     private static void OnRunCompleted(object? _, NinjadogEngineRunEventArgs e)
     {
+        var exceptions = e.Exceptions;
+        var errorsColor = exceptions.Count > 0 ? "red" : "green";
+        var errorsCount = $"[{errorsColor}]{exceptions.Count:N0}[/]";
+
         WriteLine();
         MarkupLine("[bold]Ninjadog Engine run summary:[/]");
         MarkupLine($"- Run completed in [green]{e.RunTime:g}[/] seconds");
-        MarkupLine($"- Errors encountered: [green]{e.Exceptions.Count:N0}[/] errors");
+        MarkupLine($"- Errors encountered: {errorsCount} errors");
         MarkupLine($"- Total files generated: [green]{e.TotalFilesGenerated:N0}[/] files");
         MarkupLine($"- Total characters generated in files: [green]{e.TotalCharactersGenerated:N0}[/] characters");
         MarkupLine($"  - It represents ~[green]{e.TotalCharactersGenerated / 5}[/] words or ~[green]{e.TotalCharactersGenerated / 150}[/] minutes saved");
+
+        if (exceptions.Count == 0)
+        {
+            return;
+        }
+
+        WriteLine();
+        MarkupLine("[bold]Exceptions:[/]");
+        foreach (var exception in exceptions)
+        {
+            WriteException(exception);
+        }
     }
 
     private static void OnShutdown(object? _, EventArgs e)
