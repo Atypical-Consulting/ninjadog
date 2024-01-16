@@ -5,11 +5,11 @@
 
 using System.ComponentModel;
 using Ninjadog.Engine;
-using Ninjadog.Engine.Collections;
 using Ninjadog.Engine.Configuration;
-using Ninjadog.Engine.EventArgs;
+using Ninjadog.Engine.Core.EventArgs;
+using Ninjadog.Engine.Core.Models;
+using Ninjadog.Engine.OutputProcessors;
 using Ninjadog.Settings;
-using Ninjadog.Templates;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using static Ninjadog.CLI.Utilities.SpectreWriteHelpers;

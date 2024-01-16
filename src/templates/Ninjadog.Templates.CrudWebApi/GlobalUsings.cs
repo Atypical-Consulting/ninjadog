@@ -5,4 +5,4 @@
 
 global using Ninjadog.Settings;
 global using Ninjadog.Settings.Extensions;
-global using static Ninjadog.Templates.TemplateUtilities;
+global using static Ninjadog.Engine.Core.Models.TemplateUtilities;

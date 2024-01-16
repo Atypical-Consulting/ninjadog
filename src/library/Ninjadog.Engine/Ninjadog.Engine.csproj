@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ninjadog.Templates\Ninjadog.Templates.csproj" />
+    <ProjectReference Include="..\Ninjadog.Engine.Core\Ninjadog.Engine.Core.csproj" />
   </ItemGroup>
 
 </Project>

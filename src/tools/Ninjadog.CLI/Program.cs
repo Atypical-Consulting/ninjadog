@@ -6,8 +6,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Ninjadog.CLI.Commands;
 using Ninjadog.CLI.Utilities;
+using Ninjadog.Engine.Core.Models;
 using Ninjadog.Settings;
-using Ninjadog.Templates;
 using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 using Spectre.Console.Cli;
