@@ -58,13 +58,15 @@ internal sealed class NinjadogEngine : INinjadogEngine
 
         try
         {
-            // ensure the .NET CLI is available
-            var dotnetVersion = _dotnetCommandService.Version();
-
             // delete the app folder if it already exists and create it again
             var appName = _ninjadogSettings.Config.Name;
             _fileService.DeleteAppFolder(appName);
-            _fileService.CreateAppFolder(appName);
+            var appDirectory = _fileService.CreateAppFolder(appName);
+
+            // create the .net solution with the app name
+            var dotnetVersion = _dotnetCommandService.Version();
+            var createSlnResult = _dotnetCommandService.CreateSolution(appDirectory);
+            var buildResult = _dotnetCommandService.Build(appDirectory);
 
             // create the template folder
             var templateName = _templateManifest.Name;

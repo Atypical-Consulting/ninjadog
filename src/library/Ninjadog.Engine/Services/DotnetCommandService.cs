@@ -3,7 +3,6 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using System.Diagnostics;
 using Ninjadog.Engine.Abstractions;
 
 namespace Ninjadog.Engine.Services;
@@ -13,7 +12,8 @@ namespace Ninjadog.Engine.Services;
 /// This class provides functionality to programmatically run commands using the .NET CLI,
 /// ensuring the CLI is available upon initialization.
 /// </summary>
-public sealed class DotnetCommandService : IDotnetCommandService
+public sealed class DotnetCommandService
+    : CommandServiceBase, IDotnetCommandService
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="DotnetCommandService"/>.
@@ -29,38 +29,23 @@ public sealed class DotnetCommandService : IDotnetCommandService
     }
 
     /// <inheritdoc />
-    public string ExecuteCommand(string command, string? args = null)
+    public string Version()
     {
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = "dotnet",
-            Arguments = $"{command} {args}".Trim(),
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
+        var cmdResult = ExecuteCommand("dotnet --version");
+        return cmdResult.Trim();
+    }
 
-        using var process =
-            Process.Start(startInfo)
-            ?? throw new InvalidOperationException($"Failed to execute 'dotnet {command} {args}'.");
-
-        using var reader = process.StandardOutput;
-        var result = reader.ReadToEnd();
-
-        process.WaitForExit();
-
-        return result;
+    /// <inheritdoc />
+    public string CreateSolution(string solutionPath)
+    {
+        var cmdResult = ExecuteCommand($"dotnet new sln --output {solutionPath}");
+        return cmdResult.Trim();
     }
 
     /// <inheritdoc />
     public string Build(string projectPath)
     {
-        return ExecuteCommand("build", projectPath);
-    }
-
-    /// <inheritdoc />
-    public string? Version()
-    {
-        return ExecuteCommand("--version");
+        var cmdResult = ExecuteCommand($"dotnet build {projectPath}");
+        return cmdResult.Trim();
     }
 }

@@ -12,12 +12,17 @@ namespace Ninjadog.Engine.Abstractions;
 public interface IDotnetCommandService
 {
     /// <summary>
-    /// Executes a specified dotnet CLI command with the given arguments.
+    /// Gets the dotnet version.
     /// </summary>
-    /// <param name="command">The dotnet command to be executed (e.g., "build", "run").</param>
-    /// <param name="args">The arguments to pass to the dotnet command.</param>
-    /// <returns>The result of the dotnet command.</returns>
-    string ExecuteCommand(string command, string args);
+    /// <returns>The dotnet version.</returns>
+    string? Version();
+
+    /// <summary>
+    /// Creates a new solution at the specified path.
+    /// </summary>
+    /// <param name="solutionPath">The path to the solution to be created.</param>
+    /// <returns>The result of the solution creation.</returns>
+    string CreateSolution(string solutionPath);
 
     /// <summary>
     /// Builds a project at the specified path.
@@ -25,10 +30,4 @@ public interface IDotnetCommandService
     /// <param name="projectPath">The path to the project to be built.</param>
     /// <returns>The result of the build.</returns>
     string Build(string projectPath);
-
-    /// <summary>
-    /// Gets the dotnet version.
-    /// </summary>
-    /// <returns>The dotnet version.</returns>
-    string? Version();
 }
