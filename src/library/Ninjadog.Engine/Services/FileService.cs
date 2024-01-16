@@ -37,6 +37,7 @@ public class FileService : IFileService
     public string DeleteAppFolder(string appName)
     {
         var appFolderPath = Path.Combine(_baseFolder, appName);
+        EnsureDirectoryExists(appFolderPath);
         Directory.Delete(appFolderPath, true);
         return appFolderPath;
     }
