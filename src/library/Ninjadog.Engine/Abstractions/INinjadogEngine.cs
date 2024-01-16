@@ -15,11 +15,6 @@ public interface INinjadogEngine
     : INinjadogEngineLifecycle, INinjadogEngineTemplateProcessing, INinjadogEngineContentProcessing, INinjadogEngineErrorHandling
 {
     /// <summary>
-    /// Occurs when the .NET CLI version is checked by the Ninjadog Engine.
-    /// </summary>
-    event EventHandler<Version>? OnDotnetVersionChecked;
-
-    /// <summary>
     /// Occurs when the Ninjadog Engine has completed its run.
     /// </summary>
     event EventHandler<NinjadogEngineRunEventArgs>? OnRunCompleted;

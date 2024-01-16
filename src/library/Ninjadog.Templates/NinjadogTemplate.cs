@@ -79,6 +79,7 @@ public abstract class NinjadogTemplate
     /// <returns>A new instance of <see cref="NinjadogContentFile"/>.</returns>
     protected NinjadogContentFile CreateNinjadogContentFile(string fileName, string content)
     {
-        return new NinjadogContentFile(fileName, content, Category);
+        var contentWithLayout = TemplateUtilities.DefaultCodeLayout(content);
+        return new NinjadogContentFile(fileName, contentWithLayout, Category);
     }
 }

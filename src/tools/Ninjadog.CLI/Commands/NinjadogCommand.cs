@@ -76,7 +76,6 @@ internal sealed class NinjadogCommand(
         var ninjadogEngine = NinjadogEngineFactory.CreateNinjadogEngine(engineConfiguration);
 
         ninjadogEngine.OnAfterContentProcessed += OnAfterContentProcessed;
-        ninjadogEngine.OnDotnetVersionChecked += OnDotnetVersionChecked;
         ninjadogEngine.OnRunCompleted += OnRunCompleted;
         ninjadogEngine.OnShutdown += OnShutdown;
 
@@ -99,11 +98,6 @@ internal sealed class NinjadogCommand(
     private static string IsEnableMarkup(bool enabled)
     {
         return enabled ? "[green]enabled[/]" : "[yellow]disabled[/]";
-    }
-
-    private static void OnDotnetVersionChecked(object? _, Version version)
-    {
-        MarkupLine($"- .NET CLI version: [green]{version}[/] detected.");
     }
 
     private static void OnAfterContentProcessed(object? _, NinjadogContentEventArgs e)

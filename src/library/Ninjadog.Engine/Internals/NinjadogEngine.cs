@@ -42,7 +42,6 @@ internal sealed class NinjadogEngine : INinjadogEngine
     }
 
     // Events
-    public event EventHandler<Version>? OnDotnetVersionChecked;
     public event EventHandler<NinjadogEngineRunEventArgs>? OnRunCompleted;
     public event EventHandler<NinjadogTemplateEventArgs>? OnBeforeTemplateProcessed;
     public event EventHandler<NinjadogTemplateEventArgs>? OnAfterTemplateProcessed;
@@ -61,7 +60,6 @@ internal sealed class NinjadogEngine : INinjadogEngine
         {
             // ensure the .NET CLI is available
             var dotnetVersion = _dotnetCommandService.Version();
-            HandleDotnetVersionChecked(dotnetVersion);
 
             // delete the app folder if it already exists and create it again
             var appName = _ninjadogSettings.Config.Name;
@@ -142,58 +140,55 @@ internal sealed class NinjadogEngine : INinjadogEngine
 
     private void HandleBeforeTemplateProcessed(NinjadogTemplate template)
     {
-        SafeInvokeEvent(() => OnBeforeTemplateProcessed?.Invoke(this,
-            new NinjadogTemplateEventArgs { Template = template }));
+        NinjadogTemplateEventArgs args = new() { Template = template };
+        OnBeforeTemplateProcessed?.SafeInvokeEvent(this, args);
     }
 
     private void HandleAfterTemplateProcessed(NinjadogTemplate template)
     {
-        SafeInvokeEvent(() => OnAfterTemplateProcessed?.Invoke(this,
-            new NinjadogTemplateEventArgs { Template = template }));
+        NinjadogTemplateEventArgs args = new() { Template = template };
+        OnAfterTemplateProcessed?.SafeInvokeEvent(this, args);
     }
 
     private void HandleBeforeContentProcessed(NinjadogContentFile contentFile)
     {
-        SafeInvokeEvent(() => OnBeforeContentProcessed?.Invoke(this,
-            new NinjadogContentEventArgs { ContentFile = contentFile }));
+        NinjadogContentEventArgs args = new() { ContentFile = contentFile };
+        OnBeforeContentProcessed?.SafeInvokeEvent(this, args);
     }
 
     private void HandleAfterContentProcessed(NinjadogContentFile contentFile)
     {
         _totalFilesGenerated++;
         _totalCharactersGenerated += contentFile.Length;
+
+        // TODO: use the file service in the appropriate output processor
         var appName = _ninjadogSettings.Config.Name;
         var templateName = _templateManifest.Name;
         var path = Path.Combine(appName, templateName, contentFile.OutputPath);
         _fileService.CreateFile(path, contentFile.Content);
 
-        SafeInvokeEvent(() => OnAfterContentProcessed?.Invoke(this,
-            new NinjadogContentEventArgs { ContentFile = contentFile }));
+        var args = new NinjadogContentEventArgs { ContentFile = contentFile };
+        OnAfterContentProcessed?.SafeInvokeEvent(this, args);
     }
 
     private void HandleErrorOccurred(Exception exception)
     {
         _exceptions.Add(exception);
-        SafeInvokeEvent(() => OnErrorOccurred?.Invoke(this,
-            new NinjadogErrorEventArgs { Exception = exception }));
+
+        var args = new NinjadogErrorEventArgs { Exception = exception };
+        OnErrorOccurred?.SafeInvokeEvent(this, args);
     }
 
     private void HandleInitialized()
     {
-        SafeInvokeEvent(() => OnInitialized?.Invoke(this,
-            System.EventArgs.Empty));
+        OnInitialized?.SafeInvokeEvent(this);
     }
 
     private void HandleShutdown()
     {
-        SafeInvokeEvent(() => OnShutdown?.Invoke(this,
-            System.EventArgs.Empty));
-    }
-
-    private void HandleDotnetVersionChecked(string? version)
-    {
-        SafeInvokeEvent(() => OnDotnetVersionChecked?.Invoke(this,
-            Version.Parse(version ?? "0.0.0")));
+        // SafeInvokeEvent(() => OnShutdown?.Invoke(this,
+        //     System.EventArgs.Empty));
+        OnShutdown?.SafeInvokeEvent(this);
     }
 
     private void HandleRunCompleted(TimeSpan runTime)
@@ -206,18 +201,6 @@ internal sealed class NinjadogEngine : INinjadogEngine
             Exceptions = _exceptions
         };
 
-        OnRunCompleted?.SafeInvoke(this, args);
-    }
-
-    private static void SafeInvokeEvent(Action? eventAction)
-    {
-        try
-        {
-            eventAction?.Invoke();
-        }
-        catch (Exception)
-        {
-            // Log the exception or handle it as necessary
-        }
+        OnRunCompleted?.SafeInvokeEvent(this, args);
     }
 }
