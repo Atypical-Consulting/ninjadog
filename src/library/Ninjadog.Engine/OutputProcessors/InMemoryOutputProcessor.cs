@@ -6,7 +6,7 @@
 using Ninjadog.Engine.Abstractions;
 using Ninjadog.Templates;
 
-namespace Ninjadog.Engine.OutputProcessor;
+namespace Ninjadog.Engine.OutputProcessors;
 
 /// <summary>
 /// An output processor that stores generated content in memory.

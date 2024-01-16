@@ -4,7 +4,7 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Ninjadog.Engine.Abstractions;
-using Ninjadog.Engine.OutputProcessor;
+using Ninjadog.Engine.OutputProcessors;
 
 namespace Ninjadog.Engine.Collections;
 
