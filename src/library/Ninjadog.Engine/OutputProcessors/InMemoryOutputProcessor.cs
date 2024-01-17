@@ -13,14 +13,14 @@ namespace Ninjadog.Engine.OutputProcessors;
 public class InMemoryOutputProcessor : IOutputProcessor
 {
     /// <summary>
-    /// Gets the memory storage that holds the processed content.
+    /// Gets the memory storage that holds the generated content.
     /// </summary>
     public Dictionary<string, string> MemoryStorage { get; } = [];
 
     /// <summary>
     /// Processes the given content by storing it in memory.
     /// </summary>
-    /// <param name="contentFile">The content file to be processed and stored.</param>
+    /// <param name="contentFile">The content file to be generated and stored.</param>
     public void ProcessOutput(NinjadogContentFile contentFile)
     {
         // raise an exception if the output path is already present in the memory storage

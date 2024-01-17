@@ -3,11 +3,6 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.CLI.Utilities;
-using Ninjadog.Engine.Core.Abstractions;
-using Ninjadog.Engine.Core.DomainEvents;
-using Spectre.Console;
-using static Spectre.Console.AnsiConsole;
 using static Ninjadog.CLI.Utilities.SpectreWriteHelpers;
 
 namespace Ninjadog.CLI.Commands;
@@ -18,9 +13,9 @@ internal static class DomainEventDispatcherSpectreExtensions
     {
         dispatcher.RegisterOnBeforeEngineRun();
         dispatcher.RegisterOnAfterEngineRun();
-        dispatcher.RegisterOnBeforeTemplateProcessed();
-        dispatcher.RegisterOnAfterTemplateProcessed();
-        dispatcher.RegisterOnAfterContentProcessed();
+        dispatcher.RegisterOnBeforeTemplateGenerated();
+        dispatcher.RegisterOnAfterTemplateGenerated();
+        dispatcher.RegisterOnAfterContentGenerated();
         dispatcher.RegisterOnErrorOccurred();
     }
 
@@ -81,33 +76,33 @@ internal static class DomainEventDispatcherSpectreExtensions
         });
     }
 
-    private static void RegisterOnBeforeTemplateProcessed(this IDomainEventDispatcher dispatcher)
+    private static void RegisterOnBeforeTemplateGenerated(this IDomainEventDispatcher dispatcher)
     {
-        dispatcher.RegisterHandler((BeforeTemplateProcessedEvent e) =>
+        dispatcher.RegisterHandler((BeforeTemplateParsedEvent e) =>
         {
             MarkupLine($"- Processing template [green]{nameof(e)}[/]...");
             return Task.CompletedTask;
         });
     }
 
-    private static void RegisterOnAfterTemplateProcessed(this IDomainEventDispatcher dispatcher)
+    private static void RegisterOnAfterTemplateGenerated(this IDomainEventDispatcher dispatcher)
     {
-        dispatcher.RegisterHandler((AfterTemplateProcessedEvent e) =>
+        dispatcher.RegisterHandler((AfterTemplateParsedEvent e) =>
         {
-            MarkupLine($"- Template [green]{nameof(e)}[/] processed.");
+            MarkupLine($"- Template [green]{nameof(e)}[/] generated.");
             return Task.CompletedTask;
         });
     }
 
-    private static void RegisterOnAfterContentProcessed(this IDomainEventDispatcher dispatcher)
+    private static void RegisterOnAfterContentGenerated(this IDomainEventDispatcher dispatcher)
     {
-        dispatcher.RegisterHandler((AfterContentProcessedEvent e) =>
+        dispatcher.RegisterHandler((AfterContentGeneratedEvent e) =>
         {
             var outputPath = e.ContentFile.OutputPath;
             var length = e.ContentFile.Length;
 
             Write("  - File generated: ");
-            SpectreWriteHelpers.WriteTextPath(outputPath);
+            WriteTextPath(outputPath);
             Markup($" with a length of [green]{length:N0}[/] characters.");
             WriteLine();
             return Task.CompletedTask;

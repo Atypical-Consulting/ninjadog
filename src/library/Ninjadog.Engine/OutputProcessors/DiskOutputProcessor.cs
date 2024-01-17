@@ -15,7 +15,7 @@ public class DiskOutputProcessor : IOutputProcessor
     /// <summary>
     /// Processes the given content by writing it to the filesystem.
     /// </summary>
-    /// <param name="contentFile">The content file to be processed and written to disk.</param>
+    /// <param name="contentFile">The content file to be generated and written to disk.</param>
     public void ProcessOutput(NinjadogContentFile contentFile)
     {
         // Logic to write to the filesystem

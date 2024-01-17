@@ -4,7 +4,10 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Microsoft.Extensions.DependencyInjection;
-using Ninjadog.Engine.Core.Abstractions;
+using Ninjadog.Engine.Core.DomainEvents.Errors;
+using Ninjadog.Engine.Core.DomainEvents.ProcessContent;
+using Ninjadog.Engine.Core.DomainEvents.ProcessTemplate;
+using Ninjadog.Engine.Core.DomainEvents.Run;
 
 namespace Ninjadog.Engine.Core.DomainEvents;
 
@@ -21,13 +24,13 @@ public static class DomainEventDispatcherExtensions
     public static IServiceCollection AddDomainEventDispatcher(this IServiceCollection services)
     {
         services.AddSingleton<IDomainEventDispatcher, DomainEventDispatcher>();
-        services.AddTransient<IDomainEventHandler<BeforeEngineRunEvent>, BeforeEngineRunHandler>();
-        services.AddTransient<IDomainEventHandler<AfterEngineRunEvent>, AfterEngineRunHandler>();
-        services.AddTransient<IDomainEventHandler<BeforeTemplateProcessedEvent>, BeforeTemplateProcessedHandler>();
-        services.AddTransient<IDomainEventHandler<AfterTemplateProcessedEvent>, AfterTemplateProcessedHandler>();
-        services.AddTransient<IDomainEventHandler<BeforeContentProcessedEvent>, BeforeContentProcessedHandler>();
-        services.AddTransient<IDomainEventHandler<AfterContentProcessedEvent>, AfterContentProcessedHandler>();
-        services.AddTransient<IDomainEventHandler<ErrorOccurredEvent>, ErrorOccurredHandler>();
+        services.AddTransient<IDomainEventProcessor<BeforeEngineRunEvent>, BeforeEngineRunProcessor>();
+        services.AddTransient<IDomainEventProcessor<AfterEngineRunEvent>, AfterEngineRunProcessor>();
+        services.AddTransient<IDomainEventProcessor<BeforeTemplateParsedEvent>, BeforeTemplateParsedProcessor>();
+        services.AddTransient<IDomainEventProcessor<AfterTemplateParsedEvent>, AfterTemplateParsedProcessor>();
+        services.AddTransient<IDomainEventProcessor<BeforeContentGeneratedEvent>, BeforeContentGeneratedProcessor>();
+        services.AddTransient<IDomainEventProcessor<AfterContentGeneratedEvent>, AfterContentGeneratedProcessor>();
+        services.AddTransient<IDomainEventProcessor<ErrorOccurredEvent>, ErrorOccurredProcessor>();
 
         return services;
     }

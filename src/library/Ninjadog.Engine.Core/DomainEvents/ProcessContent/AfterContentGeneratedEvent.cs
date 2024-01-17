@@ -3,12 +3,10 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
-
-namespace Ninjadog.Engine.Core.DomainEvents;
+namespace Ninjadog.Engine.Core.DomainEvents.ProcessContent;
 
 /// <summary>
-/// Represents an event that is triggered after content has been processed.
+/// Represents an event that is triggered after content has been generated.
 /// </summary>
-/// <param name="ContentFile">The content file that has been processed.</param>
-public record AfterContentProcessedEvent(NinjadogContentFile ContentFile) : DomainEvent;
+/// <param name="ContentFile">The content file that has been generated.</param>
+public record AfterContentGeneratedEvent(NinjadogContentFile ContentFile) : DomainEvent;

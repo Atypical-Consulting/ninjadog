@@ -3,12 +3,10 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
-
-namespace Ninjadog.Engine.Core.DomainEvents;
+namespace Ninjadog.Engine.Core.DomainEvents.ProcessTemplate;
 
 /// <summary>
-/// Represents an event that is triggered before content is processed.
+/// Represents an event that is triggered after a template has been parsed.
 /// </summary>
-/// <param name="ContentFile">The content file that is about to be processed.</param>
-public record BeforeContentProcessedEvent(NinjadogContentFile ContentFile) : DomainEvent;
+/// <param name="Template">The template that has been parsed.</param>
+public record AfterTemplateParsedEvent(NinjadogTemplate Template) : DomainEvent;

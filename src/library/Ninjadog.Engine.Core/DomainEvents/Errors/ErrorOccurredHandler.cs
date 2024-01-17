@@ -3,15 +3,13 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Abstractions;
-
-namespace Ninjadog.Engine.Core.DomainEvents;
+namespace Ninjadog.Engine.Core.DomainEvents.Errors;
 
 /// <summary>
 /// Handles events that occur when an error occurs.
 /// </summary>
-public class ErrorOccurredHandler
-    : IDomainEventHandler<ErrorOccurredEvent>
+public class ErrorOccurredProcessor
+    : IDomainEventProcessor<ErrorOccurredEvent>
 {
     /// <summary>
     /// Handles the logic to be executed when an error occurs.

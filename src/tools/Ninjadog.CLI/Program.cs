@@ -7,14 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Ninjadog.CLI.Commands;
 using Ninjadog.CLI.Utilities;
 using Ninjadog.Engine;
-using Ninjadog.Engine.Core.Abstractions;
 using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.Core.Models;
 using Ninjadog.Engine.Services;
 using Ninjadog.Settings;
 using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
-using Spectre.Console.Cli;
 
 SpectreWriteHelpers.WriteNinjadog();
 

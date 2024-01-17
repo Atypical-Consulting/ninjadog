@@ -4,8 +4,6 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using System.ComponentModel;
-using Spectre.Console;
-using Spectre.Console.Cli;
 
 namespace Ninjadog.CLI.Commands;
 

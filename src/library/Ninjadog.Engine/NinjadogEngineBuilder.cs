@@ -62,7 +62,6 @@ public sealed class NinjadogEngineBuilder
                 EnsureTemplateManifestIsSet(),
                 EnsureNinjadogSettingsAreSet(),
                 EnsureOutputProcessorsAreSet(),
-                _serviceProvider.GetRequiredService<ICliDotnetService>(),
                 _serviceProvider.GetRequiredService<IFileService>(),
                 _serviceProvider.GetRequiredService<IDomainEventDispatcher>());
     }

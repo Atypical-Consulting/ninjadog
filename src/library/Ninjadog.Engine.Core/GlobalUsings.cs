@@ -3,12 +3,6 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
-
-namespace Ninjadog.Engine.Core.DomainEvents;
-
-/// <summary>
-/// Represents an event that is triggered when an error occurs.
-/// </summary>
-/// <param name="Exception">The exception that occurred.</param>
-public record ErrorOccurredEvent(Exception Exception) : DomainEvent;
+global using Ninjadog.Engine.Core.Abstractions;
+global using Ninjadog.Engine.Core.Models;
+global using Ninjadog.Settings;

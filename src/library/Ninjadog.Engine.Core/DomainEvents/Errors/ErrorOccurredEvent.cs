@@ -3,12 +3,10 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
-
-namespace Ninjadog.Engine.Core.DomainEvents;
+namespace Ninjadog.Engine.Core.DomainEvents.Errors;
 
 /// <summary>
-/// Represents an event that is triggered after a template has been processed.
+/// Represents an event that is triggered when an error occurs.
 /// </summary>
-/// <param name="Template">The template that has been processed.</param>
-public record AfterTemplateProcessedEvent(NinjadogTemplate Template) : DomainEvent;
+/// <param name="Exception">The exception that occurred.</param>
+public record ErrorOccurredEvent(Exception Exception) : DomainEvent;

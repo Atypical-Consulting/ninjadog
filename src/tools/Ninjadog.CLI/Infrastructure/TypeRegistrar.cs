@@ -4,7 +4,6 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console.Cli;
 
 namespace Ninjadog.CLI.Infrastructure;
 

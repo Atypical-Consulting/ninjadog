@@ -4,7 +4,6 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using System.Diagnostics;
-using Ninjadog.Engine.Core.DomainEvents;
 
 namespace Ninjadog.Engine;
 
@@ -18,7 +17,6 @@ namespace Ninjadog.Engine;
 /// <param name="templateManifest">The template manifest to be used by the engine.</param>
 /// <param name="ninjadogSettings">The ninjadog app settings to configure the engine.</param>
 /// <param name="outputProcessors">The output processors to be used by the engine.</param>
-/// <param name="cliDotnetService">The dotnet command service to be used by the engine.</param>
 /// <param name="fileService">The file service to be used by the engine.</param>
 /// <param name="domainEventDispatcher">The domain event dispatcher to be used by the engine.</param>
 /// <exception cref="ArgumentNullException">Thrown when any of the parameters is null.</exception>
@@ -26,7 +24,6 @@ public sealed class NinjadogEngine(
     NinjadogTemplateManifest templateManifest,
     NinjadogSettings ninjadogSettings,
     NinjadogOutputProcessors outputProcessors,
-    ICliDotnetService cliDotnetService,
     IFileService fileService,
     IDomainEventDispatcher domainEventDispatcher)
     : INinjadogEngine
@@ -46,30 +43,10 @@ public sealed class NinjadogEngine(
             Reset();
             DispatchBeforeEngineRun();
 
-            // delete the app folder if it already exists and create it again
-            var appName = ninjadogSettings.Config.Name;
-            fileService.DeleteAppFolder(appName);
-            var appDirectory = fileService.CreateAppFolder(appName);
-
-            // create the .net solution with the app name
-            var dotnetVersion = cliDotnetService.Version();
-            var createSlnResult = cliDotnetService.CreateSolution(appDirectory);
-            var buildResult = cliDotnetService.Build(appDirectory);
-
-            // throw new InvalidOperationException("Just because. :)");
-
-            // Install NuGet packages
-            foreach (var package in templateManifest.NuGetPackages)
+            foreach (var template in templateManifest.Templates)
             {
-                cliDotnetService.AddPackage(appDirectory, package);
+                ProcessTemplate(template);
             }
-
-            // create the template folder
-            var templateName = templateManifest.Name;
-            fileService.CreateSubFolder(appName, templateName);
-
-            // run the engine for each template in the manifest
-            ProcessTemplates();
         }
         catch (Exception ex)
         {
@@ -88,19 +65,11 @@ public sealed class NinjadogEngine(
         _stopwatch = Stopwatch.StartNew();
     }
 
-    private void ProcessTemplates()
-    {
-        foreach (var template in templateManifest.Templates)
-        {
-            ProcessTemplate(template);
-        }
-    }
-
     private void ProcessTemplate(NinjadogTemplate template)
     {
         try
         {
-            DispatchBeforeEngineTemplateProcessed(template);
+            DispatchBeforeEngineTemplateGenerated(template);
 
             // First, add a single file based on the template and the settings...
             var singleFileContent = template.GenerateOne(ninjadogSettings);
@@ -118,7 +87,7 @@ public sealed class NinjadogEngine(
         }
         finally
         {
-            DispatchAfterTemplateProcessed(template);
+            DispatchAfterTemplateGenerated(template);
         }
     }
 
@@ -129,14 +98,14 @@ public sealed class NinjadogEngine(
             return;
         }
 
-        DispatchBeforeContentProcessed(contentFile);
+        DispatchBeforeContentGenerated(contentFile);
 
         foreach (var processor in outputProcessors)
         {
             processor.ProcessOutput(contentFile);
         }
 
-        DispatchAfterContentProcessed(contentFile);
+        DispatchAfterContentGenerated(contentFile);
     }
 
     //********************
@@ -151,33 +120,36 @@ public sealed class NinjadogEngine(
 
     private void DispatchAfterEngineRun()
     {
-        _stopwatch.Stop();
+        _stopwatch?.Stop();
 
         AfterEngineRunEvent domainEvent = new(
             ninjadogSettings,
-            _stopwatch.Elapsed,
+            _stopwatch?.Elapsed ?? TimeSpan.Zero,
             _totalFilesGenerated,
             _totalCharactersGenerated);
 
         domainEventDispatcher.Dispatch(domainEvent);
     }
 
-    private void DispatchBeforeEngineTemplateProcessed(NinjadogTemplate template)
+    private void DispatchBeforeEngineTemplateGenerated(NinjadogTemplate template)
     {
-        domainEventDispatcher.Dispatch(new BeforeTemplateProcessedEvent(template));
+        var domainEvent = new BeforeTemplateParsedEvent(template);
+        domainEventDispatcher.Dispatch(domainEvent);
     }
 
-    private void DispatchAfterTemplateProcessed(NinjadogTemplate template)
+    private void DispatchAfterTemplateGenerated(NinjadogTemplate template)
     {
-        domainEventDispatcher.Dispatch(new AfterTemplateProcessedEvent(template));
+        var domainEvent = new AfterTemplateParsedEvent(template);
+        domainEventDispatcher.Dispatch(domainEvent);
     }
 
-    private void DispatchBeforeContentProcessed(NinjadogContentFile contentFile)
+    private void DispatchBeforeContentGenerated(NinjadogContentFile contentFile)
     {
-        domainEventDispatcher.Dispatch(new BeforeContentProcessedEvent(contentFile));
+        var domainEvent = new BeforeContentGeneratedEvent(contentFile);
+        domainEventDispatcher.Dispatch(domainEvent);
     }
 
-    private void DispatchAfterContentProcessed(NinjadogContentFile contentFile)
+    private void DispatchAfterContentGenerated(NinjadogContentFile contentFile)
     {
         _totalFilesGenerated++;
         _totalCharactersGenerated += contentFile.Length;
@@ -188,7 +160,8 @@ public sealed class NinjadogEngine(
         var path = Path.Combine(appName, templateName, contentFile.OutputPath);
         fileService.CreateFile(path, contentFile.Content);
 
-        domainEventDispatcher.Dispatch(new AfterContentProcessedEvent(contentFile));
+        var domainEvent = new AfterContentGeneratedEvent(contentFile);
+        domainEventDispatcher.Dispatch(domainEvent);
     }
 
     private void DispatchError(Exception ex)

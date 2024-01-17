@@ -3,16 +3,14 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
-
 namespace Ninjadog.Engine.Core.Abstractions;
 
 /// <summary>
 /// Represents a handler for a specific type of domain event.
 /// </summary>
 /// <typeparam name="T">The type of the domain event to handle.</typeparam>
-public interface IDomainEventHandler<in T>
-    where T : DomainEvent
+public interface IDomainEventProcessor<in T>
+    where T : IDomainEvent
 {
     /// <summary>
     /// Handles the given domain event.

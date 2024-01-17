@@ -4,7 +4,6 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using System.Diagnostics;
-using Ninjadog.Engine.Core.Models;
 
 namespace Ninjadog.Engine.Core.Abstractions;
 

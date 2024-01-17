@@ -3,8 +3,6 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Abstractions;
-
 namespace Ninjadog.Engine.Core.Models;
 
 /// <summary>

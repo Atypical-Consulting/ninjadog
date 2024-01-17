@@ -4,12 +4,9 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using System.ComponentModel;
-using Ninjadog.Engine.Core.Abstractions;
 using Ninjadog.Engine.Core.Models;
 using Ninjadog.Engine.OutputProcessors;
 using Ninjadog.Settings;
-using Spectre.Console.Cli;
-using static Spectre.Console.AnsiConsole;
 
 namespace Ninjadog.CLI.Commands;
 

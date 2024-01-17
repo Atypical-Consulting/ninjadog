@@ -3,10 +3,7 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
-using Ninjadog.Settings;
-
-namespace Ninjadog.Engine.Core.DomainEvents;
+namespace Ninjadog.Engine.Core.DomainEvents.Run;
 
 /// <summary>
 /// Represents an event that is triggered after the engine has finished processing.

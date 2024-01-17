@@ -4,7 +4,6 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Microsoft.Extensions.DependencyInjection;
-using Ninjadog.Engine.Core.Abstractions;
 
 namespace Ninjadog.Engine.Core.DomainEvents;
 
@@ -25,12 +24,12 @@ public class DomainEventDispatcher(IServiceProvider serviceProvider) : IDomainEv
         var eventType = domainEvent.GetType();
 
         // First, invoke statically resolved handlers
-        var handlerType = typeof(IDomainEventHandler<>).MakeGenericType(eventType);
+        var handlerType = typeof(IDomainEventProcessor<>).MakeGenericType(eventType);
         var resolvedHandlers = serviceProvider.GetServices(handlerType);
 
         foreach (var handler in resolvedHandlers)
         {
-            var method = handlerType.GetMethod("Handle");
+            var method = handlerType.GetMethod(nameof(IDomainEventProcessor<IDomainEvent>.HandleAsync));
             if (method is not null)
             {
                 await ((Task)method.Invoke(handler, [domainEvent])!).ConfigureAwait(false);
