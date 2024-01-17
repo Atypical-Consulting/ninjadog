@@ -15,11 +15,11 @@ using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 SpectreWriteHelpers.WriteNinjadog();
 
 var registrations = new ServiceCollection();
+registrations.AddDomainEventDispatcher();
 registrations.AddInfrastructure();
 registrations.AddSingleton<INinjadogEngineFactory, NinjadogEngineFactory>();
 registrations.AddSingleton<NinjadogTemplateManifest, CrudTemplateManifest>();
 registrations.AddSingleton<NinjadogSettings, TodoAppSettings>();
-registrations.AddDomainEventDispatcher();
 var registrar = new Ninjadog.CLI.Infrastructure.TypeRegistrar(registrations);
 
 var app = new CommandApp(registrar);

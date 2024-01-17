@@ -17,7 +17,6 @@ public class AfterContentGeneratedProcessor
     /// <param name="domainEvent">The event containing details about the generated content.</param>
     public async Task HandleAsync(AfterContentGeneratedEvent domainEvent)
     {
-        var contentFile = domainEvent.ContentFile;
         // Logic for handling the event after content is generated
         await Task.CompletedTask.ConfigureAwait(false);
     }

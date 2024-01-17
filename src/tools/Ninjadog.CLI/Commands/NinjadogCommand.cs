@@ -24,27 +24,18 @@ internal sealed class NinjadogCommand(
     INinjadogEngineFactory engineFactory,
     IDomainEventDispatcher domainEventDispatcher,
     NinjadogTemplateManifest templateManifest,
-    NinjadogSettings settings)
+    NinjadogSettings ninjadogSettings)
     : Command<NinjadogCommandSettings>
 {
-    private readonly NinjadogTemplateManifest _templateManifest =
-        templateManifest
-        ?? throw new ArgumentNullException(nameof(templateManifest));
-
-    private readonly NinjadogSettings _settings =
-        settings
-        ?? throw new ArgumentNullException(nameof(settings));
-
     public override int Execute(CommandContext context, NinjadogCommandSettings settings)
     {
         try
         {
-            domainEventDispatcher.RegisterAllHandlers();
+            var engineConfiguration = CreateEngineConfiguration(settings);
+            var displayService = new NinjadogEngineEventDisplayService(domainEventDispatcher);
+            displayService.RegisterAllHandlers();
 
-            var outputProcessors = new NinjadogOutputProcessors(serviceProvider);
-            var engineConfiguration = new NinjadogEngineConfiguration(_templateManifest, _settings, outputProcessors);
             var ninjadogEngine = engineFactory.CreateNinjadogEngine(engineConfiguration);
-
             ninjadogEngine.Run();
 
             return 0;
@@ -56,5 +47,16 @@ internal sealed class NinjadogCommand(
 
             return 1;
         }
+    }
+
+    private NinjadogEngineConfiguration CreateEngineConfiguration(NinjadogCommandSettings settings)
+    {
+        var inMemory = settings.InMemory;
+        var disk = settings.Disk;
+
+        var outputProcessors = new NinjadogOutputProcessors(serviceProvider, inMemory, disk);
+        var engineConfiguration = new NinjadogEngineConfiguration(templateManifest, ninjadogSettings, outputProcessors);
+
+        return engineConfiguration;
     }
 }

@@ -4,17 +4,13 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Microsoft.Extensions.DependencyInjection;
-using Ninjadog.Engine.Core.DomainEvents.Errors;
-using Ninjadog.Engine.Core.DomainEvents.ProcessContent;
-using Ninjadog.Engine.Core.DomainEvents.ProcessTemplate;
-using Ninjadog.Engine.Core.DomainEvents.Run;
 
 namespace Ninjadog.Engine.Core.DomainEvents;
 
 /// <summary>
 /// Provides extension methods for registering domain event dispatching services.
 /// </summary>
-public static class DomainEventDispatcherExtensions
+public static class CoreExtensions
 {
     /// <summary>
     /// Adds domain event dispatcher and associated handlers to the service collection.
