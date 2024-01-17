@@ -3,9 +3,6 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.DomainEvents;
-using Ninjadog.Engine.Core.EventArgs;
-
 namespace Ninjadog.Engine.Core.Abstractions;
 
 /// <summary>
@@ -13,14 +10,11 @@ namespace Ninjadog.Engine.Core.Abstractions;
 /// This interface encapsulates the core functionality of running the templating engine to produce output based on specified templates.
 /// </summary>
 public interface INinjadogEngine
-    : INinjadogEngineLifecycle, INinjadogEngineTemplateProcessing, INinjadogEngineContentProcessing, INinjadogEngineErrorHandling
 {
-    ICollection<IDomainEvent> Events { get; }
-
     /// <summary>
-    /// Occurs when the Ninjadog Engine has completed its run.
+    /// Gets the collection of domain events that have been triggered during the execution of the engine.
     /// </summary>
-    event EventHandler<NinjadogEngineRunEventArgs>? OnRunCompleted;
+    ICollection<IDomainEvent> Events { get; }
 
     /// <summary>
     /// Runs the Ninjadog Engine to process and generate templates.

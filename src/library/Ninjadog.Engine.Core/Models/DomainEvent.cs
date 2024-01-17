@@ -3,18 +3,17 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
+using Ninjadog.Engine.Core.Abstractions;
 
-namespace Ninjadog.Engine.Core.EventArgs;
+namespace Ninjadog.Engine.Core.Models;
 
 /// <summary>
-/// Provides data for events related to the processing of a NinjadogTemplate, such as before or after a template is processed.
+/// Abstract base class for domain events, providing common properties and functionality.
 /// </summary>
-public class NinjadogTemplateEventArgs
-    : System.EventArgs
+public abstract record DomainEvent : IDomainEvent
 {
     /// <summary>
-    /// Gets the template that is being processed.
+    /// Gets the date and time when the event occurred.
     /// </summary>
-    public required NinjadogTemplate Template { get; init; }
+    public DateTime DateOccurred { get; protected set; } = DateTime.UtcNow;
 }

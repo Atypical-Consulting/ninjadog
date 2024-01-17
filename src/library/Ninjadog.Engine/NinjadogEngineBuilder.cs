@@ -4,8 +4,6 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Microsoft.Extensions.DependencyInjection;
-using Ninjadog.Engine.Core.DomainEvents;
-using Ninjadog.Engine.OutputProcessors;
 
 namespace Ninjadog.Engine;
 

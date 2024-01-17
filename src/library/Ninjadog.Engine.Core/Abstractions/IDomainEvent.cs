@@ -3,16 +3,9 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-namespace Ninjadog.Engine.Core.EventArgs;
+namespace Ninjadog.Engine.Core.Abstractions;
 
 /// <summary>
-/// Provides data for events that occur when an exception is encountered in the NinjadogEngine.
+/// Represents a base interface for domain events.
 /// </summary>
-public class NinjadogErrorEventArgs
-    : System.EventArgs
-{
-    /// <summary>
-    /// Gets the exception that was thrown.
-    /// </summary>
-    public required Exception Exception { get; init; }
-}
+public interface IDomainEvent;

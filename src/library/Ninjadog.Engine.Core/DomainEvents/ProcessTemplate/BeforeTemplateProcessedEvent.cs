@@ -5,16 +5,10 @@
 
 using Ninjadog.Engine.Core.Models;
 
-namespace Ninjadog.Engine.Core.EventArgs;
+namespace Ninjadog.Engine.Core.DomainEvents;
 
 /// <summary>
-/// Provides data for events where a NinjadogContentFile is involved, such as when content is processed.
+/// Represents an event that is triggered before a template is processed.
 /// </summary>
-public class NinjadogContentEventArgs
-    : System.EventArgs
-{
-    /// <summary>
-    /// Gets the content file that is being processed.
-    /// </summary>
-    public required NinjadogContentFile ContentFile { get; init; }
-}
+/// <param name="Template">The template that is about to be processed.</param>
+public record BeforeTemplateProcessedEvent(NinjadogTemplate Template) : DomainEvent;
