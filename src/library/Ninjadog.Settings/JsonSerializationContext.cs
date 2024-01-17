@@ -7,10 +7,13 @@ using System.Text.Json.Serialization;
 
 namespace Ninjadog.Settings;
 
+/// <summary>
+/// A context for serialization and deserialization
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = true,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DictionaryKeyPolicy = JsonKnownNamingPolicy.Unspecified)]
 [JsonSerializable(typeof(NinjadogSettings))]
-internal sealed partial class JsonSerializationContext
+public sealed partial class JsonSerializationContext
     : JsonSerializerContext;

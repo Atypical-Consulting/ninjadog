@@ -29,6 +29,9 @@ public class BeforeEngineRunProcessor(
         fileService.DeleteAppFolder(appName);
         var appDirectory = fileService.CreateAppFolder(appName);
 
+        // create the ninjadog.json file
+        fileService.CreateNinjadogSettingsFile(appDirectory, settings);
+
         // create the .net solution with the app name
         var dotnetVersion = cliDotnetService.Version();
         var createSlnResult = cliDotnetService.CreateSolution(appDirectory);

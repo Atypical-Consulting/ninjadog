@@ -39,4 +39,16 @@ public interface IFileService
     /// <param name="content">The content to write to the file.</param>
     /// <returns>The path to the newly created file.</returns>
     string CreateFile(string path, string content);
+
+    /// <summary>
+    /// Creates a Ninjadog settings file in the specified directory.
+    /// </summary>
+    /// <param name="appName">The name of the application.</param>
+    /// <param name="ninjadogSettings">The Ninjadog settings to write to the file.</param>
+    /// <returns>The path to the newly created file.</returns>
+    /// <remarks>
+    /// The Ninjadog settings file is a JSON file containing the settings used by the Ninjadog Engine
+    /// to generate the application's content.
+    /// </remarks>
+    string CreateNinjadogSettingsFile(string appName, NinjadogSettings ninjadogSettings);
 }

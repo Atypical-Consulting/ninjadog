@@ -3,6 +3,7 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using System.Text.Json;
 using Ninjadog.Settings.Config;
 using Ninjadog.Settings.Entities;
 
@@ -17,4 +18,14 @@ namespace Ninjadog.Settings;
 /// <param name="Entities">The collection of entities that the Ninjadog Engine will use for template generation.</param>
 public abstract record NinjadogSettings(
     NinjadogConfiguration Config,
-    NinjadogEntities Entities);
+    NinjadogEntities Entities)
+{
+    /// <summary>
+    /// Serializes the record to JSON using the JsonSerializationContext.
+    /// </summary>
+    /// <returns>A JSON string representing the NinjadogSettings record.</returns>
+    public string ToJsonString()
+    {
+        return JsonSerializer.Serialize(this, JsonSerializationContext.Default.NinjadogSettings);
+    }
+}

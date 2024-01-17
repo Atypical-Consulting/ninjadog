@@ -16,7 +16,9 @@ public interface INinjadogEngine
     /// </summary>
     ICollection<IDomainEvent> Events { get; }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Gets the context of the Ninjadog Engine.
+    /// </summary>
     NinjadogEngineContext Context { get; }
 
     /// <summary>

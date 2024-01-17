@@ -4,6 +4,7 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using Ninjadog.Engine.Core.Abstractions;
+using Ninjadog.Settings;
 using static System.Environment;
 
 namespace Ninjadog.Engine.Infrastructure.Services;
@@ -55,6 +56,15 @@ public class FileService : IFileService
         var filePath = Path.Combine(_baseFolder, path);
         EnsureDirectoryExists(Path.GetDirectoryName(filePath) ?? string.Empty);
         File.WriteAllText(filePath, content);
+        return filePath;
+    }
+
+    /// <inheritdoc />
+    public string CreateNinjadogSettingsFile(string appName, NinjadogSettings ninjadogSettings)
+    {
+        var filePath = Path.Combine(_baseFolder, appName, "ninjadog.json");
+        var jsonString = ninjadogSettings.ToJsonString();
+        File.WriteAllText(filePath, jsonString);
         return filePath;
     }
 
