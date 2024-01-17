@@ -4,6 +4,7 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using System.Diagnostics;
+using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.OutputProcessors;
 
 namespace Ninjadog.Engine;
@@ -16,9 +17,10 @@ public sealed class NinjadogEngine : INinjadogEngine
 {
     private readonly NinjadogTemplateManifest _templateManifest;
     private readonly NinjadogSettings _ninjadogSettings;
-    private readonly OutputProcessorCollection _outputProcessors;
-    private readonly IDotnetCliService _dotnetCliService;
+    private readonly NinjadogOutputProcessors _outputProcessors;
+    private readonly ICliDotnetService _cliDotnetService;
     private readonly IFileService _fileService;
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
 
     private int _totalFilesGenerated;
     private int _totalCharactersGenerated;
@@ -31,24 +33,28 @@ public sealed class NinjadogEngine : INinjadogEngine
     /// <param name="templateManifest">The template manifest to be used by the engine.</param>
     /// <param name="ninjadogSettings">The ninjadog app settings to configure the engine.</param>
     /// <param name="outputProcessors">The output processors to be used by the engine.</param>
-    /// <param name="dotnetCliService">The dotnet command service to be used by the engine.</param>
+    /// <param name="cliDotnetService">The dotnet command service to be used by the engine.</param>
     /// <param name="fileService">The file service to be used by the engine.</param>
     /// <exception cref="ArgumentNullException">Thrown when any of the parameters is null.</exception>
     public NinjadogEngine(
         NinjadogTemplateManifest templateManifest,
         NinjadogSettings ninjadogSettings,
-        OutputProcessorCollection outputProcessors,
-        IDotnetCliService dotnetCliService,
-        IFileService fileService)
+        NinjadogOutputProcessors outputProcessors,
+        ICliDotnetService cliDotnetService,
+        IFileService fileService,
+        IDomainEventDispatcher domainEventDispatcher)
     {
         _templateManifest = templateManifest ?? throw new ArgumentNullException(nameof(templateManifest));
         _ninjadogSettings = ninjadogSettings ?? throw new ArgumentNullException(nameof(ninjadogSettings));
         _outputProcessors = outputProcessors ?? throw new ArgumentNullException(nameof(outputProcessors));
-        _dotnetCliService = dotnetCliService ?? throw new ArgumentNullException(nameof(dotnetCliService));
+        _cliDotnetService = cliDotnetService ?? throw new ArgumentNullException(nameof(cliDotnetService));
         _fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
+        _domainEventDispatcher = domainEventDispatcher ?? throw new ArgumentNullException(nameof(domainEventDispatcher));
 
         HandleInitialized();
     }
+
+    public ICollection<IDomainEvent> Events { get; }
 
     /// <inheritdoc />
     public event EventHandler<NinjadogEngineRunEventArgs>? OnRunCompleted;
@@ -87,14 +93,14 @@ public sealed class NinjadogEngine : INinjadogEngine
             var appDirectory = _fileService.CreateAppFolder(appName);
 
             // create the .net solution with the app name
-            var dotnetVersion = _dotnetCliService.Version();
-            var createSlnResult = _dotnetCliService.CreateSolution(appDirectory);
-            var buildResult = _dotnetCliService.Build(appDirectory);
+            var dotnetVersion = _cliDotnetService.Version();
+            var createSlnResult = _cliDotnetService.CreateSolution(appDirectory);
+            var buildResult = _cliDotnetService.Build(appDirectory);
 
             // Install NuGet packages
             foreach (var package in _templateManifest.NuGetPackages)
             {
-                _dotnetCliService.AddPackage(appDirectory, package);
+                _cliDotnetService.AddPackage(appDirectory, package);
             }
 
             // create the template folder
@@ -133,7 +139,8 @@ public sealed class NinjadogEngine : INinjadogEngine
 
     private void ProcessTemplate(NinjadogTemplate template)
     {
-        HandleBeforeTemplateProcessed(template);
+        // HandleBeforeTemplateProcessed(template);
+        _domainEventDispatcher.Dispatch(new BeforeTemplateProcessedEvent(template));
 
         try
         {
@@ -153,7 +160,8 @@ public sealed class NinjadogEngine : INinjadogEngine
         }
         finally
         {
-            HandleAfterTemplateProcessed(template);
+            // HandleAfterTemplateProcessed(template);
+            _domainEventDispatcher.Dispatch(new AfterTemplateProcessedEvent(template));
         }
     }
 

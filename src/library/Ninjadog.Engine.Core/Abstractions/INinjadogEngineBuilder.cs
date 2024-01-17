@@ -43,18 +43,10 @@ public interface INinjadogEngineBuilder
     INinjadogEngineBuilder WithOutputProcessors(List<IOutputProcessor> outputProcessors);
 
     /// <summary>
-    /// Specifies the dotnet command service to use with the Ninjadog Engine.
+    /// Specifies the service provider to use with the Ninjadog Engine.
     /// </summary>
-    /// <param name="dotnetCliService">The dotnet command service to be used by the engine.</param>
-    /// <returns>The builder instance for fluent chaining.</returns>
-    INinjadogEngineBuilder WithDotnetCommandService(IDotnetCliService dotnetCliService);
-
-    /// <summary>
-    /// Specifies the file service to use with the Ninjadog Engine.
-    /// </summary>
-    /// <param name="fileService">The file service to be used by the engine.</param>
-    /// <returns>The builder instance for fluent chaining.</returns>
-    INinjadogEngineBuilder WithFileService(IFileService fileService);
+    /// <param name="serviceProvider">The service provider to be used by the engine.</param>
+    INinjadogEngineBuilder WithServiceProvider(IServiceProvider serviceProvider);
 
     /// <summary>
     /// Builds and returns a configured instance of the Ninjadog Engine.

@@ -11,7 +11,7 @@ namespace Ninjadog.Engine.Core.Abstractions;
 /// Defines the interface for a service capable of executing dotnet CLI commands.
 /// This interface abstracts the functionality required to run various dotnet commands programmatically.
 /// </summary>
-public interface IDotnetCliService
+public interface ICliDotnetService
 {
     /// <summary>
     /// Gets the dotnet version.

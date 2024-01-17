@@ -3,6 +3,7 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.Core.EventArgs;
 
 namespace Ninjadog.Engine.Core.Abstractions;
@@ -14,6 +15,8 @@ namespace Ninjadog.Engine.Core.Abstractions;
 public interface INinjadogEngine
     : INinjadogEngineLifecycle, INinjadogEngineTemplateProcessing, INinjadogEngineContentProcessing, INinjadogEngineErrorHandling
 {
+    ICollection<IDomainEvent> Events { get; }
+
     /// <summary>
     /// Occurs when the Ninjadog Engine has completed its run.
     /// </summary>

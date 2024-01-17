@@ -3,6 +3,8 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Microsoft.Extensions.DependencyInjection;
+using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.OutputProcessors;
 
 namespace Ninjadog.Engine;
@@ -15,9 +17,8 @@ public sealed class NinjadogEngineBuilder
 {
     private NinjadogTemplateManifest? _templateManifest;
     private NinjadogSettings? _ninjadogSettings;
-    private readonly OutputProcessorCollection _outputProcessors = [];
-    private IDotnetCliService? _dotnetCommandService;
-    private IFileService? _fileService;
+    private readonly NinjadogOutputProcessors _outputProcessors = [];
+    private IServiceProvider? _serviceProvider;
 
     /// <inheritdoc />
     public INinjadogEngineBuilder WithManifest(NinjadogTemplateManifest templateManifest)
@@ -48,28 +49,24 @@ public sealed class NinjadogEngineBuilder
     }
 
     /// <inheritdoc />
-    public INinjadogEngineBuilder WithDotnetCommandService(IDotnetCliService dotnetCliService)
+    public INinjadogEngineBuilder WithServiceProvider(IServiceProvider serviceProvider)
     {
-        _dotnetCommandService = dotnetCliService;
-        return this;
-    }
-
-    /// <inheritdoc />
-    public INinjadogEngineBuilder WithFileService(IFileService fileService)
-    {
-        _fileService = fileService;
+        _serviceProvider = serviceProvider;
         return this;
     }
 
     /// <inheritdoc />
     public INinjadogEngine Build()
     {
-        return new NinjadogEngine(
-            EnsureTemplateManifestIsSet(),
-            EnsureNinjadogSettingsAreSet(),
-            EnsureOutputProcessorsAreSet(),
-            EnsureDotnetCommandServiceIsSet(),
-            EnsureFileServiceIsSet());
+        return _serviceProvider is null
+            ? throw new InvalidOperationException("No service provider is set.")
+            : new NinjadogEngine(
+                EnsureTemplateManifestIsSet(),
+                EnsureNinjadogSettingsAreSet(),
+                EnsureOutputProcessorsAreSet(),
+                _serviceProvider.GetRequiredService<ICliDotnetService>(),
+                _serviceProvider.GetRequiredService<IFileService>(),
+                _serviceProvider.GetRequiredService<IDomainEventDispatcher>());
     }
 
     private NinjadogTemplateManifest EnsureTemplateManifestIsSet()
@@ -84,21 +81,9 @@ public sealed class NinjadogEngineBuilder
                ?? throw new InvalidOperationException("Ninjadog settings are not set.");
     }
 
-    private OutputProcessorCollection EnsureOutputProcessorsAreSet()
+    private NinjadogOutputProcessors EnsureOutputProcessorsAreSet()
     {
         return _outputProcessors
                ?? throw new InvalidOperationException("No output processors are set.");
-    }
-
-    private IDotnetCliService EnsureDotnetCommandServiceIsSet()
-    {
-        return _dotnetCommandService
-               ?? throw new InvalidOperationException("No dotnet command service is set.");
-    }
-
-    private IFileService EnsureFileServiceIsSet()
-    {
-        return _fileService
-               ?? throw new InvalidOperationException("No file service is set.");
     }
 }

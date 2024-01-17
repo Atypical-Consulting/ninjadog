@@ -11,7 +11,7 @@ namespace Ninjadog.Engine.Services;
 /// ensuring the CLI is available upon initialization.
 /// </summary>
 public sealed class CliDotnetService
-    : CliServiceBase, IDotnetCliService
+    : CliServiceBase, ICliDotnetService
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="CliDotnetService"/>.

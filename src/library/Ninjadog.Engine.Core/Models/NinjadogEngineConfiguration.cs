@@ -3,9 +3,9 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.OutputProcessors;
+using Ninjadog.Settings;
 
-namespace Ninjadog.Engine.Configuration;
+namespace Ninjadog.Engine.Core.Models;
 
 /// <summary>
 /// Represents the configuration for creating a Ninjadog Engine instance,
@@ -18,4 +18,4 @@ namespace Ninjadog.Engine.Configuration;
 public sealed record NinjadogEngineConfiguration(
     NinjadogTemplateManifest TemplateManifest,
     NinjadogSettings NinjadogSettings,
-    OutputProcessorCollection OutputProcessors);
+    NinjadogOutputProcessors OutputProcessors);

@@ -3,17 +3,15 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Services;
+using Ninjadog.Engine.Core.Abstractions;
+using Ninjadog.Engine.Core.Models;
 
 namespace Ninjadog.Engine;
 
 /// <summary>
 /// Provides functionality to create and configure instances of the Ninjadog Engine.
-/// This factory class abstracts the construction process of the Ninjadog Engine,
-/// allowing for flexible and streamlined engine setup based on given configurations.
 /// </summary>
-public class NinjadogEngineFactory(IServiceProvider serviceProvider)
-    : INinjadogEngineFactory
+public interface INinjadogEngineFactory
 {
     /// <summary>
     /// Creates and configures a new instance of the Ninjadog Engine using the specified configuration.
@@ -23,14 +21,5 @@ public class NinjadogEngineFactory(IServiceProvider serviceProvider)
     /// </summary>
     /// <param name="configuration">The configuration settings used to set up the Ninjadog Engine.</param>
     /// <returns>A configured instance of the Ninjadog Engine.</returns>
-    public INinjadogEngine CreateNinjadogEngine(
-        NinjadogEngineConfiguration configuration)
-    {
-        return new NinjadogEngineBuilder()
-            .WithManifest(configuration.TemplateManifest)
-            .WithSettings(configuration.NinjadogSettings)
-            .WithOutputProcessors(configuration.OutputProcessors)
-            .WithServiceProvider(serviceProvider)
-            .Build();
-    }
+    INinjadogEngine CreateNinjadogEngine(NinjadogEngineConfiguration configuration);
 }

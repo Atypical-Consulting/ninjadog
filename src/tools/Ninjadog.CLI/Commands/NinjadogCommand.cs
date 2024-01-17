@@ -5,7 +5,6 @@
 
 using System.ComponentModel;
 using Ninjadog.Engine;
-using Ninjadog.Engine.Configuration;
 using Ninjadog.Engine.Core.EventArgs;
 using Ninjadog.Engine.Core.Models;
 using Ninjadog.Engine.OutputProcessors;
@@ -29,6 +28,7 @@ internal sealed class NinjadogCommandSettings : CommandSettings
 }
 
 internal sealed class NinjadogCommand(
+    INinjadogEngineFactory engineFactory,
     NinjadogTemplateManifest templateManifest,
     NinjadogSettings settings)
     : Command<NinjadogCommandSettings>
@@ -71,9 +71,14 @@ internal sealed class NinjadogCommand(
         WriteLine();
         MarkupLine("[bold]Building the Ninjadog Engine...[/]");
 
-        var outputProcessors = new OutputProcessorCollection(settings.InMemory, settings.Disk);
+        var outputProcessors = new NinjadogOutputProcessors
+        {
+            new InMemoryOutputProcessor(),
+            new DiskOutputProcessor()
+        };
+
         var engineConfiguration = new NinjadogEngineConfiguration(_templateManifest, _settings, outputProcessors);
-        var ninjadogEngine = NinjadogEngineFactory.CreateNinjadogEngine(engineConfiguration);
+        var ninjadogEngine = engineFactory.CreateNinjadogEngine(engineConfiguration);
 
         ninjadogEngine.OnAfterContentProcessed += OnAfterContentProcessed;
         ninjadogEngine.OnRunCompleted += OnRunCompleted;
