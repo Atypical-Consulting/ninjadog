@@ -14,6 +14,9 @@ public sealed class DeleteRequestTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "DeleteRequest";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

@@ -19,7 +19,7 @@ public class CrudTemplateManifest : NinjadogTemplateManifest
     public override string Description { get; init; } = "Your ASP.NET Core Web API project with CRUD operations";
 
     /// <inheritdoc />
-    public override string Version { get; init; } = "1.0.0-alpha.1";
+    public override string Version { get; init; } = "1.0.0-alpha.2";
 
     /// <inheritdoc />
     public override string Author { get; init; } = "Philippe Matray";

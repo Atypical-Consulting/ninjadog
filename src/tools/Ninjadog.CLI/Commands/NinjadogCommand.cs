@@ -4,6 +4,7 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using System.ComponentModel;
+using Ninjadog.CLI.Utilities;
 
 namespace Ninjadog.CLI.Commands;
 

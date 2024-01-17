@@ -14,6 +14,9 @@ public sealed class DeleteSummaryTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "DeleteSummary";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

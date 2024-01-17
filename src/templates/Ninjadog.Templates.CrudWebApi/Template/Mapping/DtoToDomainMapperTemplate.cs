@@ -14,6 +14,9 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 public sealed class DtoToDomainMapperTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
+    public override string Name => "DtoToDomainMapper";
+
     /// <inheritdoc/>
     public override NinjadogContentFile GenerateOne(
         NinjadogSettings ninjadogSettings)

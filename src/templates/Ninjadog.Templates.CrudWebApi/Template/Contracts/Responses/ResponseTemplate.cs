@@ -14,6 +14,9 @@ public sealed class ResponseTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "Response";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

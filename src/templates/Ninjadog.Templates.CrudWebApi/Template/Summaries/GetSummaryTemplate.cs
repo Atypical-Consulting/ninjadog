@@ -14,6 +14,9 @@ public sealed class GetSummaryTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "GetSummary";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

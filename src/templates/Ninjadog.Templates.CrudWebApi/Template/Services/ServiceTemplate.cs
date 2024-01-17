@@ -14,6 +14,9 @@ public sealed class ServiceTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "Service";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

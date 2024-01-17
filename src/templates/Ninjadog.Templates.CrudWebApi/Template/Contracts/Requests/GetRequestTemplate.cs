@@ -14,6 +14,9 @@ public sealed class GetRequestTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "GetRequest";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

@@ -13,6 +13,9 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Services;
 public sealed class ServiceInterfaceTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
+    public override string Name => "ServiceInterface";
+
     /// <inheritdoc/>
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)

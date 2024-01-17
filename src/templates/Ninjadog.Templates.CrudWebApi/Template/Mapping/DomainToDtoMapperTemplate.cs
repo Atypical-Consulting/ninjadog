@@ -15,6 +15,9 @@ public sealed class DomainToDtoMapperTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "DomainToDtoMapper";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOne(
         NinjadogSettings ninjadogSettings)
     {

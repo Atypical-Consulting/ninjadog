@@ -15,6 +15,9 @@ public sealed class RepositoryTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "Repository";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

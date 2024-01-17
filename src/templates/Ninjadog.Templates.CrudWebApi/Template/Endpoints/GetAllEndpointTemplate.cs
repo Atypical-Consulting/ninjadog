@@ -14,6 +14,9 @@ public sealed class GetAllEndpointTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "GetAllEndpoint";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

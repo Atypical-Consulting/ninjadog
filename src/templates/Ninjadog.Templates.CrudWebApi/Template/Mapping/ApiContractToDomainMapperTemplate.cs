@@ -15,6 +15,9 @@ public sealed class ApiContractToDomainMapperTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "ApiContractToDomainMapper";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOne(
         NinjadogSettings ninjadogSettings)
     {

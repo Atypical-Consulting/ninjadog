@@ -14,6 +14,9 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Validation;
 public sealed class CreateRequestValidatorTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
+    public override string Name => "CreateRequestValidator";
+
     /// <inheritdoc/>
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)

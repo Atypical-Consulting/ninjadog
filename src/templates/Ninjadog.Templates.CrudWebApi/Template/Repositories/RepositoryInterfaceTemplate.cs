@@ -13,6 +13,9 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 public sealed class RepositoryInterfaceTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
+    public override string Name => "RepositoryInterface";
+
     /// <inheritdoc/>
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)

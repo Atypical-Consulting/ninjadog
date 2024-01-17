@@ -5,7 +5,7 @@
 
 using static Ninjadog.CLI.Utilities.SpectreWriteHelpers;
 
-namespace Ninjadog.CLI.Commands;
+namespace Ninjadog.CLI.Utilities;
 
 internal static class DomainEventDispatcherSpectreExtensions
 {
@@ -62,12 +62,16 @@ internal static class DomainEventDispatcherSpectreExtensions
     {
         dispatcher.RegisterHandler((AfterEngineRunEvent e) =>
         {
+            var elapsed = e.ContextSnapshot.TotalTimeElapsed;
+            var totalFilesGenerated = e.ContextSnapshot.TotalFilesGenerated;
+            var totalCharactersGenerated = e.ContextSnapshot.TotalCharactersGenerated;
+
             WriteLine();
             MarkupLine("[bold]Ninjadog Engine run summary:[/]");
-            MarkupLine($"- Run completed in [green]{e.Elapsed:g}[/] seconds");
-            MarkupLine($"- Total files generated: [green]{e.TotalFilesGenerated:N0}[/] files");
-            MarkupLine($"- Total characters generated in files: [green]{e.TotalCharactersGenerated:N0}[/] characters");
-            MarkupLine($"  - It represents ~[green]{e.TotalCharactersGenerated / 5}[/] words or ~[green]{e.TotalCharactersGenerated / 150}[/] minutes saved");
+            MarkupLine($"- Run completed in [green]{elapsed:g}[/] seconds");
+            MarkupLine($"- Total files generated: [green]{totalFilesGenerated:N0}[/] files");
+            MarkupLine($"- Total characters generated in files: [green]{totalCharactersGenerated:N0}[/] characters");
+            MarkupLine($"  - It represents ~[green]{totalCharactersGenerated / 5}[/] words or ~[green]{totalCharactersGenerated / 150}[/] minutes saved");
 
             WriteLine();
             MarkupLine("[bold]Ninjadog Engine shutting down.[/]");
@@ -80,18 +84,16 @@ internal static class DomainEventDispatcherSpectreExtensions
     {
         dispatcher.RegisterHandler((BeforeTemplateParsedEvent e) =>
         {
-            MarkupLine($"- Processing template [green]{nameof(e)}[/]...");
+            var templateName = e.Template.Name;
+            WriteLine();
+            MarkupLine($"- Processing template [yellow]{templateName}[/]...");
             return Task.CompletedTask;
         });
     }
 
     private static void RegisterOnAfterTemplateGenerated(this IDomainEventDispatcher dispatcher)
     {
-        dispatcher.RegisterHandler((AfterTemplateParsedEvent e) =>
-        {
-            MarkupLine($"- Template [green]{nameof(e)}[/] generated.");
-            return Task.CompletedTask;
-        });
+        dispatcher.RegisterHandler((AfterTemplateParsedEvent e) => Task.CompletedTask);
     }
 
     private static void RegisterOnAfterContentGenerated(this IDomainEventDispatcher dispatcher)

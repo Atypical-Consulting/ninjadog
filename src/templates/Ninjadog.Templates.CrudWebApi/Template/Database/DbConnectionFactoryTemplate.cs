@@ -14,6 +14,9 @@ public sealed class DbConnectionFactoryTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "DbConnectionFactory";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOne(
         NinjadogSettings ninjadogSettings)
     {

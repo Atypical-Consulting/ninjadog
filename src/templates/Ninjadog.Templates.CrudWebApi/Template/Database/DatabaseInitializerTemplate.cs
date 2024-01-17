@@ -15,6 +15,9 @@ public sealed class DatabaseInitializerTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "DatabaseInitializer";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOne(
         NinjadogSettings ninjadogSettings)
     {

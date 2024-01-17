@@ -14,6 +14,9 @@ public sealed class DeleteEndpointTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "DeleteEndpoint";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

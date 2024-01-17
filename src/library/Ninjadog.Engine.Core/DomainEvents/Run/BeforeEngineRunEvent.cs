@@ -8,9 +8,8 @@ namespace Ninjadog.Engine.Core.DomainEvents.Run;
 /// <summary>
 /// Represents an event that is triggered before the engine starts processing.
 /// </summary>
-/// <param name="Settings">The settings that will be used for processing.</param>
-/// <param name="TemplateManifest">The template manifest that will be used for processing.</param>
 public record BeforeEngineRunEvent(
     NinjadogSettings Settings,
-    NinjadogTemplateManifest TemplateManifest)
-    : DomainEvent;
+    NinjadogTemplateManifest TemplateManifest,
+    NinjadogEngineContextSnapshot ContextSnapshot)
+    : NinjadogEngineEvent(Settings, TemplateManifest, ContextSnapshot);

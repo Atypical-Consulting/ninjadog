@@ -3,8 +3,6 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using System.Diagnostics;
-
 namespace Ninjadog.Engine;
 
 /// <summary>
@@ -26,9 +24,8 @@ public sealed class NinjadogEngine(
     IDomainEventDispatcher domainEventDispatcher)
     : INinjadogEngine
 {
-    private int _totalFilesGenerated;
-    private int _totalCharactersGenerated;
-    private Stopwatch? _stopwatch;
+    /// <inheritdoc />
+    public NinjadogEngineContext Context { get; } = new();
 
     /// <inheritdoc />
     public ICollection<IDomainEvent> Events { get; } = new List<IDomainEvent>();
@@ -38,7 +35,6 @@ public sealed class NinjadogEngine(
     {
         try
         {
-            Reset();
             DispatchBeforeEngineRun();
 
             foreach (var template in templateManifest.Templates)
@@ -56,18 +52,11 @@ public sealed class NinjadogEngine(
         }
     }
 
-    private void Reset()
-    {
-        _totalFilesGenerated = 0;
-        _totalCharactersGenerated = 0;
-        _stopwatch = Stopwatch.StartNew();
-    }
-
     private void ProcessTemplate(NinjadogTemplate template)
     {
         try
         {
-            DispatchBeforeEngineTemplateGenerated(template);
+            DispatchBeforeEngineTemplateParsed(template);
 
             // First, add a single file based on the template and the settings...
             var singleFileContent = template.GenerateOne(ninjadogSettings);
@@ -85,7 +74,7 @@ public sealed class NinjadogEngine(
         }
         finally
         {
-            DispatchAfterTemplateGenerated(template);
+            DispatchAfterTemplateParsed(template);
         }
     }
 
@@ -107,56 +96,60 @@ public sealed class NinjadogEngine(
     }
 
     //********************
-    // Dispatcher methods
+    // Lifecycle methods
     //********************
 
     private void DispatchBeforeEngineRun()
     {
-        var domainEvent = new BeforeEngineRunEvent(ninjadogSettings, templateManifest);
+        Context.Reset();
+        Context.StartCollectMetrics();
+        var snapshot = Context.GetSnapshot();
+        BeforeEngineRunEvent domainEvent = new(ninjadogSettings, templateManifest, snapshot);
         domainEventDispatcher.Dispatch(domainEvent);
     }
 
     private void DispatchAfterEngineRun()
     {
-        _stopwatch?.Stop();
-
-        AfterEngineRunEvent domainEvent = new(
-            ninjadogSettings,
-            _stopwatch?.Elapsed ?? TimeSpan.Zero,
-            _totalFilesGenerated,
-            _totalCharactersGenerated);
-
+        Context.StopCollectMetrics();
+        var snapshot = Context.GetSnapshot();
+        AfterEngineRunEvent domainEvent = new(ninjadogSettings, templateManifest, snapshot);
         domainEventDispatcher.Dispatch(domainEvent);
     }
 
-    private void DispatchBeforeEngineTemplateGenerated(NinjadogTemplate template)
+    private void DispatchBeforeEngineTemplateParsed(NinjadogTemplate template)
     {
-        var domainEvent = new BeforeTemplateParsedEvent(template);
+        var snapshot = Context.GetSnapshot();
+        BeforeTemplateParsedEvent domainEvent = new(ninjadogSettings, templateManifest, snapshot, template);
         domainEventDispatcher.Dispatch(domainEvent);
     }
 
-    private void DispatchAfterTemplateGenerated(NinjadogTemplate template)
+    private void DispatchAfterTemplateParsed(NinjadogTemplate template)
     {
-        var domainEvent = new AfterTemplateParsedEvent(template);
+        var snapshot = Context.GetSnapshot();
+        AfterTemplateParsedEvent domainEvent = new(ninjadogSettings, templateManifest, snapshot, template);
         domainEventDispatcher.Dispatch(domainEvent);
     }
 
     private void DispatchBeforeContentGenerated(NinjadogContentFile contentFile)
     {
-        var domainEvent = new BeforeContentGeneratedEvent(contentFile);
+        var snapshot = Context.GetSnapshot();
+        BeforeContentGeneratedEvent domainEvent = new(ninjadogSettings, templateManifest, snapshot, contentFile);
         domainEventDispatcher.Dispatch(domainEvent);
     }
 
     private void DispatchAfterContentGenerated(NinjadogContentFile contentFile)
     {
-        _totalFilesGenerated++;
-        _totalCharactersGenerated += contentFile.Length;
-        var domainEvent = new AfterContentGeneratedEvent(contentFile);
+        Context.FileGenerated(contentFile);
+        var snapshot = Context.GetSnapshot();
+        AfterContentGeneratedEvent domainEvent = new(ninjadogSettings, templateManifest, snapshot, contentFile);
         domainEventDispatcher.Dispatch(domainEvent);
     }
 
-    private void DispatchError(Exception ex)
+    private void DispatchError(Exception exception)
     {
-        domainEventDispatcher.Dispatch(new ErrorOccurredEvent(ex));
+        Context.ErrorOccurred(exception);
+        var snapshot = Context.GetSnapshot();
+        ErrorOccurredEvent domainEvent = new(ninjadogSettings, templateManifest, snapshot, exception);
+        domainEventDispatcher.Dispatch(domainEvent);
     }
 }

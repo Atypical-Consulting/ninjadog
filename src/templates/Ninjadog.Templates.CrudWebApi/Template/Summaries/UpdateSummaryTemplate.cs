@@ -13,6 +13,9 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Summaries;
 public sealed class UpdateSummaryTemplate
     : NinjadogTemplate
 {
+    /// <inheritdoc />
+    public override string Name => "UpdateSummary";
+
     /// <inheritdoc/>
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)

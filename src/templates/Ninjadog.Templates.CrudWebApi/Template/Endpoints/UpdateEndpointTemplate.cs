@@ -14,6 +14,9 @@ public sealed class UpdateEndpointTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "UpdateEndpoint";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

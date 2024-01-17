@@ -16,6 +16,9 @@ public interface INinjadogEngine
     /// </summary>
     ICollection<IDomainEvent> Events { get; }
 
+    /// <inheritdoc />
+    NinjadogEngineContext Context { get; }
+
     /// <summary>
     /// Runs the Ninjadog Engine to process and generate templates.
     /// This method triggers the execution of the template generation logic encapsulated by the engine.

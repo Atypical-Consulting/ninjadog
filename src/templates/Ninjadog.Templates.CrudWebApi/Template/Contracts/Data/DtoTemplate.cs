@@ -14,6 +14,9 @@ public sealed class DtoTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc />
+    public override string Name => "DataTransferObject";
+
+    /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {

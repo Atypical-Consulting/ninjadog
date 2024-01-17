@@ -8,12 +8,11 @@ namespace Ninjadog.Engine.Core.DomainEvents.Run;
 /// <summary>
 /// Represents an event that is triggered after the engine has finished processing.
 /// </summary>
-/// <param name="Settings">The settings that were used for processing.</param>
-/// <param name="Elapsed">The elapsed time for processing.</param>
-/// <param name="TotalFilesGenerated">The total number of files generated.</param>
-/// <param name="TotalCharactersGenerated">The total number of characters generated.</param>
+/// <param name="Settings">The settings that will be used for processing.</param>
+/// <param name="TemplateManifest">The template manifest that will be used for processing.</param>
+/// <param name="ContextSnapshot">The context snapshot that will be used for processing.</param>
 public record AfterEngineRunEvent(
     NinjadogSettings Settings,
-    TimeSpan Elapsed,
-    int TotalFilesGenerated,
-    int TotalCharactersGenerated) : DomainEvent;
+    NinjadogTemplateManifest TemplateManifest,
+    NinjadogEngineContextSnapshot ContextSnapshot)
+    : NinjadogEngineEvent(Settings, TemplateManifest, ContextSnapshot);

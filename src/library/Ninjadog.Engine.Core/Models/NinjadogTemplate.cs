@@ -14,9 +14,14 @@ namespace Ninjadog.Engine.Core.Models;
 public abstract class NinjadogTemplate
 {
     /// <summary>
+    /// Gets the name of the template.
+    /// </summary>
+    public abstract string Name { get; }
+
+    /// <summary>
     /// Gets or sets the category of the template.
     /// </summary>
-    public string? Category { get; set; }
+    public virtual string? Category { get; set; }
 
     /// <summary>
     /// Generates code in a single file based on the provided settings.
