@@ -8,6 +8,10 @@ using Ninjadog.Engine.OutputProcessors;
 
 namespace Ninjadog.Engine;
 
+/// <summary>
+/// Represents the Ninjadog Engine, which handles the execution of template generation processes.
+/// This class encapsulates the core functionality of running the templating engine to produce output based on specified templates.
+/// </summary>
 public sealed class NinjadogEngine : INinjadogEngine
 {
     // Fields
@@ -21,6 +25,15 @@ public sealed class NinjadogEngine : INinjadogEngine
     private int _totalCharactersGenerated;
     private readonly List<Exception> _exceptions = [];
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NinjadogEngine"/> class.
+    /// </summary>
+    /// <param name="templateManifest">The template manifest to be used by the engine.</param>
+    /// <param name="ninjadogSettings">The ninjadog app settings to configure the engine.</param>
+    /// <param name="outputProcessors">The output processors to be used by the engine.</param>
+    /// <param name="dotnetCliService">The dotnet command service to be used by the engine.</param>
+    /// <param name="fileService">The file service to be used by the engine.</param>
+    /// <exception cref="ArgumentNullException">Thrown when any of the parameters is null.</exception>
     public NinjadogEngine(
         NinjadogTemplateManifest templateManifest,
         NinjadogSettings ninjadogSettings,
@@ -38,15 +51,32 @@ public sealed class NinjadogEngine : INinjadogEngine
     }
 
     // Events
+
+    /// <inheritdoc />
     public event EventHandler<NinjadogEngineRunEventArgs>? OnRunCompleted;
+
+    /// <inheritdoc />
     public event EventHandler<NinjadogTemplateEventArgs>? OnBeforeTemplateProcessed;
+
+    /// <inheritdoc />
     public event EventHandler<NinjadogTemplateEventArgs>? OnAfterTemplateProcessed;
+
+    /// <inheritdoc />
     public event EventHandler<NinjadogErrorEventArgs>? OnErrorOccurred;
+
+    /// <inheritdoc />
     public event EventHandler<NinjadogContentEventArgs>? OnBeforeContentProcessed;
+
+    /// <inheritdoc />
     public event EventHandler<NinjadogContentEventArgs>? OnAfterContentProcessed;
+
+    /// <inheritdoc />
     public event EventHandler? OnInitialized;
+
+    /// <inheritdoc />
     public event EventHandler? OnShutdown;
 
+    /// <inheritdoc />
     public void Run()
     {
         Reset();

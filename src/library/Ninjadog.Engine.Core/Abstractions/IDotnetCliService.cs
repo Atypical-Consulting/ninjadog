@@ -44,10 +44,10 @@ public interface IDotnetCliService
     /// <summary>
     /// Creates a new project.
     /// </summary>
-    /// <param name="template">The template of the project to create (e.g., 'console', 'webapi').</param>
+    /// <param name="templateKey">The template of the project to create (e.g., 'console', 'webapi').</param>
     /// <param name="outputPath">The output directory for the created project.</param>
     /// <returns>The result of the command execution.</returns>
-    CliCommandResult CreateProject(string template, string outputPath);
+    CliCommandResult CreateProject(string templateKey, string outputPath);
 
     /// <summary>
     /// Publishes a project with Ahead-of-Time (AOT) compilation.

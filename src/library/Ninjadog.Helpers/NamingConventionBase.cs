@@ -14,42 +14,42 @@ public abstract record NamingConventionBase(string Pascal)
     /// <summary>
     /// Gets the camel case version of the Pascal case string.
     /// </summary>
-    public virtual string Camel
+    protected virtual string Camel
         => Pascal.Camelize();
 
     /// <summary>
     /// Gets the dashed (kebab case) version of the Pascal case string.
     /// </summary>
-    public virtual string Dashed
+    protected virtual string Dashed
         => Pascal.Underscore().Dasherize();
 
     /// <summary>
     /// Gets the humanized (lowercase with spaces) version of the Pascal case string.
     /// </summary>
-    public virtual string Humanized
+    protected virtual string Humanized
         => Pascal.Underscore().Humanize().ToLowerInvariant();
 
     /// <summary>
     /// Gets the pluralized camel case version of the Pascal case string.
     /// </summary>
-    public virtual string CamelPlural
+    protected virtual string CamelPlural
         => Camel.Pluralize();
 
     /// <summary>
     /// Gets the pluralized Pascal case version of the original string.
     /// </summary>
-    public virtual string PascalPlural
+    protected virtual string PascalPlural
         => Pascal.Pluralize();
 
     /// <summary>
     /// Gets the pluralized dashed (kebab case) version of the Pascal case string.
     /// </summary>
-    public virtual string DashedPlural
+    protected virtual string DashedPlural
         => PascalPlural.Underscore().Dasherize();
 
     /// <summary>
     /// Gets the pluralized humanized (lowercase with spaces) version of the Pascal case string.
     /// </summary>
-    public virtual string HumanizedPlural
+    protected virtual string HumanizedPlural
         => PascalPlural.Underscore().Humanize().ToLowerInvariant();
 }

@@ -7,6 +7,9 @@ using Ninjadog.Engine.OutputProcessors;
 
 namespace Ninjadog.Engine;
 
+/// <summary>
+/// Represents a builder responsible for constructing and configuring instances of the Ninjadog Engine.
+/// </summary>
 public sealed class NinjadogEngineBuilder
     : INinjadogEngineBuilder
 {

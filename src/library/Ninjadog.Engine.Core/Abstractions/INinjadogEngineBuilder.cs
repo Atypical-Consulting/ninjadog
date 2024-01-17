@@ -50,11 +50,15 @@ public interface INinjadogEngineBuilder
     INinjadogEngineBuilder WithDotnetCommandService(IDotnetCliService dotnetCliService);
 
     /// <summary>
+    /// Specifies the file service to use with the Ninjadog Engine.
+    /// </summary>
+    /// <param name="fileService">The file service to be used by the engine.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
+    INinjadogEngineBuilder WithFileService(IFileService fileService);
+
+    /// <summary>
     /// Builds and returns a configured instance of the Ninjadog Engine.
     /// </summary>
     /// <returns>A fully configured instance of the Ninjadog Engine.</returns>
     INinjadogEngine Build();
-
-    /// <inheritdoc />
-    INinjadogEngineBuilder WithFileService(IFileService fileService);
 }

@@ -15,7 +15,7 @@ public sealed class UpdateRequestValidatorTemplate
     : NinjadogTemplate
 {
     /// <inheritdoc/>
-    public override NinjadogContentFile? GenerateOneByEntity(
+    public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;

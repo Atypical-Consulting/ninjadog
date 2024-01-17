@@ -21,7 +21,7 @@ public static class NinjadogEngineExtensions
         this EventHandler<TEventArgs>? eventHandler,
         INinjadogEngine? sender,
         TEventArgs args)
-        where TEventArgs : System.EventArgs
+        where TEventArgs : EventArgs
     {
         SafeInvokeEvent(() => eventHandler?.Invoke(sender, args));
     }
@@ -35,7 +35,7 @@ public static class NinjadogEngineExtensions
         this EventHandler? eventHandler,
         INinjadogEngine? sender)
     {
-        SafeInvokeEvent(() => eventHandler?.Invoke(sender, System.EventArgs.Empty));
+        SafeInvokeEvent(() => eventHandler?.Invoke(sender, EventArgs.Empty));
     }
 
     private static void SafeInvokeEvent(Action? eventAction)

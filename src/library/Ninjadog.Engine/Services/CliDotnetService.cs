@@ -51,9 +51,9 @@ public sealed class CliDotnetService
     }
 
     /// <inheritdoc />
-    public CliCommandResult CreateProject(string template, string outputPath)
+    public CliCommandResult CreateProject(string templateKey, string outputPath)
     {
-        return ExecuteCommand($"dotnet new {template} --output {outputPath}");
+        return ExecuteCommand($"dotnet new {templateKey} --output {outputPath}");
     }
 
     /// <inheritdoc />
