@@ -3,7 +3,10 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-namespace Ninjadog.Engine.Services;
+using Ninjadog.Engine.Core.Abstractions;
+using Ninjadog.Engine.Core.Models;
+
+namespace Ninjadog.Engine.Infrastructure.Services;
 
 /// <summary>
 /// A service for executing .NET CLI commands.

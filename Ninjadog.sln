@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Settings.Extension
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Engine.Core", "src\library\Ninjadog.Engine.Core\Ninjadog.Engine.Core.csproj", "{74998673-75BA-4F89-8453-FBF71D589DAB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Engine.Infrastructure", "src\library\Ninjadog.Engine.Infrastructure\Ninjadog.Engine.Infrastructure.csproj", "{860DD52A-1133-4F15-9D23-DD336657C7A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{74998673-75BA-4F89-8453-FBF71D589DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74998673-75BA-4F89-8453-FBF71D589DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74998673-75BA-4F89-8453-FBF71D589DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{860DD52A-1133-4F15-9D23-DD336657C7A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{860DD52A-1133-4F15-9D23-DD336657C7A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{860DD52A-1133-4F15-9D23-DD336657C7A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{860DD52A-1133-4F15-9D23-DD336657C7A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8A41D0FD-254D-4684-BC68-E33591C835FA} = {E4D768EA-BAB7-4CF8-9189-4BC93AD46D14}
@@ -115,5 +121,6 @@ Global
 		{364DE927-78B5-42EA-92AB-6BA6C8AE58E3} = {C6D2A66E-1AB0-48DC-AA26-47579E2069CE}
 		{E3DC25F7-B594-4909-8EEB-1108F1438885} = {C6D2A66E-1AB0-48DC-AA26-47579E2069CE}
 		{74998673-75BA-4F89-8453-FBF71D589DAB} = {43446F05-6DEE-4EA7-AF81-A865BF739C08}
+		{860DD52A-1133-4F15-9D23-DD336657C7A9} = {43446F05-6DEE-4EA7-AF81-A865BF739C08}
 	EndGlobalSection
 EndGlobal

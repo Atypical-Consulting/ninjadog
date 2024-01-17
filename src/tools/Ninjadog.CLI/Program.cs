@@ -8,19 +8,14 @@ using Ninjadog.CLI.Commands;
 using Ninjadog.CLI.Utilities;
 using Ninjadog.Engine;
 using Ninjadog.Engine.Core.DomainEvents;
-using Ninjadog.Engine.Core.OutputProcessors;
-using Ninjadog.Engine.OutputProcessors;
-using Ninjadog.Engine.Services;
+using Ninjadog.Engine.Infrastructure;
 using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 SpectreWriteHelpers.WriteNinjadog();
 
 var registrations = new ServiceCollection();
-registrations.AddSingleton<IFileService, FileService>();
-registrations.AddSingleton<ICliDotnetService, CliDotnetService>();
-registrations.AddSingleton<IDiskOutputProcessor, DiskOutputProcessor>();
-registrations.AddSingleton<IInMemoryOutputProcessor, InMemoryOutputProcessor>();
+registrations.AddInfrastructure();
 registrations.AddSingleton<INinjadogEngineFactory, NinjadogEngineFactory>();
 registrations.AddSingleton<NinjadogTemplateManifest, CrudTemplateManifest>();
 registrations.AddSingleton<NinjadogSettings, TodoAppSettings>();
