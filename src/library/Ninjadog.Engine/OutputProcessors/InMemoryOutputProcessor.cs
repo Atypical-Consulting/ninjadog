@@ -3,6 +3,8 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Ninjadog.Engine.Core.OutputProcessors;
+
 namespace Ninjadog.Engine.OutputProcessors;
 
 /// <summary>
@@ -10,7 +12,7 @@ namespace Ninjadog.Engine.OutputProcessors;
 /// This class implements the IOutputProcessor interface and provides a mechanism for storing
 /// output content within an internal memory structure.
 /// </summary>
-public class InMemoryOutputProcessor : IOutputProcessor
+public class InMemoryOutputProcessor : IInMemoryOutputProcessor
 {
     /// <summary>
     /// Gets the memory storage that holds the generated content.
@@ -20,8 +22,13 @@ public class InMemoryOutputProcessor : IOutputProcessor
     /// <summary>
     /// Processes the given content by storing it in memory.
     /// </summary>
+    /// <param name="templateManifest">The template manifest to be used by the engine.</param>
+    /// <param name="ninjadogSettings">The ninjadog app settings to configure the engine.</param>
     /// <param name="contentFile">The content file to be generated and stored.</param>
-    public void ProcessOutput(NinjadogContentFile contentFile)
+    public void ProcessOutput(
+        NinjadogTemplateManifest templateManifest,
+        NinjadogSettings ninjadogSettings,
+        NinjadogContentFile contentFile)
     {
         // raise an exception if the output path is already present in the memory storage
         if (MemoryStorage.ContainsKey(contentFile.OutputPath))

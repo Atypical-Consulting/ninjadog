@@ -15,7 +15,7 @@ public sealed class NinjadogEngineBuilder
 {
     private NinjadogTemplateManifest? _templateManifest;
     private NinjadogSettings? _ninjadogSettings;
-    private readonly NinjadogOutputProcessors _outputProcessors = [];
+    private NinjadogOutputProcessors? _outputProcessors;
     private IServiceProvider? _serviceProvider;
 
     /// <inheritdoc />
@@ -33,16 +33,9 @@ public sealed class NinjadogEngineBuilder
     }
 
     /// <inheritdoc />
-    public INinjadogEngineBuilder WithOutputProcessor(IOutputProcessor outputProcessor)
+    public INinjadogEngineBuilder WithOutputProcessors(NinjadogOutputProcessors outputProcessors)
     {
-        _outputProcessors.Add(outputProcessor);
-        return this;
-    }
-
-    /// <inheritdoc />
-    public INinjadogEngineBuilder WithOutputProcessors(List<IOutputProcessor> outputProcessors)
-    {
-        _outputProcessors.AddRange(outputProcessors);
+        _outputProcessors = outputProcessors;
         return this;
     }
 
@@ -62,7 +55,6 @@ public sealed class NinjadogEngineBuilder
                 EnsureTemplateManifestIsSet(),
                 EnsureNinjadogSettingsAreSet(),
                 EnsureOutputProcessorsAreSet(),
-                _serviceProvider.GetRequiredService<IFileService>(),
                 _serviceProvider.GetRequiredService<IDomainEventDispatcher>());
     }
 

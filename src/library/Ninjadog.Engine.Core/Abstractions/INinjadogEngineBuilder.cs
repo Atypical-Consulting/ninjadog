@@ -26,18 +26,11 @@ public interface INinjadogEngineBuilder
     INinjadogEngineBuilder WithSettings(NinjadogSettings ninjadogSettings);
 
     /// <summary>
-    /// Specifies the output processor to use with the Ninjadog Engine.
-    /// </summary>
-    /// <param name="outputProcessor">The output processor to be used by the engine.</param>
-    /// <returns>The builder instance for fluent chaining.</returns>
-    INinjadogEngineBuilder WithOutputProcessor(IOutputProcessor outputProcessor);
-
-    /// <summary>
     /// Specifies the output processors to use with the Ninjadog Engine.
     /// </summary>
     /// <param name="outputProcessors">The output processors to be used by the engine.</param>
     /// <returns>The builder instance for fluent chaining.</returns>
-    INinjadogEngineBuilder WithOutputProcessors(List<IOutputProcessor> outputProcessors);
+    INinjadogEngineBuilder WithOutputProcessors(NinjadogOutputProcessors outputProcessors);
 
     /// <summary>
     /// Specifies the service provider to use with the Ninjadog Engine.

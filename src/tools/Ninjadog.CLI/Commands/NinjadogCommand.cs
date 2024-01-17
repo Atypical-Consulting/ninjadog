@@ -4,9 +4,6 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 using System.ComponentModel;
-using Ninjadog.Engine.Core.Models;
-using Ninjadog.Engine.OutputProcessors;
-using Ninjadog.Settings;
 
 namespace Ninjadog.CLI.Commands;
 
@@ -22,6 +19,7 @@ internal sealed class NinjadogCommandSettings : CommandSettings
 }
 
 internal sealed class NinjadogCommand(
+    IServiceProvider serviceProvider,
     INinjadogEngineFactory engineFactory,
     IDomainEventDispatcher domainEventDispatcher,
     NinjadogTemplateManifest templateManifest,
@@ -38,28 +36,24 @@ internal sealed class NinjadogCommand(
 
     public override int Execute(CommandContext context, NinjadogCommandSettings settings)
     {
-        domainEventDispatcher.RegisterAllHandlers();
-
-        var outputProcessors = new NinjadogOutputProcessors
-        {
-            new InMemoryOutputProcessor(),
-            new DiskOutputProcessor()
-        };
-
-        var engineConfiguration = new NinjadogEngineConfiguration(_templateManifest, _settings, outputProcessors);
-        var ninjadogEngine = engineFactory.CreateNinjadogEngine(engineConfiguration);
-
         try
         {
+            domainEventDispatcher.RegisterAllHandlers();
+
+            var outputProcessors = new NinjadogOutputProcessors(serviceProvider);
+            var engineConfiguration = new NinjadogEngineConfiguration(_templateManifest, _settings, outputProcessors);
+            var ninjadogEngine = engineFactory.CreateNinjadogEngine(engineConfiguration);
+
             ninjadogEngine.Run();
+
+            return 0;
         }
         catch (Exception e)
         {
             WriteLine();
             WriteException(e);
+
             return 1;
         }
-
-        return 0;
     }
 }

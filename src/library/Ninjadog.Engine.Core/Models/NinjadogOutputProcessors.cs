@@ -3,6 +3,9 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Microsoft.Extensions.DependencyInjection;
+using Ninjadog.Engine.Core.OutputProcessors;
+
 namespace Ninjadog.Engine.Core.Models;
 
 /// <summary>
@@ -11,25 +14,27 @@ namespace Ninjadog.Engine.Core.Models;
 /// </summary>
 public class NinjadogOutputProcessors : List<IOutputProcessor>
 {
-    // /// <summary>
-    // /// Initializes a new instance of the OutputProcessorCollection with optional in-memory and disk output processors.
-    // /// </summary>
-    // /// <param name="inMemory">Indicates whether to include an in-memory output processor.</param>
-    // /// <param name="disk">Indicates whether to include a disk output processor.</param>
-    // public OutputProcessorCollection(
-    //     bool inMemory = true,
-    //     bool disk = true)
-    // {
-    //     if (inMemory)
-    //     {
-    //         // TODO: refactor this to remove the dependency
-    //         Add(new InMemoryOutputProcessor());
-    //     }
-    //
-    //     if (disk)
-    //     {
-    //         // TODO: refactor this to remove the dependency
-    //         Add(new DiskOutputProcessor());
-    //     }
-    // }
+    /// <summary>
+    /// Initializes a new instance of the OutputProcessorCollection with optional in-memory and disk output processors.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider to use for dependency injection.</param>
+    /// <param name="inMemory">Indicates whether to include an in-memory output processor.</param>
+    /// <param name="disk">Indicates whether to include a disk output processor.</param>
+    public NinjadogOutputProcessors(
+        IServiceProvider serviceProvider,
+        bool inMemory = true,
+        bool disk = true)
+    {
+        if (inMemory)
+        {
+            var outputProcessor = serviceProvider.GetRequiredService<IInMemoryOutputProcessor>();
+            Add(outputProcessor);
+        }
+
+        if (disk)
+        {
+            var outputProcessor = serviceProvider.GetRequiredService<IDiskOutputProcessor>();
+            Add(outputProcessor);
+        }
+    }
 }

@@ -17,14 +17,12 @@ namespace Ninjadog.Engine;
 /// <param name="templateManifest">The template manifest to be used by the engine.</param>
 /// <param name="ninjadogSettings">The ninjadog app settings to configure the engine.</param>
 /// <param name="outputProcessors">The output processors to be used by the engine.</param>
-/// <param name="fileService">The file service to be used by the engine.</param>
 /// <param name="domainEventDispatcher">The domain event dispatcher to be used by the engine.</param>
 /// <exception cref="ArgumentNullException">Thrown when any of the parameters is null.</exception>
 public sealed class NinjadogEngine(
     NinjadogTemplateManifest templateManifest,
     NinjadogSettings ninjadogSettings,
     NinjadogOutputProcessors outputProcessors,
-    IFileService fileService,
     IDomainEventDispatcher domainEventDispatcher)
     : INinjadogEngine
 {
@@ -102,7 +100,7 @@ public sealed class NinjadogEngine(
 
         foreach (var processor in outputProcessors)
         {
-            processor.ProcessOutput(contentFile);
+            processor.ProcessOutput(templateManifest, ninjadogSettings, contentFile);
         }
 
         DispatchAfterContentGenerated(contentFile);
@@ -153,13 +151,6 @@ public sealed class NinjadogEngine(
     {
         _totalFilesGenerated++;
         _totalCharactersGenerated += contentFile.Length;
-
-        // TODO: use the file service in the appropriate output processor
-        var appName = ninjadogSettings.Config.Name;
-        var templateName = templateManifest.Name;
-        var path = Path.Combine(appName, templateName, contentFile.OutputPath);
-        fileService.CreateFile(path, contentFile.Content);
-
         var domainEvent = new AfterContentGeneratedEvent(contentFile);
         domainEventDispatcher.Dispatch(domainEvent);
     }

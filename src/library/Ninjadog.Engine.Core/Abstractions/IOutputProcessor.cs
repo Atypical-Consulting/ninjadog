@@ -16,6 +16,11 @@ public interface IOutputProcessor
     /// Processes the given output content.
     /// Implementations of this method should handle the content according to their specific processing logic.
     /// </summary>
-    /// <param name="contentFile">The content file to process.</param>
-    void ProcessOutput(NinjadogContentFile contentFile);
+    /// <param name="templateManifest">The template manifest to be used by the engine.</param>
+    /// <param name="ninjadogSettings">The ninjadog app settings to configure the engine.</param>
+    /// <param name="contentFile">The content file to be generated and written to disk.</param>
+    public void ProcessOutput(
+        NinjadogTemplateManifest templateManifest,
+        NinjadogSettings ninjadogSettings,
+        NinjadogContentFile contentFile);
 }
