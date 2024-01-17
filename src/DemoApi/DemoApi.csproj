@@ -21,7 +21,7 @@
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.24" />
         <PackageReference Include="FastEndpoints" Version="5.20.1" />
-        <PackageReference Include="FastEndpoints.ClientGen" Version="5.20.1" />
+        <PackageReference Include="FastEndpoints.ClientGen" Version="5.21.2" />
         <PackageReference Include="FastEndpoints.Swagger" Version="5.20.1" />
         <PackageReference Include="FluentValidation" Version="11.8.1" />
         <PackageReference Include="ValueOf" Version="2.0.31" />
