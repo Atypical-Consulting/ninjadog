@@ -22,7 +22,7 @@ public interface IFileService
     /// </summary>
     /// <param name="appName">The name of the application.</param>
     /// <returns>The path to the deleted directory.</returns>
-    string DeleteAppFolder(string appName);
+    void DeleteAppFolder(string appName);
 
     /// <summary>
     /// Creates a subdirectory within an application's directory.

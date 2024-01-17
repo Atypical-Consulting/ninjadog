@@ -14,7 +14,6 @@ namespace Ninjadog.Engine;
 /// </summary>
 public sealed class NinjadogEngine : INinjadogEngine
 {
-    // Fields
     private readonly NinjadogTemplateManifest _templateManifest;
     private readonly NinjadogSettings _ninjadogSettings;
     private readonly OutputProcessorCollection _outputProcessors;
@@ -24,6 +23,7 @@ public sealed class NinjadogEngine : INinjadogEngine
     private int _totalFilesGenerated;
     private int _totalCharactersGenerated;
     private readonly List<Exception> _exceptions = [];
+    private Stopwatch _stopwatch;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NinjadogEngine"/> class.
@@ -49,8 +49,6 @@ public sealed class NinjadogEngine : INinjadogEngine
 
         HandleInitialized();
     }
-
-    // Events
 
     /// <inheritdoc />
     public event EventHandler<NinjadogEngineRunEventArgs>? OnRunCompleted;
@@ -80,7 +78,6 @@ public sealed class NinjadogEngine : INinjadogEngine
     public void Run()
     {
         Reset();
-        var stopwatch = Stopwatch.StartNew();
 
         try
         {
@@ -105,10 +102,7 @@ public sealed class NinjadogEngine : INinjadogEngine
             _fileService.CreateSubFolder(appName, templateName);
 
             // run the engine for each template in the manifest
-            foreach (var template in _templateManifest.Templates)
-            {
-                ProcessTemplate(template);
-            }
+            ProcessTemplates();
         }
         catch (Exception ex)
         {
@@ -116,8 +110,7 @@ public sealed class NinjadogEngine : INinjadogEngine
         }
         finally
         {
-            stopwatch.Stop();
-            HandleRunCompleted(stopwatch.Elapsed);
+            HandleRunCompleted();
             HandleShutdown();
         }
     }
@@ -127,6 +120,15 @@ public sealed class NinjadogEngine : INinjadogEngine
         _totalFilesGenerated = 0;
         _totalCharactersGenerated = 0;
         _exceptions.Clear();
+        _stopwatch = Stopwatch.StartNew();
+    }
+
+    private void ProcessTemplates()
+    {
+        foreach (var template in _templateManifest.Templates)
+        {
+            ProcessTemplate(template);
+        }
     }
 
     private void ProcessTemplate(NinjadogTemplate template)
@@ -223,11 +225,13 @@ public sealed class NinjadogEngine : INinjadogEngine
         OnShutdown?.SafeInvokeEvent(this);
     }
 
-    private void HandleRunCompleted(TimeSpan runTime)
+    private void HandleRunCompleted()
     {
+        _stopwatch.Stop();
+
         var args = new NinjadogEngineRunEventArgs
         {
-            RunTime = runTime,
+            RunTime = _stopwatch.Elapsed,
             TotalFilesGenerated = _totalFilesGenerated,
             TotalCharactersGenerated = _totalCharactersGenerated,
             Exceptions = _exceptions

@@ -8,10 +8,36 @@ namespace Ninjadog.Engine.Core.Models;
 /// <summary>
 /// Represents the result of a CLI command execution.
 /// </summary>
-/// <param name="Output">The output of the command.</param>
-/// <param name="IsSuccess">A value indicating whether the command was successful.</param>
-/// <param name="ErrorMessage">The error message, if any.</param>
-public record CliCommandResult(
-    string Output,
-    bool IsSuccess,
-    string ErrorMessage = "");
+public record CliCommandResult
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CliCommandResult"/> class.
+    /// </summary>
+    /// <param name="output">The output of the command.</param>
+    /// <param name="isSuccess">A value indicating whether the command was successful.</param>
+    /// <param name="errorMessage">The error message, if any.</param>
+    public CliCommandResult(
+        string output,
+        bool isSuccess,
+        string errorMessage = "")
+    {
+        this.Output = output.Trim();
+        this.IsSuccess = isSuccess;
+        this.ErrorMessage = errorMessage;
+    }
+
+    /// <summary>
+    /// The output of the command.
+    /// </summary>
+    public string Output { get; init; }
+
+    /// <summary>
+    /// A value indicating whether the command was successful.
+    /// </summary>
+    public bool IsSuccess { get; init; }
+
+    /// <summary>
+    /// The error message, if any.
+    /// </summary>
+    public string ErrorMessage { get; init; }
+}

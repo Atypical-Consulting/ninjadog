@@ -33,12 +33,11 @@ public class FileService : IFileService
     }
 
     /// <inheritdoc />
-    public string DeleteAppFolder(string appName)
+    public void DeleteAppFolder(string appName)
     {
         var appFolderPath = Path.Combine(_baseFolder, appName);
         EnsureDirectoryExists(appFolderPath);
         Directory.Delete(appFolderPath, true);
-        return appFolderPath;
     }
 
     /// <inheritdoc />
