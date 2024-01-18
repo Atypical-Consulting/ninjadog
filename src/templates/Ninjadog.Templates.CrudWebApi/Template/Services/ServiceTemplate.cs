@@ -47,7 +47,7 @@ public sealed class ServiceTemplate
                   public async Task<bool> CreateAsync({{st.Model}} {{st.VarModel}})
                   {
                       // TODO: rename existingUser variable
-                      var {{st.VarExistingModel}} = await {{st.FieldModelRepository}}.GetAsync({{st.VarModel}}.Id.Value);
+                      var {{st.VarExistingModel}} = await {{st.FieldModelRepository}}.GetAsync({{st.VarModel}}.Id);
                       if ({{st.VarExistingModel}} is not null)
                       {
                           var message = $"A {{st.ModelHumanized}} with id {{{st.VarModel}}.Id} already exists";

@@ -8,6 +8,7 @@ using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
 using Ninjadog.Templates.CrudWebAPI.Template.Database;
+using Ninjadog.Templates.CrudWebAPI.Template.Domain;
 using Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 using Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 using Ninjadog.Templates.CrudWebAPI.Template.Repositories;
@@ -49,6 +50,10 @@ public class CrudTemplates : NinjadogTemplates
             "Database",
             new DatabaseInitializerTemplate(),
             new DbConnectionFactoryTemplate());
+
+        AddTemplates(
+            "Domain",
+            new DomainEntityTemplate());
 
         AddTemplates(
             "Endpoints",

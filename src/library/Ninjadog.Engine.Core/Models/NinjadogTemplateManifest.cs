@@ -43,12 +43,12 @@ public abstract class NinjadogTemplateManifest
     public virtual string License { get; init; } = DefaultLicense;
 
     /// <summary>
-    /// Gets the collection of template files associated with this manifest.
-    /// </summary>
-    public virtual NinjadogTemplates Templates { get; init; } = [];
-
-    /// <summary>
     /// Gets the collection of NuGet packages required by this template.
     /// </summary>
     public virtual List<string> NuGetPackages { get; set; } = [];
+
+    /// <summary>
+    /// Gets the collection of template files associated with this manifest.
+    /// </summary>
+    public virtual NinjadogTemplates Templates { get; init; } = [];
 }

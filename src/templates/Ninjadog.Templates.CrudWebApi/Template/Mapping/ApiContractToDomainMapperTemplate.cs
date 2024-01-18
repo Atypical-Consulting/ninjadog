@@ -34,7 +34,6 @@ public sealed class ApiContractToDomainMapperTemplate
 
               using {{rootNamespace}}.Contracts.Requests;
               using {{rootNamespace}}.Domain;
-              using {{rootNamespace}}.Domain.Common;
 
               {{WriteFileScopedNamespace(ns)}}
 

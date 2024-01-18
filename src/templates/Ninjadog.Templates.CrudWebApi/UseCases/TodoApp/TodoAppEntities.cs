@@ -31,8 +31,8 @@ public sealed class TodoAppEntities : NinjadogEntities
             {
                 { "Id", new NinjadogEntityId() },
                 { "Title", new NinjadogEntityProperty(nameof(String)) },
-                { "Items", new NinjadogEntityProperty($"List<{TodoItem}>") },
-                { "Categories", new NinjadogEntityProperty($"List<{TodoCategory}>") },
+                // { "Items", new NinjadogEntityProperty($"List<{TodoItem}>") },
+                // { "Categories", new NinjadogEntityProperty($"List<{TodoCategory}>") },
                 // TODO: Implement the following properties
                 // { "Items", new NinjadogEntityRelationship(TodoItem, NinjadogEntityRelationshipType.OneToMany) },
                 // { "Categories", new NinjadogEntityRelationship(TodoCategory, NinjadogEntityRelationshipType.OneToMany) }

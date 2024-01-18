@@ -32,7 +32,6 @@ public sealed class DtoToDomainMapperTemplate : NinjadogTemplate
 
               using {{rootNamespace}}.Contracts.Data;
               using {{rootNamespace}}.Domain;
-              using {{rootNamespace}}.Domain.Common;
 
               {{WriteFileScopedNamespace(ns)}}
 

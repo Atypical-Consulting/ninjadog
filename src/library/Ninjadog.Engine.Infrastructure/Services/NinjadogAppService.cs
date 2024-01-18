@@ -10,8 +10,8 @@ namespace Ninjadog.Engine.Infrastructure.Services;
 /// </summary>
 public class NinjadogAppService : INinjadogAppService
 {
-    private readonly NinjadogSettings? _settings;
-    private readonly NinjadogTemplateManifest? _manifest;
+    private readonly NinjadogSettings _settings;
+    private readonly NinjadogTemplateManifest _manifest;
     private readonly ICliDotnetService _dotnet;
     private readonly IFileService _fileService;
 
@@ -52,7 +52,7 @@ public class NinjadogAppService : INinjadogAppService
     {
         if (deleteIfExists)
         {
-            _fileService.DeleteAppFolder(_settings!.Config.Name);
+            _fileService.DeleteAppFolder(_settings.Config.Name);
         }
 
         NewNinjadogSettingsFile();
@@ -61,16 +61,13 @@ public class NinjadogAppService : INinjadogAppService
         NewGlobalJsonFile();
         NewSolutionFile();
         NewProjectFile();
+        InstallNuGetPackages();
 
         // TODO: Add NuGet packages from manifest and build the app
         // var dotnetVersion = cliDotnetService.Version();
         // var buildResult = cliDotnetService.Build(appDirectory);
 
         // Install NuGet packages
-        // foreach (var package in templateManifest.NuGetPackages)
-        // {
-        //     cliDotnetService.AddPackage(appDirectory, package);
-        // }
 
         return this;
     }
@@ -78,7 +75,7 @@ public class NinjadogAppService : INinjadogAppService
     /// <inheritdoc />
     public virtual INinjadogAppService NewNinjadogSettingsFile()
     {
-        var jsonString = _settings!.ToJsonString();
+        var jsonString = _settings.ToJsonString();
         var filePath = Path.Combine(AppDirectory, NinjadogSettingsFile);
         _fileService.CreateFile(filePath, jsonString);
         return this;
@@ -128,5 +125,13 @@ public class NinjadogAppService : INinjadogAppService
 
         _fileService.CreateFile(path, contentFile.Content);
         return this;
+    }
+
+    private void InstallNuGetPackages()
+    {
+        foreach (var package in _manifest.NuGetPackages)
+        {
+            _dotnet.AddPackage(ProjectPath, package);
+        }
     }
 }

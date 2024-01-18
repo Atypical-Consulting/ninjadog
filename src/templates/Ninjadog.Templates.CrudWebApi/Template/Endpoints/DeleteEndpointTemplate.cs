@@ -22,7 +22,7 @@ public sealed class DeleteEndpointTemplate
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Endpoints";
-        var fileName = $"{st.ClassDeleteModelEndpoint}.cs";
+        var fileName = Path.Combine(st.Model, $"{st.ClassDeleteModelEndpoint}.cs");
 
         return CreateNinjadogContentFile(fileName,
             $$"""

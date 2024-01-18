@@ -28,5 +28,17 @@ public class CrudTemplateManifest : NinjadogTemplateManifest
     public override string License { get; init; } = "All rights reserved";
 
     /// <inheritdoc />
+    public override List<string> NuGetPackages { get; set; } =
+    [
+        "Dapper",
+        "FastEndpoints",
+        "FastEndpoints.ClientGen",
+        "FastEndpoints.Swagger",
+        "FluentValidation",
+        "ValueOf",
+        "Microsoft.Data.Sqlite"
+    ];
+
+    /// <inheritdoc />
     public override NinjadogTemplates Templates { get; init; } = new CrudTemplates();
 }

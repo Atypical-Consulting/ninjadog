@@ -7,35 +7,25 @@ using Ninjadog.Configuration;
 
 namespace Ninjadog.Helpers;
 
-public class SourceGeneratorSetup
+public class SourceGeneratorSetup(
+    Func<StringTokens, string> getClassName,
+    Func<NinjadogSettings, string> generateCode,
+    string? subNamespace = null)
 {
-    private readonly Func<StringTokens, string> _getClassName;
-    private readonly Func<NinjadogSettings, string>? _generateCode;
+    private readonly Func<NinjadogSettings, string>? _generateCode = generateCode;
     private readonly Func<NinjadogSettings, string>? _generateMultiple;
 
-    public CodeGenerationMode CodeGenerationMode { get; }
-    public string? SubNamespace { get; }
-
-    public SourceGeneratorSetup(
-        Func<StringTokens, string> getClassName,
-        Func<NinjadogSettings, string> generateCode,
-        string? subNamespace = null)
-    {
-        CodeGenerationMode = CodeGenerationMode.ByModel;
-        SubNamespace = subNamespace;
-
-        _getClassName = getClassName;
-        _generateCode = generateCode;
-    }
+    public CodeGenerationMode CodeGenerationMode { get; } = CodeGenerationMode.ByModel;
+    public string? SubNamespace { get; } = subNamespace;
 
     public string GetClassName()
     {
-        return _getClassName.Invoke(null!);
+        return getClassName.Invoke(null!);
     }
 
     public string GetClassName(StringTokens st)
     {
-        return _getClassName.Invoke(st);
+        return getClassName.Invoke(st);
     }
 
     public string GenerateCode(NinjadogSettings ninjadogSettings)

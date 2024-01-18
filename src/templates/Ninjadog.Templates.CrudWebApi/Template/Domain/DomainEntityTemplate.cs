@@ -5,34 +5,30 @@
 
 using Ninjadog.Engine.Core.Models;
 
-namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
+namespace Ninjadog.Templates.CrudWebAPI.Template.Domain;
 
 /// <summary>
-/// This template generates the DTO class for a given entity.
+/// This template generates the domain entity class for a given entity.
 /// </summary>
-public sealed class DtoTemplate : NinjadogTemplate
+public sealed class DomainEntityTemplate : NinjadogTemplate
 {
     /// <inheritdoc />
-    public override string Name => "DataTransferObject";
+    public override string Name => "DomainEntity";
 
     /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
         NinjadogEntityWithKey entity, string rootNamespace)
     {
         var st = entity.StringTokens;
-        var ns = $"{rootNamespace}.Contracts.Data";
-        var fileName = $"{st.ClassModelDto}.cs";
+        var ns = $"{rootNamespace}.Domain";
+        var fileName = $"{st.Model}.cs";
 
         return CreateNinjadogContentFile(fileName,
             $$"""
 
-              using System.Collections.Generic;
-              using {{rootNamespace}}.Database;
-              using Dapper;
-
               {{WriteFileScopedNamespace(ns)}}
 
-              public partial class {{st.ClassModelDto}}
+              public partial class {{st.Model}}
               {
               {{entity.GenerateMemberProperties()}}
               }

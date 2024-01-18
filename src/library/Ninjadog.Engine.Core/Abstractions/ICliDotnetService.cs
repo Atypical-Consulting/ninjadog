@@ -42,10 +42,10 @@ public interface ICliDotnetService
     /// <summary>
     /// Adds a NuGet package to a project.
     /// </summary>
-    /// <param name="appDirectory">The path to the project to which the package will be added.</param>
+    /// <param name="projectPath">The path to the project to which the package will be added.</param>
     /// <param name="package">The name of the package to be added.</param>
     /// <returns>The result of the command execution.</returns>
-    CliCommandResult AddPackage(string appDirectory, string package);
+    CliCommandResult AddPackage(string projectPath, string package);
 
     /// <summary>
     /// Publishes a project with Ahead-of-Time (AOT) compilation.

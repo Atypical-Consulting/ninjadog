@@ -22,7 +22,7 @@ public sealed class CreateEndpointTemplate
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Endpoints";
-        var fileName = $"{st.ClassCreateModelEndpoint}.cs";
+        var fileName = Path.Combine(st.Model, $"{st.ClassCreateModelEndpoint}.cs");
 
         return CreateNinjadogContentFile(fileName,
             $$"""
@@ -55,7 +55,7 @@ public sealed class CreateEndpointTemplate
 
                       var {{st.VarModelResponse}} = {{st.VarModel}}.{{st.MethodToModelResponse}}();
                       await SendCreatedAtAsync<{{st.ClassGetModelEndpoint}}>(
-                          new { Id = {{st.VarModel}}.Id.Value }, {{st.VarModelResponse}}, generateAbsoluteUrl: true, cancellation: ct);
+                          new { Id = {{st.VarModel}}.Id }, {{st.VarModelResponse}}, generateAbsoluteUrl: true, cancellation: ct);
                   }
               }
               """);
