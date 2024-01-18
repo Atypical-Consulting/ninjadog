@@ -13,6 +13,16 @@ namespace Ninjadog.Engine.Core.Models;
 public static class TemplateUtilities
 {
     /// <summary>
+    /// The name of the developer.
+    /// </summary>
+    public const string DeveloperName = "Philippe Matray";
+
+    /// <summary>
+    /// The name of the company.
+    /// </summary>
+    public const string CompanyName = "Atypical Consulting SRL";
+
+    /// <summary>
     /// Wraps the provided code in a default layout, including headers and nullability annotations.
     /// This method adds common elements like file headers and nullability enable/disable statements
     /// to the provided code, creating a standardized format for generated source files.
@@ -22,12 +32,12 @@ public static class TemplateUtilities
     /// <returns>The code wrapped in the default layout with necessary headers and nullability annotations.</returns>
     public static string DefaultCodeLayout(string code, bool nullable = false)
     {
-        return SourceGenerationHelper.Header +
-               (nullable ? SourceGenerationHelper.NullableEnable : string.Empty) +
+        return Header +
+               (nullable ? NullableEnable : string.Empty) +
                "\n" +
                code +
                "\n" +
-               (nullable ? SourceGenerationHelper.NullableDisable : string.Empty);
+               (nullable ? NullableDisable : string.Empty);
     }
 
     /// <summary>
@@ -43,4 +53,57 @@ public static class TemplateUtilities
             ? $"namespace {ns};"
             : null;
     }
+
+    /// <summary>
+    /// Gets a standard header comment for auto-generated source files.
+    /// The header includes metadata such as the company and developer name, generation date, and version.
+    /// It indicates that the file is auto-generated and warns against manual modifications.
+    /// </summary>
+    public static string Header =>
+        $"""
+         //------------------------------------------------------------------------------
+         // This code was powered by the Ninjadog Engine
+         //
+         // Developed by: {CompanyName} - {DeveloperName}
+         // Generated on: {GenerationDate:yyyy-MM-dd HH:mm:ss}
+         // Version     : {Version}
+         //
+         // This file is part of a custom software solution crafted to meet your
+         // specific needs. For optimal performance and compatibility, modifications
+         // should be coordinated with Ninjadog support services.
+         //------------------------------------------------------------------------------
+         """;
+
+
+    /// <summary>
+    /// Gets a directive to enable nullable reference types in the generated code.
+    /// This directive helps in ensuring that the code conforms to C# nullable reference types feature.
+    /// </summary>
+    public static string NullableEnable =>
+        """
+
+        #nullable enable
+        """;
+
+    /// <summary>
+    /// Gets a directive to disable nullable reference types in the generated code.
+    /// This can be used to revert to non-nullable reference types behavior in specific parts of the generated code.
+    /// </summary>
+    public static string NullableDisable =>
+        """
+
+        #nullable disable
+        """;
+
+    /// <summary>
+    /// Gets the current generation date in a standardized format.
+    /// </summary>
+    public static string GenerationDate
+        => DateTime.Now.ToString("R");
+
+    /// <summary>
+    /// Gets the version of the assembly where this class is defined.
+    /// </summary>
+    public static string Version
+        => typeof(TemplateUtilities).Assembly.GetName().Version?.ToString() ?? "0.0.0";
 }
