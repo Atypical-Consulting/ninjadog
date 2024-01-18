@@ -15,12 +15,14 @@ namespace Ninjadog.Engine;
 /// <param name="templateManifest">The template manifest to be used by the engine.</param>
 /// <param name="ninjadogSettings">The ninjadog app settings to configure the engine.</param>
 /// <param name="outputProcessors">The output processors to be used by the engine.</param>
+/// <param name="ninjadogAppService">The ninjadog app service to be used by the engine.</param>
 /// <param name="domainEventDispatcher">The domain event dispatcher to be used by the engine.</param>
 /// <exception cref="ArgumentNullException">Thrown when any of the parameters is null.</exception>
 public sealed class NinjadogEngine(
     NinjadogTemplateManifest templateManifest,
     NinjadogSettings ninjadogSettings,
     NinjadogOutputProcessors outputProcessors,
+    INinjadogAppService ninjadogAppService,
     IDomainEventDispatcher domainEventDispatcher)
     : INinjadogEngine
 {
@@ -37,6 +39,7 @@ public sealed class NinjadogEngine(
         {
             DispatchBeforeEngineRun();
 
+            // process each template provided by the manifest
             foreach (var template in templateManifest.Templates)
             {
                 ProcessTemplate(template);
@@ -101,8 +104,14 @@ public sealed class NinjadogEngine(
 
     private void DispatchBeforeEngineRun()
     {
+        // reset the context and start collecting metrics
         Context.Reset();
         Context.StartCollectMetrics();
+
+        // create the app folder and the initial files (sln, .gitignore, ninjadog.json etc.)
+        ninjadogAppService.CreateApp();
+
+        // dispatch the event
         var snapshot = Context.GetSnapshot();
         BeforeEngineRunEvent domainEvent = new(ninjadogSettings, templateManifest, snapshot);
         domainEventDispatcher.Dispatch(domainEvent);

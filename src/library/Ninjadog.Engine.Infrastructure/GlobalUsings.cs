@@ -3,4 +3,8 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+global using Ninjadog.Engine.Core.Abstractions;
+global using Ninjadog.Engine.Core.Models;
+global using Ninjadog.Engine.Core.OutputProcessors;
+global using Ninjadog.Settings;
 global using static Ninjadog.Engine.Infrastructure.Services.InfrastructureConstants;

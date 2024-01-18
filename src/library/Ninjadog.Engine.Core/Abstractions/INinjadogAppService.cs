@@ -12,12 +12,19 @@ namespace Ninjadog.Engine.Core.Abstractions;
 public interface INinjadogAppService
 {
     /// <summary>
-    /// Initializes the service with the provided settings and template manifest.
+    /// The name of the application.
     /// </summary>
-    /// <param name="settings">The settings to be used by the Ninjadog application.</param>
-    /// <param name="manifest">The template manifest to be used by the Ninjadog application.</param>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService Initialize(NinjadogSettings settings, NinjadogTemplateManifest manifest);
+    string AppName { get; }
+
+    /// <summary>
+    /// The directory of the application.
+    /// </summary>
+    string AppDirectory { get; }
+
+    /// <summary>
+    /// The path of the project file for the application.
+    /// </summary>
+    string ProjectPath { get; }
 
     /// <summary>
     /// Creates the application based on the initialized settings and manifest.
@@ -61,4 +68,11 @@ public interface INinjadogAppService
     /// </summary>
     /// <returns>The service instance for chaining.</returns>
     INinjadogAppService NewProjectFile();
+
+    /// <summary>
+    /// Creates a new file in the project.
+    /// </summary>
+    /// <param name="contentFile">The content file to be created.</param>
+    /// <returns>The service instance for chaining.</returns>
+    INinjadogAppService AddFileToProject(NinjadogContentFile contentFile);
 }

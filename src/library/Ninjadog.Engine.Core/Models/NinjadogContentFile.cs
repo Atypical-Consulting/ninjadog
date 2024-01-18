@@ -14,10 +14,10 @@ public record NinjadogContentFile(
     string? Category = null)
 {
     /// <summary>
-    /// Gets the path of the output file.
+    /// Gets the key of the content file.
     /// </summary>
-    public string OutputPath
-        => Path.Combine(Category ?? string.Empty, FileName);
+    public string Key
+        => Category != null ? $"{Category}/{FileName}" : FileName;
 
     /// <summary>
     /// Gets the length of the content.

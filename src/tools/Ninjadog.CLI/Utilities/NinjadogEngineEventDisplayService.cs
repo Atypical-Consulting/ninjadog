@@ -83,11 +83,11 @@ internal sealed class NinjadogEngineEventDisplayService(IDomainEventDispatcher d
     protected override void AfterContentGenerated(AfterContentGeneratedEvent domainEvent)
     {
         var contentFile = domainEvent.ContentFile;
-        var outputPath = contentFile.OutputPath;
+        var fileKey = contentFile.Key;
         var length = contentFile.Length;
 
         Write("  - File generated: ");
-        WriteTextPath(outputPath);
+        WriteTextPath(fileKey);
         Markup($" with a length of [green]{length:N0}[/] characters.");
         WriteLine();
     }

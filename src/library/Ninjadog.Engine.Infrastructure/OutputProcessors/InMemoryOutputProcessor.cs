@@ -3,10 +3,6 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
-using Ninjadog.Engine.Core.OutputProcessors;
-using Ninjadog.Settings;
-
 namespace Ninjadog.Engine.Infrastructure.OutputProcessors;
 
 /// <summary>
@@ -33,12 +29,12 @@ public class InMemoryOutputProcessor : IInMemoryOutputProcessor
         NinjadogContentFile contentFile)
     {
         // raise an exception if the output path is already present in the memory storage
-        if (MemoryStorage.ContainsKey(contentFile.OutputPath))
+        if (MemoryStorage.ContainsKey(contentFile.Key))
         {
             throw new InvalidOperationException(
-                $"The output path {contentFile.OutputPath} is already present in the memory storage.");
+                $"The key {contentFile.Key} is already present in the memory storage.");
         }
 
-        MemoryStorage[contentFile.OutputPath] = contentFile.Content;
+        MemoryStorage[contentFile.Key] = contentFile.Content;
     }
 }

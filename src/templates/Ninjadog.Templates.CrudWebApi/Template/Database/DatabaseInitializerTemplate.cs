@@ -18,8 +18,7 @@ public sealed class DatabaseInitializerTemplate
     public override string Name => "DatabaseInitializer";
 
     /// <inheritdoc />
-    public override NinjadogContentFile GenerateOne(
-        NinjadogSettings ninjadogSettings)
+    public override NinjadogContentFile GenerateOne(NinjadogSettings ninjadogSettings)
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();

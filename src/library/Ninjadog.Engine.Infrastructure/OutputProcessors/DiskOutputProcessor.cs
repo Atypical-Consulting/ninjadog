@@ -3,11 +3,6 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Abstractions;
-using Ninjadog.Engine.Core.Models;
-using Ninjadog.Engine.Core.OutputProcessors;
-using Ninjadog.Settings;
-
 namespace Ninjadog.Engine.Infrastructure.OutputProcessors;
 
 /// <summary>
@@ -15,8 +10,7 @@ namespace Ninjadog.Engine.Infrastructure.OutputProcessors;
 /// This class implements the <see cref="IOutputProcessor"/> interface and provides functionality to write
 /// output content to disk, facilitating persistence and file-based operations.
 /// </summary>
-/// <param name="fileService">The file service to use for writing to the filesystem.</param>
-public class DiskOutputProcessor(IFileService fileService)
+public class DiskOutputProcessor(INinjadogAppService ninjadogAppService)
     : IDiskOutputProcessor
 {
     /// <summary>
@@ -30,9 +24,6 @@ public class DiskOutputProcessor(IFileService fileService)
         NinjadogSettings ninjadogSettings,
         NinjadogContentFile contentFile)
     {
-        var appName = ninjadogSettings.Config.Name;
-        var templateName = templateManifest.Name;
-        var path = Path.Combine(appName, templateName, contentFile.OutputPath);
-        fileService.CreateFile(path, contentFile.Content);
+        ninjadogAppService.AddFileToProject(contentFile);
     }
 }

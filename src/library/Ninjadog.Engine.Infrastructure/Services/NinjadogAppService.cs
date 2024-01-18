@@ -3,50 +3,58 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Abstractions;
-using Ninjadog.Engine.Core.Models;
-using Ninjadog.Settings;
-
 namespace Ninjadog.Engine.Infrastructure.Services;
 
 /// <summary>
 /// A service for creating a Ninjadog app.
 /// </summary>
-/// <param name="dotnet">The .NET CLI service.</param>
-/// <param name="fileService">The file service.</param>
-public class NinjadogAppService(ICliDotnetService dotnet, IFileService fileService)
-    : INinjadogAppService
+public class NinjadogAppService : INinjadogAppService
 {
-    private NinjadogSettings? _settings;
-    private NinjadogTemplateManifest? _manifest;
-    private string? _appDirectory;
-    private bool _isInitialized;
+    private readonly NinjadogSettings? _settings;
+    private readonly NinjadogTemplateManifest? _manifest;
+    private readonly ICliDotnetService _dotnet;
+    private readonly IFileService _fileService;
 
     /// <inheritdoc />
-    public virtual INinjadogAppService Initialize(
+    public string AppName { get; }
+
+    /// <inheritdoc />
+    public string AppDirectory { get; }
+
+    /// <inheritdoc />
+    public string ProjectPath { get; }
+
+    /// <summary>
+    /// Creates a new instance of <see cref="NinjadogAppService"/>.
+    /// </summary>
+    /// <param name="settings">The Ninjadog settings.</param>
+    /// <param name="manifest">The Ninjadog template manifest.</param>
+    /// <param name="dotnet">The .NET CLI service.</param>
+    /// <param name="fileService">The file service.</param>
+    public NinjadogAppService(
         NinjadogSettings settings,
-        NinjadogTemplateManifest manifest)
+        NinjadogTemplateManifest manifest,
+        ICliDotnetService dotnet,
+        IFileService fileService)
     {
         _settings = settings;
         _manifest = manifest;
+        _dotnet = dotnet;
+        _fileService = fileService;
 
-        var appName = settings.Config.Name;
-        _appDirectory ??= fileService.CreateAppFolder(appName);
-        _isInitialized = true;
-
-        return this;
+        AppName = settings.Config.Name;
+        AppDirectory ??= fileService.CreateAppFolder(AppName);
+        ProjectPath = Path.Combine(AppDirectory, "src", $"{AppName}.{_manifest.Name}");
     }
 
     /// <inheritdoc />
     public virtual INinjadogAppService CreateApp(bool deleteIfExists = true)
     {
-        ThrowIfNotInitialized();
         if (deleteIfExists)
         {
-            fileService.DeleteAppFolder(_settings!.Config.Name);
+            _fileService.DeleteAppFolder(_settings!.Config.Name);
         }
 
-        ThrowIfNotInitialized();
         NewNinjadogSettingsFile();
         NewEditorConfigFile();
         NewGitIgnoreFile();
@@ -70,59 +78,55 @@ public class NinjadogAppService(ICliDotnetService dotnet, IFileService fileServi
     /// <inheritdoc />
     public virtual INinjadogAppService NewNinjadogSettingsFile()
     {
-        ThrowIfNotInitialized();
         var jsonString = _settings!.ToJsonString();
-        var filePath = Path.Combine(_appDirectory!, NinjadogSettingsFile);
-        fileService.CreateFile(filePath, jsonString);
+        var filePath = Path.Combine(AppDirectory, NinjadogSettingsFile);
+        _fileService.CreateFile(filePath, jsonString);
         return this;
     }
 
     /// <inheritdoc />
     public virtual INinjadogAppService NewGitIgnoreFile()
     {
-        ThrowIfNotInitialized();
-        dotnet.New("gitignore", _appDirectory!);
+        _dotnet.New("gitignore", AppDirectory);
         return this;
     }
 
     /// <inheritdoc />
     public virtual INinjadogAppService NewEditorConfigFile()
     {
-        ThrowIfNotInitialized();
-        dotnet.New("editorconfig", _appDirectory!);
+        _dotnet.New("editorconfig", AppDirectory);
         return this;
     }
 
     /// <inheritdoc />
     public virtual INinjadogAppService NewGlobalJsonFile()
     {
-        ThrowIfNotInitialized();
-        dotnet.New("globaljson", _appDirectory!);
+        _dotnet.New("globaljson", AppDirectory);
         return this;
     }
 
     /// <inheritdoc />
     public virtual INinjadogAppService NewSolutionFile()
     {
-        ThrowIfNotInitialized();
-        dotnet.NewSolution(_appDirectory!);
+        _dotnet.NewSolution(AppDirectory);
         return this;
     }
 
     /// <inheritdoc />
     public virtual INinjadogAppService NewProjectFile()
     {
-        ThrowIfNotInitialized();
-        var outputPath = Path.Combine(_appDirectory!, _manifest!.Name);
-        dotnet.New("web", outputPath);
+        _dotnet.New("webapiaot", ProjectPath);
         return this;
     }
 
-    private void ThrowIfNotInitialized()
+    /// <inheritdoc />
+    public virtual INinjadogAppService AddFileToProject(NinjadogContentFile contentFile)
     {
-        if (!_isInitialized)
-        {
-            throw new InvalidOperationException("The app is not initialized. Call Initialize() first.");
-        }
+        var path = contentFile.Category is not null
+            ? Path.Combine(ProjectPath, contentFile.Category, contentFile.FileName)
+            : Path.Combine(ProjectPath, contentFile.FileName);
+
+        _fileService.CreateFile(path, contentFile.Content);
+        return this;
     }
 }

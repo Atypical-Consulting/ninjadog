@@ -11,15 +11,13 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 /// <summary>
 /// This template generates the DtoToDomainMapper class.
 /// </summary>
-public sealed class DtoToDomainMapperTemplate
-    : NinjadogTemplate
+public sealed class DtoToDomainMapperTemplate : NinjadogTemplate
 {
     /// <inheritdoc />
     public override string Name => "DtoToDomainMapper";
 
     /// <inheritdoc/>
-    public override NinjadogContentFile GenerateOne(
-        NinjadogSettings ninjadogSettings)
+    public override NinjadogContentFile GenerateOne(NinjadogSettings ninjadogSettings)
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();

@@ -18,8 +18,7 @@ public sealed class DomainToDtoMapperTemplate
     public override string Name => "DomainToDtoMapper";
 
     /// <inheritdoc />
-    public override NinjadogContentFile GenerateOne(
-        NinjadogSettings ninjadogSettings)
+    public override NinjadogContentFile GenerateOne(NinjadogSettings ninjadogSettings)
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();

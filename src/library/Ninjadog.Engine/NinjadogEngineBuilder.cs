@@ -55,6 +55,7 @@ public sealed class NinjadogEngineBuilder
                 EnsureTemplateManifestIsSet(),
                 EnsureNinjadogSettingsAreSet(),
                 EnsureOutputProcessorsAreSet(),
+                _serviceProvider.GetRequiredService<INinjadogAppService>(),
                 _serviceProvider.GetRequiredService<IDomainEventDispatcher>());
     }
 

@@ -17,8 +17,7 @@ public sealed class DbConnectionFactoryTemplate
     public override string Name => "DbConnectionFactory";
 
     /// <inheritdoc />
-    public override NinjadogContentFile GenerateOne(
-        NinjadogSettings ninjadogSettings)
+    public override NinjadogContentFile GenerateOne(NinjadogSettings ninjadogSettings)
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var ns = $"{rootNamespace}.Database";
