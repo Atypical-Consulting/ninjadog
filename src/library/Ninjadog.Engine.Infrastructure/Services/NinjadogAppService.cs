@@ -38,8 +38,14 @@ public class NinjadogAppService(ICliDotnetService dotnet, IFileService fileServi
     }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService CreateApp()
+    public virtual INinjadogAppService CreateApp(bool deleteIfExists = true)
     {
+        ThrowIfNotInitialized();
+        if (deleteIfExists)
+        {
+            fileService.DeleteAppFolder(_settings!.Config.Name);
+        }
+
         ThrowIfNotInitialized();
         NewNinjadogSettingsFile();
         NewEditorConfigFile();

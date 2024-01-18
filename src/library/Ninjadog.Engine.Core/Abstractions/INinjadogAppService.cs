@@ -22,8 +22,9 @@ public interface INinjadogAppService
     /// <summary>
     /// Creates the application based on the initialized settings and manifest.
     /// </summary>
+    /// <param name="deleteIfExists">Whether to delete the application folder if it already exists.</param>
     /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService CreateApp();
+    INinjadogAppService CreateApp(bool deleteIfExists = true);
 
     /// <summary>
     /// Creates a Ninjadog settings file for the application.

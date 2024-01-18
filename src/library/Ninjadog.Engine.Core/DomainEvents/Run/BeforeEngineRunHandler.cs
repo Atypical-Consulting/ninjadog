@@ -8,10 +8,7 @@ namespace Ninjadog.Engine.Core.DomainEvents.Run;
 /// <summary>
 /// Handles events that occur before the engine starts processing.
 /// </summary>
-/// <param name="fileService">The file service to be used by the handler.</param>
-public class BeforeEngineRunProcessor(
-    IFileService fileService,
-    INinjadogAppService ninjadogAppService)
+public class BeforeEngineRunProcessor(INinjadogAppService ninjadogAppService)
     : IDomainEventProcessor<BeforeEngineRunEvent>
 {
     /// <summary>
@@ -22,18 +19,10 @@ public class BeforeEngineRunProcessor(
     {
         var settings = domainEvent.Settings;
         var templateManifest = domainEvent.TemplateManifest;
-        var appName = settings.Config.Name;
-
-        // delete the app folder if it already exists
-        fileService.DeleteAppFolder(appName);
 
         ninjadogAppService
             .Initialize(settings, templateManifest)
             .CreateApp();
-
-        // create the template folder
-        var templateName = templateManifest.Name;
-        fileService.CreateSubFolder(appName, templateName);
 
         // Logic for handling the event before the engine starts processing
         await Task.CompletedTask.ConfigureAwait(false);
