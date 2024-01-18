@@ -18,21 +18,21 @@ public class AppSettingsTemplate : NinjadogTemplate
     {
         const string fileName = "appsettings.json";
 
-        const string content =
-            """
-            {
-              "Database": {
-                "ConnectionString": "Data Source=./customer.db"
-              },
-              "Logging": {
-                "LogLevel": {
-                  "Default": "Information",
-                  "Microsoft.AspNetCore": "Warning"
-                }
-              },
-              "AllowedHosts": "*"
-            }
-            """;
+        var content =
+            $$"""
+              {
+                "Database": {
+                  "ConnectionString": "Data Source=./{{ninjadogSettings.Config.Name}}.db"
+                },
+                "Logging": {
+                  "LogLevel": {
+                    "Default": "Information",
+                    "Microsoft.AspNetCore": "Warning"
+                  }
+                },
+                "AllowedHosts": "*"
+              }
+              """;
 
         return CreateNinjadogContentFile(fileName, content, false);
     }

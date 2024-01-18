@@ -24,10 +24,6 @@ public sealed class DtoTemplate : NinjadogTemplate
         return CreateNinjadogContentFile(fileName,
             $$"""
 
-              using System.Collections.Generic;
-              using {{rootNamespace}}.Database;
-              using Dapper;
-
               {{WriteFileScopedNamespace(ns)}}
 
               public partial class {{st.ClassModelDto}}

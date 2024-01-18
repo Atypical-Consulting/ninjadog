@@ -18,5 +18,5 @@ public sealed record TodoAppConfiguration()
         Name: "TodoApp",
         Version: "1.0.0",
         Description: "A application to manage todo lists.",
-        RootNamespace: "MyCompany.TodoApp",
+        RootNamespace: "TodoApp.CrudWebApi",
         OutputPath: "src/applications/TodoApp");
