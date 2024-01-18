@@ -18,15 +18,16 @@ public static class TemplateUtilities
     /// to the provided code, creating a standardized format for generated source files.
     /// </summary>
     /// <param name="code">The code snippet to be wrapped in the default layout.</param>
+    /// <param name="nullable">Whether to enable nullable reference types in the generated code.</param>
     /// <returns>The code wrapped in the default layout with necessary headers and nullability annotations.</returns>
-    public static string DefaultCodeLayout(string code)
+    public static string DefaultCodeLayout(string code, bool nullable = false)
     {
         return SourceGenerationHelper.Header +
-               SourceGenerationHelper.NullableEnable +
+               (nullable ? SourceGenerationHelper.NullableEnable : string.Empty) +
                "\n" +
                code +
                "\n" +
-               SourceGenerationHelper.NullableDisable;
+               (nullable ? SourceGenerationHelper.NullableDisable : string.Empty);
     }
 
     /// <summary>

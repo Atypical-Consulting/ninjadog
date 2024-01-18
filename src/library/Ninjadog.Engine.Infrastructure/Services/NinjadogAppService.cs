@@ -112,7 +112,7 @@ public class NinjadogAppService : INinjadogAppService
     /// <inheritdoc />
     public virtual INinjadogAppService NewProjectFile()
     {
-        _dotnet.New("webapiaot", ProjectPath);
+        _dotnet.New("webapi", ProjectPath);
         return this;
     }
 

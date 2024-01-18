@@ -3,7 +3,7 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
-using Ninjadog.Engine.Core.Models;
+using Ninjadog.Templates.CrudWebAPI.Template;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
@@ -30,6 +30,10 @@ public class CrudTemplates : NinjadogTemplates
     /// </summary>
     public CrudTemplates()
     {
+        Add(new AppSettingsTemplate());
+        Add(new ProgramTemplate());
+        Add(new CrudWebApiExtensionsTemplate());
+
         AddTemplates(
             "Contracts/Data",
             new DtoTemplate());

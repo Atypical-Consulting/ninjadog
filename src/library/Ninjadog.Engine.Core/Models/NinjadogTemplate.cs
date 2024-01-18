@@ -80,10 +80,15 @@ public abstract class NinjadogTemplate
     /// </summary>
     /// <param name="fileName">The name of the file to be created.</param>
     /// <param name="content">The content of the file to be created.</param>
+    /// <param name="useDefaultLayout">Whether to use the default code layout.</param>
     /// <returns>A new instance of <see cref="NinjadogContentFile"/>.</returns>
-    protected NinjadogContentFile CreateNinjadogContentFile(string fileName, string content)
+    protected NinjadogContentFile CreateNinjadogContentFile(
+        string fileName, string content, bool useDefaultLayout = true)
     {
-        var contentWithLayout = TemplateUtilities.DefaultCodeLayout(content);
+        var contentWithLayout = useDefaultLayout
+            ? TemplateUtilities.DefaultCodeLayout(content)
+            : content;
+
         return new NinjadogContentFile(fileName, contentWithLayout, Category);
     }
 }
