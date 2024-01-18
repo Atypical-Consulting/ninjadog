@@ -9,10 +9,9 @@ namespace Ninjadog.Engine.Core.DomainEvents.Run;
 /// Handles events that occur before the engine starts processing.
 /// </summary>
 /// <param name="fileService">The file service to be used by the handler.</param>
-/// <param name="cliDotnetService">The dotnet command service to be used by the handler.</param>
 public class BeforeEngineRunProcessor(
     IFileService fileService,
-    ICliDotnetService cliDotnetService)
+    INinjadogAppService ninjadogAppService)
     : IDomainEventProcessor<BeforeEngineRunEvent>
 {
     /// <summary>
@@ -25,23 +24,12 @@ public class BeforeEngineRunProcessor(
         var templateManifest = domainEvent.TemplateManifest;
         var appName = settings.Config.Name;
 
-        // delete the app folder if it already exists and create it again
+        // delete the app folder if it already exists
         fileService.DeleteAppFolder(appName);
-        var appDirectory = fileService.CreateAppFolder(appName);
 
-        // create the ninjadog.json file
-        fileService.CreateNinjadogSettingsFile(appDirectory, settings);
-
-        // create the .net solution with the app name
-        var dotnetVersion = cliDotnetService.Version();
-        var createSlnResult = cliDotnetService.CreateSolution(appDirectory);
-        var buildResult = cliDotnetService.Build(appDirectory);
-
-        // Install NuGet packages
-        foreach (var package in templateManifest.NuGetPackages)
-        {
-            cliDotnetService.AddPackage(appDirectory, package);
-        }
+        ninjadogAppService
+            .Initialize(settings, templateManifest)
+            .CreateApp();
 
         // create the template folder
         var templateName = templateManifest.Name;

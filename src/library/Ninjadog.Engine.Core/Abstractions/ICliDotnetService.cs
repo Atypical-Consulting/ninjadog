@@ -22,7 +22,15 @@ public interface ICliDotnetService
     /// </summary>
     /// <param name="solutionPath">The path to the solution to be created.</param>
     /// <returns>The result of the solution creation.</returns>
-    CliCommandResult CreateSolution(string solutionPath);
+    CliCommandResult NewSolution(string solutionPath);
+
+    /// <summary>
+    /// Creates a new project.
+    /// </summary>
+    /// <param name="templateKey">The template of the project to create (e.g., 'console', 'webapi').</param>
+    /// <param name="outputPath">The output directory for the created project.</param>
+    /// <returns>The result of the command execution.</returns>
+    CliCommandResult New(string templateKey, string outputPath);
 
     /// <summary>
     /// Builds a project at the specified path.
@@ -38,14 +46,6 @@ public interface ICliDotnetService
     /// <param name="package">The name of the package to be added.</param>
     /// <returns>The result of the command execution.</returns>
     CliCommandResult AddPackage(string appDirectory, string package);
-
-    /// <summary>
-    /// Creates a new project.
-    /// </summary>
-    /// <param name="templateKey">The template of the project to create (e.g., 'console', 'webapi').</param>
-    /// <param name="outputPath">The output directory for the created project.</param>
-    /// <returns>The result of the command execution.</returns>
-    CliCommandResult CreateProject(string templateKey, string outputPath);
 
     /// <summary>
     /// Publishes a project with Ahead-of-Time (AOT) compilation.

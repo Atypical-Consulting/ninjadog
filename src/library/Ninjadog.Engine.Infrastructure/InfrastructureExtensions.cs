@@ -27,6 +27,7 @@ public static class InfrastructureExtensions
         services.AddSingleton<ICliDotnetService, CliDotnetService>();
         services.AddSingleton<IDiskOutputProcessor, DiskOutputProcessor>();
         services.AddSingleton<IInMemoryOutputProcessor, InMemoryOutputProcessor>();
+        services.AddSingleton<INinjadogAppService, NinjadogAppService>();
         return services;
     }
 }

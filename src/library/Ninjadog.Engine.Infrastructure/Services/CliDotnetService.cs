@@ -23,7 +23,7 @@ public sealed class CliDotnetService
     /// <exception cref="InvalidOperationException">Thrown if the .NET CLI is not available or fails to execute.</exception>
     public CliDotnetService()
     {
-        if (Version().IsSuccess == false)
+        if (!Version().IsSuccess)
         {
             throw new InvalidOperationException("The .NET CLI is not available.");
         }
@@ -36,9 +36,15 @@ public sealed class CliDotnetService
     }
 
     /// <inheritdoc />
-    public CliCommandResult CreateSolution(string solutionPath)
+    public CliCommandResult NewSolution(string solutionPath)
     {
-        return ExecuteCommand($"dotnet new sln --output {solutionPath}");
+        return New("sln", solutionPath);
+    }
+
+    /// <inheritdoc />
+    public CliCommandResult New(string templateKey, string outputPath)
+    {
+        return ExecuteCommand($"dotnet new {templateKey} --output {outputPath}");
     }
 
     /// <inheritdoc />
@@ -51,12 +57,6 @@ public sealed class CliDotnetService
     public CliCommandResult AddPackage(string projectPath, string package)
     {
         return ExecuteCommand($"dotnet add {projectPath} package {package}");
-    }
-
-    /// <inheritdoc />
-    public CliCommandResult CreateProject(string templateKey, string outputPath)
-    {
-        return ExecuteCommand($"dotnet new {templateKey} --output {outputPath}");
     }
 
     /// <inheritdoc />

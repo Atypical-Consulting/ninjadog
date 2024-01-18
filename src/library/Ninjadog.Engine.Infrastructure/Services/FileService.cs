@@ -5,7 +5,6 @@
 
 using Ninjadog.Engine.Core.Abstractions;
 using Ninjadog.Settings;
-using static System.Environment;
 
 namespace Ninjadog.Engine.Infrastructure.Services;
 
@@ -14,22 +13,18 @@ namespace Ninjadog.Engine.Infrastructure.Services;
 /// </summary>
 public class FileService : IFileService
 {
-    private const SpecialFolder UserProfile = SpecialFolder.UserProfile;
-    private readonly string _baseFolder;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FileService"/> class.
     /// </summary>
     public FileService()
     {
-        _baseFolder = Path.Combine(GetFolderPath(UserProfile), "NinjadogProjects");
-        EnsureDirectoryExists(_baseFolder);
+        EnsureDirectoryExists(BaseFolder);
     }
 
     /// <inheritdoc />
     public string CreateAppFolder(string appName)
     {
-        var appFolderPath = Path.Combine(_baseFolder, appName);
+        var appFolderPath = Path.Combine(BaseFolder, appName);
         EnsureDirectoryExists(appFolderPath);
         return appFolderPath;
     }
@@ -37,7 +32,7 @@ public class FileService : IFileService
     /// <inheritdoc />
     public void DeleteAppFolder(string appName)
     {
-        var appFolderPath = Path.Combine(_baseFolder, appName);
+        var appFolderPath = Path.Combine(BaseFolder, appName);
         EnsureDirectoryExists(appFolderPath);
         Directory.Delete(appFolderPath, true);
     }
@@ -45,7 +40,7 @@ public class FileService : IFileService
     /// <inheritdoc />
     public string CreateSubFolder(string appName, string subFolderName)
     {
-        var subFolderPath = Path.Combine(_baseFolder, appName, subFolderName);
+        var subFolderPath = Path.Combine(BaseFolder, appName, subFolderName);
         EnsureDirectoryExists(subFolderPath);
         return subFolderPath;
     }
@@ -53,16 +48,17 @@ public class FileService : IFileService
     /// <inheritdoc />
     public string CreateFile(string path, string content)
     {
-        var filePath = Path.Combine(_baseFolder, path);
+        var filePath = Path.Combine(BaseFolder, path);
         EnsureDirectoryExists(Path.GetDirectoryName(filePath) ?? string.Empty);
         File.WriteAllText(filePath, content);
         return filePath;
     }
 
     /// <inheritdoc />
+    [Obsolete("Use NinjadogAppService instead.")]
     public string CreateNinjadogSettingsFile(string appName, NinjadogSettings ninjadogSettings)
     {
-        var filePath = Path.Combine(_baseFolder, appName, "ninjadog.json");
+        var filePath = Path.Combine(BaseFolder, appName, NinjadogSettingsFile);
         var jsonString = ninjadogSettings.ToJsonString();
         File.WriteAllText(filePath, jsonString);
         return filePath;
