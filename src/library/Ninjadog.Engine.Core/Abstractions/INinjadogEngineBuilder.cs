@@ -36,6 +36,7 @@ public interface INinjadogEngineBuilder
     /// Specifies the service provider to use with the Ninjadog Engine.
     /// </summary>
     /// <param name="serviceProvider">The service provider to be used by the engine.</param>
+    /// <returns>The builder instance for fluent chaining.</returns>
     INinjadogEngineBuilder WithServiceProvider(IServiceProvider serviceProvider);
 
     /// <summary>

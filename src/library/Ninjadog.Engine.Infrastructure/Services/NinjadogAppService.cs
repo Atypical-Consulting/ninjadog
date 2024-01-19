@@ -27,7 +27,7 @@ public class NinjadogAppService : INinjadogAppService
     public string ProjectPath { get; }
 
     /// <summary>
-    /// Creates a new instance of <see cref="NinjadogAppService"/>.
+    /// Initializes a new instance of the <see cref="NinjadogAppService"/> class.
     /// </summary>
     /// <param name="settings">The Ninjadog settings.</param>
     /// <param name="manifest">The Ninjadog template manifest.</param>
@@ -65,12 +65,8 @@ public class NinjadogAppService : INinjadogAppService
         NewProjectFile();
         InstallNuGetPackages();
 
-        // TODO: Add NuGet packages from manifest and build the app
         // var dotnetVersion = cliDotnetService.Version();
         // var buildResult = cliDotnetService.Build(appDirectory);
-
-        // Install NuGet packages
-
         return this;
     }
 

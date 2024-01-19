@@ -27,17 +27,17 @@ public record CliCommandResult
     }
 
     /// <summary>
-    /// The output of the command.
+    /// Gets the output of the command.
     /// </summary>
     public string Output { get; init; }
 
     /// <summary>
-    /// A value indicating whether the command was successful.
+    /// Gets a value indicating whether a value indicating whether the command was successful.
     /// </summary>
     public bool IsSuccess { get; init; }
 
     /// <summary>
-    /// The error message, if any.
+    /// Gets the error message, if any.
     /// </summary>
     public string ErrorMessage { get; init; }
 }

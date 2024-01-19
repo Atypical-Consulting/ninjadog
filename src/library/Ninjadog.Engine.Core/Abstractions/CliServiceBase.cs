@@ -49,7 +49,7 @@ public abstract class CliServiceBase
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
-            CreateNoWindow = true
+            CreateNoWindow = true,
         };
     }
 

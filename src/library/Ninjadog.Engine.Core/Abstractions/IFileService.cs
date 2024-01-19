@@ -21,7 +21,6 @@ public interface IFileService
     /// Deletes an application's directory.
     /// </summary>
     /// <param name="appName">The name of the application.</param>
-    /// <returns>The path to the deleted directory.</returns>
     void DeleteAppFolder(string appName);
 
     /// <summary>

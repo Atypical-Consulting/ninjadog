@@ -4,24 +4,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo-v1", "demo-v1", "{C6D2A66E-1AB0-48DC-AA26-47579E2069CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "library", "library", "{43446F05-6DEE-4EA7-AF81-A865BF739C08}"
-	ProjectSection(SolutionItems) = preProject
-		src\library\Directory.Build.props = src\library\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E4D768EA-BAB7-4CF8-9189-4BC93AD46D14}"
-	ProjectSection(SolutionItems) = preProject
-		src\tests\Directory.Build.props = src\tests\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{1EC9F5E6-B714-43F9-9A67-4A21E7A1E17B}"
-	ProjectSection(SolutionItems) = preProject
-		src\templates\Directory.Build.props = src\templates\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{75F08130-C72B-4D4D-AB9B-2C1235E192D9}"
-	ProjectSection(SolutionItems) = preProject
-		src\tools\Directory.Build.props = src\tools\Directory.Build.props
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninjadog.Generators", "src\library\Ninjadog.Generators\Ninjadog.Generators.csproj", "{364DE927-78B5-42EA-92AB-6BA6C8AE58E3}"
 EndProject

@@ -15,6 +15,14 @@ public class NinjadogEngineContext
     private readonly Stopwatch _stopwatch;
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="NinjadogEngineContext"/> class.
+    /// </summary>
+    public NinjadogEngineContext()
+    {
+        _stopwatch = new Stopwatch();
+    }
+
+    /// <summary>
     /// Gets the total number of files generated during the engine run.
     /// </summary>
     public int TotalFilesGenerated { get; private set; }
@@ -28,14 +36,6 @@ public class NinjadogEngineContext
     /// Gets the total time elapsed during the engine run.
     /// </summary>
     public TimeSpan TotalTimeElapsed => _stopwatch.Elapsed;
-
-    /// <summary>
-    /// Initializes a new instance of the NinjadogEngineContext class.
-    /// </summary>
-    public NinjadogEngineContext()
-    {
-        _stopwatch = new Stopwatch();
-    }
 
     /// <summary>
     /// Updates the metrics to account for a newly generated file.

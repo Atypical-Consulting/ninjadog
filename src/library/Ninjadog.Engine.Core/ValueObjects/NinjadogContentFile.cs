@@ -13,7 +13,7 @@ public record NinjadogContentFile
     /// <summary>
     /// An empty content file.
     /// </summary>
-    public static readonly NinjadogContentFile Empty = new("", "");
+    public static readonly NinjadogContentFile Empty = new(string.Empty, string.Empty);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NinjadogContentFile"/> class.
