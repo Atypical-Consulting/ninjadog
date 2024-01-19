@@ -4,6 +4,7 @@
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
 global using Ninjadog.Engine.Core.Models;
+global using Ninjadog.Engine.Core.ValueObjects;
 global using Ninjadog.Helpers;
 global using Ninjadog.Settings;
 global using Ninjadog.Settings.Extensions;

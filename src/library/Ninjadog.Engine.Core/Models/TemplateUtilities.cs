@@ -79,7 +79,7 @@ public static class TemplateUtilities
     /// Gets a directive to enable nullable reference types in the generated code.
     /// This directive helps in ensuring that the code conforms to C# nullable reference types feature.
     /// </summary>
-    public static string NullableEnable =>
+    private static string NullableEnable =>
         """
 
         #nullable enable
@@ -89,7 +89,7 @@ public static class TemplateUtilities
     /// Gets a directive to disable nullable reference types in the generated code.
     /// This can be used to revert to non-nullable reference types behavior in specific parts of the generated code.
     /// </summary>
-    public static string NullableDisable =>
+    private static string NullableDisable =>
         """
 
         #nullable disable
@@ -98,12 +98,12 @@ public static class TemplateUtilities
     /// <summary>
     /// Gets the current generation date in a standardized format.
     /// </summary>
-    public static string GenerationDate
+    private static string GenerationDate
         => DateTime.Now.ToString("R");
 
     /// <summary>
     /// Gets the version of the assembly where this class is defined.
     /// </summary>
-    public static string Version
+    private static string Version
         => typeof(TemplateUtilities).Assembly.GetName().Version?.ToString() ?? "0.0.0";
 }

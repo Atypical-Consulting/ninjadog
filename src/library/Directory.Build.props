@@ -23,6 +23,15 @@
     <AnalysisModeUsage>All</AnalysisModeUsage>
   </PropertyGroup>
 
+  <!-- MinVer Configuration -->
+  <PropertyGroup>
+    <!-- Set the minimum version to be used if no Git tags are found -->
+    <MinVerMinimumMajorMinor>2.0</MinVerMinimumMajorMinor>
+
+    <!-- Other MinVer settings as needed, for example: -->
+    <!-- <MinVerVerbosity>detailed</MinVerVerbosity> -->
+  </PropertyGroup>
+
   <ItemGroup>
     <!-- Code Analyzers -->
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">

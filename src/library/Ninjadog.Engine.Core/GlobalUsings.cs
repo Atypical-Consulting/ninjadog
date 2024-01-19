@@ -9,4 +9,5 @@ global using Ninjadog.Engine.Core.DomainEvents.ProcessContent;
 global using Ninjadog.Engine.Core.DomainEvents.ProcessTemplate;
 global using Ninjadog.Engine.Core.DomainEvents.Run;
 global using Ninjadog.Engine.Core.Models;
+global using Ninjadog.Engine.Core.ValueObjects;
 global using Ninjadog.Settings;

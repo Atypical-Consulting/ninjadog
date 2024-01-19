@@ -28,3 +28,13 @@ public class NinjadogTemplates : List<NinjadogTemplate>
         }
     }
 }
+
+public interface INinjadogTemplateFactory
+{
+    /// <summary>
+    /// Creates a new instance of the specified template.
+    /// </summary>
+    /// <param name="templateName">The name of the template to be created.</param>
+    /// <returns>A new instance of the specified template.</returns>
+    NinjadogTemplate CreateTemplate(string templateName);
+}

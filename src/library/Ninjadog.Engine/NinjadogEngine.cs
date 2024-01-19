@@ -3,6 +3,8 @@
 // Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
 // without express written permission from Atypical Consulting SRL is strictly prohibited.
 
+using Ninjadog.Engine.Core.ValueObjects;
+
 namespace Ninjadog.Engine;
 
 /// <summary>
@@ -81,9 +83,9 @@ public sealed class NinjadogEngine(
         }
     }
 
-    private void ProcessContent(NinjadogContentFile? contentFile)
+    private void ProcessContent(NinjadogContentFile contentFile)
     {
-        if (contentFile is null || string.IsNullOrEmpty(contentFile.Content))
+        if (contentFile.IsEmpty)
         {
             return;
         }

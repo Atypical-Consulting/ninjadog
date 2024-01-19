@@ -30,12 +30,12 @@ public abstract class NinjadogTemplate
     /// </summary>
     /// <param name="ninjadogSettings">The settings to be used for code generation.</param>
     /// <returns>A string representing the generated code, or null if not implemented.</returns>
-    public virtual NinjadogContentFile? GenerateOne(NinjadogSettings ninjadogSettings)
+    public virtual NinjadogContentFile GenerateOne(NinjadogSettings ninjadogSettings)
     {
         // Default implementation: return null
         // Override this method in derived classes to implement specific logic
         // for generating code in a single file.
-        return null;
+        return NinjadogContentFile.Empty;
     }
 
     /// <summary>
@@ -45,11 +45,11 @@ public abstract class NinjadogTemplate
     /// <param name="entity">The entity for which to generate content.</param>
     /// <param name="rootNamespace">The root namespace to be used in content generation.</param>
     /// <returns>A string representing the generated content for the specified entity.</returns>
-    public virtual NinjadogContentFile? GenerateOneByEntity(NinjadogEntityWithKey entity, string rootNamespace)
+    public virtual NinjadogContentFile GenerateOneByEntity(NinjadogEntityWithKey entity, string rootNamespace)
     {
         // Default implementation for generating content for a single entity.
         // This can be overridden in derived classes for specific entity generation logic.
-        return null;
+        return NinjadogContentFile.Empty;
     }
 
     /// <summary>
@@ -67,11 +67,7 @@ public abstract class NinjadogTemplate
 
         foreach (var entity in entities)
         {
-            var content = GenerateOneByEntity(entity, rootNs);
-            if (content != null)
-            {
-                yield return content;
-            }
+            yield return GenerateOneByEntity(entity, rootNs);
         }
     }
 
@@ -85,10 +81,6 @@ public abstract class NinjadogTemplate
     protected NinjadogContentFile CreateNinjadogContentFile(
         string fileName, string content, bool useDefaultLayout = true)
     {
-        var contentWithLayout = useDefaultLayout
-            ? TemplateUtilities.DefaultCodeLayout(content)
-            : content;
-
-        return new NinjadogContentFile(fileName, contentWithLayout, Category);
+        return new NinjadogContentFile(fileName, content, Category, useDefaultLayout);
     }
 }
