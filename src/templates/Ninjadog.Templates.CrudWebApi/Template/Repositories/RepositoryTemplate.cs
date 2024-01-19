@@ -31,18 +31,12 @@ public sealed class RepositoryTemplate
 
               {{WriteFileScopedNamespace(ns)}}
 
-              public partial class {{st.ClassModelRepository}} : {{st.InterfaceModelRepository}}
+              public partial class {{st.ClassModelRepository}}(IDbConnectionFactory connectionFactory)
+                  : {{st.InterfaceModelRepository}}
               {
-                  private readonly IDbConnectionFactory _connectionFactory;
-
-                  public {{st.ClassModelRepository}}(IDbConnectionFactory connectionFactory)
-                  {
-                      _connectionFactory = connectionFactory;
-                  }
-
                   public async Task<bool> CreateAsync({{st.ClassModelDto}} {{st.VarModel}})
                   {
-                      using var connection = await _connectionFactory.CreateConnectionAsync();
+                      using var connection = await connectionFactory.CreateConnectionAsync();
 
                       var result = await connection.ExecuteAsync(
                           @"{{GenerateSqlInsertQuery(entity)}}",
@@ -53,7 +47,7 @@ public sealed class RepositoryTemplate
 
                   public async Task<{{st.ClassModelDto}}?> GetAsync(Guid id)
                   {
-                      using var connection = await _connectionFactory.CreateConnectionAsync();
+                      using var connection = await connectionFactory.CreateConnectionAsync();
 
                       return await connection.QuerySingleOrDefaultAsync<{{st.ClassModelDto}}>(
                           "{{GenerateSqlSelectOneQuery(entity)}}",
@@ -62,13 +56,13 @@ public sealed class RepositoryTemplate
 
                   public async Task<IEnumerable<{{st.ClassModelDto}}>> GetAllAsync()
                   {
-                      using var connection = await _connectionFactory.CreateConnectionAsync();
+                      using var connection = await connectionFactory.CreateConnectionAsync();
                       return await connection.QueryAsync<{{st.ClassModelDto}}>("{{GenerateSqlSelectAllQuery(entity)}}");
                   }
 
                   public async Task<bool> UpdateAsync({{st.ClassModelDto}} {{st.VarModel}})
                   {
-                      using var connection = await _connectionFactory.CreateConnectionAsync();
+                      using var connection = await connectionFactory.CreateConnectionAsync();
 
                       var result = await connection.ExecuteAsync(
                           @"{{GenerateSqlUpdateQuery(entity)}}",
@@ -79,7 +73,7 @@ public sealed class RepositoryTemplate
 
                   public async Task<bool> DeleteAsync(Guid id)
                   {
-                      using var connection = await _connectionFactory.CreateConnectionAsync();
+                      using var connection = await connectionFactory.CreateConnectionAsync();
 
                       var result = await connection.ExecuteAsync(
                           @"{{GenerateSqlDeleteQuery(entity)}}",

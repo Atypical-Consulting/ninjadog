@@ -34,18 +34,16 @@ public sealed class DbConnectionFactoryTemplate
                   public Task<IDbConnection> CreateConnectionAsync();
               }
 
-              public class SqliteConnectionFactory : IDbConnectionFactory
+              /// <summary>
+              /// This class provides a factory for database connections.
+              /// </summary>
+              /// <param name="connectionString">The connection string to use.</param>
+              public class SqliteConnectionFactory(string connectionString)
+                  : IDbConnectionFactory
               {
-                  private readonly string _connectionString;
-
-                  public SqliteConnectionFactory(string connectionString)
-                  {
-                      _connectionString = connectionString;
-                  }
-
                   public async Task<IDbConnection> CreateConnectionAsync()
                   {
-                      var connection = new SqliteConnection(_connectionString);
+                      var connection = new SqliteConnection(connectionString);
                       await connection.OpenAsync();
                       return connection;
                   }

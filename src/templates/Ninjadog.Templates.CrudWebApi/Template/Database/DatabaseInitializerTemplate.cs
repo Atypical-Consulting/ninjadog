@@ -29,18 +29,11 @@ public sealed class DatabaseInitializerTemplate
 
               {{WriteFileScopedNamespace(ns)}}
 
-              public partial class DatabaseInitializer
+              public partial class DatabaseInitializer(IDbConnectionFactory connectionFactory)
               {
-                  private readonly IDbConnectionFactory _connectionFactory;
-
-                  public DatabaseInitializer(IDbConnectionFactory connectionFactory)
-                  {
-                      _connectionFactory = connectionFactory;
-                  }
-
                   public async Task InitializeAsync()
                   {
-                      using var connection = await _connectionFactory.CreateConnectionAsync();
+                      using var connection = await connectionFactory.CreateConnectionAsync();
                       {{GenerateCreateTableSqlQueries(entities)}}
                   }
               }
