@@ -9,7 +9,7 @@ namespace Ninjadog.Engine.Core.Models;
 /// <summary>
 /// Represents the context of a Ninjadog Engine run, encapsulating metrics and state information.
 /// </summary>
-public class NinjadogEngineContext
+public sealed class NinjadogEngineContext
 {
     private readonly Stopwatch _stopwatch;
 

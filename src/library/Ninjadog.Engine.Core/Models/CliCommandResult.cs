@@ -20,9 +20,9 @@ public record CliCommandResult
         bool isSuccess,
         string errorMessage = "")
     {
-        this.Output = output.Trim();
-        this.IsSuccess = isSuccess;
-        this.ErrorMessage = errorMessage;
+        Output = output.Trim();
+        IsSuccess = isSuccess;
+        ErrorMessage = errorMessage;
     }
 
     /// <summary>

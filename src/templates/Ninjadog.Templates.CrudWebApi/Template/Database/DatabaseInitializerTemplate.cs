@@ -43,34 +43,37 @@ public sealed class DatabaseInitializerTemplate
 
     private static string GenerateCreateTableSqlQueries(List<NinjadogEntityWithKey> entities)
     {
-        IndentedStringBuilder sb = new(2);
+        IndentedStringBuilder stringBuilder = new(2);
 
         foreach (var entity in entities)
         {
-            sb.AppendLine();
-            sb.AppendLine($"await connection.ExecuteAsync(@\"{GenerateSqlCreateTableQuery(entity)}\");");
+            stringBuilder
+                .AppendLine()
+                .AppendLine($"await connection.ExecuteAsync(@\"{GenerateSqlCreateTableQuery(entity)}\");");
         }
 
-        return sb.ToString();
+        return stringBuilder.ToString();
     }
 
     private static string GenerateSqlCreateTableQuery(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;
-        IndentedStringBuilder sb = new(0);
+        IndentedStringBuilder stringBuilder = new(0);
 
-        sb.AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (");
-        sb.IncrementIndent().IncrementIndent().IncrementIndent();
-        sb.AppendLine("Id CHAR(36) PRIMARY KEY,");
+        stringBuilder
+            .AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (")
+            .IncrementIndent().IncrementIndent().IncrementIndent()
+            .AppendLine("Id CHAR(36) PRIMARY KEY,");
 
         // Using LINQ to filter out ID property and then joining them with String.Join
         var columnDefinitions = entity.Properties
             .Where(p => !p.Value.IsKey)
             .Select(p => $"{p.Key} TEXT NOT NULL");
 
-        sb.Append(string.Join(",\n", columnDefinitions));
-        sb.Append(")");
+        stringBuilder
+            .Append(string.Join(",\n", columnDefinitions))
+            .Append(")");
 
-        return sb.ToString();
+        return stringBuilder.ToString();
     }
 }

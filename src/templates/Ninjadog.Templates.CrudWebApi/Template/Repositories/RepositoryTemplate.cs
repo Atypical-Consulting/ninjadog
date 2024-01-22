@@ -91,21 +91,15 @@ public sealed class RepositoryTemplate
         var st = entity.StringTokens;
         var properties = entity.Properties;
 
-        IndentedStringBuilder sb = new(0);
-        sb.Append($"INSERT INTO {st.Models} (");
-
-        // Using String.Join to handle the comma-separated list
-        sb.Append(string.Join(", ", properties.Keys));
-        sb.Append(") ");
-
-        sb.IncrementIndent().IncrementIndent().IncrementIndent();
-        sb.Append("VALUES (");
-
-        // Again using String.Join for the values
-        sb.Append(string.Join(", ", properties.Keys.Select(k => $"@{k}")));
-        sb.Append(")");
-
-        return sb.ToString();
+        return new IndentedStringBuilder(0)
+            .Append($"INSERT INTO {st.Models} (")
+            .Append(string.Join(", ", properties.Keys)) // Using String.Join to handle the comma-separated list
+            .Append(") ")
+            .IncrementIndent().IncrementIndent().IncrementIndent()
+            .Append("VALUES (")
+            .Append(string.Join(", ", properties.Keys.Select(k => $"@{k}"))) // Again using String.Join for the values
+            .Append(")")
+            .ToString();
     }
 
     private static string GenerateSqlSelectOneQuery(NinjadogEntityWithKey entity)
@@ -125,19 +119,19 @@ public sealed class RepositoryTemplate
         var st = entity.StringTokens;
         var properties = entity.Properties;
 
-        IndentedStringBuilder sb = new(0);
+        IndentedStringBuilder stringBuilder = new(0);
 
-        sb.Append($"UPDATE {st.Models} SET ");
+        stringBuilder.Append($"UPDATE {st.Models} SET ");
 
         // Using LINQ to filter out key properties and then joining them with String.Join
         var updateClauses = properties
             .Where(p => !p.Value.IsKey)
             .Select(p => $"{p.Key} = @{p.Key}");
 
-        sb.Append(string.Join(", ", updateClauses));
-        sb.Append(" WHERE Id = @Id"); // Assuming 'Id' is the primary key column name
-
-        return sb.ToString();
+        return stringBuilder
+            .Append(string.Join(", ", updateClauses))
+            .Append(" WHERE Id = @Id") // Assuming 'Id' is the primary key column name
+            .ToString();
     }
 
     private static string GenerateSqlDeleteQuery(NinjadogEntityWithKey entity)

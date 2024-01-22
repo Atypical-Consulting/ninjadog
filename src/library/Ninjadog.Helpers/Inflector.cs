@@ -16,9 +16,9 @@ namespace Ninjadog.Helpers;
 /// </summary>
 public static partial class Inflector
 {
-    private static readonly List<InflectorRule> Plurals = [];
-    private static readonly List<InflectorRule> Singulars = [];
-    private static readonly List<string> Uncountables = [];
+    private static readonly List<InflectorRule> _plurals = [];
+    private static readonly List<InflectorRule> _singulars = [];
+    private static readonly List<string> _uncountables = [];
 
     static Inflector()
     {
@@ -92,7 +92,7 @@ public static partial class Inflector
     /// <returns>The plural form of the word.</returns>
     public static string Pluralize(this string word)
     {
-        return ApplyRules(Plurals, word)!;
+        return ApplyRules(_plurals, word)!;
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public static partial class Inflector
     /// <returns>The singular form of the word.</returns>
     public static string Singularize(this string word)
     {
-        return ApplyRules(Singulars, word)!;
+        return ApplyRules(_singulars, word)!;
     }
 
     /// <summary>
@@ -223,24 +223,24 @@ public static partial class Inflector
 
     private static void AddUncountable(string word)
     {
-        Uncountables.Add(word.ToLowerInvariant());
+        _uncountables.Add(word.ToLowerInvariant());
     }
 
     private static void AddPlural(string rule, string replacement)
     {
-        Plurals.Add(new InflectorRule(rule, replacement));
+        _plurals.Add(new InflectorRule(rule, replacement));
     }
 
     private static void AddSingular(string rule, string replacement)
     {
-        Singulars.Add(new InflectorRule(rule, replacement));
+        _singulars.Add(new InflectorRule(rule, replacement));
     }
 
     private static string? ApplyRules(IReadOnlyList<InflectorRule> rules, string word)
     {
         var result = word;
 
-        if (Uncountables.Contains(word.ToLower(CultureInfo.InvariantCulture)))
+        if (_uncountables.Contains(word.ToLower(CultureInfo.InvariantCulture)))
         {
             return result;
         }

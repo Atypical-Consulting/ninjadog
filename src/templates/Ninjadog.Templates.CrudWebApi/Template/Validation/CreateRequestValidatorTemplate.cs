@@ -46,7 +46,7 @@ public sealed class CreateRequestValidatorTemplate
     {
         var properties = entity.Properties;
 
-        IndentedStringBuilder sb = new(2);
+        IndentedStringBuilder stringBuilder = new(2);
 
         foreach (var (propertyName, propertyValue) in properties)
         {
@@ -55,18 +55,19 @@ public sealed class CreateRequestValidatorTemplate
                 continue;
             }
 
-            sb.AppendLine($"RuleFor(x => x.{propertyName})");
-            sb.IncrementIndent();
-            sb.AppendLine(".NotEmpty()");
-            sb.AppendLine($".WithMessage(\"{propertyName} is required!\");");
-            sb.DecrementIndent();
+            stringBuilder
+                .AppendLine($"RuleFor(x => x.{propertyName})")
+                .IncrementIndent()
+                .AppendLine(".NotEmpty()")
+                .AppendLine($".WithMessage(\"{propertyName} is required!\");")
+                .DecrementIndent();
 
             if (propertyName != properties.Last().Key)
             {
-                sb.AppendLine();
+                stringBuilder.AppendLine();
             }
         }
 
-        return sb.ToString();
+        return stringBuilder.ToString();
     }
 }

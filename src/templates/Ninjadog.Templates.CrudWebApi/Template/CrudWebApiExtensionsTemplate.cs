@@ -120,14 +120,15 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
 
     private static string GenerateModelDependenciesInjection(List<NinjadogEntityWithKey> entities)
     {
-        IndentedStringBuilder sb = new(2);
+        IndentedStringBuilder stringBuilder = new(2);
 
         foreach (var st in entities.Select(model => model.StringTokens))
         {
-            sb.AppendLine($"services.AddSingleton<{st.InterfaceModelRepository}, {st.ClassModelRepository}>();");
-            sb.AppendLine($"services.AddSingleton<{st.InterfaceModelService}, {st.ClassModelService}>();");
+            stringBuilder
+                .AppendLine($"services.AddSingleton<{st.InterfaceModelRepository}, {st.ClassModelRepository}>();")
+                .AppendLine($"services.AddSingleton<{st.InterfaceModelService}, {st.ClassModelService}>();");
         }
 
-        return sb.ToString();
+        return stringBuilder.ToString();
     }
 }
