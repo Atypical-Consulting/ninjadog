@@ -2,9 +2,6 @@
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
-using Ninjadog.Settings.Entities;
-using Ninjadog.Settings.Entities.Properties;
-
 namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 /// <summary>
@@ -29,7 +26,7 @@ public sealed class TodoAppEntities : NinjadogEntities
             new NinjadogEntityProperties
             {
                 { "Id", new NinjadogEntityId() },
-                { "Title", new NinjadogEntityProperty(nameof(String)) },
+                { "Title", new NinjadogEntityProperty<string>() },
 
                 // { "Items", new NinjadogEntityProperty($"List<{TodoItem}>") },
                 // { "Categories", new NinjadogEntityProperty($"List<{TodoCategory}>") },
@@ -42,18 +39,18 @@ public sealed class TodoAppEntities : NinjadogEntities
             new NinjadogEntityProperties
             {
                 { "Id", new NinjadogEntityId() },
-                { "Description", new NinjadogEntityProperty(nameof(String)) },
-                { "IsCompleted", new NinjadogEntityProperty(nameof(Boolean)) },
-                { "DueDate", new NinjadogEntityProperty(nameof(DateTime)) },
+                { "Description", new NinjadogEntityProperty<string>() },
+                { "IsCompleted", new NinjadogEntityProperty<bool>() },
+                { "DueDate", new NinjadogEntityProperty<DateTime>() },
             }));
 
         Add(TodoCategory, new NinjadogEntity(
             new NinjadogEntityProperties
             {
                 { "Id", new NinjadogEntityId() },
-                { "Name", new NinjadogEntityProperty(nameof(String)) },
-                { "Color", new NinjadogEntityProperty(nameof(String)) },
-                { "Icon", new NinjadogEntityProperty(nameof(String)) },
+                { "Name", new NinjadogEntityProperty<string>() },
+                { "Color", new NinjadogEntityProperty<string>() },
+                { "Icon", new NinjadogEntityProperty<string>() },
             }));
     }
 }

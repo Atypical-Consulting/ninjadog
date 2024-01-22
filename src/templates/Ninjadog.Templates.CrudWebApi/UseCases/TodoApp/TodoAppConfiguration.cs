@@ -2,8 +2,6 @@
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
-using Ninjadog.Settings.Config;
-
 namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 /// <summary>

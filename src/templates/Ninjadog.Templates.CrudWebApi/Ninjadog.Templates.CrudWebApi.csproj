@@ -10,10 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AdditionalFiles Include="UseCases\TodoApp\ninjadog.json" />
   </ItemGroup>
 

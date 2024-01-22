@@ -2,9 +2,7 @@
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
-using Ninjadog.Settings.Entities.Properties;
-
-namespace Ninjadog.Settings.Extensions;
+namespace Ninjadog.Settings.Extensions.Entities.Properties;
 
 /// <summary>
 /// Provides extension methods for <see cref="NinjadogEntityProperties"/> collections.

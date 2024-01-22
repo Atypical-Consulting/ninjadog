@@ -2,12 +2,12 @@
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
+namespace Ninjadog.Templates.CrudWebAPI.UseCases.RestaurantBooking;
 
 /// <summary>
-/// Represents the settings for the TodoApp use case.
+/// Represents the settings for the RestaurantBooking use case.
 /// </summary>
-public record TodoAppSettings()
+public record RestaurantBookingSettings()
     : NinjadogSettings(
-        new TodoAppConfiguration(),
-        new TodoAppEntities());
+        new RestaurantBookingConfiguration(),
+        new RestaurantBookingEntities());

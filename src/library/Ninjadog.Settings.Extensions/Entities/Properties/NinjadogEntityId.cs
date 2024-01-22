@@ -2,9 +2,7 @@
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
-using Ninjadog.Settings.Entities.Properties;
-
-namespace Ninjadog.Settings.Extensions;
+namespace Ninjadog.Settings.Extensions.Entities.Properties;
 
 /// <summary>
 /// Represents a special entity property that is designated as an identifier (ID).
@@ -12,4 +10,4 @@ namespace Ninjadog.Settings.Extensions;
 /// and setting its type to <see cref="Guid"/>, commonly used for unique identifiers.
 /// </summary>
 public record NinjadogEntityId()
-    : NinjadogEntityProperty(nameof(Guid), true);
+    : NinjadogEntityProperty<Guid>(true);
