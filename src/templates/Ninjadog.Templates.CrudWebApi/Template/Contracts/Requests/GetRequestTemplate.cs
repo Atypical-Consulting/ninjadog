@@ -20,6 +20,7 @@ public sealed class GetRequestTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Contracts.Requests";
         var fileName = $"{st.ClassGetModelRequest}.cs";
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -31,7 +32,7 @@ public sealed class GetRequestTemplate
               /// </summary>
               public partial class {{st.ClassGetModelRequest}}
               {
-                  public Guid Id { get; init; }
+                  public {{entityKey.Type}} Id { get; init; }
               }
               """;
 

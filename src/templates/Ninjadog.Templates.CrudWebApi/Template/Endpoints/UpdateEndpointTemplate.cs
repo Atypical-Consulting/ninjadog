@@ -20,6 +20,7 @@ public sealed class UpdateEndpointTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Endpoints";
         var fileName = Path.Combine(st.Model, $"{st.ClassUpdateModelEndpoint}.cs");
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -46,7 +47,7 @@ public sealed class UpdateEndpointTemplate
 
                   public override async Task HandleAsync({{st.ClassUpdateModelRequest}} req, CancellationToken ct)
                   {
-                      var {{st.VarExistingModel}} = await {{st.PropertyModelService}}.GetAsync(req.Id);
+                      var {{st.VarExistingModel}} = await {{st.PropertyModelService}}.GetAsync(req.{{entityKey.Key}});
 
                       if ({{st.VarExistingModel}} is null)
                       {

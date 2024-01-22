@@ -20,6 +20,7 @@ public sealed class ServiceInterfaceTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Services";
         var fileName = $"{st.InterfaceModelService}.cs";
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -30,15 +31,40 @@ public sealed class ServiceInterfaceTemplate
 
               public partial interface {{st.InterfaceModelService}}
               {
+                  /// <summary>
+                  /// Asynchronously creates a new {{st.ModelHumanized}}.
+                  /// </summary>
+                  /// <param name="{{st.VarModel}}">The {{st.ModelHumanized}} to create.</param>
+                  /// <returns>True if the creation was successful, false otherwise.</returns>
+                  /// <exception cref="ValidationException">Thrown if a {{st.ModelHumanized}} with the same ID already exists.</exception>
                   Task<bool> CreateAsync({{st.Model}} {{st.VarModel}});
 
-                  Task<{{st.Model}}?> GetAsync(Guid id);
+                  /// <summary>
+                  /// Retrieves a {{st.ModelHumanized}} by its ID.
+                  /// </summary>
+                  /// <param name="id">The ID of the {{st.ModelHumanized}} to retrieve.</param>
+                  /// <returns>The requested {{st.ModelHumanized}}, or null if not found.</returns>
+                  Task<{{st.Model}}?> GetAsync({{entityKey.Type}} id);
 
+                  /// <summary>
+                  /// Retrieves all {{st.ModelsHumanized}}.
+                  /// </summary>
+                  /// <returns>A collection of all {{st.ModelsHumanized}}.</returns>
                   Task<IEnumerable<{{st.Model}}>> GetAllAsync();
 
+                  /// <summary>
+                  /// Updates an existing {{st.ModelHumanized}}.
+                  /// </summary>
+                  /// <param name="{{st.VarModel}}">The {{st.ModelHumanized}} to update.</param>
+                  /// <returns>True if the update was successful, false otherwise.</returns>
                   Task<bool> UpdateAsync({{st.Model}} {{st.VarModel}});
 
-                  Task<bool> DeleteAsync(Guid id);
+                  /// <summary>
+                  /// Deletes a {{st.ModelHumanized}} by its ID.
+                  /// </summary>
+                  /// <param name="id">The ID of the {{st.ModelHumanized}} to delete.</param>
+                  /// <returns>True if the deletion was successful, false otherwise.</returns>
+                  Task<bool> DeleteAsync({{entityKey.Type}} id);
               }
               """;
 

@@ -41,7 +41,7 @@ public sealed class RepositoryInterfaceTemplate
 
                   Task<bool> UpdateAsync({{st.ClassModelDto}} {{st.VarModel}});
 
-                  Task<bool> DeleteAsync(Guid id);
+                  Task<bool> DeleteAsync({{entityKey.Type}} id);
               }
               """;
 

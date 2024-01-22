@@ -20,6 +20,7 @@ public sealed class CreateEndpointTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Endpoints";
         var fileName = Path.Combine(st.Model, $"{st.ClassCreateModelEndpoint}.cs");
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -52,7 +53,7 @@ public sealed class CreateEndpointTemplate
 
                       var {{st.VarModelResponse}} = {{st.VarModel}}.{{st.MethodToModelResponse}}();
                       await SendCreatedAtAsync<{{st.ClassGetModelEndpoint}}>(
-                          new { Id = {{st.VarModel}}.Id }, {{st.VarModelResponse}}, generateAbsoluteUrl: true, cancellation: ct);
+                          new { Id = {{st.VarModel}}.{{entityKey.Key}} }, {{st.VarModelResponse}}, generateAbsoluteUrl: true, cancellation: ct);
                   }
               }
               """;

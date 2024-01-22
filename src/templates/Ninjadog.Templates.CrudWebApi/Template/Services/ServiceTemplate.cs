@@ -40,12 +40,7 @@ public sealed class ServiceTemplate
               public partial class {{st.ClassModelService}}({{st.InterfaceModelRepository}} {{st.VarModelRepository}})
                   : {{st.InterfaceModelService}}
               {
-                  /// <summary>
-                  /// Asynchronously creates a new {{st.ModelHumanized}}.
-                  /// </summary>
-                  /// <param name="{{st.VarModel}}">The {{st.ModelHumanized}} to create.</param>
-                  /// <returns>True if the creation was successful, false otherwise.</returns>
-                  /// <exception cref="ValidationException">Thrown if a {{st.ModelHumanized}} with the same ID already exists.</exception>
+                  /// <inheritdoc />
                   public async Task<bool> CreateAsync({{st.Model}} {{st.VarModel}})
                   {
                       var {{st.VarExistingModel}} = await {{st.VarModelRepository}}.GetAsync({{st.VarModel}}.{{entityKey.Key}});
@@ -61,45 +56,30 @@ public sealed class ServiceTemplate
                       var {{st.VarModelDto}} = {{st.VarModel}}.{{st.MethodToModelDto}}();
                       return await {{st.VarModelRepository}}.CreateAsync({{st.VarModelDto}});
                   }
-
-                  /// <summary>
-                  /// Retrieves a {{st.ModelHumanized}} by its ID.
-                  /// </summary>
-                  /// <param name="id">The ID of the {{st.ModelHumanized}} to retrieve.</param>
-                  /// <returns>The requested {{st.ModelHumanized}}, or null if not found.</returns>
-                  public async Task<{{st.Model}}?> GetAsync(Guid id)
+              
+                  /// <inheritdoc />
+                  public async Task<{{st.Model}}?> GetAsync({{entityKey.Type}} id)
                   {
                       var {{st.VarModelDto}} = await {{st.VarModelRepository}}.GetAsync(id);
                       return {{st.VarModelDto}}?.{{st.MethodToModel}}();
                   }
-
-                  /// <summary>
-                  /// Retrieves all {{st.ModelsHumanized}}.
-                  /// </summary>
-                  /// <returns>A collection of all {{st.ModelsHumanized}}.</returns>
+              
+                  /// <inheritdoc />
                   public async Task<IEnumerable<{{st.Model}}>> GetAllAsync()
                   {
                       var {{st.VarModelDtos}} = await {{st.VarModelRepository}}.GetAllAsync();
                       return {{st.VarModelDtos}}.Select(x => x.{{st.MethodToModel}}());
                   }
-
-                  /// <summary>
-                  /// Updates an existing {{st.ModelHumanized}}.
-                  /// </summary>
-                  /// <param name="{{st.VarModel}}">The {{st.ModelHumanized}} to update.</param>
-                  /// <returns>True if the update was successful, false otherwise.</returns>
+              
+                  /// <inheritdoc />
                   public async Task<bool> UpdateAsync({{st.Model}} {{st.VarModel}})
                   {
                       var {{st.VarModelDto}} = {{st.VarModel}}.{{st.MethodToModelDto}}();
                       return await {{st.VarModelRepository}}.UpdateAsync({{st.VarModelDto}});
                   }
-
-                  /// <summary>
-                  /// Deletes a {{st.ModelHumanized}} by its ID.
-                  /// </summary>
-                  /// <param name="id">The ID of the {{st.ModelHumanized}} to delete.</param>
-                  /// <returns>True if the deletion was successful, false otherwise.</returns>
-                  public async Task<bool> DeleteAsync(Guid id)
+              
+                  /// <inheritdoc />
+                  public async Task<bool> DeleteAsync({{entityKey.Type}} id)
                   {
                       return await {{st.VarModelRepository}}.DeleteAsync(id);
                   }

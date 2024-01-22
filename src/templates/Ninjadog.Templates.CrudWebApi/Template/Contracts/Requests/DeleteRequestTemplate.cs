@@ -20,6 +20,7 @@ public sealed class DeleteRequestTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Contracts.Requests";
         var fileName = $"{st.ClassDeleteModelRequest}.cs";
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -31,7 +32,7 @@ public sealed class DeleteRequestTemplate
               /// </summary>
               public partial class {{st.ClassDeleteModelRequest}}
               {
-                  public Guid Id { get; init; }
+                  public {{entityKey.Type}} Id { get; init; }
               }
               """;
 

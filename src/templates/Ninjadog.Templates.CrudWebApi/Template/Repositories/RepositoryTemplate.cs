@@ -71,7 +71,7 @@ public sealed class RepositoryTemplate
                           return result > 0;
                   }
 
-                  public async Task<bool> DeleteAsync(Guid id)
+                  public async Task<bool> DeleteAsync({{entityKey.Type}} id)
                   {
                       using var connection = await connectionFactory.CreateConnectionAsync();
 
