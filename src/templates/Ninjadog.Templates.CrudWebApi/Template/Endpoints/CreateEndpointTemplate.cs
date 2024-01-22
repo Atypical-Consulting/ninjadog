@@ -1,7 +1,6 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 
@@ -22,7 +21,7 @@ public sealed class CreateEndpointTemplate
         var ns = $"{rootNamespace}.Endpoints";
         var fileName = Path.Combine(st.Model, $"{st.ClassCreateModelEndpoint}.cs");
 
-        return CreateNinjadogContentFile(fileName,
+        var content =
             $$"""
 
               using {{rootNamespace}}.Contracts.Requests;
@@ -56,6 +55,8 @@ public sealed class CreateEndpointTemplate
                           new { Id = {{st.VarModel}}.Id }, {{st.VarModelResponse}}, generateAbsoluteUrl: true, cancellation: ct);
                   }
               }
-              """);
+              """;
+
+        return CreateNinjadogContentFile(fileName, content);
     }
 }

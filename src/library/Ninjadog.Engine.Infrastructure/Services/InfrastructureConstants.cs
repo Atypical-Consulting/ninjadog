@@ -1,14 +1,32 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Ninjadog.Engine.Infrastructure.Services;
 
+/// <summary>
+/// Provides a set of constants used throughout the infrastructure layer of the Ninjadog Engine.
+/// </summary>
 public static class InfrastructureConstants
 {
+    /// <summary>
+    /// Represents the special folder used to store user profiles.
+    /// </summary>
     public const Environment.SpecialFolder UserProfile = Environment.SpecialFolder.UserProfile;
+
+    /// <summary>
+    /// The default directory name for Ninjadog projects within the user profile directory.
+    /// </summary>
     public const string NinjadogProjects = "NinjadogProjects";
+
+    /// <summary>
+    /// The default file name for Ninjadog settings, stored in JSON format.
+    /// </summary>
     public const string NinjadogSettingsFile = "ninjadog.json";
+
+    /// <summary>
+    /// Gets the base folder path for storing Ninjadog projects and configurations,
+    /// typically located within the user's profile directory.
+    /// </summary>
     public static string BaseFolder { get; } = Path.Combine(Environment.GetFolderPath(UserProfile), NinjadogProjects);
 }

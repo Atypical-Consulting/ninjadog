@@ -1,23 +1,10 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
-using System.ComponentModel;
 using Ninjadog.CLI.Utilities;
 
 namespace Ninjadog.CLI.Commands;
-
-internal sealed class NinjadogCommandSettings : CommandSettings
-{
-    [CommandOption("-i|--in-memory")]
-    [DefaultValue(true)]
-    public bool InMemory { get; init; }
-
-    [CommandOption("-d|--disk")]
-    [DefaultValue(true)]
-    public bool Disk { get; init; }
-}
 
 internal sealed class NinjadogCommand(
     IServiceProvider serviceProvider,

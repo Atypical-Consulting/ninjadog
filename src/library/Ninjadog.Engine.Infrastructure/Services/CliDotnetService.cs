@@ -1,7 +1,6 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Ninjadog.Engine.Infrastructure.Services;
 
@@ -14,7 +13,7 @@ public sealed class CliDotnetService
     : CliServiceBase, ICliDotnetService
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CliDotnetService"/>.
+    /// Initializes a new instance of the <see cref="CliDotnetService"/> class.
     /// During initialization, it checks the availability of the .NET CLI on the system.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown if the .NET CLI is not available or fails to execute.</exception>

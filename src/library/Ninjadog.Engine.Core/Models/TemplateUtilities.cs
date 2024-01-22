@@ -1,7 +1,6 @@
-﻿// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+﻿// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Ninjadog.Engine.Core.Models;
 
@@ -23,43 +22,11 @@ public static class TemplateUtilities
     public const string CompanyName = "Atypical Consulting SRL";
 
     /// <summary>
-    /// Wraps the provided code in a default layout, including headers and nullability annotations.
-    /// This method adds common elements like file headers and nullability enable/disable statements
-    /// to the provided code, creating a standardized format for generated source files.
-    /// </summary>
-    /// <param name="code">The code snippet to be wrapped in the default layout.</param>
-    /// <param name="nullable">Whether to enable nullable reference types in the generated code.</param>
-    /// <returns>The code wrapped in the default layout with necessary headers and nullability annotations.</returns>
-    public static string DefaultCodeLayout(string code, bool nullable = false)
-    {
-        return Header +
-               (nullable ? NullableEnable : string.Empty) +
-               "\n" +
-               code +
-               "\n" +
-               (nullable ? NullableDisable : string.Empty);
-    }
-
-    /// <summary>
-    /// Generates a file-scoped namespace declaration based on the provided namespace string.
-    /// This method creates a concise namespace declaration that applies to the entire source file,
-    /// allowing for a more streamlined and modern code layout.
-    /// </summary>
-    /// <param name="ns">The namespace to be used in the declaration. If null, no declaration is generated.</param>
-    /// <returns>A file-scoped namespace declaration, or null if the input namespace is null.</returns>
-    public static string? WriteFileScopedNamespace(string? ns)
-    {
-        return ns is not null
-            ? $"namespace {ns};"
-            : null;
-    }
-
-    /// <summary>
     /// Gets a standard header comment for auto-generated source files.
     /// The header includes metadata such as the company and developer name, generation date, and version.
     /// It indicates that the file is auto-generated and warns against manual modifications.
     /// </summary>
-    public static string Header =>
+    private static string Header =>
         $"""
          //------------------------------------------------------------------------------
          // This code was powered by the Ninjadog Engine
@@ -73,7 +40,6 @@ public static class TemplateUtilities
          // should be coordinated with Ninjadog support services.
          //------------------------------------------------------------------------------
          """;
-
 
     /// <summary>
     /// Gets a directive to enable nullable reference types in the generated code.
@@ -106,4 +72,36 @@ public static class TemplateUtilities
     /// </summary>
     private static string Version
         => typeof(TemplateUtilities).Assembly.GetName().Version?.ToString() ?? "0.0.0";
+
+    /// <summary>
+    /// Wraps the provided code in a default layout, including headers and nullability annotations.
+    /// This method adds common elements like file headers and nullability enable/disable statements
+    /// to the provided code, creating a standardized format for generated source files.
+    /// </summary>
+    /// <param name="code">The code snippet to be wrapped in the default layout.</param>
+    /// <param name="nullable">Whether to enable nullable reference types in the generated code.</param>
+    /// <returns>The code wrapped in the default layout with necessary headers and nullability annotations.</returns>
+    public static string DefaultCodeLayout(string code, bool nullable = false)
+    {
+        return Header +
+               (nullable ? NullableEnable : string.Empty) +
+               "\n" +
+               code +
+               "\n" +
+               (nullable ? NullableDisable : string.Empty);
+    }
+
+    /// <summary>
+    /// Generates a file-scoped namespace declaration based on the provided namespace string.
+    /// This method creates a concise namespace declaration that applies to the entire source file,
+    /// allowing for a more streamlined and modern code layout.
+    /// </summary>
+    /// <param name="ns">The namespace to be used in the declaration. If null, no declaration is generated.</param>
+    /// <returns>A file-scoped namespace declaration, or null if the input namespace is null.</returns>
+    public static string? WriteFileScopedNamespace(string? ns)
+    {
+        return ns is not null
+            ? $"namespace {ns};"
+            : null;
+    }
 }

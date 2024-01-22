@@ -1,12 +1,9 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 using System.Globalization;
 using System.Text.RegularExpressions;
-
-// ReSharper disable UnusedMember.Global
 
 namespace Ninjadog.Helpers;
 
@@ -17,9 +14,11 @@ namespace Ninjadog.Helpers;
 /// Provides methods for string manipulations commonly used in inflecting words between different cases.
 /// This static class includes functionality for pluralization, singularization, and various case conversions.
 /// </summary>
-public static class Inflector
+public static partial class Inflector
 {
-    #region Default Rules
+    private static readonly List<InflectorRule> Plurals = [];
+    private static readonly List<InflectorRule> Singulars = [];
+    private static readonly List<string> Uncountables = [];
 
     static Inflector()
     {
@@ -41,7 +40,7 @@ public static class Inflector
         AddPlural("^(ox)$", "$1en");
         AddPlural("(quiz)$", "$1zes");
 
-        AddSingular("s$", "");
+        AddSingular("s$", string.Empty);
         AddSingular("(n)ews$", "$1ews");
         AddSingular("([ti])a$", "$1um");
         AddSingular("((a)naly|(b)a|(d)iagno|(p)arenthe|(p)rogno|(s)ynop|(t)he)ses$", "$1$2sis");
@@ -86,45 +85,6 @@ public static class Inflector
         AddUncountable("aircraft");
     }
 
-    #endregion
-
-    private sealed class Rule(string pattern, string replacement)
-    {
-        private readonly Regex _regex = new(pattern, RegexOptions.IgnoreCase);
-
-        public string? Apply(string word)
-        {
-            return _regex.IsMatch(word)
-                ? _regex.Replace(word, replacement)
-                : null;
-        }
-    }
-
-    private static void AddIrregular(string singular, string plural)
-    {
-        AddPlural($"({singular[0]}){singular[1..]}$", $"$1{plural[1..]}");
-        AddSingular($"({plural[0]}){plural[1..]}$", $"$1{singular[1..]}");
-    }
-
-    private static void AddUncountable(string word)
-    {
-        Uncountables.Add(word.ToLowerInvariant());
-    }
-
-    private static void AddPlural(string rule, string replacement)
-    {
-        Plurals.Add(new Rule(rule, replacement));
-    }
-
-    private static void AddSingular(string rule, string replacement)
-    {
-        Singulars.Add(new Rule(rule, replacement));
-    }
-
-    private static readonly List<Rule> Plurals = [];
-    private static readonly List<Rule> Singulars = [];
-    private static readonly List<string> Uncountables = [];
-
     /// <summary>
     /// Converts a word to its plural form.
     /// </summary>
@@ -143,26 +103,6 @@ public static class Inflector
     public static string Singularize(this string word)
     {
         return ApplyRules(Singulars, word)!;
-    }
-
-    private static string? ApplyRules(IReadOnlyList<Rule> rules, string word)
-    {
-        var result = word;
-
-        if (Uncountables.Contains(word.ToLower(CultureInfo.InvariantCulture)))
-        {
-            return result;
-        }
-
-        for (var i = rules.Count - 1; i >= 0; i--)
-        {
-            if ((result = rules[i].Apply(word)) != null)
-            {
-                break;
-            }
-        }
-
-        return result;
     }
 
     /// <summary>
@@ -218,13 +158,11 @@ public static class Inflector
     /// <returns>The underscored form of the word.</returns>
     public static string Underscore(this string pascalCasedWord)
     {
-        return Regex.Replace(
-                Regex.Replace(
-                    Regex.Replace(pascalCasedWord, "([A-Z]+)([A-Z][a-z])", "$1_$2"), @"([a-z\d])([A-Z])",
-                    "$1_$2"),
-                @"[-\s]",
-                "_")
-            .ToLowerInvariant();
+        var temp = UppercaseFollowedByLowercaseRegex().Replace(pascalCasedWord, "$1_$2");
+        temp = LowercaseOrDigitToUppercaseRegex().Replace(temp, "$1_$2");
+        temp = HyphenOrWhitespaceToUnderscoreRegex().Replace(temp, "_");
+
+        return temp.ToLowerInvariant();
     }
 
     /// <summary>
@@ -267,6 +205,57 @@ public static class Inflector
         return Ordanize(number, number.ToString((IFormatProvider?)null));
     }
 
+    /// <summary>
+    /// Converts an underscored word to a dashed (kebab case) format.
+    /// </summary>
+    /// <param name="underscoredWord">The underscored word to be dasherized.</param>
+    /// <returns>The dashed form of the word.</returns>
+    public static string Dasherize(this string underscoredWord)
+    {
+        return underscoredWord.Replace('_', '-');
+    }
+
+    private static void AddIrregular(string singular, string plural)
+    {
+        AddPlural($"({singular[0]}){singular[1..]}$", $"$1{plural[1..]}");
+        AddSingular($"({plural[0]}){plural[1..]}$", $"$1{singular[1..]}");
+    }
+
+    private static void AddUncountable(string word)
+    {
+        Uncountables.Add(word.ToLowerInvariant());
+    }
+
+    private static void AddPlural(string rule, string replacement)
+    {
+        Plurals.Add(new InflectorRule(rule, replacement));
+    }
+
+    private static void AddSingular(string rule, string replacement)
+    {
+        Singulars.Add(new InflectorRule(rule, replacement));
+    }
+
+    private static string? ApplyRules(IReadOnlyList<InflectorRule> rules, string word)
+    {
+        var result = word;
+
+        if (Uncountables.Contains(word.ToLower(CultureInfo.InvariantCulture)))
+        {
+            return result;
+        }
+
+        for (var i = rules.Count - 1; i >= 0; i--)
+        {
+            if ((result = rules[i].Apply(word)) != null)
+            {
+                break;
+            }
+        }
+
+        return result;
+    }
+
     private static string Ordanize(int number, string numberString)
     {
         var nMod100 = number % 100;
@@ -278,17 +267,16 @@ public static class Inflector
                 1 => $"{numberString}st",
                 2 => $"{numberString}nd",
                 3 => $"{numberString}rd",
-                _ => $"{numberString}th"
+                _ => $"{numberString}th",
             };
     }
 
-    /// <summary>
-    /// Converts an underscored word to a dashed (kebab case) format.
-    /// </summary>
-    /// <param name="underscoredWord">The underscored word to be dasherized.</param>
-    /// <returns>The dashed form of the word.</returns>
-    public static string Dasherize(this string underscoredWord)
-    {
-        return underscoredWord.Replace('_', '-');
-    }
+    [GeneratedRegex("([A-Z]+)([A-Z][a-z])")]
+    private static partial Regex UppercaseFollowedByLowercaseRegex();
+
+    [GeneratedRegex(@"([a-z\d])([A-Z])")]
+    private static partial Regex LowercaseOrDigitToUppercaseRegex();
+
+    [GeneratedRegex(@"[-\s]")]
+    private static partial Regex HyphenOrWhitespaceToUnderscoreRegex();
 }

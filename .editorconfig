@@ -259,8 +259,8 @@ dotnet_diagnostic.IDE0060.severity = warning
 dotnet_diagnostic.IDE0062.severity = warning
 
 # IDE0073: File header
-dotnet_diagnostic.IDE0073.severity = warning
-file_header_template = Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.\nThis source code is proprietary and confidential.\nUnauthorized copying, modification, distribution, or use of this source code, in whole or in part,\nwithout express written permission from Atypical Consulting SRL is strictly prohibited.
+#dotnet_diagnostic.IDE0073.severity = warning
+#file_header_template = Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.\nThis source code is proprietary and confidential.\nUnauthorized copying, modification, distribution, or use of this source code, in whole or in part,\nwithout express written permission from Atypical Consulting SRL is strictly prohibited.
 
 # IDE0161: Convert to file-scoped namespace
 dotnet_diagnostic.IDE0161.severity = warning

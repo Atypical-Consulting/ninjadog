@@ -1,7 +1,6 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 
@@ -26,7 +25,7 @@ public sealed class DomainToApiContractMapperTemplate
         var toModelResponseMethods = string.Join("\n", entities.Select(GenerateToModelResponseMethods));
         var toModelsResponseMethods = string.Join("\n", entities.Select(GenerateToModelsResponseMethods));
 
-        return CreateNinjadogContentFile(fileName,
+        var content =
             $$"""
 
               using {{rootNamespace}}.Contracts.Responses;
@@ -39,7 +38,9 @@ public sealed class DomainToApiContractMapperTemplate
                   {{toModelsResponseMethods}}
                   {{toModelResponseMethods}}
               }
-              """);
+              """;
+
+        return CreateNinjadogContentFile(fileName, content);
     }
 
     private static string GenerateToModelResponseMethods(NinjadogEntityWithKey entity)
@@ -57,7 +58,7 @@ public sealed class DomainToApiContractMapperTemplate
 
             var baseTypeName = p.Type;
             var isValueOf = baseTypeName is "ValueOf";
-            var valueOfArgument = p.Type ?? "";
+            var valueOfArgument = p.Type ?? string.Empty;
 
             sb.Append($"{p.Key} = {st.VarModel}.{p.Key}");
 
@@ -109,7 +110,7 @@ public sealed class DomainToApiContractMapperTemplate
 
             var baseTypeName = p.Type;
             var isValueOf = baseTypeName is "ValueOf";
-            var valueOfArgument = p.Type ?? "";
+            var valueOfArgument = p.Type ?? string.Empty;
 
             sb.Append($"{p.Key} = x.{p.Key}");
 

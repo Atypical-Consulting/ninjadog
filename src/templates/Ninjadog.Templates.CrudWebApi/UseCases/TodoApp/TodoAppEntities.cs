@@ -1,7 +1,6 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 using Ninjadog.Settings.Entities;
 using Ninjadog.Settings.Entities.Properties;
@@ -31,6 +30,7 @@ public sealed class TodoAppEntities : NinjadogEntities
             {
                 { "Id", new NinjadogEntityId() },
                 { "Title", new NinjadogEntityProperty(nameof(String)) },
+
                 // { "Items", new NinjadogEntityProperty($"List<{TodoItem}>") },
                 // { "Categories", new NinjadogEntityProperty($"List<{TodoCategory}>") },
                 // TODO: Implement the following properties
@@ -44,7 +44,7 @@ public sealed class TodoAppEntities : NinjadogEntities
                 { "Id", new NinjadogEntityId() },
                 { "Description", new NinjadogEntityProperty(nameof(String)) },
                 { "IsCompleted", new NinjadogEntityProperty(nameof(Boolean)) },
-                { "DueDate", new NinjadogEntityProperty(nameof(DateTime)) }
+                { "DueDate", new NinjadogEntityProperty(nameof(DateTime)) },
             }));
 
         Add(TodoCategory, new NinjadogEntity(

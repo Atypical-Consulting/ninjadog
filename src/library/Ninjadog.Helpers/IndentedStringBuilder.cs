@@ -1,15 +1,12 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
-
-// https://raw.githubusercontent.com/dotnet/efcore/4a2e4ebc03f07536e400843105b8ed3c9a32a10b/src/EFCore/Infrastructure/IndentedStringBuilder.cs
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 using System.Text;
 
+// https://raw.githubusercontent.com/dotnet/efcore/4a2e4ebc03f07536e400843105b8ed3c9a32a10b/src/EFCore/Infrastructure/IndentedStringBuilder.cs
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable UnusedMember.Global
-
 namespace Ninjadog.Helpers;
 
 /// <summary>
@@ -28,13 +25,14 @@ namespace Ninjadog.Helpers;
 public sealed class IndentedStringBuilder(byte indent)
 {
     private const byte IndentSize = 4;
-    private byte _indent = indent;
-    private bool _indentPending = true;
 
     private readonly StringBuilder _stringBuilder = new();
 
+    private byte _indent = indent;
+    private bool _indentPending = true;
+
     /// <summary>
-    ///     The current length of the built string.
+    ///     Gets the current length of the built string.
     /// </summary>
     public int Length
         => _stringBuilder.Length;

@@ -1,7 +1,6 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Ninjadog.Engine.Core.Abstractions;
 
@@ -12,17 +11,17 @@ namespace Ninjadog.Engine.Core.Abstractions;
 public interface INinjadogAppService
 {
     /// <summary>
-    /// The name of the application.
+    /// Gets the name of the application.
     /// </summary>
     string AppName { get; }
 
     /// <summary>
-    /// The directory of the application.
+    /// Gets the directory of the application.
     /// </summary>
     string AppDirectory { get; }
 
     /// <summary>
-    /// The path of the project file for the application.
+    /// Gets the path of the project file for the application.
     /// </summary>
     string ProjectPath { get; }
 

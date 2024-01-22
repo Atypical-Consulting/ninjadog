@@ -1,7 +1,6 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Ninjadog.Helpers;
 
@@ -15,103 +14,103 @@ public sealed record StringTokens(string Pascal)
     : NamingConventionBase(Pascal)
 {
     /// <summary>
-    /// The original PascalCase model name.
+    /// Gets the original PascalCase model name.
     /// </summary>
     public string Model
         => Pascal;
 
     /// <summary>
-    /// The humanized, lowercase format of the model name.
+    /// Gets the humanized, lowercase format of the model name.
     /// </summary>
     public string ModelHumanized
         => Humanized;
 
     /// <summary>
-    /// The endpoint name in dashed format, typically used for URL paths.
+    /// Gets the endpoint name in dashed format, typically used for URL paths.
     /// </summary>
     public string ModelEndpoint
         => $"/{DashedPlural}";
 
     /// <summary>
-    /// The camelCase variant of the model name, commonly used for variable names.
+    /// Gets the camelCase variant of the model name, commonly used for variable names.
     /// </summary>
     public string VarModel
         => Camel;
 
     /// <summary>
-    /// The PascalCase name prefixed with 'existing', used for distinguishing between new and existing instances.
+    /// Gets the PascalCase name prefixed with 'existing', used for distinguishing between new and existing instances.
     /// </summary>
     public string VarExistingModel
         => $"existing{Pascal}";
 
     /// <summary>
-    /// The pluralized PascalCase name of the model, used for collections or groups of the entity.
+    /// Gets the pluralized PascalCase name of the model, used for collections or groups of the entity.
     /// </summary>
     public string Models
         => PascalPlural;
 
     /// <summary>
-    /// The humanized and pluralized lowercased name of the model, for readable representations of collections.
+    /// Gets the humanized and pluralized lowercased name of the model, for readable representations of collections.
     /// </summary>
     public string ModelsHumanized
         => HumanizedPlural;
 
     /// <summary>
-    /// The pluralized camelCase name of the model, used for variables representing collections of the model.
+    /// Gets the pluralized camelCase name of the model, used for variables representing collections of the model.
     /// </summary>
     public string VarModels
         => CamelPlural;
 
     /// <summary>
-    /// The name of the model's DTO class, following the pattern [ModelName]Dto.
+    /// Gets the name of the model's DTO class, following the pattern [ModelName]Dto.
     /// </summary>
     public string ClassModelDto
         => $"{Pascal}Dto";
 
     /// <summary>
-    /// The camelCase variable name for the model's DTO.
+    /// Gets the camelCase variable name for the model's DTO.
     /// </summary>
     public string VarModelDto
         => $"{Camel}Dto";
 
     /// <summary>
-    /// The pluralized camelCase variable name for a collection of the model's DTOs.
+    /// Gets the pluralized camelCase variable name for a collection of the model's DTOs.
     /// </summary>
     public string VarModelDtos
         => $"{Camel}Dtos";
 
     /// <summary>
-    /// The name of the class used for the model's response, following the pattern [ModelName]Response.
+    /// Gets the name of the class used for the model's response, following the pattern [ModelName]Response.
     /// </summary>
     public string ClassModelResponse
         => $"{Pascal}Response";
 
     /// <summary>
-    /// The camelCase variable name for the model's response.
+    /// Gets the camelCase variable name for the model's response.
     /// </summary>
     public string VarModelResponse
         => $"{Camel}Response";
 
     /// <summary>
-    /// The name of the class used for the response of a collection of models, following the pattern GetAll[ModelName]Response.
+    /// Gets the name of the class used for the response of a collection of models, following the pattern GetAll[ModelName]Response.
     /// </summary>
     public string ClassGetAllModelsResponse
         => $"GetAll{PascalPlural}Response";
 
     /// <summary>
-    /// The camelCase variable name for the response of a collection of models.
+    /// Gets the camelCase variable name for the response of a collection of models.
     /// </summary>
     public string VarModelsResponse
         => $"{CamelPlural}Response";
 
     /// <summary>
-    /// The interface name for the model's repository, following the pattern I[ModelName]Repository.
+    /// Gets the interface name for the model's repository, following the pattern I[ModelName]Repository.
     /// </summary>
     public string InterfaceModelRepository
         => $"I{Pascal}Repository";
 
     /// <summary>
-    /// The class name for the model's repository, following the pattern [ModelName]Repository.
+    /// Gets the class name for the model's repository, following the pattern [ModelName]Repository.
     /// </summary>
     public string ClassModelRepository
         => $"{Pascal}Repository";

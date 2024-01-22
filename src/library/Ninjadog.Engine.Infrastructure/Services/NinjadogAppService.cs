@@ -1,8 +1,6 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
-
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 using Ninjadog.Engine.Core.ValueObjects;
 
 namespace Ninjadog.Engine.Infrastructure.Services;
@@ -16,15 +14,6 @@ public class NinjadogAppService : INinjadogAppService
     private readonly NinjadogTemplateManifest _manifest;
     private readonly ICliDotnetService _dotnet;
     private readonly IFileService _fileService;
-
-    /// <inheritdoc />
-    public string AppName { get; }
-
-    /// <inheritdoc />
-    public string AppDirectory { get; }
-
-    /// <inheritdoc />
-    public string ProjectPath { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NinjadogAppService"/> class.
@@ -48,6 +37,15 @@ public class NinjadogAppService : INinjadogAppService
         AppDirectory ??= fileService.CreateAppFolder(AppName);
         ProjectPath = Path.Combine(AppDirectory, "src", $"{AppName}.{_manifest.Name}");
     }
+
+    /// <inheritdoc />
+    public string AppName { get; }
+
+    /// <inheritdoc />
+    public string AppDirectory { get; }
+
+    /// <inheritdoc />
+    public string ProjectPath { get; }
 
     /// <inheritdoc />
     public virtual INinjadogAppService CreateApp(bool deleteIfExists = true)

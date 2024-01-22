@@ -1,35 +1,18 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
-
-using System.ComponentModel;
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 
 namespace Ninjadog.CLI.Commands;
 
-internal sealed class FileSizeCommand : Command<FileSizeCommand.Settings>
+internal sealed class FileSizeCommand : Command<FileSizeCommandSettings>
 {
-    public sealed class Settings : CommandSettings
-    {
-        [Description("Path to search. Defaults to current directory.")]
-        [CommandArgument(0, "[searchPath]")]
-        public string? SearchPath { get; init; }
-
-        [CommandOption("-p|--pattern")]
-        public string? SearchPattern { get; init; }
-
-        [CommandOption("--hidden")]
-        [DefaultValue(true)]
-        public bool IncludeHidden { get; init; }
-    }
-
-    public override int Execute(CommandContext context, Settings settings)
+    public override int Execute(CommandContext context, FileSizeCommandSettings settings)
     {
         var searchOptions = new EnumerationOptions
         {
             AttributesToSkip = settings.IncludeHidden
                 ? FileAttributes.Hidden | FileAttributes.System
-                : FileAttributes.System
+                : FileAttributes.System,
         };
 
         var searchPattern = settings.SearchPattern ?? "*.*";

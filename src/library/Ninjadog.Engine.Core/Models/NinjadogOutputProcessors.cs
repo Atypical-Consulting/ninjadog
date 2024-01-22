@@ -1,8 +1,6 @@
-// Copyright (c) 2020-2024, Atypical Consulting SRL. All rights reserved.
-// This source code is proprietary and confidential.
-// Unauthorized copying, modification, distribution, or use of this source code, in whole or in part,
-// without express written permission from Atypical Consulting SRL is strictly prohibited.
-
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Atypical Consulting SRL licenses this file to you under the Proprietary license.
+// See the LICENSE file in the project root for full license information.
 using Microsoft.Extensions.DependencyInjection;
 using Ninjadog.Engine.Core.OutputProcessors;
 
@@ -15,7 +13,8 @@ namespace Ninjadog.Engine.Core.Models;
 public class NinjadogOutputProcessors : List<IOutputProcessor>
 {
     /// <summary>
-    /// Initializes a new instance of the OutputProcessorCollection with optional in-memory and disk output processors.
+    /// Initializes a new instance of the <see cref="NinjadogOutputProcessors"/> class
+    /// with optional in-memory and disk output processors.
     /// </summary>
     /// <param name="serviceProvider">The service provider to use for dependency injection.</param>
     /// <param name="inMemory">Indicates whether to include an in-memory output processor.</param>
