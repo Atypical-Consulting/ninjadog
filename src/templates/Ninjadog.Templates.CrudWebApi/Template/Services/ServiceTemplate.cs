@@ -20,6 +20,7 @@ public sealed class ServiceTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Services";
         var fileName = $"{st.ClassModelService}.cs";
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -47,10 +48,10 @@ public sealed class ServiceTemplate
                   /// <exception cref="ValidationException">Thrown if a {{st.ModelHumanized}} with the same ID already exists.</exception>
                   public async Task<bool> CreateAsync({{st.Model}} {{st.VarModel}})
                   {
-                      var {{st.VarExistingModel}} = await {{st.VarModelRepository}}.GetAsync({{st.VarModel}}.Id);
+                      var {{st.VarExistingModel}} = await {{st.VarModelRepository}}.GetAsync({{st.VarModel}}.{{entityKey.Key}});
                       if ({{st.VarExistingModel}} is not null)
                       {
-                          var message = $"A {{st.ModelHumanized}} with id {{{st.VarModel}}.Id} already exists";
+                          var message = $"A {{st.ModelHumanized}} with id {{{st.VarModel}}.{{entityKey.Key}}} already exists";
                           throw new ValidationException(message, new []
                           {
                               new ValidationFailure(nameof({{st.Model}}), message)

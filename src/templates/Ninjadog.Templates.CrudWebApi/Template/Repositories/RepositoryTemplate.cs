@@ -20,6 +20,7 @@ public sealed class RepositoryTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Repositories";
         var fileName = $"{st.ClassModelRepository}.cs";
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -44,7 +45,7 @@ public sealed class RepositoryTemplate
                       return result > 0;
                   }
 
-                  public async Task<{{st.ClassModelDto}}?> GetAsync(Guid id)
+                  public async Task<{{st.ClassModelDto}}?> GetAsync({{entityKey.Type}} id)
                   {
                       using var connection = await connectionFactory.CreateConnectionAsync();
 

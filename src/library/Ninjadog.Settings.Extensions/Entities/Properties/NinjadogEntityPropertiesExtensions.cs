@@ -25,4 +25,18 @@ public static class NinjadogEntityPropertiesExtensions
             .Select(x => new NinjadogEntityPropertyWithKey(x.Key, x.Value))
             .ToList();
     }
+
+    /// <summary>
+    /// Gets the entity key from the <see cref="NinjadogEntityProperties"/> collection.
+    /// </summary>
+    /// <param name="properties">The <see cref="NinjadogEntityProperties"/> collection to be searched.</param>
+    /// <returns>The <see cref="NinjadogEntityId"/> representing the entity key.</returns>
+    public static NinjadogEntityPropertyWithKey GetEntityKey(
+        this NinjadogEntityProperties properties)
+    {
+        var entityId = properties
+            .FirstOrDefault(x => x.Value.IsKey);
+
+        return new NinjadogEntityPropertyWithKey(entityId.Key, entityId.Value);
+    }
 }

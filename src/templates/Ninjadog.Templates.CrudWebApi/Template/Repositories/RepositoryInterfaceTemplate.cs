@@ -20,6 +20,7 @@ public sealed class RepositoryInterfaceTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Repositories";
         var fileName = $"{st.InterfaceModelRepository}.cs";
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -34,7 +35,7 @@ public sealed class RepositoryInterfaceTemplate
               {
                   Task<bool> CreateAsync({{st.ClassModelDto}} {{st.VarModel}});
 
-                  Task<{{st.ClassModelDto}}?> GetAsync(Guid id);
+                  Task<{{st.ClassModelDto}}?> GetAsync({{entityKey.Type}} id);
 
                   Task<IEnumerable<{{st.ClassModelDto}}>> GetAllAsync();
 
