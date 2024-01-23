@@ -11,10 +11,12 @@ namespace Ninjadog.Settings.Extensions.Entities;
 /// </summary>
 /// <param name="Key">The key of the entity.</param>
 /// <param name="Properties">The properties of the entity.</param>
+/// <param name="Relationships">The relationships between this entity and other entities.</param>
 public sealed record NinjadogEntityWithKey(
     string Key,
-    NinjadogEntityProperties Properties)
-    : NinjadogEntity(Properties)
+    NinjadogEntityProperties Properties,
+    NinjadogEntityRelationships? Relationships)
+    : NinjadogEntity(Properties, Relationships)
 {
     /// <summary>
     /// Gets the string tokens generated from the entity key.
@@ -28,9 +30,11 @@ public sealed record NinjadogEntityWithKey(
     /// <returns>A <see cref="string"/> containing the C# code for all member properties of the entity.</returns>
     public string GenerateMemberProperties()
     {
-        return Properties
+        var properties = Properties
             .FromKeys()
             .Select(p => p.GenerateMemberProperty())
             .Aggregate((x, y) => $"{x}\n{y}");
+
+        return properties;
     }
 }

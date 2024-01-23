@@ -28,99 +28,160 @@ public sealed class RestaurantBookingEntities : NinjadogEntities
     /// </summary>
     public RestaurantBookingEntities()
     {
-        Add(Customer, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "CustomerId", new NinjadogEntityId() },
-                { "CustomerFirstName", new NinjadogEntityProperty<string>() },
-                { "CustomerSurname", new NinjadogEntityProperty<string>() },
-                { "PhoneNumber", new NinjadogEntityProperty<string>() },
-                { "CellphoneNumber", new NinjadogEntityProperty<string>() },
-                { "EmailAddress", new NinjadogEntityProperty<string>() },
-                { "OtherCustomerDetails", new NinjadogEntityProperty<string>() },
+        AddCustomerEntity();
+        AddBookingEntity();
+        AddTableEntity();
+        AddOrderEntity();
+        AddOrderMenuItemEntity();
+        AddMenuEntity();
+        AddMenuItemEntity();
+        AddMenuItemIngredientEntity();
+        AddIngredientEntity();
+        AddIngredientTypeEntity();
+        AddStaffEntity();
+        AddStaffRoleEntity();
+    }
 
-                // { "Items", new NinjadogEntityRelationship(Booking, NinjadogEntityRelationshipType.OneToMany) }
-            }));
+    private void AddCustomerEntity()
+    {
+        NinjadogEntityProperties properties = new()
+        {
+            { "CustomerId", new NinjadogEntityId() },
+            { "CustomerFirstName", new NinjadogEntityProperty<string>() },
+            { "CustomerSurname", new NinjadogEntityProperty<string>() },
+            { "PhoneNumber", new NinjadogEntityProperty<string>() },
+            { "CellphoneNumber", new NinjadogEntityProperty<string>() },
+            { "EmailAddress", new NinjadogEntityProperty<string>() },
+            { "OtherCustomerDetails", new NinjadogEntityProperty<string>() },
+        };
 
-        Add(Booking, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "BookingId", new NinjadogEntityId() },
-                { "DateOfBooking", new NinjadogEntityProperty<DateTime>() },
-                { "NumberInParty", new NinjadogEntityProperty<int>() },
-            }));
+        NinjadogEntityRelationships relationships = new()
+        {
+            { "Bookings", new NinjadogEntityRelationship(Booking, NinjadogEntityRelationshipType.OneToMany) }
+        };
 
-        Add(Table, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "TableNumber", new NinjadogEntityProperty<int>(true) },
-                { "TableDetails", new NinjadogEntityProperty<string>() },
-            }));
+        Add(Customer, new NinjadogEntity(properties, relationships));
+    }
 
-        Add(Order, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "OrderId", new NinjadogEntityId() },
-                { "OrderDateTime", new NinjadogEntityProperty<DateTime>() },
-            }));
+    private void AddBookingEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "BookingId", new NinjadogEntityId() },
+            { "DateOfBooking", new NinjadogEntityProperty<DateTime>() },
+            { "NumberInParty", new NinjadogEntityProperty<int>() },
+        };
 
-        Add(OrderMenuItem, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "OrderMenuItemId", new NinjadogEntityId() },
-                { "OrderMenuItemQuantity", new NinjadogEntityProperty<int>() },
-                { "OrderMenuItemComments", new NinjadogEntityProperty<string>() },
-            }));
+        Add(Booking, new NinjadogEntity(properties));
+    }
 
-        Add(Menu, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "MenuId", new NinjadogEntityId() },
-                { "MenuDate", new NinjadogEntityProperty<DateTime>() },
-            }));
+    private void AddTableEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "TableNumber", new NinjadogEntityProperty<int>(true) },
+            { "TableDetails", new NinjadogEntityProperty<string>() },
+        };
 
-        Add(MenuItem, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "MenuItemId", new NinjadogEntityId() },
-                { "MenuItemDescription", new NinjadogEntityProperty<string>() },
-                { "MenuItemPrice", new NinjadogEntityProperty<decimal>() },
-            }));
+        Add(Table, new NinjadogEntity(properties));
+    }
 
-        Add(MenuItemIngredient, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "MenuItemIngredientId", new NinjadogEntityId() },
-                { "ItemQuantity", new NinjadogEntityProperty<int>() },
-            }));
+    private void AddOrderEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "OrderId", new NinjadogEntityId() }, { "OrderDateTime", new NinjadogEntityProperty<DateTime>() },
+        };
 
-        Add(Ingredient, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "IngredientId", new NinjadogEntityId() },
-                { "IngredientName", new NinjadogEntityProperty<string>() },
-            }));
+        Add(Order, new NinjadogEntity(properties));
+    }
 
-        Add(IngredientType, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "IngredientTypeCode", new NinjadogEntityId() },
-                { "IngredientTypeDescription", new NinjadogEntityProperty<string>() },
-            }));
+    private void AddOrderMenuItemEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "OrderMenuItemId", new NinjadogEntityId() },
+            { "OrderMenuItemQuantity", new NinjadogEntityProperty<int>() },
+            { "OrderMenuItemComments", new NinjadogEntityProperty<string>() },
+        };
 
-        Add(Staff, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "StaffId", new NinjadogEntityId() },
-                { "StaffFirstName", new NinjadogEntityProperty<string>() },
-                { "StaffLastName", new NinjadogEntityProperty<string>() },
-            }));
+        Add(OrderMenuItem, new NinjadogEntity(properties));
+    }
 
-        Add(StaffRole, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "StaffRoleCode", new NinjadogEntityId() },
-                { "StaffRoleDescription", new NinjadogEntityProperty<string>() },
-            }));
+    private void AddMenuEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "MenuId", new NinjadogEntityId() }, { "MenuDate", new NinjadogEntityProperty<DateTime>() },
+        };
+
+        Add(Menu, new NinjadogEntity(properties));
+    }
+
+    private void AddMenuItemEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "MenuItemId", new NinjadogEntityId() },
+            { "MenuItemDescription", new NinjadogEntityProperty<string>() },
+            { "MenuItemPrice", new NinjadogEntityProperty<decimal>() },
+        };
+
+        Add(MenuItem, new NinjadogEntity(properties));
+    }
+
+    private void AddMenuItemIngredientEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "MenuItemIngredientId", new NinjadogEntityId() },
+            { "ItemQuantity", new NinjadogEntityProperty<int>() },
+        };
+
+        Add(MenuItemIngredient, new NinjadogEntity(properties));
+    }
+
+    private void AddIngredientEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "IngredientId", new NinjadogEntityId() }, { "IngredientName", new NinjadogEntityProperty<string>() },
+        };
+
+        Add(Ingredient, new NinjadogEntity(properties));
+    }
+
+    private void AddIngredientTypeEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "IngredientTypeCode", new NinjadogEntityId() },
+            { "IngredientTypeDescription", new NinjadogEntityProperty<string>() },
+        };
+
+        Add(IngredientType, new NinjadogEntity(properties));
+    }
+
+    private void AddStaffEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "StaffId", new NinjadogEntityId() },
+            { "StaffFirstName", new NinjadogEntityProperty<string>() },
+            { "StaffLastName", new NinjadogEntityProperty<string>() },
+        };
+
+        Add(Staff, new NinjadogEntity(properties));
+    }
+
+    private void AddStaffRoleEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "StaffRoleCode", new NinjadogEntityId() },
+            { "StaffRoleDescription", new NinjadogEntityProperty<string>() },
+        };
+
+        Add(StaffRole, new NinjadogEntity(properties));
     }
 }

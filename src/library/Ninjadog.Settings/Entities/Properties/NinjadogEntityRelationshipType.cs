@@ -2,7 +2,7 @@
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
-namespace Ninjadog.Engine.Core.Models;
+namespace Ninjadog.Settings.Entities.Properties;
 
 /// <summary>
 /// Represents the different types of entity relationships in a database.

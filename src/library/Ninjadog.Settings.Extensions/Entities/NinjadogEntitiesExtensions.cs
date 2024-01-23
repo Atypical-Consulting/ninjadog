@@ -21,7 +21,11 @@ public static class NinjadogEntitiesExtensions
         this NinjadogEntities entities)
     {
         return entities
-            .Select(x => new NinjadogEntityWithKey(x.Key, x.Value.Properties))
+            .Select(pair =>
+            {
+                var (key, value) = pair;
+                return new NinjadogEntityWithKey(key, value.Properties, value.Relationships);
+            })
             .ToList();
     }
 }
