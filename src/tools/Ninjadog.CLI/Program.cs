@@ -10,7 +10,6 @@ using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.Infrastructure;
 using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.RestaurantBooking;
-using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 SpectreWriteHelpers.WriteNinjadog();
 
@@ -26,8 +25,9 @@ var app = new CommandApp(registrar);
 
 app.Configure(config =>
 {
-#if DEBUG
     config.PropagateExceptions();
+
+#if DEBUG
     config.ValidateExamples();
 #endif
 
@@ -40,4 +40,12 @@ app.Configure(config =>
         .WithExample(["ninjadog"]);
 });
 
-return app.Run(args);
+try
+{
+    return app.Run(args);
+}
+catch (Exception ex)
+{
+    WriteException(ex, ExceptionFormats.ShortenEverything);
+    return -99;
+}

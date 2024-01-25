@@ -9,7 +9,6 @@ global using Ninjadog.Settings;
 global using Ninjadog.Settings.Config;
 global using Ninjadog.Settings.Entities;
 global using Ninjadog.Settings.Entities.Properties;
-global using Ninjadog.Settings.Extensions;
 global using Ninjadog.Settings.Extensions.Entities;
 global using Ninjadog.Settings.Extensions.Entities.Properties;
 global using static Ninjadog.Engine.Core.Models.TemplateUtilities;

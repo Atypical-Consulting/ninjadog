@@ -4,6 +4,6 @@
 
 namespace Ninjadog.CLI.Commands;
 
-internal class InitCommandSettings : CommandSettings
+internal sealed class InitCommandSettings : CommandSettings
 {
 }
