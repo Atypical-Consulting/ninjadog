@@ -31,6 +31,10 @@ app.Configure(config =>
     config.ValidateExamples();
 #endif
 
+    config.AddCommand<InitCommand>("init")
+        .WithDescription("Initializes a new Ninjadog project.")
+        .WithExample(["init"]);
+
     config.AddCommand<NinjadogCommand>("ninjadog")
         .WithDescription("Generates a new Ninjadog project.")
         .WithExample(["ninjadog"]);
