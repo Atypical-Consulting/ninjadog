@@ -6,9 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" />
     <PackageReference Include="ValueOf" />
-
   </ItemGroup>
 
 </Project>
