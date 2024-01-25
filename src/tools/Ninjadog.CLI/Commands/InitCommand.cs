@@ -13,7 +13,7 @@ internal sealed class InitCommand
     {
         try
         {
-            NinjadogInitialSettings initialSettings = new();
+            NinjadogInitialSettings initialSettings = new("MyNinjadogApp");
 
             // parse to JSON
             var json = initialSettings.ToJsonString();
