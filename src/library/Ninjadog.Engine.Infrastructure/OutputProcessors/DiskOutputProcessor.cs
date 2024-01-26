@@ -24,6 +24,6 @@ public class DiskOutputProcessor(INinjadogAppService ninjadogAppService)
         NinjadogSettings ninjadogSettings,
         NinjadogContentFile contentFile)
     {
-        ninjadogAppService.AddFileToProject(contentFile);
+        ninjadogAppService.AddFileToProjectAsync(contentFile).Wait();
     }
 }

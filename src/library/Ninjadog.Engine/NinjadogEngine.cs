@@ -107,7 +107,8 @@ public sealed class NinjadogEngine(
         Context.StartCollectMetrics();
 
         // create the app folder and the initial files (sln, .gitignore, ninjadog.json etc.)
-        ninjadogAppService.CreateApp();
+        ninjadogAppService.DotnetVersionAsync().Wait();
+        ninjadogAppService.CreateAppAsync().Wait();
 
         // dispatch the event
         var snapshot = Context.GetSnapshot();

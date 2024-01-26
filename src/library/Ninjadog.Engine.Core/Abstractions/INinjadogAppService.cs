@@ -29,49 +29,55 @@ public interface INinjadogAppService
     /// Creates the application based on the initialized settings and manifest.
     /// </summary>
     /// <param name="deleteIfExists">Whether to delete the application folder if it already exists.</param>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService CreateApp(bool deleteIfExists = true);
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task CreateAppAsync(bool deleteIfExists = true);
+
+    /// <summary>
+    /// Executes the dotnet CLI version command.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task DotnetVersionAsync();
 
     /// <summary>
     /// Creates a Ninjadog settings file for the application.
     /// </summary>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService NewNinjadogSettingsFile();
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task NewNinjadogSettingsFileAsync();
 
     /// <summary>
     /// Creates a .gitignore file suitable for the application.
     /// </summary>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService NewGitIgnoreFile();
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task NewGitIgnoreFileAsync();
 
     /// <summary>
     /// Creates an EditorConfig file to maintain consistent coding styles for various editors and IDEs.
     /// </summary>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService NewEditorConfigFile();
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task NewEditorConfigFileAsync();
 
     /// <summary>
     /// Creates a global.json file to specify the .NET SDK version to be used.
     /// </summary>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService NewGlobalJsonFile();
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task NewGlobalJsonFileAsync();
 
     /// <summary>
     /// Creates the solution file for the application.
     /// </summary>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService NewSolutionFile();
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task NewSolutionFileAsync();
 
     /// <summary>
     /// Creates the project file for the application.
     /// </summary>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService NewProjectFile();
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task NewProjectFileAsync();
 
     /// <summary>
     /// Creates a new file in the project.
     /// </summary>
     /// <param name="contentFile">The content file to be created.</param>
-    /// <returns>The service instance for chaining.</returns>
-    INinjadogAppService AddFileToProject(NinjadogContentFile contentFile);
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task AddFileToProjectAsync(NinjadogContentFile contentFile);
 }

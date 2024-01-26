@@ -2,6 +2,10 @@
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
+using CliWrap;
+using CliWrap.EventStream;
+using Spectre.Console;
+
 namespace Ninjadog.Engine.Infrastructure.Services;
 
 /// <summary>
@@ -9,57 +13,100 @@ namespace Ninjadog.Engine.Infrastructure.Services;
 /// This class provides functionality to programmatically run commands using the .NET CLI,
 /// ensuring the CLI is available upon initialization.
 /// </summary>
-public sealed class CliDotnetService
-    : CliServiceBase, ICliDotnetService
+public sealed class CliDotnetService : ICliDotnetService
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CliDotnetService"/> class.
-    /// During initialization, it checks the availability of the .NET CLI on the system.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if the .NET CLI is not available or fails to execute.</exception>
-    public CliDotnetService()
+    private const string DotnetCommand = "dotnet";
+
+    /// <inheritdoc />
+    public async Task ExecuteVersionAsync()
     {
-        if (!Version().IsSuccess)
+        var cmd = Cli
+            .Wrap(DotnetCommand)
+            .WithArguments("--version");
+
+        await ListenCommandAsync(cmd);
+    }
+
+    /// <inheritdoc />
+    public async Task ExecuteNewAsync(string templateKey, string outputPath)
+    {
+        var cmd = Cli
+            .Wrap(DotnetCommand)
+            .WithArguments(["new", templateKey, "--output", outputPath]);
+
+        await ListenCommandAsync(cmd);
+    }
+
+    /// <inheritdoc />
+    public async Task ExecuteNewSolutionAsync(string solutionPath)
+    {
+        await ExecuteNewAsync("sln", solutionPath);
+    }
+
+    /// <inheritdoc />
+    public async Task ExecuteBuildAsync(string projectPath)
+    {
+        var cmd = Cli
+            .Wrap(DotnetCommand)
+            .WithArguments(["build", projectPath]);
+
+        await ListenCommandAsync(cmd);
+    }
+
+    /// <inheritdoc />
+    public async Task ExecuteAddPackageAsync(string projectPath, string package)
+    {
+        var cmd = Cli
+            .Wrap(DotnetCommand)
+            .WithArguments(["add", projectPath, "package", package]);
+
+        await ListenCommandAsync(cmd);
+    }
+
+    /// <inheritdoc />
+    public async Task ExecutePublishWithAOTAsync(string projectPath, string runtimeIdentifier)
+    {
+        var cmd = Cli
+            .Wrap(DotnetCommand)
+            .WithArguments(
+            [
+                "publish",
+                projectPath,
+                "-c",
+                "Release",
+                "-r",
+                runtimeIdentifier,
+                "--self-contained",
+                "-p:PublishReadyToRun=true"
+            ]);
+
+        await ListenCommandAsync(cmd);
+    }
+
+    private static async Task ListenCommandAsync(Command cmd)
+    {
+        await foreach (var cmdEvent in cmd.ListenAsync())
         {
-            throw new InvalidOperationException("The .NET CLI is not available.");
+            switch (cmdEvent)
+            {
+                case StartedCommandEvent started:
+                    AnsiConsole.MarkupLine($"[yellow]Process started; ID: {started.ProcessId}[/]");
+                    break;
+                case StandardOutputCommandEvent stdOut:
+                    AnsiConsole.MarkupLine($"[blue]Out>[/] {stdOut.Text}");
+                    break;
+                case StandardErrorCommandEvent stdErr:
+                    AnsiConsole.MarkupLine($"[red]Err>[/] {stdErr.Text}");
+                    break;
+                case ExitedCommandEvent exited when exited.ExitCode != 0:
+                    AnsiConsole.MarkupLine($"[red]Process exited with code {exited.ExitCode}[/]");
+                    AnsiConsole.WriteLine();
+                    break;
+                case ExitedCommandEvent exited:
+                    AnsiConsole.MarkupLine("[green]Process completed successfully[/]");
+                    AnsiConsole.WriteLine();
+                    break;
+            }
         }
-    }
-
-    /// <inheritdoc />
-    public CliCommandResult Version()
-    {
-        return ExecuteCommand("dotnet --version");
-    }
-
-    /// <inheritdoc />
-    public CliCommandResult NewSolution(string solutionPath)
-    {
-        return New("sln", solutionPath);
-    }
-
-    /// <inheritdoc />
-    public CliCommandResult New(string templateKey, string outputPath)
-    {
-        return ExecuteCommand($"dotnet new {templateKey} --output {outputPath}");
-    }
-
-    /// <inheritdoc />
-    public CliCommandResult Build(string projectPath)
-    {
-        return ExecuteCommand($"dotnet build {projectPath}");
-    }
-
-    /// <inheritdoc />
-    public CliCommandResult AddPackage(string projectPath, string package)
-    {
-        return ExecuteCommand($"dotnet add {projectPath} package {package}");
-    }
-
-    /// <inheritdoc />
-    public CliCommandResult PublishWithAOT(string projectPath, string runtimeIdentifier)
-    {
-        return ExecuteCommand(
-            $"dotnet publish {projectPath} -c Release -r {runtimeIdentifier} " +
-            $"--self-contained -p:PublishReadyToRun=true");
     }
 }

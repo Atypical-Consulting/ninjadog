@@ -48,86 +48,86 @@ public class NinjadogAppService : INinjadogAppService
     public string ProjectPath { get; }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService CreateApp(bool deleteIfExists = true)
+    public virtual async Task CreateAppAsync(bool deleteIfExists = true)
     {
         if (deleteIfExists)
         {
             _fileService.DeleteAppFolder(_settings.Config.Name);
         }
 
-        NewNinjadogSettingsFile();
-        NewEditorConfigFile();
-        NewGitIgnoreFile();
-        NewGlobalJsonFile();
-        NewSolutionFile();
-        NewProjectFile();
-        InstallNuGetPackages();
+        await NewNinjadogSettingsFileAsync();
+        await NewEditorConfigFileAsync();
+        await NewGitIgnoreFileAsync();
+        await NewGlobalJsonFileAsync();
+        await NewSolutionFileAsync();
+        await NewProjectFileAsync();
+        await InstallNuGetPackages();
 
         // var dotnetVersion = cliDotnetService.Version();
         // var buildResult = cliDotnetService.Build(appDirectory);
-        return this;
     }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService NewNinjadogSettingsFile()
+    public async Task DotnetVersionAsync()
+    {
+        await _dotnet.ExecuteVersionAsync();
+    }
+
+    /// <inheritdoc />
+    public virtual async Task NewNinjadogSettingsFileAsync()
     {
         var jsonString = _settings.ToJsonString();
         var filePath = Path.Combine(AppDirectory, NinjadogSettingsFile);
         _fileService.CreateFile(filePath, jsonString);
-        return this;
+        await Task.CompletedTask;
     }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService NewGitIgnoreFile()
+    public virtual async Task NewGitIgnoreFileAsync()
     {
-        _dotnet.New("gitignore", AppDirectory);
-        return this;
+        await _dotnet.ExecuteNewAsync("gitignore", AppDirectory);
     }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService NewEditorConfigFile()
+    public virtual async Task NewEditorConfigFileAsync()
     {
-        _dotnet.New("editorconfig", AppDirectory);
-        return this;
+        await _dotnet.ExecuteNewAsync("editorconfig", AppDirectory);
     }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService NewGlobalJsonFile()
+    public virtual async Task NewGlobalJsonFileAsync()
     {
-        _dotnet.New("globaljson", AppDirectory);
-        return this;
+        await _dotnet.ExecuteNewAsync("globaljson", AppDirectory);
     }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService NewSolutionFile()
+    public virtual async Task NewSolutionFileAsync()
     {
-        _dotnet.NewSolution(AppDirectory);
-        return this;
+        await _dotnet.ExecuteNewSolutionAsync(AppDirectory);
     }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService NewProjectFile()
+    public virtual async Task NewProjectFileAsync()
     {
-        _dotnet.New("webapi", ProjectPath);
-        return this;
+        await _dotnet.ExecuteNewAsync("webapi", ProjectPath);
     }
 
     /// <inheritdoc />
-    public virtual INinjadogAppService AddFileToProject(NinjadogContentFile contentFile)
+    public virtual async Task AddFileToProjectAsync(NinjadogContentFile contentFile)
     {
         var path = contentFile.Category is not null
             ? Path.Combine(ProjectPath, contentFile.Category, contentFile.FileName)
             : Path.Combine(ProjectPath, contentFile.FileName);
 
         _fileService.CreateFile(path, contentFile.Content);
-        return this;
+        await Task.CompletedTask;
     }
 
-    private void InstallNuGetPackages()
+    private async Task InstallNuGetPackages()
     {
         foreach (var package in _manifest.NuGetPackages)
         {
-            _dotnet.AddPackage(ProjectPath, package);
+            await _dotnet.ExecuteAddPackageAsync(ProjectPath, package);
         }
     }
 }
