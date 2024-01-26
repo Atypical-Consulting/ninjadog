@@ -8,4 +8,9 @@
     <ProjectReference Include="..\Ninjadog.Engine.Core\Ninjadog.Engine.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CliWrap" />
+    <PackageReference Include="Spectre.Console" />
+  </ItemGroup>
+
 </Project>

@@ -54,3 +54,54 @@ public interface ICliDotnetService
     /// <returns>The result of the command execution.</returns>
     CliCommandResult PublishWithAOT(string projectPath, string runtimeIdentifier);
 }
+
+/// <summary>
+/// Defines the interface for a service capable of executing dotnet CLI commands.
+/// This interface abstracts the functionality required to run various dotnet commands programmatically.
+/// </summary>
+public interface ICliDotnetServiceAsync
+{
+    /// <summary>
+    /// Gets the dotnet version.
+    /// </summary>
+    /// <returns>The dotnet version.</returns>
+    Task VersionAsync();
+
+    /// <summary>
+    /// Creates a new solution at the specified path.
+    /// </summary>
+    /// <param name="solutionPath">The path to the solution to be created.</param>
+    /// <returns>The result of the solution creation.</returns>
+    Task<CliCommandResult> NewSolution(string solutionPath);
+
+    /// <summary>
+    /// Creates a new project.
+    /// </summary>
+    /// <param name="templateKey">The template of the project to create (e.g., 'console', 'webapi').</param>
+    /// <param name="outputPath">The output directory for the created project.</param>
+    /// <returns>The result of the command execution.</returns>
+    Task<CliCommandResult> New(string templateKey, string outputPath);
+
+    /// <summary>
+    /// Builds a project at the specified path.
+    /// </summary>
+    /// <param name="projectPath">The path to the project to be built.</param>
+    /// <returns>The result of the build.</returns>
+    Task<CliCommandResult> Build(string projectPath);
+
+    /// <summary>
+    /// Adds a NuGet package to a project.
+    /// </summary>
+    /// <param name="projectPath">The path to the project to which the package will be added.</param>
+    /// <param name="package">The name of the package to be added.</param>
+    /// <returns>The result of the command execution.</returns>
+    Task<CliCommandResult> AddPackage(string projectPath, string package);
+
+    /// <summary>
+    /// Publishes a project with Ahead-of-Time (AOT) compilation.
+    /// </summary>
+    /// <param name="projectPath">The path to the project to publish.</param>
+    /// <param name="runtimeIdentifier">The runtime identifier (e.g., win-x64, linux-x64).</param>
+    /// <returns>The result of the command execution.</returns>
+    Task<CliCommandResult> PublishWithAOT(string projectPath, string runtimeIdentifier);
+}
