@@ -69,6 +69,20 @@ public abstract class NinjadogTemplate
     }
 
     /// <summary>
+    /// Generates a file-scoped namespace declaration based on the provided namespace string.
+    /// This method creates a concise namespace declaration that applies to the entire source file,
+    /// allowing for a more streamlined and modern code layout.
+    /// </summary>
+    /// <param name="ns">The namespace to be used in the declaration. If null, no declaration is generated.</param>
+    /// <returns>A file-scoped namespace declaration, or null if the input namespace is null.</returns>
+    protected static string? WriteFileScopedNamespace(string? ns)
+    {
+        return ns is not null
+            ? $"namespace {ns};"
+            : null;
+    }
+
+    /// <summary>
     /// Creates a new instance of <see cref="NinjadogContentFile"/> with the specified file name and content.
     /// </summary>
     /// <param name="fileName">The name of the file to be created.</param>
