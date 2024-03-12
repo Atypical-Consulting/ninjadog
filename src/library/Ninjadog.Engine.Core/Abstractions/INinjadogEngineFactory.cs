@@ -15,7 +15,6 @@ public interface INinjadogEngineFactory
     /// and output processors. It facilitates the creation of a tailored engine instance
     /// suitable for specific templating tasks.
     /// </summary>
-    /// <param name="configuration">The configuration settings used to set up the Ninjadog Engine.</param>
     /// <returns>A configured instance of the Ninjadog Engine.</returns>
-    INinjadogEngine CreateNinjadogEngine(NinjadogEngineConfiguration configuration);
+    INinjadogEngine CreateNinjadogEngine();
 }

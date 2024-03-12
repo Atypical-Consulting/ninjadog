@@ -2,6 +2,8 @@
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Ninjadog.Engine;
 
 /// <summary>
@@ -12,17 +14,15 @@ namespace Ninjadog.Engine;
 public class NinjadogEngineFactory(IServiceProvider serviceProvider)
     : INinjadogEngineFactory
 {
-    /// <summary>
-    /// Creates and configures a new instance of the Ninjadog Engine using the specified configuration.
-    /// This method initializes a Ninjadog Engine with the provided template manifest, settings,
-    /// and output processors. It facilitates the creation of a tailored engine instance
-    /// suitable for specific templating tasks.
-    /// </summary>
-    /// <param name="configuration">The configuration settings used to set up the Ninjadog Engine.</param>
-    /// <returns>A configured instance of the Ninjadog Engine.</returns>
-    public INinjadogEngine CreateNinjadogEngine(
-        NinjadogEngineConfiguration configuration)
+    /// <inheritdoc/>
+    public INinjadogEngine CreateNinjadogEngine()
     {
+        var templateManifest = serviceProvider.GetRequiredService<NinjadogTemplateManifest>();
+        var ninjadogSettings = serviceProvider.GetRequiredService<NinjadogSettings>();
+
+        NinjadogOutputProcessors outputProcessors = new(serviceProvider);
+        NinjadogEngineConfiguration configuration = new(templateManifest, ninjadogSettings, outputProcessors);
+
         return new NinjadogEngineBuilder()
             .WithManifest(configuration.TemplateManifest)
             .WithSettings(configuration.NinjadogSettings)

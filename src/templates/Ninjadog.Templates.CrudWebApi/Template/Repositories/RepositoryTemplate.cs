@@ -96,7 +96,7 @@ public sealed class RepositoryTemplate
             .Append($"INSERT INTO {st.Models} (")
             .Append(string.Join(", ", properties.Keys)) // Using String.Join to handle the comma-separated list
             .Append(") ")
-            .IncrementIndent().IncrementIndent().IncrementIndent()
+            .IncrementIndent(3)
             .Append("VALUES (")
             .Append(string.Join(", ", properties.Keys.Select(k => $"@{k}"))) // Again using String.Join for the values
             .Append(")")

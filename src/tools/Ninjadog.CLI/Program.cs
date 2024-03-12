@@ -10,6 +10,7 @@ using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.Infrastructure;
 using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.RestaurantBooking;
+using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 SpectreWriteHelpers.WriteNinjadog();
 
@@ -18,7 +19,7 @@ registrations.AddDomainEventDispatcher();
 registrations.AddInfrastructure();
 registrations.AddSingleton<INinjadogEngineFactory, NinjadogEngineFactory>();
 registrations.AddSingleton<NinjadogTemplateManifest, CrudTemplateManifest>();
-registrations.AddSingleton<NinjadogSettings, RestaurantBookingSettings>();
+registrations.AddSingleton<NinjadogSettings, TodoAppSettings>();
 var registrar = new Ninjadog.CLI.Infrastructure.TypeRegistrar(registrations);
 
 var app = new CommandApp(registrar);
