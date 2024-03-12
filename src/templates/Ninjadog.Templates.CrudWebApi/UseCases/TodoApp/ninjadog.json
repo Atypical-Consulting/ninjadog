@@ -1,0 +1,38 @@
+{
+  "config": {
+    "name": "TodoApp",
+    "version": "1.0.0",
+    "description": "A simple todo app",
+    "rootNamespace": "MyCustomer.TodoApp"
+  },
+  "entities": {
+    "TodoList": {
+      "properties": {
+        "Id": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "Title": {
+          "type": "string"
+        },
+        "Items": {
+          "type": "List<TodoItem>"
+        }
+      }
+    },
+    "TodoItem": {
+      "properties": {
+        "Id": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "Description": {
+          "type": "string"
+        },
+        "IsCompleted": {
+          "type": "bool"
+        }
+      }
+    }
+  }
+}
