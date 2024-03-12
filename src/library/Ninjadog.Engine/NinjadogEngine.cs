@@ -31,7 +31,7 @@ public sealed class NinjadogEngine(
     public NinjadogEngineContext Context { get; } = new();
 
     /// <inheritdoc />
-    public ICollection<IDomainEvent> Events { get; } = new List<IDomainEvent>();
+    public ICollection<IDomainEvent> Events { get; } = [];
 
     /// <inheritdoc />
     public void Run()
