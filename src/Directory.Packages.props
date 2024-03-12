@@ -9,6 +9,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <!-- Validation -->
     <PackageVersion Include="FluentValidation" Version="11.8.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.7.0-rc.1" />
     <!-- DDD -->
     <PackageVersion Include="ValueOf" Version="2.0.31" />
     <!-- Spectre.Console -->
