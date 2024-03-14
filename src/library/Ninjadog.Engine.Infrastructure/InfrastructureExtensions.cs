@@ -20,11 +20,11 @@ public static class InfrastructureExtensions
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.AddSingleton<IFileService, FileService>();
-        services.AddSingleton<ICliDotnetService, CliDotnetService>();
-        services.AddSingleton<IDiskOutputProcessor, DiskOutputProcessor>();
-        services.AddSingleton<IInMemoryOutputProcessor, InMemoryOutputProcessor>();
-        services.AddSingleton<INinjadogAppService, NinjadogAppService>();
+        services.AddScoped<IFileService, FileService>();
+        services.AddScoped<ICliDotnetService, CliDotnetService>();
+        services.AddScoped<IDiskOutputProcessor, DiskOutputProcessor>();
+        services.AddScoped<IInMemoryOutputProcessor, InMemoryOutputProcessor>();
+        services.AddScoped<INinjadogAppService, NinjadogAppService>();
 
         return services;
     }

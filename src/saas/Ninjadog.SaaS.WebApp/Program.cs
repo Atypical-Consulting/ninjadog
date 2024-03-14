@@ -5,9 +5,17 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Ninjadog.Engine;
+using Ninjadog.Engine.Core.Abstractions;
+using Ninjadog.Engine.Core.DomainEvents;
+using Ninjadog.Engine.Core.Models;
+using Ninjadog.Engine.Infrastructure;
 using Ninjadog.SaaS.WebApp.Components;
 using Ninjadog.SaaS.WebApp.Components.Account;
 using Ninjadog.SaaS.WebApp.Data;
+using Ninjadog.Settings;
+using Ninjadog.Templates.CrudWebAPI.Setup;
+using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +50,13 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
+// Add ninjadog services.
+builder.Services.AddDomainEventDispatcher();
+builder.Services.AddInfrastructure();
+builder.Services.AddScoped<INinjadogEngineFactory, NinjadogEngineFactory>();
+builder.Services.AddScoped<NinjadogTemplateManifest, CrudTemplateManifest>();
+builder.Services.AddScoped<NinjadogSettings, TodoAppSettings>();
 
 var app = builder.Build();
 
