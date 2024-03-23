@@ -1,4 +1,14 @@
 <Project>
+  <Import Project="../msbuild/props/General.props"/>
+<!--  <Import Project="../msbuild/props/Dependencies.props"/>-->
+  <Import Project="../msbuild/props/Documentation.props"/>
+  <Import Project="../msbuild/props/CodeAnalysis.props"/>
+  <Import Project="../msbuild/props/ContinuousIntegration.props"/>
+  <Import Project="../msbuild/props/Packaging.props"/>
+  <Import Project="../msbuild/props/SourceLink.props"/>
+  <Import Project="../msbuild/props/FileInclusion.props"/>
+  <Import Project="../msbuild/props/Versioning.props"/>
+  
   <!-- Properties -->
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -6,25 +16,6 @@
     <IsTestProject>$(MSBuildProjectName.Contains('Tests'))</IsTestProject>
     <ImplicitUsings>true</ImplicitUsings>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-
-  <!-- Code Analysis -->
-  <PropertyGroup>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <AnalysisLevel>8.0-recommended</AnalysisLevel>
-    <AnalysisModeDesign>All</AnalysisModeDesign>
-    <AnalysisModeDocumentation>All</AnalysisModeDocumentation>
-    <AnalysisModeGlobalization>All</AnalysisModeGlobalization>
-    <AnalysisModeInteroperability>All</AnalysisModeInteroperability>
-    <AnalysisModeMaintainability>All</AnalysisModeMaintainability>
-    <AnalysisModeNaming>All</AnalysisModeNaming>
-    <AnalysisModePerformance>All</AnalysisModePerformance>
-    <AnalysisModeSingleFile>All</AnalysisModeSingleFile>
-    <AnalysisModeReliability>All</AnalysisModeReliability>
-    <AnalysisModeSecurity>All</AnalysisModeSecurity>
-    <AnalysisModeStyle>All</AnalysisModeStyle>
-    <AnalysisModeUsage>All</AnalysisModeUsage>
   </PropertyGroup>
 
   <!-- MinVer Configuration -->
@@ -48,20 +39,16 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(IsTestProject)">
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
     <PackageReference Include="FluentAssertions" />
-    <PackageReference Include="Snapshooter.Xunit" />
-    <PackageReference Include="Verify.XUnit" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
-    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Snapshooter.Xunit" />
+    <PackageReference Include="Verify.XUnit" />
     <PackageReference Include="coverlet.collector" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
   </ItemGroup>
 </Project>
 

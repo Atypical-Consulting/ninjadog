@@ -17,19 +17,27 @@ public sealed class CleanTask : FrostingTask<BuildContext>
     {
         context.Log.Information("Cleaning the build directories...");
 
-        context.CleanDirectory($"../../src/library/Ninjadog.Engine/bin/{context.MsBuildConfiguration}");
-        context.CleanDirectory($"../../src/library/Ninjadog.Engine.Core/bin/{context.MsBuildConfiguration}");
-        context.CleanDirectory($"../../src/library/Ninjadog.Engine.Infrastructure/bin/{context.MsBuildConfiguration}");
-        context.CleanDirectory($"../../src/library/Ninjadog.Helpers/bin/{context.MsBuildConfiguration}");
-        context.CleanDirectory($"../../src/library/Ninjadog.Settings/bin/{context.MsBuildConfiguration}");
-        context.CleanDirectory($"../../src/library/Ninjadog.Settings.Extensions/bin/{context.MsBuildConfiguration}");
+        const string basePath = "../../src";
+        var directories = new List<string>
+        {
+            $"library/Ninjadog.Engine/bin/{context.MsBuildConfiguration}",
+            $"library/Ninjadog.Engine.Core/bin/{context.MsBuildConfiguration}",
+            $"library/Ninjadog.Engine.Infrastructure/bin/{context.MsBuildConfiguration}",
+            $"library/Ninjadog.Helpers/bin/{context.MsBuildConfiguration}",
+            $"library/Ninjadog.Settings/bin/{context.MsBuildConfiguration}",
+            $"library/Ninjadog.Settings.Extensions/bin/{context.MsBuildConfiguration}",
+            $"saas/Ninjadog.SaaS/bin/{context.MsBuildConfiguration}",
+            $"saas/Ninjadog.SaaS.ServiceDefaults/bin/{context.MsBuildConfiguration}",
+            $"saas/Ninjadog.SaaS.WebApp/bin/{context.MsBuildConfiguration}",
+            $"templates/Ninjadog.Templates.CrudWebApi/bin/{context.MsBuildConfiguration}",
+            $"tools/Ninjadog.CLI/bin/{context.MsBuildConfiguration}"
+        };
 
-        context.CleanDirectory($"../../src/saas/Ninjadog.SaaS/bin/{context.MsBuildConfiguration}");
-        context.CleanDirectory($"../../src/saas/Ninjadog.SaaS.ServiceDefaults/bin/{context.MsBuildConfiguration}");
-        context.CleanDirectory($"../../src/saas/Ninjadog.SaaS.WebApp/bin/{context.MsBuildConfiguration}");
-
-        context.CleanDirectory($"../../src/templates/Ninjadog.Templates.CrudWebApi/bin/{context.MsBuildConfiguration}");
-
-        context.CleanDirectory($"../../src/tools/Ninjadog.CLI/bin/{context.MsBuildConfiguration}");
+        foreach (var dir in directories)
+        {
+            var fullPath = $"{basePath}/{dir}";
+            context.CleanDirectory(fullPath);
+            context.Log.Information($"Cleaned {fullPath}");
+        }
     }
 }

@@ -1,0 +1,22 @@
+<Project>
+  <!-- Packaging -->
+  <PropertyGroup Label="Package Information">
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <!--<PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>-->
+
+    <Description>
+      Ninjadog: The quality platform for the best .NET developers.
+    </Description>
+    <Authors>Philippe Matray</Authors>
+    <Copyright>Philippe Matray</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Atypical-Consulting/ninjadog</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Atypical-Consulting/ninjadog</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/Atypical-Consulting/ninjadog/releases</PackageReleaseNotes>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageTags>git, docker, cli, npm, devops utility, library, tool, dotnet, project-management, developers, workflow-automation</PackageTags>
+  </PropertyGroup>
+</Project>
