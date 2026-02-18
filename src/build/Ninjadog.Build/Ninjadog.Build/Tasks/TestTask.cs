@@ -13,15 +13,15 @@ namespace Ninjadog.Build.Tasks;
 [IsDependentOn(typeof(BuildTask))]
 public sealed class TestTask : FrostingTask<BuildContext>
 {
-    private const string NinjadogSln = "../../Ninjadog.sln";
-
     /// <inheritdoc/>
     public override void Run(BuildContext context)
     {
-        context.DotNetTest(NinjadogSln, new DotNetTestSettings
+        var dotNetTestSettings = new DotNetTestSettings
         {
             Configuration = context.MsBuildConfiguration,
             NoBuild = true,
-        });
+        };
+
+        context.DotNetTest(context.NinjadogSln, dotNetTestSettings);
     }
 }

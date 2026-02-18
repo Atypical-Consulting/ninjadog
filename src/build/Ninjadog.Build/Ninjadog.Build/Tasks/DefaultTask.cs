@@ -9,11 +9,4 @@ namespace Ninjadog.Build.Tasks;
 /// </summary>
 [TaskName("Default")]
 [IsDependentOn(typeof(TestTask))]
-public class DefaultTask : FrostingTask
-{
-    /// <inheritdoc/>
-    public override void Run(ICakeContext context)
-    {
-        base.Run(context);
-    }
-}
+public class DefaultTask : FrostingTask;

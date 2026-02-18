@@ -16,10 +16,10 @@ SpectreWriteHelpers.WriteNinjadog();
 
 var registrations = new ServiceCollection();
 registrations.AddDomainEventDispatcher();
-registrations.AddInfrastructure();
+registrations.AddEngineInfrastructure();
 registrations.AddSingleton<INinjadogEngineFactory, NinjadogEngineFactory>();
 registrations.AddSingleton<NinjadogTemplateManifest, CrudTemplateManifest>();
-registrations.AddSingleton<NinjadogSettings, TodoAppSettings>();
+registrations.AddSingleton<NinjadogSettings, RestaurantBookingSettings>();
 var registrar = new Ninjadog.CLI.Infrastructure.TypeRegistrar(registrations);
 
 var app = new CommandApp(registrar);

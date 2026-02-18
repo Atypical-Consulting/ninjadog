@@ -17,10 +17,16 @@ public class BuildContext : FrostingContext
         : base(context)
     {
         MsBuildConfiguration = context.Argument("configuration", "Release");
+        NinjadogSln = "../../Ninjadog.sln";
     }
 
     /// <summary>
     /// Gets or sets the MSBuild configuration.
     /// </summary>
     public string MsBuildConfiguration { get; set; }
+
+    /// <summary>
+    /// Gets or sets the Ninjadog solution path.
+    /// </summary>
+    public string NinjadogSln { get; set; }
 }

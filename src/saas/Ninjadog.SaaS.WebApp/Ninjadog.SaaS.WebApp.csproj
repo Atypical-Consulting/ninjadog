@@ -29,6 +29,7 @@
     <ProjectReference Include="..\..\library\Ninjadog.Engine.Infrastructure\Ninjadog.Engine.Infrastructure.csproj" />
     <ProjectReference Include="..\..\library\Ninjadog.Engine\Ninjadog.Engine.csproj" />
     <ProjectReference Include="..\..\templates\Ninjadog.Templates.CrudWebApi\Ninjadog.Templates.CrudWebApi.csproj" />
+    <ProjectReference Include="..\Ninjadog.SaaS.Infrastructure\Ninjadog.SaaS.Infrastructure.csproj" />
     <ProjectReference Include="..\Ninjadog.SaaS.ServiceDefaults\Ninjadog.SaaS.ServiceDefaults.csproj" />
   </ItemGroup>
 

@@ -10,6 +10,7 @@ using Ninjadog.Engine.Core.Abstractions;
 using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.Core.Models;
 using Ninjadog.Engine.Infrastructure;
+using Ninjadog.SaaS.Infrastructure;
 using Ninjadog.SaaS.WebApp.Components;
 using Ninjadog.SaaS.WebApp.Components.Account;
 using Ninjadog.SaaS.WebApp.Data;
@@ -18,45 +19,51 @@ using Ninjadog.Templates.CrudWebAPI.Setup;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
 // Add service defaults & Aspire components.
 builder.AddServiceDefaults();
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
+services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<IdentityUserAccessor>();
-builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+services.AddCascadingAuthenticationState();
+services.AddScoped<IdentityUserAccessor>();
+services.AddScoped<IdentityRedirectManager>();
+services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-builder.Services.AddAuthentication(options =>
+services.AddAuthentication(options =>
     {
         options.DefaultScheme = IdentityConstants.ApplicationScheme;
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                       throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection") ??
+    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
+services.AddDatabaseDeveloperPageExceptionFilter();
+
+services
+    .AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 // Add ninjadog services.
-builder.Services.AddDomainEventDispatcher();
-builder.Services.AddInfrastructure();
-builder.Services.AddScoped<INinjadogEngineFactory, NinjadogEngineFactory>();
-builder.Services.AddScoped<NinjadogTemplateManifest, CrudTemplateManifest>();
-builder.Services.AddScoped<NinjadogSettings, TodoAppSettings>();
+services.AddDomainEventDispatcher();
+services.AddEngineInfrastructure();
+services.AddScoped<INinjadogEngineFactory, NinjadogEngineFactory>();
+services.AddScoped<NinjadogTemplateManifest, CrudTemplateManifest>();
+services.AddScoped<NinjadogSettings, TodoAppSettings>();
+
+// Add SaaS services.
+services.AddSaaSInfrastructure();
 
 var app = builder.Build();
 

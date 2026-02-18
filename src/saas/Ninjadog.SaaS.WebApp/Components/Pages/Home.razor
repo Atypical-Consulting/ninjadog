@@ -1,7 +1,32 @@
 ﻿@page "/"
+@using Ninjadog.SaaS.Infrastructure.Ports
+@using Octokit
+@inject IGitHubRepositoryService RepositoryService
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+@if (_repositories != null)
+{
+    <ul>
+        @foreach (Repository repository in _repositories)
+        {
+            <li>@repository.Name</li>
+        }
+    </ul>
+}
+
+@code {
+    
+    private IEnumerable<Repository>? _repositories;
+
+    /// <inheritdoc />
+    protected override async Task OnInitializedAsync()
+    {
+        _repositories = await RepositoryService.GetRepositoriesAsync();
+    }
+
+}
