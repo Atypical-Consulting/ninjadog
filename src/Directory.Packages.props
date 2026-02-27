@@ -12,8 +12,8 @@
     <!-- DDD -->
     <PackageVersion Include="ValueOf" Version="2.0.31" />
     <!-- Spectre.Console -->
-    <PackageVersion Include="Spectre.Console" Version="0.48.0" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.48.0" />
+    <PackageVersion Include="Spectre.Console" Version="0.54.0" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.53.1" />
     <PackageVersion Include="Spectre.Console.Analyzer" Version="1.0.0" />
     <!-- Aspire -->
     <PackageVersion Include="Aspire.Hosting" Version="8.2.2" />
