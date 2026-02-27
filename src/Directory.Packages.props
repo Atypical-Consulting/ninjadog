@@ -53,7 +53,7 @@
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <!-- Other Tools -->
     <PackageVersion Include="DotNet.ReproducibleBuilds" Version="2.0.2" />
-    <PackageVersion Include="MinVer" Version="5.0.0" />
+    <PackageVersion Include="MinVer" Version="7.0.0" />
     <PackageVersion Include="MasterCommander" Version="1.1.0" />
   </ItemGroup>
 </Project>
