@@ -42,7 +42,7 @@
     <PackageVersion Include="Verify.XUnit" Version="23.5.2" />
     <!-- Code Coverage and Test Runners -->
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.7" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.CodeCoverage" Version="17.8.0" />
     <!-- Analyzers -->
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
