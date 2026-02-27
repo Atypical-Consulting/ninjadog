@@ -35,7 +35,7 @@
     <!-- CAKE -->
     <PackageVersion Include="Cake.Frosting" Version="6.0.0" />
     <!-- Test Frameworks -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
     <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="FluentAssertions" Version="6.12.2" />
     <PackageVersion Include="Snapshooter.Xunit" Version="0.15.0" />
@@ -43,7 +43,7 @@
     <!-- Code Coverage and Test Runners -->
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="coverlet.collector" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.CodeCoverage" Version="17.14.1" />
+    <PackageVersion Include="Microsoft.CodeCoverage" Version="18.3.0" />
     <!-- Analyzers -->
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
