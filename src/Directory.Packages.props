@@ -39,7 +39,7 @@
     <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="FluentAssertions" Version="8.8.0" />
     <PackageVersion Include="Snapshooter.Xunit" Version="0.15.0" />
-    <PackageVersion Include="Verify.XUnit" Version="23.7.2" />
+    <PackageVersion Include="Verify.XUnit" Version="31.12.5" />
     <!-- Code Coverage and Test Runners -->
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
     <PackageVersion Include="coverlet.collector" Version="8.0.0" />
