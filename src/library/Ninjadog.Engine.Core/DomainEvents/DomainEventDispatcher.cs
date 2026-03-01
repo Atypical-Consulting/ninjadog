@@ -24,11 +24,13 @@ public class DomainEventDispatcher(IServiceProvider serviceProvider) : IDomainEv
 
         // First, invoke statically resolved handlers
         var handlerType = typeof(IDomainEventProcessor<>).MakeGenericType(eventType);
+#pragma warning disable IDE0340
         var resolvedHandlers = serviceProvider.GetServices(handlerType);
 
         foreach (var handler in resolvedHandlers)
         {
             var method = handlerType.GetMethod(nameof(IDomainEventProcessor<IDomainEvent>.HandleAsync));
+#pragma warning restore IDE0340
             if (method is not null)
             {
                 await ((Task)method.Invoke(handler, [domainEvent])!).ConfigureAwait(false);

@@ -20,12 +20,13 @@ public static class NinjadogEntitiesExtensions
     public static List<NinjadogEntityWithKey> FromKeys(
         this NinjadogEntities entities)
     {
-        return entities
-            .Select(pair =>
+        return
+        [
+            .. entities.Select(pair =>
             {
                 var (key, value) = pair;
                 return new NinjadogEntityWithKey(key, value.Properties, value.Relationships);
             })
-            .ToList();
+        ];
     }
 }

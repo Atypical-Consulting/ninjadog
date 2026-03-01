@@ -9,7 +9,7 @@ namespace Ninjadog.CLI.Commands;
 internal sealed class InitCommand
     : Command<InitCommandSettings>
 {
-    public override int Execute(CommandContext context, InitCommandSettings settings)
+    public override int Execute(CommandContext context, InitCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {

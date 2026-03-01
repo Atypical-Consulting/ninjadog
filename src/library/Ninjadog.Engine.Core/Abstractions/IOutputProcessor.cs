@@ -18,7 +18,7 @@ public interface IOutputProcessor
     /// <param name="templateManifest">The template manifest to be used by the engine.</param>
     /// <param name="ninjadogSettings">The ninjadog app settings to configure the engine.</param>
     /// <param name="contentFile">The content file to be generated and written to disk.</param>
-    public void ProcessOutput(
+    void ProcessOutput(
         NinjadogTemplateManifest templateManifest,
         NinjadogSettings ninjadogSettings,
         NinjadogContentFile contentFile);

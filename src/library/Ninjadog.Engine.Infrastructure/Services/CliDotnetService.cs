@@ -98,11 +98,11 @@ public sealed class CliDotnetService : ICliDotnetService
                 case StandardErrorCommandEvent stdErr:
                     AnsiConsole.MarkupLine($"[red]Err>[/] {stdErr.Text}");
                     break;
-                case ExitedCommandEvent exited when exited.ExitCode != 0:
+                case ExitedCommandEvent { ExitCode: not 0 } exited:
                     AnsiConsole.MarkupLine($"[red]Process exited with code {exited.ExitCode}[/]");
                     AnsiConsole.WriteLine();
                     break;
-                case ExitedCommandEvent exited:
+                case ExitedCommandEvent:
                     AnsiConsole.MarkupLine("[green]Process completed successfully[/]");
                     AnsiConsole.WriteLine();
                     break;

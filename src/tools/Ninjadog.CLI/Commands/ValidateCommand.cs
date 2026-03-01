@@ -6,7 +6,7 @@ namespace Ninjadog.CLI.Commands;
 
 internal sealed class ValidateCommand : Command
 {
-    public override int Execute(CommandContext context)
+    public override int Execute(CommandContext context, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

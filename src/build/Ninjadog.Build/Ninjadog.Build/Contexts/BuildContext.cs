@@ -7,20 +7,10 @@ namespace Ninjadog.Build.Contexts;
 /// <summary>
 /// The build context.
 /// </summary>
-public class BuildContext : FrostingContext
+public class BuildContext(ICakeContext context) : FrostingContext(context)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BuildContext"/> class.
-    /// </summary>
-    /// <param name="context">The context.</param>
-    public BuildContext(ICakeContext context)
-        : base(context)
-    {
-        MsBuildConfiguration = context.Argument("configuration", "Release");
-    }
-
     /// <summary>
     /// Gets or sets the MSBuild configuration.
     /// </summary>
-    public string MsBuildConfiguration { get; set; }
+    public string MsBuildConfiguration { get; set; } = context.Argument("configuration", "Release");
 }

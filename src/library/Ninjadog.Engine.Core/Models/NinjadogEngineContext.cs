@@ -50,7 +50,9 @@ public sealed class NinjadogEngineContext
     /// Updates the metrics to account for an error that occurred during the engine run.
     /// </summary>
     /// <param name="exception">The exception that occurred.</param>
+#pragma warning disable CA1822 // Member does not access instance data
     public void ErrorOccurred(Exception exception)
+#pragma warning restore CA1822
     {
         // no-op
     }

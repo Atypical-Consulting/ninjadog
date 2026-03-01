@@ -11,7 +11,7 @@ internal sealed class NinjadogCommand(
     IDomainEventDispatcher domainEventDispatcher)
     : Command<NinjadogCommandSettings>
 {
-    public override int Execute(CommandContext context, NinjadogCommandSettings settings)
+    public override int Execute(CommandContext context, NinjadogCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {
