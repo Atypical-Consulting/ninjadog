@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 
-namespace Microsoft.Extensions.Hosting;
+namespace Ninjadog.SaaS.ServiceDefaults;
 
 /// <summary>
 /// Provides extension methods for configuring services and middleware in a distributed application.
@@ -32,13 +33,7 @@ public static class Extensions
         builder.Services.AddServiceDiscovery();
 
         builder.Services.ConfigureHttpClientDefaults(http =>
-        {
-            // Turn on resilience by default
-            http.AddStandardResilienceHandler();
-
-            // Turn on service discovery by default
-            http.UseServiceDiscovery();
-        });
+            http.AddStandardResilienceHandler());
 
         return builder;
     }
@@ -58,12 +53,10 @@ public static class Extensions
 
         builder.Services.AddOpenTelemetry()
             .WithMetrics(metrics =>
-            {
                 metrics.AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
                     .AddProcessInstrumentation()
-                    .AddRuntimeInstrumentation();
-            })
+                    .AddRuntimeInstrumentation())
             .WithTracing(tracing =>
             {
                 if (builder.Environment.IsDevelopment())
@@ -128,7 +121,7 @@ public static class Extensions
         }
 
         // Enable the Prometheus exporter (requires the OpenTelemetry.Exporter.Prometheus.AspNetCore package)
-        builder.Services.AddOpenTelemetry()
+        _ = builder.Services.AddOpenTelemetry()
            .WithMetrics(metrics => metrics.AddPrometheusExporter());
 
         return builder;

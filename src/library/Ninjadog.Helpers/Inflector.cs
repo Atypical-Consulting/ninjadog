@@ -236,7 +236,7 @@ public static partial class Inflector
         _singulars.Add(new InflectorRule(rule, replacement));
     }
 
-    private static string? ApplyRules(IReadOnlyList<InflectorRule> rules, string word)
+    private static string? ApplyRules(List<InflectorRule> rules, string word)
     {
         var result = word;
 

@@ -16,7 +16,7 @@
     <PackageVersion Include="Spectre.Console.Cli" Version="0.53.1" />
     <PackageVersion Include="Spectre.Console.Analyzer" Version="1.0.0" />
     <!-- Aspire -->
-    <PackageVersion Include="Aspire.Hosting" Version="13.1.2" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.1.2" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.3.0" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.3.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />

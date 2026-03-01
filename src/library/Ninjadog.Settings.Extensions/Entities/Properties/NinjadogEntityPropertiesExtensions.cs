@@ -21,9 +21,10 @@ public static class NinjadogEntityPropertiesExtensions
     public static List<NinjadogEntityPropertyWithKey> FromKeys(
         this NinjadogEntityProperties properties)
     {
-        return properties
-            .Select(x => new NinjadogEntityPropertyWithKey(x.Key, x.Value))
-            .ToList();
+        return
+        [
+            .. properties.Select(x => new NinjadogEntityPropertyWithKey(x.Key, x.Value))
+        ];
     }
 
     /// <summary>

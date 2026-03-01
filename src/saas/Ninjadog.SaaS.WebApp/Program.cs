@@ -10,6 +10,7 @@ using Ninjadog.Engine.Core.Abstractions;
 using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.Core.Models;
 using Ninjadog.Engine.Infrastructure;
+using Ninjadog.SaaS.ServiceDefaults;
 using Ninjadog.SaaS.WebApp.Components;
 using Ninjadog.SaaS.WebApp.Components.Account;
 using Ninjadog.SaaS.WebApp.Data;
