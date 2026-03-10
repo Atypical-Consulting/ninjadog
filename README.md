@@ -65,16 +65,21 @@ public class Movie
 ## Features
 
 - [x] Generates full CRUD REST endpoints based on a DDD approach
-  - Create, Read All, Read One, Update, Delete
+  - Create, Read All (with pagination), Read One, Update, Delete
 - [x] Generates API clients in C# and TypeScript
   - C# client accessible via `/cs-client`
   - TypeScript client accessible via `/ts-client`
 - [x] Generates DTOs, request/response contracts, and validators
+  - Type-aware validation: value types (int, bool, decimal) skip `.NotEmpty()` rules
 - [x] Generates repositories, services, and mapper layers
+  - Dynamic entity key support (Guid, Int32, String — not hardcoded to "Id")
+  - Type-aware SQLite column mapping (INTEGER, REAL, TEXT, CHAR(36))
 - [x] Generates OpenAPI summaries for each endpoint
+  - Dynamic route constraints based on key type (`:guid`, `:int`, etc.)
 - [x] Database initializer and connection factory generation
-- [x] CLI tooling for project scaffolding
+- [x] CLI tooling for project scaffolding and code generation
 - [x] SaaS web application frontend
+- [x] Verify snapshot tests for template output correctness
 
 ## Tech Stack
 
@@ -262,10 +267,25 @@ ninjadog/
 - [x] [CreateRequestValidatorGenerator](./doc/generators/CreateRequestValidatorGenerator.md) | By Model
 - [x] [UpdateRequestValidatorGenerator](./doc/generators/UpdateRequestValidatorGenerator.md) | By Model
 
+## Recent Changes
+
+- **Type-aware code generation** — Mapper type strings now match `typeof(T).Name` output (`Guid`, `DateOnly` instead of `System.Guid`, `System.DateOnly`), fixing type-dependent code paths in all 4 mapper templates.
+- **Dynamic entity keys** — Repositories, endpoints, and request contracts no longer hardcode `"Id"`. The primary key name and type are resolved from the entity definition, enabling entities with keys like `OrderId` (int) or `BookingRef` (string).
+- **Type-aware database schema** — `DatabaseInitializer` generates correct SQLite column types per property (`INTEGER` for int/bool, `REAL` for decimal, `CHAR(36)` for Guid) instead of `TEXT` for everything.
+- **Type-aware validation** — Validators skip `.NotEmpty()` for value types (`int`, `bool`, `decimal`) that always have a valid default value.
+- **Pagination** — `GetAll` endpoints now support `?page=1&pageSize=10` query parameters, with `Page`, `PageSize`, and `TotalCount` metadata in the response.
+- **CLI build command** — `ninjadog build` now executes the engine instead of throwing `NotImplementedException`.
+- **Snapshot tests** — 14 Verify snapshot tests cover template output for databases, repositories, mappers, validators, and endpoints with varied entity types.
+
 ## Roadmap
 
 - [x] Solution that compiles
 - [x] Branding — Name
+- [x] Type-aware code generation
+- [x] Dynamic entity key support
+- [x] Pagination support
+- [x] CLI build command
+- [x] Template snapshot tests
 - [ ] Branding — Logo
 - [ ] Branding — TagLine
 - [ ] Benefits of the solution
