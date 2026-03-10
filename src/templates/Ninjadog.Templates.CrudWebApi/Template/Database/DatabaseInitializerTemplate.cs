@@ -78,15 +78,18 @@ public sealed class DatabaseInitializerTemplate
         return stringBuilder.ToString();
     }
 
-    private static string MapToSqliteType(string typeName) => typeName switch
+    private static string MapToSqliteType(string typeName)
     {
-        "String" => "TEXT",
-        "Int32" => "INTEGER",
-        "Boolean" => "INTEGER",
-        "Decimal" => "REAL",
-        "DateTime" => "TEXT",
-        "DateOnly" => "TEXT",
-        "Guid" => "CHAR(36)",
-        _ => "TEXT"
-    };
+        return typeName switch
+        {
+            "String" => "TEXT",
+            "Int32" => "INTEGER",
+            "Boolean" => "INTEGER",
+            "Decimal" => "REAL",
+            "DateTime" => "TEXT",
+            "DateOnly" => "TEXT",
+            "Guid" => "CHAR(36)",
+            _ => "TEXT"
+        };
+    }
 }
