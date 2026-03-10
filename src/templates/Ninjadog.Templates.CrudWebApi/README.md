@@ -1,0 +1,1 @@
+# Ninjadog.Templates.CrudWebApi
