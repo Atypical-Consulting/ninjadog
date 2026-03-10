@@ -9,7 +9,6 @@ using Ninjadog.Engine;
 using Ninjadog.Engine.Core.DomainEvents;
 using Ninjadog.Engine.Infrastructure;
 using Ninjadog.Templates.CrudWebAPI.Setup;
-using Ninjadog.Templates.CrudWebAPI.UseCases.RestaurantBooking;
 using Ninjadog.Templates.CrudWebAPI.UseCases.TodoApp;
 
 SpectreWriteHelpers.WriteNinjadog();
