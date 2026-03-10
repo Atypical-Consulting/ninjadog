@@ -4,7 +4,7 @@
 
 <!-- Badges: Row 1 — Identity -->
 [![Atypical-Consulting - ninjadog](https://img.shields.io/static/v1?label=Atypical-Consulting&message=ninjadog&color=blue&logo=github)](https://github.com/Atypical-Consulting/ninjadog)
-[![.NET 8](https://img.shields.io/badge/.NET-8.0-purple?logo=dotnet)](https://dotnet.microsoft.com/)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-purple?logo=dotnet)](https://dotnet.microsoft.com/)
 [![stars - ninjadog](https://img.shields.io/github/stars/Atypical-Consulting/ninjadog?style=social)](https://github.com/Atypical-Consulting/ninjadog)
 [![forks - ninjadog](https://img.shields.io/github/forks/Atypical-Consulting/ninjadog?style=social)](https://github.com/Atypical-Consulting/ninjadog)
 
@@ -12,7 +12,7 @@
 [![GitHub tag](https://img.shields.io/github/tag/Atypical-Consulting/ninjadog?include_prereleases=&sort=semver&color=blue)](https://github.com/Atypical-Consulting/ninjadog/releases/)
 [![issues - ninjadog](https://img.shields.io/github/issues/Atypical-Consulting/ninjadog)](https://github.com/Atypical-Consulting/ninjadog/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Atypical-Consulting/ninjadog)](https://github.com/Atypical-Consulting/ninjadog/pulls)
-[![GitHub last commit](https://img.shields.io/github/last-commit/Atypical-Consulting/ninjadog)](https://github.com/Atypical-Consulting/ninjadog/commits/main)
+[![GitHub last commit](https://img.shields.io/github/last-commit/Atypical-Consulting/ninjadog)](https://github.com/Atypical-Consulting/ninjadog/commits/dev)
 
 ---
 
@@ -79,18 +79,18 @@ public class Movie
 
 | Layer | Technology |
 |-------|-----------|
-| Runtime | .NET 8 |
-| Language | C# 12 |
+| Runtime | .NET 10 |
+| Language | C# 13 |
 | Code Generation | Roslyn Source Generators |
 | Architecture | Domain-Driven Design (DDD) |
 | SaaS Frontend | Blazor |
-| Build | Nuke Build |
+| Build | Cake Frosting |
 
 ## Getting Started
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later
 
 ### Installation
 
@@ -112,7 +112,7 @@ dotnet build
 
 ### Basic Example
 
-1. Create a new .NET 8 Web API project:
+1. Create a new .NET 10 Web API project:
 
 ```bash
 dotnet new web -n MyApi
@@ -201,7 +201,7 @@ ninjadog/
 │   ├── tests/
 │   │   └── Ninjadog.Tests/           # Unit tests
 │   └── build/
-│       └── Ninjadog.Build/           # Nuke build scripts
+│       └── Ninjadog.Build/           # Cake Frosting build scripts
 ├── doc/                               # Generator documentation
 ├── Ninjadog.sln                       # Solution file
 └── global.json                        # .NET SDK version config
@@ -272,7 +272,7 @@ ninjadog/
 - [ ] Write documentation
 - [ ] A client demo
 - [ ] NuGet package publishing
-- [ ] CI/CD pipeline
+- [x] CI/CD pipeline
 
 > Want to contribute? Pick any roadmap item and open a PR!
 
