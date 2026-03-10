@@ -5,10 +5,46 @@ nav_order: 6
 ---
 
 # Generated Output Examples
+{: .no_toc }
 
-All examples below are **real generated code** from Ninjadog's verified snapshot tests.
+Real generated code from Ninjadog's verified snapshot tests -- this is exactly what the source generator produces.
+{: .fs-6 .fw-300 }
 
-## Endpoint -- GetAll with pagination
+<details open markdown="block">
+  <summary>Table of contents</summary>
+  {: .text-delta }
+1. TOC
+{:toc}
+</details>
+
+---
+
+## Source Entity
+
+All examples below are generated from this `TodoItem` entity:
+
+```csharp
+[Ninjadog]
+public class TodoItem
+{
+    public Guid Id { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public bool IsCompleted { get; set; }
+    public DateTime DueDate { get; set; }
+    public int Priority { get; set; }
+    public decimal Cost { get; set; }
+}
+```
+
+{: .note }
+> Notice the mix of reference types (`string`, `DateTime`) and value types (`bool`, `int`, `decimal`). Ninjadog handles each differently for validation and database mapping.
+
+---
+
+## Endpoint -- GetAll with Pagination
+
+The GetAll endpoint provides built-in pagination via query parameters. Default values are `page=1` and `pageSize=10`.
 
 ```csharp
 public partial class GetAllTodoItemsEndpoint
@@ -34,7 +70,12 @@ public partial class GetAllTodoItemsEndpoint
 }
 ```
 
-## Endpoint -- GetOne with route constraint
+{: .tip }
+> The endpoint uses **FastEndpoints** conventions -- `Configure()` sets the route and auth, `HandleAsync()` contains the logic. Dependencies like `ITodoItemService` are resolved via property injection.
+
+## Endpoint -- GetOne with Route Constraint
+
+The route constraint `{id:guid}` is generated automatically because the `Id` property is a `Guid`. For an `int` key, the constraint would be `{id:int}`.
 
 ```csharp
 public partial class GetTodoItemEndpoint
@@ -64,7 +105,9 @@ public partial class GetTodoItemEndpoint
 }
 ```
 
-## Validator -- type-aware (skips value types)
+## Validator -- Type-Aware Rules
+
+Ninjadog generates FluentValidation validators that only validate **reference types** (`string`, `DateTime`). Value types like `bool`, `int`, and `decimal` always have default values in C#, so they are skipped.
 
 ```csharp
 public partial class CreateTodoItemRequestValidator : Validator<CreateTodoItemRequest>
@@ -88,7 +131,9 @@ public partial class CreateTodoItemRequestValidator : Validator<CreateTodoItemRe
 }
 ```
 
-## Database -- SQLite schema with type-aware columns
+## Database -- SQLite Schema with Type-Aware Columns
+
+The `DatabaseInitializer` creates SQLite tables for **all** entities in your project. Column types are mapped from C# types automatically (see [Data Layer](/Ninjadog/generators/data-layer) for the full mapping table).
 
 ```csharp
 public partial class DatabaseInitializer(IDbConnectionFactory connectionFactory)
@@ -108,3 +153,11 @@ public partial class DatabaseInitializer(IDbConnectionFactory connectionFactory)
     }
 }
 ```
+
+---
+
+## Next Steps
+
+- [Generators](/Ninjadog/generators) -- Explore all 30 generators in detail
+- [Architecture](/Ninjadog/architecture) -- Understand the full pipeline
+- [Getting Started](/Ninjadog/getting-started) -- Try it yourself

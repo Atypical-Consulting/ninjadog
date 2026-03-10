@@ -5,11 +5,16 @@ baseurl: /Ninjadog
 
 remote_theme: just-the-docs/just-the-docs@v0.10.1
 
+logo: /assets/images/logo.png
+favicon_ico: /assets/images/favicon.ico
+
 permalink: pretty
 
 aux_links:
   GitHub: https://github.com/Atypical-Consulting/Ninjadog
   NuGet: https://www.nuget.org/packages/Ninjadog.Engine
+
+aux_links_new_tab: true
 
 nav_sort: case_insensitive
 heading_anchors: true

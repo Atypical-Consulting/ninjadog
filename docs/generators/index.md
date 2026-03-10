@@ -6,24 +6,33 @@ has_children: true
 ---
 
 # Generators
+{: .no_toc }
 
 Ninjadog includes **30 generators** organized into 11 categories. Each generator produces either a single shared file or a per-entity file.
+{: .fs-6 .fw-300 }
+
+---
+
+## Generator Overview
 
 | Category | Generators | Scope |
 |---|---|---|
-| **Core** | NinjadogGenerator | Single file |
-| **Contracts -- Data** | DtoGenerator | Per entity |
-| **Contracts -- Requests** | Create, Delete, Get, Update | Per entity |
-| **Contracts -- Responses** | GetAllResponse, Response | Per entity |
-| **Database** | DatabaseInitializer, DbConnectionFactory | Single file |
-| **Endpoints** | Create, Delete, GetAll, Get, Update | Per entity |
-| **Mapping** | ApiContract-to-Domain, Domain-to-ApiContract, Domain-to-Dto, Dto-to-Domain | Single file |
+| **[Core](/Ninjadog/generators/core)** | NinjadogGenerator | Single file |
+| **[Contracts -- Data](/Ninjadog/generators/contracts)** | DtoGenerator | Per entity |
+| **[Contracts -- Requests](/Ninjadog/generators/contracts)** | Create, Delete, Get, Update | Per entity |
+| **[Contracts -- Responses](/Ninjadog/generators/contracts)** | GetAllResponse, Response | Per entity |
+| **[Database](/Ninjadog/generators/data-layer)** | DatabaseInitializer, DbConnectionFactory | Single file |
+| **[Endpoints](/Ninjadog/generators/endpoints)** | Create, Delete, GetAll, Get, Update | Per entity |
+| **[Mapping](/Ninjadog/generators/mapping)** | ApiContract-to-Domain, Domain-to-ApiContract, Domain-to-Dto, Dto-to-Domain | Single file |
 | **Repositories** | Repository, RepositoryInterface | Per entity |
 | **Services** | Service, ServiceInterface | Per entity |
-| **Summaries** | Create, Delete, GetAll, Get, Update | Per entity |
-| **Validation** | CreateRequestValidator, UpdateRequestValidator | Per entity |
+| **[Summaries](/Ninjadog/generators/openapi)** | Create, Delete, GetAll, Get, Update | Per entity |
+| **[Validation](/Ninjadog/generators/validation)** | CreateRequestValidator, UpdateRequestValidator | Per entity |
 
 ## Generation Modes
 
-- **Single File** -- One file generated regardless of how many entities exist (e.g., database initializer creates all tables)
-- **Per Entity (By Model)** -- One file per `[Ninjadog]`-annotated entity (e.g., each entity gets its own repository)
+- **Single File** -- One file generated regardless of how many entities exist (e.g., the database initializer creates tables for all entities in one file)
+- **Per Entity** -- One file per `[Ninjadog]`-annotated entity (e.g., each entity gets its own repository, service, and endpoints)
+
+{: .tip }
+> All generated classes are `partial`, so you can extend them with custom logic without modifying generated code.

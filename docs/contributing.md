@@ -5,8 +5,19 @@ nav_order: 7
 ---
 
 # Contributing
+{: .no_toc }
 
-Contributions are welcome!
+Contributions are welcome! Here's how to get started.
+{: .fs-6 .fw-300 }
+
+<details open markdown="block">
+  <summary>Table of contents</summary>
+  {: .text-delta }
+1. TOC
+{:toc}
+</details>
+
+---
 
 ## Getting Started
 
@@ -16,6 +27,9 @@ cd ninjadog
 dotnet build
 dotnet test
 ```
+
+{: .tip }
+> All tests should pass before you start making changes. If they don't, open an issue.
 
 ## Development Workflow
 
@@ -34,6 +48,15 @@ dotnet test
 | Snapshot tests | `src/tests/Ninjadog.Tests/Templates/` |
 | CLI commands | `src/tools/Ninjadog.CLI/` |
 | Generator docs | `doc/generators/` |
+| This documentation | `docs/` |
+
+## Testing
+
+Ninjadog uses **snapshot testing** -- each generator has a corresponding expected output file. When you modify a generator:
+
+1. Run `dotnet test` to see if snapshots still match
+2. If your change is intentional, update the snapshot files in `src/tests/Ninjadog.Tests/Templates/`
+3. Run tests again to confirm they pass
 
 ## License
 

@@ -4,10 +4,15 @@ layout: home
 nav_order: 1
 ---
 
+<p align="center">
+  <img src="{{ '/assets/images/logo.png' | relative_url }}" alt="Ninjadog logo" width="256" />
+</p>
+
 # Ninjadog
+{: .text-center }
 
 **One attribute. Full REST API. Zero boilerplate.**
-{: .fs-6 .fw-300 }
+{: .fs-6 .fw-300 .text-center }
 
 Ninjadog uses C# Source Generators to produce your entire API stack at compile time. No runtime reflection, no code-gen CLI step, no files to keep in sync. Change your entity, rebuild, done.
 {: .fs-5 .fw-300 }
@@ -46,6 +51,8 @@ For **each** entity annotated with `[Ninjadog]`, the generator produces approxim
 ## Quick Example
 
 ```csharp
+using Ninjadog;
+
 [Ninjadog]
 public class Product
 {
@@ -55,7 +62,7 @@ public class Product
 }
 ```
 
-Build and run -- you now have a full CRUD API with endpoints, DTOs, validation, repositories, services, mappers, and OpenAPI docs.
+Build and run -- you now have a full CRUD API:
 
 ```
 POST   /products              Create a new product
@@ -64,3 +71,12 @@ GET    /products/{id:guid}    Get a single product
 PUT    /products/{id:guid}    Update a product
 DELETE /products/{id:guid}    Delete a product
 ```
+
+{: .note }
+> Route constraints are generated automatically based on your key type -- `:guid` for `Guid`, `:int` for `int`, and untyped for `string`.
+
+---
+
+[Get Started in 2 minutes](/Ninjadog/getting-started){: .btn .btn-primary .mr-2 }
+[Explore the Architecture](/Ninjadog/architecture){: .btn .mr-2 }
+[Browse all Generators](/Ninjadog/generators){: .btn }

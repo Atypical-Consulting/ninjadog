@@ -5,8 +5,23 @@ nav_order: 3
 ---
 
 # Architecture
+{: .no_toc }
+
+How Ninjadog turns a single annotated class into a full REST API at compile time.
+{: .fs-6 .fw-300 }
+
+<details open markdown="block">
+  <summary>Table of contents</summary>
+  {: .text-delta }
+1. TOC
+{:toc}
+</details>
+
+---
 
 ## How It Works
+
+When you build your project, Ninjadog hooks into the Roslyn compiler as a source generator. It discovers all classes annotated with `[Ninjadog]`, inspects their properties, and emits C# source files for every layer of the API stack.
 
 ```mermaid
 flowchart TB
@@ -22,13 +37,17 @@ flowchart TB
     H --> I
 ```
 
+The key insight: **everything happens at compile time**. No runtime reflection, no startup penalty, no external code-gen step. The generated files are part of your compiled assembly just like hand-written code.
+
 ## Key Design Decisions
 
-- **Compile-time generation** -- No runtime reflection, no startup penalty
-- **Source Generators (not T4/CLI)** -- Integrated into the standard build pipeline
-- **Per-entity isolation** -- Each entity gets independent files; no cross-entity coupling
-- **Convention over configuration** -- Sensible defaults for routes, validation, and database schema
-- **Type-aware output** -- Route constraints, SQL column types, and validation rules adapt to property types
+| Decision | Rationale |
+|---|---|
+| **Compile-time generation** | No runtime reflection, no startup penalty, instant error feedback |
+| **Source Generators (not T4/CLI)** | Integrated into the standard `dotnet build` pipeline -- no extra steps |
+| **Per-entity isolation** | Each entity gets independent files; no cross-entity coupling or shared state |
+| **Convention over configuration** | Sensible defaults for routes, validation, and database schema -- zero config needed |
+| **Type-aware output** | Route constraints, SQL column types, and validation rules adapt automatically to property types |
 
 ## Tech Stack
 
@@ -80,3 +99,11 @@ ninjadog/
 | `Ninjadog.Settings.Extensions` | Settings extension methods |
 | `Ninjadog.Templates.CrudWebApi` | CRUD Web API template |
 | `Ninjadog.CLI` | Command-line tool (`dotnet tool install -g Ninjadog.CLI`) |
+
+---
+
+## Next Steps
+
+- [Getting Started](/Ninjadog/getting-started) -- Build your first API
+- [Generators](/Ninjadog/generators) -- Deep dive into all 30 generators
+- [Generated Examples](/Ninjadog/examples) -- See real output code
