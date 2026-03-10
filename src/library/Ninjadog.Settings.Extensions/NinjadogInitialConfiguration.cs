@@ -26,18 +26,21 @@ public sealed record NinjadogInitialConfiguration : NinjadogConfiguration
     /// <param name="description">The description of the Ninjadog app. Default is "Welcome to Ninjadog!".</param>
     /// <param name="rootNamespace">The root namespace of the Ninjadog app. Default is "NinjadogApp".</param>
     /// <param name="outputPath">The output path of the Ninjadog app. Defaults to "src/applications/[name]".</param>
+    /// <param name="saveGeneratedFiles">Whether to save generated files to disk. Default is true.</param>
     public NinjadogInitialConfiguration(
         string? name = null,
         string? version = null,
         string? description = null,
         string? rootNamespace = null,
-        string? outputPath = null)
+        string? outputPath = null,
+        bool saveGeneratedFiles = true)
         : base(
             Name: name ?? DefaultName,
             Version: version ?? DefaultVersion,
             Description: description ?? DefaultDescription,
             RootNamespace: rootNamespace ?? DefaultRootNamespace,
-            OutputPath: outputPath ?? $"src/applications/{name ?? DefaultName}")
+            OutputPath: outputPath ?? $"src/applications/{name ?? DefaultName}",
+            SaveGeneratedFiles: saveGeneratedFiles)
     {
     }
 }

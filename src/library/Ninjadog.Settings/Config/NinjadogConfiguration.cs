@@ -14,9 +14,11 @@ namespace Ninjadog.Settings.Config;
 /// <param name="Description">A brief description of the application or project.</param>
 /// <param name="RootNamespace">The root namespace for the generated code.</param>
 /// <param name="OutputPath">The path where the generated files will be saved.</param>
+/// <param name="SaveGeneratedFiles">Indicates whether the generated files should be saved to disk. Default is true.</param>
 public abstract record NinjadogConfiguration(
     string Name,
     string Version,
     string Description,
     string RootNamespace,
-    string OutputPath);
+    string OutputPath,
+    bool SaveGeneratedFiles = true);
