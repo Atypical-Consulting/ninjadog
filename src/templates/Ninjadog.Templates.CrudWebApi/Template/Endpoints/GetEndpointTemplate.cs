@@ -20,6 +20,7 @@ public sealed class GetEndpointTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Endpoints";
         var fileName = Path.Combine(st.Model, $"{st.ClassGetModelEndpoint}.cs");
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -40,13 +41,13 @@ public sealed class GetEndpointTemplate
 
                   public override void Configure()
                   {
-                      Get("{{st.ModelEndpoint}}/{id:guid}");
+                      Get("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");
                       AllowAnonymous();
                   }
 
                   public override async Task HandleAsync({{st.ClassGetModelRequest}} req, CancellationToken ct)
                   {
-                      var {{st.VarModel}} = await {{st.PropertyModelService}}.GetAsync(req.Id);
+                      var {{st.VarModel}} = await {{st.PropertyModelService}}.GetAsync(req.{{entityKey.Key}});
 
                       if ({{st.VarModel}} is null)
                       {

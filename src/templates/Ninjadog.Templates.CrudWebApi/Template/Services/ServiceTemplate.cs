@@ -65,10 +65,12 @@ public sealed class ServiceTemplate
                   }
               
                   /// <inheritdoc />
-                  public async Task<IEnumerable<{{st.Model}}>> GetAllAsync()
+                  public async Task<(IEnumerable<{{st.Model}}> Items, int TotalCount)> GetAllAsync(int page, int pageSize)
                   {
-                      var {{st.VarModelDtos}} = await {{st.VarModelRepository}}.GetAllAsync();
-                      return {{st.VarModelDtos}}.Select(x => x.{{st.MethodToModel}}());
+                      var {{st.VarModelDtos}} = await {{st.VarModelRepository}}.GetAllAsync(page, pageSize);
+                      var totalCount = await {{st.VarModelRepository}}.CountAsync();
+                      var items = {{st.VarModelDtos}}.Select(x => x.{{st.MethodToModel}}());
+                      return (items, totalCount);
                   }
               
                   /// <inheritdoc />

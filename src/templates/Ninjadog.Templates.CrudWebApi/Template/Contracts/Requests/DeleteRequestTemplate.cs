@@ -32,7 +32,7 @@ public sealed class DeleteRequestTemplate
               /// </summary>
               public partial class {{st.ClassDeleteModelRequest}}
               {
-                  public {{entityKey.Type}} Id { get; init; }
+                  public {{entityKey.Type}} {{entityKey.Key}} { get; init; }
               }
               """;
 

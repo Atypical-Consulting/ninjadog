@@ -70,10 +70,10 @@ public sealed class DtoToDomainMapperTemplate : NinjadogTemplate
 
             switch (realType)
             {
-                case "System.Guid":
+                case "Guid":
                     sb.Append($"Guid.Parse({st.VarModelDto}.{p.Key})");
                     break;
-                case "System.DateOnly":
+                case "DateOnly":
                     sb.Append($"DateOnly.FromDateTime({st.VarModelDto}.{p.Key})");
                     break;
                 default:

@@ -41,7 +41,7 @@ public sealed class UpdateEndpointTemplate
 
                   public override void Configure()
                   {
-                      Put("{{st.ModelEndpoint}}/{id:guid}");
+                      Put("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");
                       AllowAnonymous();
                   }
 

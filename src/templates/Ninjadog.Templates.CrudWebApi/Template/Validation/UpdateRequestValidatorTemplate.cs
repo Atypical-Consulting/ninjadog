@@ -10,6 +10,13 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Validation;
 public sealed class UpdateRequestValidatorTemplate
     : NinjadogTemplate
 {
+    private static readonly HashSet<string> _valueTypes =
+    [
+        "Int32",
+        "Decimal",
+        "Boolean"
+    ];
+
     /// <inheritdoc />
     public override string Name => "UpdateRequestValidator";
 
@@ -47,6 +54,7 @@ public sealed class UpdateRequestValidatorTemplate
         var properties = entity.Properties;
 
         IndentedStringBuilder sb = new(2);
+        var hasWrittenRule = false;
 
         foreach (var (propertyName, propertyValue) in properties)
         {
@@ -55,14 +63,19 @@ public sealed class UpdateRequestValidatorTemplate
                 continue;
             }
 
-            // Applying validation rules for each property
-            sb.AppendLine($"RuleFor(x => x.{propertyName}).NotEmpty();");
+            if (_valueTypes.Contains(propertyValue.Type))
+            {
+                continue;
+            }
 
-            // Check if not the last property to add an extra line break
-            if (propertyName != properties.Last().Key)
+            if (hasWrittenRule)
             {
                 sb.AppendLine();
             }
+
+            sb.AppendLine($"RuleFor(x => x.{propertyName}).NotEmpty();");
+
+            hasWrittenRule = true;
         }
 
         return sb.ToString();

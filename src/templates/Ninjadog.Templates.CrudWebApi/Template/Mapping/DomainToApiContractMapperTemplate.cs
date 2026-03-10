@@ -72,7 +72,7 @@ public sealed class DomainToApiContractMapperTemplate
 
             switch (realType)
             {
-                case "System.DateOnly":
+                case "DateOnly":
                     sb.Append(".ToDateTime(TimeOnly.MinValue)");
                     break;
             }
@@ -124,7 +124,7 @@ public sealed class DomainToApiContractMapperTemplate
 
             switch (realType)
             {
-                case "System.DateOnly":
+                case "DateOnly":
                     sb.Append(".ToDateTime(TimeOnly.MinValue)");
                     break;
             }
@@ -137,14 +137,17 @@ public sealed class DomainToApiContractMapperTemplate
 
         return $$"""
 
-                     public static {{st.ClassGetAllModelsResponse}} {{st.MethodToModelsResponse}}(this IEnumerable<{{st.Model}}> {{st.VarModels}})
+                     public static {{st.ClassGetAllModelsResponse}} {{st.MethodToModelsResponse}}(this IEnumerable<{{st.Model}}> {{st.VarModels}}, int page, int pageSize, int totalCount)
                      {
                          return new {{st.ClassGetAllModelsResponse}}
                          {
                              {{st.Models}} = {{st.VarModels}}.Select(x => new {{st.ClassModelResponse}}
                              {
                                  {{sb}}
-                             })
+                             }),
+                             Page = page,
+                             PageSize = pageSize,
+                             TotalCount = totalCount
                          };
                      }
                  """;

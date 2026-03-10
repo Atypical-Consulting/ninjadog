@@ -58,17 +58,18 @@ public sealed class DatabaseInitializerTemplate
     private static string GenerateSqlCreateTableQuery(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;
+        var entityKey = entity.Properties.GetEntityKey();
         IndentedStringBuilder stringBuilder = new(0);
 
         stringBuilder
             .AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (")
             .IncrementIndent().IncrementIndent().IncrementIndent()
-            .AppendLine("Id CHAR(36) PRIMARY KEY,");
+            .AppendLine($"{entityKey.Key} {MapToSqliteType(entityKey.Type)} PRIMARY KEY,");
 
         // Using LINQ to filter out ID property and then joining them with String.Join
         var columnDefinitions = entity.Properties
             .Where(p => !p.Value.IsKey)
-            .Select(p => $"{p.Key} TEXT NOT NULL");
+            .Select(p => $"{p.Key} {MapToSqliteType(p.Value.Type)} NOT NULL");
 
         stringBuilder
             .Append(string.Join(",\n", columnDefinitions))
@@ -76,4 +77,16 @@ public sealed class DatabaseInitializerTemplate
 
         return stringBuilder.ToString();
     }
+
+    private static string MapToSqliteType(string typeName) => typeName switch
+    {
+        "String" => "TEXT",
+        "Int32" => "INTEGER",
+        "Boolean" => "INTEGER",
+        "Decimal" => "REAL",
+        "DateTime" => "TEXT",
+        "DateOnly" => "TEXT",
+        "Guid" => "CHAR(36)",
+        _ => "TEXT"
+    };
 }

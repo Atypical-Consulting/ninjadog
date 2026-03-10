@@ -1,0 +1,77 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Data;
+using TestApp.Api.Database;
+using Dapper;
+
+namespace TestApp.Api.Repositories;
+
+public partial class OrderRepository(IDbConnectionFactory connectionFactory)
+    : IOrderRepository
+{
+    public async Task<bool> CreateAsync(OrderDto order)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"INSERT INTO Orders (OrderId, CustomerName, Total) VALUES (@OrderId, @CustomerName, @Total)",
+            order);
+
+        return result > 0;
+    }
+
+    public async Task<OrderDto?> GetAsync(Int32 id)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        return await connection.QuerySingleOrDefaultAsync<OrderDto>(
+            "SELECT * FROM Orders WHERE OrderId = @OrderId LIMIT 1",
+            new { OrderId = id.ToString() });
+    }
+
+    public async Task<IEnumerable<OrderDto>> GetAllAsync(int page, int pageSize)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+        return await connection.QueryAsync<OrderDto>(
+            "SELECT * FROM Orders LIMIT @PageSize OFFSET @Offset",
+            new { PageSize = pageSize, Offset = (page - 1) * pageSize });
+    }
+
+    public async Task<int> CountAsync()
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+        return await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Orders");
+    }
+
+    public async Task<bool> UpdateAsync(OrderDto order)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"UPDATE Orders SET CustomerName = @CustomerName, Total = @Total WHERE OrderId = @OrderId",
+            order);
+
+            return result > 0;
+    }
+
+    public async Task<bool> DeleteAsync(Int32 id)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"DELETE FROM Orders WHERE OrderId = @OrderId",
+            new { OrderId = id.ToString() });
+
+        return result > 0;
+    }
+}

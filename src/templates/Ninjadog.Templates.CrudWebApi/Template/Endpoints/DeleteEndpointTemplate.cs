@@ -20,6 +20,7 @@ public sealed class DeleteEndpointTemplate
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Endpoints";
         var fileName = Path.Combine(st.Model, $"{st.ClassDeleteModelEndpoint}.cs");
+        var entityKey = entity.Properties.GetEntityKey();
 
         var content =
             $$"""
@@ -38,13 +39,13 @@ public sealed class DeleteEndpointTemplate
 
                   public override void Configure()
                   {
-                      Delete("{{st.ModelEndpoint}}/{id:guid}");
+                      Delete("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");
                       AllowAnonymous();
                   }
 
                   public override async Task HandleAsync({{st.ClassDeleteModelRequest}} req, CancellationToken ct)
                   {
-                      var deleted = await {{st.PropertyModelService}}.DeleteAsync(req.Id);
+                      var deleted = await {{st.PropertyModelService}}.DeleteAsync(req.{{entityKey.Key}});
                       if (!deleted)
                       {
                           await SendNotFoundAsync(ct);

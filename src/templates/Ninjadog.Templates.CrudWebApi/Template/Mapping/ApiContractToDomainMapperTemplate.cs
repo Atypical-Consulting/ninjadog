@@ -71,10 +71,10 @@ public sealed class ApiContractToDomainMapperTemplate
 
             switch (realType)
             {
-                case "System.Guid":
+                case "Guid":
                     sb.Append("Guid.NewGuid()");
                     break;
-                case "System.DateOnly":
+                case "DateOnly":
                     sb.Append($"DateOnly.FromDateTime(request.{p.Key})");
                     break;
                 default:
@@ -133,7 +133,7 @@ public sealed class ApiContractToDomainMapperTemplate
 
             switch (realType)
             {
-                case "System.DateOnly":
+                case "DateOnly":
                     sb.Append($"DateOnly.FromDateTime(request.{p.Key})");
                     break;
                 default:

@@ -51,13 +51,21 @@ public sealed class RepositoryTemplate
 
                       return await connection.QuerySingleOrDefaultAsync<{{st.ClassModelDto}}>(
                           "{{GenerateSqlSelectOneQuery(entity)}}",
-                          new { Id = id.ToString() });
+                          new { {{entityKey.Key}} = id.ToString() });
                   }
 
-                  public async Task<IEnumerable<{{st.ClassModelDto}}>> GetAllAsync()
+                  public async Task<IEnumerable<{{st.ClassModelDto}}>> GetAllAsync(int page, int pageSize)
                   {
                       using var connection = await connectionFactory.CreateConnectionAsync();
-                      return await connection.QueryAsync<{{st.ClassModelDto}}>("{{GenerateSqlSelectAllQuery(entity)}}");
+                      return await connection.QueryAsync<{{st.ClassModelDto}}>(
+                          "{{GenerateSqlSelectAllQuery(entity)}}",
+                          new { PageSize = pageSize, Offset = (page - 1) * pageSize });
+                  }
+
+                  public async Task<int> CountAsync()
+                  {
+                      using var connection = await connectionFactory.CreateConnectionAsync();
+                      return await connection.ExecuteScalarAsync<int>("{{GenerateSqlCountQuery(entity)}}");
                   }
 
                   public async Task<bool> UpdateAsync({{st.ClassModelDto}} {{st.VarModel}})
@@ -77,7 +85,7 @@ public sealed class RepositoryTemplate
 
                       var result = await connection.ExecuteAsync(
                           @"{{GenerateSqlDeleteQuery(entity)}}",
-                          new {Id = id.ToString()});
+                          new { {{entityKey.Key}} = id.ToString() });
 
                       return result > 0;
                   }
@@ -106,19 +114,27 @@ public sealed class RepositoryTemplate
     private static string GenerateSqlSelectOneQuery(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;
-        return $"SELECT * FROM {st.Models} WHERE Id = @Id LIMIT 1";
+        var entityKey = entity.Properties.GetEntityKey();
+        return $"SELECT * FROM {st.Models} WHERE {entityKey.Key} = @{entityKey.Key} LIMIT 1";
     }
 
     private static string GenerateSqlSelectAllQuery(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;
-        return $"SELECT * FROM {st.Models}";
+        return $"SELECT * FROM {st.Models} LIMIT @PageSize OFFSET @Offset";
+    }
+
+    private static string GenerateSqlCountQuery(NinjadogEntityWithKey entity)
+    {
+        var st = entity.StringTokens;
+        return $"SELECT COUNT(*) FROM {st.Models}";
     }
 
     private static string GenerateSqlUpdateQuery(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;
         var properties = entity.Properties;
+        var entityKey = entity.Properties.GetEntityKey();
 
         IndentedStringBuilder stringBuilder = new(0);
 
@@ -131,13 +147,14 @@ public sealed class RepositoryTemplate
 
         return stringBuilder
             .Append(string.Join(", ", updateClauses))
-            .Append(" WHERE Id = @Id") // Assuming 'Id' is the primary key column name
+            .Append($" WHERE {entityKey.Key} = @{entityKey.Key}")
             .ToString();
     }
 
     private static string GenerateSqlDeleteQuery(NinjadogEntityWithKey entity)
     {
         var st = entity.StringTokens;
-        return $"DELETE FROM {st.Models} WHERE Id = @Id";
+        var entityKey = entity.Properties.GetEntityKey();
+        return $"DELETE FROM {st.Models} WHERE {entityKey.Key} = @{entityKey.Key}";
     }
 }

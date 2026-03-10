@@ -47,10 +47,12 @@ public sealed class ServiceInterfaceTemplate
                   Task<{{st.Model}}?> GetAsync({{entityKey.Type}} id);
 
                   /// <summary>
-                  /// Retrieves all {{st.ModelsHumanized}}.
+                  /// Retrieves a paginated list of {{st.ModelsHumanized}}.
                   /// </summary>
-                  /// <returns>A collection of all {{st.ModelsHumanized}}.</returns>
-                  Task<IEnumerable<{{st.Model}}>> GetAllAsync();
+                  /// <param name="page">The page number (1-based).</param>
+                  /// <param name="pageSize">The number of items per page.</param>
+                  /// <returns>A tuple containing the items and total count.</returns>
+                  Task<(IEnumerable<{{st.Model}}> Items, int TotalCount)> GetAllAsync(int page, int pageSize);
 
                   /// <summary>
                   /// Updates an existing {{st.ModelHumanized}}.

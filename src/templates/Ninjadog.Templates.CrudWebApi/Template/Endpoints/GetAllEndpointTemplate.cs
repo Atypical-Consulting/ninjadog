@@ -45,8 +45,11 @@ public sealed class GetAllEndpointTemplate
 
                   public override async Task HandleAsync(CancellationToken ct)
                   {
-                      var {{st.VarModels}} = await {{st.PropertyModelService}}.GetAllAsync();
-                      var {{st.VarModelsResponse}} = {{st.VarModels}}.{{st.MethodToModelsResponse}}();
+                      var page = int.TryParse(HttpContext.Request.Query["page"], out var p) && p > 0 ? p : 1;
+                      var pageSize = int.TryParse(HttpContext.Request.Query["pageSize"], out var ps) && ps > 0 ? ps : 10;
+
+                      var ({{st.VarModels}}, totalCount) = await {{st.PropertyModelService}}.GetAllAsync(page, pageSize);
+                      var {{st.VarModelsResponse}} = {{st.VarModels}}.{{st.MethodToModelsResponse}}(page, pageSize, totalCount);
                       await SendOkAsync({{st.VarModelsResponse}}, ct);
                   }
               }

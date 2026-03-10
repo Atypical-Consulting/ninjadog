@@ -83,6 +83,23 @@ public abstract class NinjadogTemplate
     }
 
     /// <summary>
+    /// Gets the FastEndpoints route constraint string for a given type name.
+    /// </summary>
+    /// <param name="typeName">The CLR type name (e.g., "Guid", "Int32").</param>
+    /// <returns>The corresponding route constraint string.</returns>
+    protected static string GetRouteConstraint(string typeName)
+    {
+        return typeName switch
+        {
+            "Guid" => "guid",
+            "Int32" => "int",
+            "Int64" => "long",
+            "String" => "alpha",
+            _ => string.Empty
+        };
+    }
+
+    /// <summary>
     /// Creates a new instance of <see cref="NinjadogContentFile"/> with the specified file name and content.
     /// </summary>
     /// <param name="fileName">The name of the file to be created.</param>

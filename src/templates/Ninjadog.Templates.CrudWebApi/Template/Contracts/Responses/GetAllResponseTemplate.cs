@@ -29,6 +29,9 @@ public sealed class GetAllResponseTemplate
               public partial class {{st.ClassGetAllModelsResponse}}
               {
                   public IEnumerable<{{st.ClassModelResponse}}> {{st.Models}} { get; init; } = Enumerable.Empty<{{st.ClassModelResponse}}>();
+                  public int Page { get; init; }
+                  public int PageSize { get; init; }
+                  public int TotalCount { get; init; }
               }
               """;
 

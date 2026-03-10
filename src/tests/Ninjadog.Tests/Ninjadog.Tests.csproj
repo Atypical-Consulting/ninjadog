@@ -6,7 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Verify.XUnit" />
     <PackageReference Include="ValueOf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../templates/Ninjadog.Templates.CrudWebApi/Ninjadog.Templates.CrudWebApi.csproj" />
   </ItemGroup>
 
 </Project>

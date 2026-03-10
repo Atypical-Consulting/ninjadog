@@ -70,10 +70,10 @@ public sealed class DomainToDtoMapperTemplate
 
             switch (realType)
             {
-                case "System.Guid":
+                case "Guid":
                     sb.Append(".ToString()");
                     break;
-                case "System.DateOnly":
+                case "DateOnly":
                     sb.Append(".ToDateTime(TimeOnly.MinValue)");
                     break;
             }
@@ -82,16 +82,6 @@ public sealed class DomainToDtoMapperTemplate
             {
                 sb.AppendLine(",");
             }
-
-            // Uncomment the following lines for debug...
-
-            // sb.AppendLine($"//   -- type          : {p.Type}");
-            // sb.AppendLine($"//   -- base type     : {baseTypeName}");
-            //
-            // if (isValueOf)
-            // {
-            //     sb.AppendLine($"//   -- value of      : {valueOfArgument}");
-            // }
         }
 
         return $$"""
