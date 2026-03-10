@@ -1,0 +1,27 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Responses;
+using TestApp.Api.Endpoints;
+using FastEndpoints;
+
+namespace TestApp.Api.Summaries;
+
+public partial class GetAllTodoItemsSummary : Summary<GetAllTodoItemsEndpoint>
+{
+    public GetAllTodoItemsSummary()
+    {
+        Summary = "Returns all the todo items in the system";
+        Description = "Returns all the todo items in the system";
+        Response<GetAllTodoItemsResponse>(200, "All todo items in the system are returned");
+    }
+}

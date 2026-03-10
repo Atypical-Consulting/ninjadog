@@ -1,0 +1,55 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Domain;
+
+namespace TestApp.Api.Services;
+
+public partial interface ITodoItemService
+{
+    /// <summary>
+    /// Asynchronously creates a new todo item.
+    /// </summary>
+    /// <param name="todoItem">The todo item to create.</param>
+    /// <returns>True if the creation was successful, false otherwise.</returns>
+    /// <exception cref="ValidationException">Thrown if a todo item with the same ID already exists.</exception>
+    Task<bool> CreateAsync(TodoItem todoItem);
+
+    /// <summary>
+    /// Retrieves a todo item by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the todo item to retrieve.</param>
+    /// <returns>The requested todo item, or null if not found.</returns>
+    Task<TodoItem?> GetAsync(Guid id);
+
+    /// <summary>
+    /// Retrieves a paginated list of todo items.
+    /// </summary>
+    /// <param name="page">The page number (1-based).</param>
+    /// <param name="pageSize">The number of items per page.</param>
+    /// <returns>A tuple containing the items and total count.</returns>
+    Task<(IEnumerable<TodoItem> Items, int TotalCount)> GetAllAsync(int page, int pageSize);
+
+    /// <summary>
+    /// Updates an existing todo item.
+    /// </summary>
+    /// <param name="todoItem">The todo item to update.</param>
+    /// <returns>True if the update was successful, false otherwise.</returns>
+    Task<bool> UpdateAsync(TodoItem todoItem);
+
+    /// <summary>
+    /// Deletes a todo item by its ID.
+    /// </summary>
+    /// <param name="id">The ID of the todo item to delete.</param>
+    /// <returns>True if the deletion was successful, false otherwise.</returns>
+    Task<bool> DeleteAsync(Guid id);
+}

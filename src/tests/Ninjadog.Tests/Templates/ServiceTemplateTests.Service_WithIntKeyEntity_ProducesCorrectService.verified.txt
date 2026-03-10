@@ -1,0 +1,73 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Domain;
+using TestApp.Api.Mapping;
+using TestApp.Api.Repositories;
+using FluentValidation;
+using FluentValidation.Results;
+
+namespace TestApp.Api.Services;
+
+/// <summary>
+/// This service provides CRUD operations for orders.
+/// </summary>
+/// <param name="orderRepository">The repository for orders.</param>
+public partial class OrderService(IOrderRepository orderRepository)
+    : IOrderService
+{
+    /// <inheritdoc />
+    public async Task<bool> CreateAsync(Order order)
+    {
+        var existingOrder = await orderRepository.GetAsync(order.OrderId);
+        if (existingOrder is not null)
+        {
+            var message = $"A order with id {order.OrderId} already exists";
+            throw new ValidationException(message, new []
+            {
+                new ValidationFailure(nameof(Order), message)
+            });
+        }
+
+        var orderDto = order.ToOrderDto();
+        return await orderRepository.CreateAsync(orderDto);
+    }
+
+    /// <inheritdoc />
+    public async Task<Order?> GetAsync(Int32 id)
+    {
+        var orderDto = await orderRepository.GetAsync(id);
+        return orderDto?.ToOrder();
+    }
+
+    /// <inheritdoc />
+    public async Task<(IEnumerable<Order> Items, int TotalCount)> GetAllAsync(int page, int pageSize)
+    {
+        var orderDtos = await orderRepository.GetAllAsync(page, pageSize);
+        var totalCount = await orderRepository.CountAsync();
+        var items = orderDtos.Select(x => x.ToOrder());
+        return (items, totalCount);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> UpdateAsync(Order order)
+    {
+        var orderDto = order.ToOrderDto();
+        return await orderRepository.UpdateAsync(orderDto);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> DeleteAsync(Int32 id)
+    {
+        return await orderRepository.DeleteAsync(id);
+    }
+}

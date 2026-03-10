@@ -1,0 +1,73 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Domain;
+using TestApp.Api.Mapping;
+using TestApp.Api.Repositories;
+using FluentValidation;
+using FluentValidation.Results;
+
+namespace TestApp.Api.Services;
+
+/// <summary>
+/// This service provides CRUD operations for todo items.
+/// </summary>
+/// <param name="todoItemRepository">The repository for todo items.</param>
+public partial class TodoItemService(ITodoItemRepository todoItemRepository)
+    : ITodoItemService
+{
+    /// <inheritdoc />
+    public async Task<bool> CreateAsync(TodoItem todoItem)
+    {
+        var existingTodoItem = await todoItemRepository.GetAsync(todoItem.Id);
+        if (existingTodoItem is not null)
+        {
+            var message = $"A todo item with id {todoItem.Id} already exists";
+            throw new ValidationException(message, new []
+            {
+                new ValidationFailure(nameof(TodoItem), message)
+            });
+        }
+
+        var todoItemDto = todoItem.ToTodoItemDto();
+        return await todoItemRepository.CreateAsync(todoItemDto);
+    }
+
+    /// <inheritdoc />
+    public async Task<TodoItem?> GetAsync(Guid id)
+    {
+        var todoItemDto = await todoItemRepository.GetAsync(id);
+        return todoItemDto?.ToTodoItem();
+    }
+
+    /// <inheritdoc />
+    public async Task<(IEnumerable<TodoItem> Items, int TotalCount)> GetAllAsync(int page, int pageSize)
+    {
+        var todoItemDtos = await todoItemRepository.GetAllAsync(page, pageSize);
+        var totalCount = await todoItemRepository.CountAsync();
+        var items = todoItemDtos.Select(x => x.ToTodoItem());
+        return (items, totalCount);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> UpdateAsync(TodoItem todoItem)
+    {
+        var todoItemDto = todoItem.ToTodoItemDto();
+        return await todoItemRepository.UpdateAsync(todoItemDto);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        return await todoItemRepository.DeleteAsync(id);
+    }
+}

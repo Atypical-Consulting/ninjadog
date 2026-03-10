@@ -1,0 +1,42 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Requests;
+using TestApp.Api.Services;
+using FastEndpoints;
+using Microsoft.AspNetCore.Authorization;
+
+namespace TestApp.Api.Endpoints;
+
+public partial class DeleteOrderEndpoint
+    : Endpoint<DeleteOrderRequest>
+{
+    public IOrderService OrderService { get; private set; } = null!;
+
+    public override void Configure()
+    {
+        Delete("/orders/{id:int}");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(DeleteOrderRequest req, CancellationToken ct)
+    {
+        var deleted = await OrderService.DeleteAsync(req.OrderId);
+        if (!deleted)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+
+        await SendNoContentAsync(ct);
+    }
+}

@@ -1,0 +1,36 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using System.Data;
+using Microsoft.Data.Sqlite;
+
+namespace TestApp.Api.Database;
+
+public interface IDbConnectionFactory
+{
+    public Task<IDbConnection> CreateConnectionAsync();
+}
+
+/// <summary>
+/// This class provides a factory for database connections.
+/// </summary>
+/// <param name="connectionString">The connection string to use.</param>
+public class SqliteConnectionFactory(string connectionString)
+    : IDbConnectionFactory
+{
+    public async Task<IDbConnection> CreateConnectionAsync()
+    {
+        var connection = new SqliteConnection(connectionString);
+        await connection.OpenAsync();
+        return connection;
+    }
+}

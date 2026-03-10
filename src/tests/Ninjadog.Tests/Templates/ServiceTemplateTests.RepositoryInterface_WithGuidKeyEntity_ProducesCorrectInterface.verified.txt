@@ -1,0 +1,32 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Data;
+using TestApp.Api.Database;
+using Dapper;
+
+namespace TestApp.Api.Repositories;
+
+public partial interface ITodoItemRepository
+{
+    Task<bool> CreateAsync(TodoItemDto todoItem);
+
+    Task<TodoItemDto?> GetAsync(Guid id);
+
+    Task<IEnumerable<TodoItemDto>> GetAllAsync(int page, int pageSize);
+
+    Task<int> CountAsync();
+
+    Task<bool> UpdateAsync(TodoItemDto todoItem);
+
+    Task<bool> DeleteAsync(Guid id);
+}

@@ -1,0 +1,28 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : 2.0.0.0
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Responses;
+using TestApp.Api.Endpoints;
+using FastEndpoints;
+
+namespace TestApp.Api.Summaries;
+
+public partial class GetTodoItemSummary : Summary<GetTodoItemEndpoint>
+{
+    public GetTodoItemSummary()
+    {
+        Summary = "Returns a single todo item by id";
+        Description = "Returns a single todo item by id";
+        Response<TodoItemResponse>(200, "Successfully found and returned the todo item");
+        Response(404, "The todo item does not exist in the system");
+    }
+}
