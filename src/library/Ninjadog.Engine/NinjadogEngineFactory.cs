@@ -20,7 +20,8 @@ public class NinjadogEngineFactory(IServiceProvider serviceProvider)
         var templateManifest = serviceProvider.GetRequiredService<NinjadogTemplateManifest>();
         var ninjadogSettings = serviceProvider.GetRequiredService<NinjadogSettings>();
 
-        NinjadogOutputProcessors outputProcessors = new(serviceProvider);
+        var saveGeneratedFiles = ninjadogSettings.Config.SaveGeneratedFiles;
+        NinjadogOutputProcessors outputProcessors = new(serviceProvider, disk: saveGeneratedFiles);
         NinjadogEngineConfiguration configuration = new(templateManifest, ninjadogSettings, outputProcessors);
 
         return new NinjadogEngineBuilder()
