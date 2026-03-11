@@ -177,6 +177,68 @@ SELECT COUNT(*) FROM TodoItems WHERE IsDeleted = 0
 {: .tip }
 > Soft-deleted records remain in the database and can be restored by setting `IsDeleted = 0` and `DeletedAt = NULL` directly via SQL. Ninjadog does not generate a restore endpoint, but the data is preserved.
 
+## Audit Fields
+
+When auditing is enabled, Ninjadog automatically adds `CreatedAt` and `UpdatedAt` columns to every generated table and manages their values in INSERT and UPDATE statements.
+
+{: .note }
+> Auditing is **disabled by default** and fully backward compatible -- existing projects are unaffected until you opt in.
+
+### Enabling Audit Fields
+
+Add `features.auditing` to the `config` section of your `ninjadog.json`:
+
+```json
+{
+  "config": {
+    "features": {
+      "auditing": true
+    }
+  }
+}
+```
+
+### Generated Schema
+
+The `DatabaseInitializer` appends two columns to every table:
+
+- **`CreatedAt TEXT NOT NULL`** -- set once when the row is inserted.
+- **`UpdatedAt TEXT`** -- nullable, set on insert and refreshed on every update.
+
+```csharp
+await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS TodoItems (
+    Id CHAR(36) PRIMARY KEY,
+    Title TEXT NOT NULL,
+    Description TEXT NOT NULL,
+    IsCompleted INTEGER NOT NULL,
+    DueDate TEXT NOT NULL,
+    Priority INTEGER NOT NULL,
+    Cost REAL NOT NULL,
+    CreatedAt TEXT NOT NULL,
+    UpdatedAt TEXT)");
+```
+
+### Generated Repository SQL
+
+**INSERT** -- both `CreatedAt` and `UpdatedAt` are set to `datetime('now')`:
+
+```sql
+INSERT INTO TodoItems (Id, Title, Description, IsCompleted, DueDate, Priority, Cost, CreatedAt, UpdatedAt)
+VALUES (@Id, @Title, @Description, @IsCompleted, @DueDate, @Priority, @Cost, datetime('now'), datetime('now'))
+```
+
+**UPDATE** -- only `UpdatedAt` is refreshed:
+
+```sql
+UPDATE TodoItems
+SET Title = @Title, Description = @Description, IsCompleted = @IsCompleted,
+    DueDate = @DueDate, Priority = @Priority, Cost = @Cost, UpdatedAt = datetime('now')
+WHERE Id = @Id
+```
+
+{: .tip }
+> Audit columns use SQLite's `datetime('now')` function so timestamps are always in UTC. No application-side clock is involved.
+
 ## Repositories
 
 ### RepositoryGenerator
