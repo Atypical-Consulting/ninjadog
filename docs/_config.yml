@@ -12,7 +12,7 @@ permalink: pretty
 
 aux_links:
   GitHub: https://github.com/Atypical-Consulting/Ninjadog
-  NuGet: https://www.nuget.org/packages/Ninjadog.Engine
+  NuGet: https://www.nuget.org/packages/Ninjadog.CLI
 
 aux_links_new_tab: true
 
