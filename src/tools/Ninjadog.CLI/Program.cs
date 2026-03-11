@@ -21,17 +21,20 @@ registrations.AddSingleton<NinjadogTemplateManifest, CrudTemplateManifest>();
 const string settingsFileName = "ninjadog.json";
 var settingsFilePath = Path.Combine(Directory.GetCurrentDirectory(), settingsFileName);
 
-if (File.Exists(settingsFilePath))
+if (Ninjadog.CLI.CliInvocation.RequiresProjectSettings(args))
 {
-    var json = File.ReadAllText(settingsFilePath);
-    var settings = NinjadogSettings.FromJsonString(json);
-    registrations.AddSingleton(settings);
-}
-else
-{
-    AnsiConsole.MarkupLine($"[yellow]Warning:[/] No {settingsFileName} found in the current directory. Run [green]ninjadog init[/] first.");
-    AnsiConsole.MarkupLine("[yellow]Using default settings.[/]");
-    registrations.AddSingleton<NinjadogSettings>(new Ninjadog.Settings.Extensions.NinjadogInitialSettings());
+    if (File.Exists(settingsFilePath))
+    {
+        var json = File.ReadAllText(settingsFilePath);
+        var settings = NinjadogSettings.FromJsonString(json);
+        registrations.AddSingleton(settings);
+    }
+    else
+    {
+        AnsiConsole.MarkupLine($"[yellow]Warning:[/] No {settingsFileName} found in the current directory. Run [green]ninjadog init[/] first.");
+        AnsiConsole.MarkupLine("[yellow]Using default settings.[/]");
+        registrations.AddSingleton<NinjadogSettings>(new Ninjadog.Settings.Extensions.NinjadogInitialSettings());
+    }
 }
 
 var registrar = new Ninjadog.CLI.Infrastructure.TypeRegistrar(registrations);
