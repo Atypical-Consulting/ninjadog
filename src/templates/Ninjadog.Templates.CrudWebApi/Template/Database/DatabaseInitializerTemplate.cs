@@ -19,6 +19,7 @@ public sealed class DatabaseInitializerTemplate
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();
         var enumNames = ninjadogSettings.Enums?.Keys.ToHashSet();
+        var softDelete = ninjadogSettings.Config.SoftDelete;
         var ns = $"{rootNamespace}.Database";
         const string fileName = "DatabaseInitializer.cs";
 
@@ -34,7 +35,7 @@ public sealed class DatabaseInitializerTemplate
                   public async Task InitializeAsync()
                   {
                       using var connection = await connectionFactory.CreateConnectionAsync();
-                      {{GenerateCreateTableSqlQueries(entities, enumNames)}}
+                      {{GenerateCreateTableSqlQueries(entities, enumNames, softDelete)}}
                   }
               }
               """;
@@ -42,7 +43,7 @@ public sealed class DatabaseInitializerTemplate
         return CreateNinjadogContentFile(fileName, content);
     }
 
-    private static string GenerateCreateTableSqlQueries(List<NinjadogEntityWithKey> entities, HashSet<string>? enumNames)
+    private static string GenerateCreateTableSqlQueries(List<NinjadogEntityWithKey> entities, HashSet<string>? enumNames, bool softDelete)
     {
         IndentedStringBuilder stringBuilder = new(2);
 
@@ -50,13 +51,13 @@ public sealed class DatabaseInitializerTemplate
         {
             stringBuilder
                 .AppendLine()
-                .AppendLine($"await connection.ExecuteAsync(@\"{GenerateSqlCreateTableQuery(entity, enumNames)}\");");
+                .AppendLine($"await connection.ExecuteAsync(@\"{GenerateSqlCreateTableQuery(entity, enumNames, softDelete)}\");");
         }
 
         return stringBuilder.ToString();
     }
 
-    private static string GenerateSqlCreateTableQuery(NinjadogEntityWithKey entity, HashSet<string>? enumNames)
+    private static string GenerateSqlCreateTableQuery(NinjadogEntityWithKey entity, HashSet<string>? enumNames, bool softDelete)
     {
         var st = entity.StringTokens;
         var entityKey = entity.Properties.GetEntityKey();
@@ -74,7 +75,10 @@ public sealed class DatabaseInitializerTemplate
         for (var i = 0; i < nonKeyProperties.Count; i++)
         {
             var p = nonKeyProperties[i];
-            if (i < nonKeyProperties.Count - 1)
+            var isLast = i == nonKeyProperties.Count - 1;
+            var needsComma = !isLast || softDelete;
+
+            if (needsComma)
             {
                 stringBuilder.AppendLine($"{p.Key} {MapToSqliteType(p.Value.Type, enumNames)} NOT NULL,");
             }
@@ -82,6 +86,13 @@ public sealed class DatabaseInitializerTemplate
             {
                 stringBuilder.Append($"{p.Key} {MapToSqliteType(p.Value.Type, enumNames)} NOT NULL)");
             }
+        }
+
+        if (softDelete)
+        {
+            stringBuilder
+                .AppendLine("IsDeleted INTEGER NOT NULL DEFAULT 0,")
+                .Append("DeletedAt TEXT)");
         }
 
         return stringBuilder.ToString();

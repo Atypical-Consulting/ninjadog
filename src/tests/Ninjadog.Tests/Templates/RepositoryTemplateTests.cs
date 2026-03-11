@@ -22,4 +22,12 @@ public partial class RepositoryTemplateTests
         var result = _template.GenerateOneByEntity(entity, "TestApp.Api");
         return Verify(result.Content);
     }
+
+    [Fact]
+    public Task GenerateMany_WithSoftDelete_AddsSoftDeleteLogic()
+    {
+        var settings = new SoftDeleteSettings();
+        var results = _template.GenerateMany(settings).ToList();
+        return Verify(results.Select(r => r.Content));
+    }
 }

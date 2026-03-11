@@ -16,6 +16,7 @@ namespace Ninjadog.Settings.Config;
 /// <param name="OutputPath">The path where the generated files will be saved.</param>
 /// <param name="SaveGeneratedFiles">Indicates whether the generated files should be saved to disk. Default is true.</param>
 /// <param name="Cors">The optional CORS configuration for the application.</param>
+/// <param name="SoftDelete">Indicates whether soft delete is enabled. When true, DELETE operations set IsDeleted=1 instead of removing rows. Default is false.</param>
 public abstract record NinjadogConfiguration(
     string Name,
     string Version,
@@ -23,4 +24,5 @@ public abstract record NinjadogConfiguration(
     string RootNamespace,
     string OutputPath,
     bool SaveGeneratedFiles = true,
-    NinjadogCorsConfiguration? Cors = null);
+    NinjadogCorsConfiguration? Cors = null,
+    bool SoftDelete = false);

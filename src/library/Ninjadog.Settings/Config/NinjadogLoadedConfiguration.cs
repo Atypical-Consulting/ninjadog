@@ -14,5 +14,6 @@ public sealed record NinjadogLoadedConfiguration(
     string RootNamespace,
     string OutputPath,
     bool SaveGeneratedFiles = true,
-    NinjadogCorsConfiguration? Cors = null)
-    : NinjadogConfiguration(Name, Version, Description, RootNamespace, OutputPath, SaveGeneratedFiles, Cors);
+    NinjadogCorsConfiguration? Cors = null,
+    bool SoftDelete = false)
+    : NinjadogConfiguration(Name, Version, Description, RootNamespace, OutputPath, SaveGeneratedFiles, Cors, SoftDelete);
