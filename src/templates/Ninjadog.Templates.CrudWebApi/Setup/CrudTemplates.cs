@@ -66,7 +66,8 @@ public class CrudTemplates : NinjadogTemplates
             new DeleteEndpointTemplate(),
             new GetAllEndpointTemplate(),
             new GetEndpointTemplate(),
-            new UpdateEndpointTemplate());
+            new UpdateEndpointTemplate(),
+            new GetByParentEndpointTemplate());
 
         AddTemplates(
             "Mapping",

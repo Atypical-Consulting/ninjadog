@@ -98,3 +98,17 @@ public sealed record SqlServerConfiguration()
 
 public sealed record SqlServerSettings()
     : NinjadogSettings(new SqlServerConfiguration(), new TestEntitiesCollection());
+
+public sealed class RelationshipEntitiesCollection : NinjadogEntities
+{
+    public RelationshipEntitiesCollection()
+    {
+        var parent = TestEntities.CreateParentEntity();
+        var child = TestEntities.CreateChildEntity();
+        Add(parent.Key, new(parent.Properties, parent.Relationships));
+        Add(child.Key, new(child.Properties));
+    }
+}
+
+public sealed record RelationshipSettings()
+    : NinjadogSettings(new TestConfiguration(), new RelationshipEntitiesCollection());

@@ -77,4 +77,33 @@ public static class TestEntities
 
         return new NinjadogEntityWithKey("Category", properties, null, seedData);
     }
+
+    public static NinjadogEntityWithKey CreateParentEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "Id", new NinjadogEntityId() },
+            { "Name", new NinjadogEntityProperty<string>() },
+        };
+
+        var relationships = new NinjadogEntityRelationships
+        {
+            { "Posts", new NinjadogEntityRelationship("Post", NinjadogEntityRelationshipType.OneToMany) },
+        };
+
+        return new NinjadogEntityWithKey("Author", properties, relationships);
+    }
+
+    public static NinjadogEntityWithKey CreateChildEntity()
+    {
+        var properties = new NinjadogEntityProperties
+        {
+            { "Id", new NinjadogEntityId() },
+            { "Title", new NinjadogEntityProperty<string>() },
+            { "Content", new NinjadogEntityProperty<string>() },
+            { "AuthorId", new NinjadogEntityProperty("Guid") },
+        };
+
+        return new NinjadogEntityWithKey("Post", properties, null);
+    }
 }
