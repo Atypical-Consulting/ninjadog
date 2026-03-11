@@ -104,6 +104,50 @@ public partial class GetTodoItemEndpoint(ITodoItemService todoItemService)
 }
 ```
 
+## Endpoint -- Nested Relationship
+
+When an entity defines a `OneToMany` relationship, Ninjadog generates a nested GET endpoint that returns child resources scoped to a parent. This example is generated from an `Author` entity with a `Posts` relationship:
+
+```json
+{
+  "Author": {
+    "properties": {
+      "Id": { "type": "Guid", "isKey": true },
+      "Name": { "type": "String" }
+    },
+    "relationships": {
+      "Posts": { "relatedEntity": "Post", "type": "OneToMany" }
+    }
+  }
+}
+```
+
+```csharp
+public partial class GetPostsByAuthorEndpoint(IPostService postService)
+    : EndpointWithoutRequest<GetAllPostsResponse>
+{
+    public override void Configure()
+    {
+        Get("/authors/{authorId:guid}/posts");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var authorId = Route<string>("authorId");
+        var page = int.TryParse(HttpContext.Request.Query["page"], out var p) && p > 0 ? p : 1;
+        var pageSize = int.TryParse(HttpContext.Request.Query["pageSize"], out var ps) && ps > 0 ? ps : 10;
+
+        var (posts, totalCount) = await postService.GetAllAsync(page, pageSize);
+        var postsResponse = posts.ToPostsResponse(page, pageSize, totalCount);
+        await SendOkAsync(postsResponse, ct);
+    }
+}
+```
+
+{: .tip }
+> The class name `GetPostsByAuthorEndpoint` is derived automatically from the relationship -- combining the child entity name (`Posts`) with the parent entity name (`Author`). Pagination works the same way as the standard GetAll endpoint.
+
 ## Validator -- Type-Aware Rules
 
 Ninjadog generates FluentValidation validators that only validate **reference types** (`string`, `DateTime`). Value types like `bool`, `int`, and `decimal` always have default values in C#, so they are skipped.
@@ -177,9 +221,14 @@ public partial class CreateContactRequestValidator : Validator<CreateContactRequ
 {: .note }
 > Validation attributes compose with type-aware rules. Value types like `Int32` are only validated when explicit constraints (`min`, `max`) are declared -- otherwise they are skipped entirely.
 
-## Database -- SQLite Schema with Type-Aware Columns
+## Database -- Schema with Type-Aware Columns
 
-The `DatabaseInitializer` creates SQLite tables for **all** entities in your project. Column types are mapped from C# types automatically (see [Data Layer](/Ninjadog/generators/data-layer) for the full mapping table).
+The `DatabaseInitializer` creates tables for **all** entities in your project. Column types are mapped from C# types automatically (see [Data Layer](/Ninjadog/generators/data-layer) for the full mapping table).
+
+{: .note }
+> Ninjadog supports **multiple database providers**: SQLite (default), PostgreSQL, and SQL Server. Set `config.database.provider` in your `ninjadog.json` to switch providers -- all generated SQL, type mappings, and connection factories adapt automatically. See [Database Provider Configuration](/Ninjadog/generators/data-layer#database-provider-configuration) for details.
+
+The example below shows SQLite output (the default provider):
 
 ```csharp
 public partial class DatabaseInitializer(IDbConnectionFactory connectionFactory)
@@ -243,6 +292,48 @@ await connection.ExecuteAsync(
 
 {: .note }
 > Audit fields are opt-in. Without `"auditing": true` in your config, the generated output is identical to the standard schema shown above.
+
+## Database -- Seed Data
+
+When entities include a `seedData` array in `ninjadog.json`, a `DatabaseSeeder` class is generated to populate tables with initial rows at startup. It is called right after `DatabaseInitializer.InitializeAsync()`.
+
+Given this configuration:
+
+```json
+{
+  "Category": {
+    "properties": {
+      "Id": { "type": "Guid", "isKey": true },
+      "Name": { "type": "String" },
+      "IsActive": { "type": "Boolean" }
+    },
+    "seedData": [
+      { "Id": "550e8400-...", "Name": "Default Category", "IsActive": true },
+      { "Id": "550e8400-...", "Name": "Archive", "IsActive": false }
+    ]
+  }
+}
+```
+
+Ninjadog produces:
+
+```csharp
+public partial class DatabaseSeeder(IDbConnectionFactory connectionFactory)
+{
+    public async Task SeedAsync()
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        await connection.ExecuteAsync("INSERT INTO Categories (Id, Name, IsActive) VALUES ('550e8400-...', 'Default Category', 1)");
+
+        await connection.ExecuteAsync("INSERT INTO Categories (Id, Name, IsActive) VALUES ('550e8400-...', 'Archive', 0)");
+
+    }
+}
+```
+
+{: .note }
+> The seeder file is only generated when at least one entity defines `seedData`. If no entities have seed data, no file is emitted.
 
 ---
 
