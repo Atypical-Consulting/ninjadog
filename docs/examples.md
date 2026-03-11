@@ -2,7 +2,7 @@
 title: Generated Examples
 description: "Real generated C# code from Ninjadog: FastEndpoints with pagination, route constraints, FluentValidation validators, and multi-provider database schema generation."
 layout: default
-nav_order: 6
+nav_order: 7
 ---
 
 # Generated Output Examples

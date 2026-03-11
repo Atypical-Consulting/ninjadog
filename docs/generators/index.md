@@ -2,7 +2,7 @@
 title: Generators
 description: "Overview of Ninjadog's 33 code generators: endpoints, contracts, data layer, mapping, validation, OpenAPI summaries, and project setup."
 layout: default
-nav_order: 5
+nav_order: 6
 has_children: true
 ---
 

@@ -2,7 +2,7 @@
 title: Contributing
 description: "How to contribute to Ninjadog: setup, development workflow, snapshot testing, and project structure guide."
 layout: default
-nav_order: 7
+nav_order: 8
 ---
 
 # Contributing

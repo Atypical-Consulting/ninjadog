@@ -69,6 +69,7 @@ Open `ninjadog.json` and edit it to define the entities you need. For example, r
 
 ```json
 {
+  "$schema": "./ninjadog.schema.json",
   "config": {
     "name": "MyApi",
     "version": "1.0.0",
@@ -89,7 +90,20 @@ Open `ninjadog.json` and edit it to define the entities you need. For example, r
 }
 ```
 
-### Step 3 -- Generate the code
+{: .tip }
+> You can also use `ninjadog ui` to visually build your configuration in a web browser.
+
+### Step 3 -- Validate your config
+
+Before generating code, check your configuration for errors:
+
+```bash
+ninjadog validate
+```
+
+If there are issues, the validator reports them with error codes and descriptions. Fix any errors before proceeding.
+
+### Step 4 -- Generate the code
 
 ```bash
 ninjadog build
@@ -98,7 +112,7 @@ ninjadog build
 {: .note }
 > Ninjadog generates ~33 files to disk including endpoints, DTOs, validators, repositories, services, mappers, domain entities, a database initializer, and a complete project structure (`.sln`, `.csproj`, `Program.cs`, `appsettings.json`). All files are written to the `outputPath` directory specified in your configuration.
 
-### Step 4 -- Run the API
+### Step 5 -- Run the API
 
 Navigate to the generated project and start it:
 
@@ -107,7 +121,7 @@ cd src/applications/MyApi
 dotnet run
 ```
 
-### Step 5 -- Verify it works
+### Step 6 -- Verify it works
 
 Open your browser or use `curl` to test the endpoints:
 
@@ -140,6 +154,7 @@ Each entity gets its own isolated set of generated files. Add as many entities a
 
 ```json
 {
+  "$schema": "./ninjadog.schema.json",
   "config": {
     "name": "MyApi",
     "version": "1.0.0",
@@ -263,6 +278,7 @@ When you run `ninjadog build`, the CLI reads your `ninjadog.json` configuration 
 
 ## Next Steps
 
+- [Configuration Reference](/Ninjadog/configuration) -- Full reference for ninjadog.json
 - [Architecture](/Ninjadog/architecture) -- Understand the design decisions and tech stack
 - [CLI Reference](/Ninjadog/cli) -- Scaffold projects with the CLI tool
 - [Generators](/Ninjadog/generators) -- Deep dive into all 30 generators
