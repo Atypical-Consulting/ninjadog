@@ -95,7 +95,10 @@ public sealed class DatabaseInitializerTemplate
             stringBuilder
                 .AppendLine("IsDeleted INTEGER NOT NULL DEFAULT 0,")
                 .Append(needsComma ? "DeletedAt TEXT," : "DeletedAt TEXT)");
-            if (needsComma) stringBuilder.AppendLine();
+            if (needsComma)
+            {
+                stringBuilder.AppendLine();
+            }
         }
 
         if (auditing)
