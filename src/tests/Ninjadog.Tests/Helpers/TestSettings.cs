@@ -46,3 +46,16 @@ public sealed class SeededEntitiesCollection : NinjadogEntities
 
 public sealed record SeededSettings()
     : NinjadogSettings(new TestConfiguration(), new SeededEntitiesCollection());
+
+public sealed record SoftDeleteConfiguration()
+    : NinjadogConfiguration(
+        Name: "TestApp",
+        Version: "1.0.0",
+        Description: "Test application",
+        RootNamespace: "TestApp.Api",
+        OutputPath: "output",
+        SaveGeneratedFiles: false,
+        SoftDelete: true);
+
+public sealed record SoftDeleteSettings()
+    : NinjadogSettings(new SoftDeleteConfiguration(), new TestEntitiesCollection());

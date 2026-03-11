@@ -67,6 +67,15 @@ public abstract record NinjadogSettings(
             cors = new NinjadogCorsConfiguration(origins, methods, headers);
         }
 
+        var softDelete = false;
+        if (configElement.TryGetProperty("features", out var featuresElement))
+        {
+            if (featuresElement.TryGetProperty("softDelete", out var sd))
+            {
+                softDelete = sd.GetBoolean();
+            }
+        }
+
         var config = new NinjadogLoadedConfiguration(
             Name: name,
             Version: configElement.GetProperty("version").GetString()!,
@@ -74,7 +83,8 @@ public abstract record NinjadogSettings(
             RootNamespace: configElement.GetProperty("rootNamespace").GetString()!,
             OutputPath: configElement.TryGetProperty("outputPath", out var op) ? op.GetString()! : $"src/applications/{name}",
             SaveGeneratedFiles: configElement.TryGetProperty("saveGeneratedFiles", out var sgf) && sgf.GetBoolean(),
-            Cors: cors);
+            Cors: cors,
+            SoftDelete: softDelete);
 
         var entities = new NinjadogLoadedEntities();
 

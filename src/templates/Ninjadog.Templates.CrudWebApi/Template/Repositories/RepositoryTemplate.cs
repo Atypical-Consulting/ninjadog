@@ -10,8 +10,17 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 public sealed class RepositoryTemplate
     : NinjadogTemplate
 {
+    private bool _softDelete;
+
     /// <inheritdoc />
     public override string Name => "Repository";
+
+    /// <inheritdoc />
+    public override IEnumerable<NinjadogContentFile> GenerateMany(NinjadogSettings ninjadogSettings)
+    {
+        _softDelete = ninjadogSettings.Config.SoftDelete;
+        return base.GenerateMany(ninjadogSettings);
+    }
 
     /// <inheritdoc />
     public override NinjadogContentFile GenerateOneByEntity(
@@ -50,7 +59,7 @@ public sealed class RepositoryTemplate
                       using var connection = await connectionFactory.CreateConnectionAsync();
 
                       return await connection.QuerySingleOrDefaultAsync<{{st.ClassModelDto}}>(
-                          "{{GenerateSqlSelectOneQuery(entity)}}",
+                          "{{GenerateSqlSelectOneQuery(entity, _softDelete)}}",
                           new { {{entityKey.Key}} = id.ToString() });
                   }
 
@@ -58,14 +67,14 @@ public sealed class RepositoryTemplate
                   {
                       using var connection = await connectionFactory.CreateConnectionAsync();
                       return await connection.QueryAsync<{{st.ClassModelDto}}>(
-                          "{{GenerateSqlSelectAllQuery(entity)}}",
+                          "{{GenerateSqlSelectAllQuery(entity, _softDelete)}}",
                           new { PageSize = pageSize, Offset = (page - 1) * pageSize });
                   }
 
                   public async Task<int> CountAsync()
                   {
                       using var connection = await connectionFactory.CreateConnectionAsync();
-                      return await connection.ExecuteScalarAsync<int>("{{GenerateSqlCountQuery(entity)}}");
+                      return await connection.ExecuteScalarAsync<int>("{{GenerateSqlCountQuery(entity, _softDelete)}}");
                   }
 
                   public async Task<bool> UpdateAsync({{st.ClassModelDto}} {{st.VarModel}})
@@ -84,7 +93,7 @@ public sealed class RepositoryTemplate
                       using var connection = await connectionFactory.CreateConnectionAsync();
 
                       var result = await connection.ExecuteAsync(
-                          @"{{GenerateSqlDeleteQuery(entity)}}",
+                          @"{{GenerateSqlDeleteQuery(entity, _softDelete)}}",
                           new { {{entityKey.Key}} = id.ToString() });
 
                       return result > 0;
@@ -111,23 +120,27 @@ public sealed class RepositoryTemplate
             .ToString();
     }
 
-    private static string GenerateSqlSelectOneQuery(NinjadogEntityWithKey entity)
+    private static string GenerateSqlSelectOneQuery(NinjadogEntityWithKey entity, bool softDelete)
     {
         var st = entity.StringTokens;
         var entityKey = entity.Properties.GetEntityKey();
-        return $"SELECT * FROM {st.Models} WHERE {entityKey.Key} = @{entityKey.Key} LIMIT 1";
+        var softDeleteFilter = softDelete ? " AND IsDeleted = 0" : string.Empty;
+        return $"SELECT * FROM {st.Models} WHERE {entityKey.Key} = @{entityKey.Key}{softDeleteFilter} LIMIT 1";
     }
 
-    private static string GenerateSqlSelectAllQuery(NinjadogEntityWithKey entity)
+    private static string GenerateSqlSelectAllQuery(NinjadogEntityWithKey entity, bool softDelete)
     {
         var st = entity.StringTokens;
-        return $"SELECT * FROM {st.Models} LIMIT @PageSize OFFSET @Offset";
+        var whereClause = softDelete ? " WHERE IsDeleted = 0" : string.Empty;
+        return $"SELECT * FROM {st.Models}{whereClause} LIMIT @PageSize OFFSET @Offset";
     }
 
-    private static string GenerateSqlCountQuery(NinjadogEntityWithKey entity)
+    private static string GenerateSqlCountQuery(NinjadogEntityWithKey entity, bool softDelete)
     {
         var st = entity.StringTokens;
-        return $"SELECT COUNT(*) FROM {st.Models}";
+        return softDelete
+            ? $"SELECT COUNT(*) FROM {st.Models} WHERE IsDeleted = 0"
+            : $"SELECT COUNT(*) FROM {st.Models}";
     }
 
     private static string GenerateSqlUpdateQuery(NinjadogEntityWithKey entity)
@@ -151,10 +164,12 @@ public sealed class RepositoryTemplate
             .ToString();
     }
 
-    private static string GenerateSqlDeleteQuery(NinjadogEntityWithKey entity)
+    private static string GenerateSqlDeleteQuery(NinjadogEntityWithKey entity, bool softDelete)
     {
         var st = entity.StringTokens;
         var entityKey = entity.Properties.GetEntityKey();
-        return $"DELETE FROM {st.Models} WHERE {entityKey.Key} = @{entityKey.Key}";
+        return softDelete
+            ? $"UPDATE {st.Models} SET IsDeleted = 1, DeletedAt = datetime('now') WHERE {entityKey.Key} = @{entityKey.Key}"
+            : $"DELETE FROM {st.Models} WHERE {entityKey.Key} = @{entityKey.Key}";
     }
 }
