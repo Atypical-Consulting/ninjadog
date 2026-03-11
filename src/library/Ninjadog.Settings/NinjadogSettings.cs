@@ -22,6 +22,9 @@ public abstract record NinjadogSettings(
     NinjadogEntities Entities,
     Dictionary<string, List<string>>? Enums = null)
 {
+    private const string ConfigPropertyName = "config";
+    private const string EntitiesPropertyName = "entities";
+    private const string EnumsPropertyName = "enums";
     private static readonly JsonSerializerOptions _deserializeOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -49,55 +52,43 @@ public abstract record NinjadogSettings(
         var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
-        var configElement = root.GetProperty("config");
-        var name = configElement.GetProperty("name").GetString()!;
+        var configElement = GetRequiredObject(root, ConfigPropertyName);
+        var name = GetRequiredString(configElement, "name");
 
         NinjadogCorsConfiguration? cors = null;
-        if (configElement.TryGetProperty("cors", out var corsElement))
+        if (TryGetOptionalObject(configElement, "cors", out var corsElement))
         {
-            var origins = corsElement.TryGetProperty("origins", out var originsEl)
-                ? originsEl.EnumerateArray().Select(e => e.GetString()!).ToArray()
-                : [];
-            var methods = corsElement.TryGetProperty("methods", out var methodsEl)
-                ? methodsEl.EnumerateArray().Select(e => e.GetString()!).ToArray()
-                : null;
-            var headers = corsElement.TryGetProperty("headers", out var headersEl)
-                ? headersEl.EnumerateArray().Select(e => e.GetString()!).ToArray()
-                : null;
+            var origins = GetOptionalStringArray(corsElement, "origins") ?? [];
+            var methods = GetOptionalStringArray(corsElement, "methods");
+            var headers = GetOptionalStringArray(corsElement, "headers");
             cors = new NinjadogCorsConfiguration(origins, methods, headers);
         }
 
         var softDelete = false;
         var auditing = false;
-        if (configElement.TryGetProperty("features", out var featuresElement))
+        if (TryGetOptionalObject(configElement, "features", out var featuresElement))
         {
-            if (featuresElement.TryGetProperty("softDelete", out var sd))
-            {
-                softDelete = sd.GetBoolean();
-            }
-
-            if (featuresElement.TryGetProperty("auditing", out var aud))
-            {
-                auditing = aud.GetBoolean();
-            }
+            softDelete = GetOptionalBoolean(featuresElement, "softDelete");
+            auditing = GetOptionalBoolean(featuresElement, "auditing");
         }
 
         var databaseProvider = "sqlite";
-        if (configElement.TryGetProperty("database", out var dbElement))
+        if (TryGetOptionalObject(configElement, "database", out var dbElement))
         {
-            if (dbElement.TryGetProperty("provider", out var provEl))
+            var provider = GetOptionalString(dbElement, "provider");
+            if (provider is not null)
             {
-                databaseProvider = provEl.GetString()!;
+                databaseProvider = provider;
             }
         }
 
         var config = new NinjadogLoadedConfiguration(
             Name: name,
-            Version: configElement.GetProperty("version").GetString()!,
-            Description: configElement.GetProperty("description").GetString()!,
-            RootNamespace: configElement.GetProperty("rootNamespace").GetString()!,
-            OutputPath: configElement.TryGetProperty("outputPath", out var op) ? op.GetString()! : $"src/applications/{name}",
-            SaveGeneratedFiles: configElement.TryGetProperty("saveGeneratedFiles", out var sgf) && sgf.GetBoolean(),
+            Version: GetRequiredString(configElement, "version"),
+            Description: GetRequiredString(configElement, "description"),
+            RootNamespace: GetRequiredString(configElement, "rootNamespace"),
+            OutputPath: GetOptionalString(configElement, "outputPath") ?? $"src/applications/{name}",
+            SaveGeneratedFiles: GetOptionalBoolean(configElement, "saveGeneratedFiles"),
             Cors: cors,
             SoftDelete: softDelete,
             Auditing: auditing,
@@ -105,39 +96,39 @@ public abstract record NinjadogSettings(
 
         var entities = new NinjadogLoadedEntities();
 
-        if (root.TryGetProperty("entities", out var entitiesElement))
+        if (TryGetOptionalObject(root, EntitiesPropertyName, out var entitiesElement))
         {
             foreach (var entityProp in entitiesElement.EnumerateObject())
             {
                 var entityName = entityProp.Name;
                 var properties = new NinjadogEntityProperties();
 
-                if (entityProp.Value.TryGetProperty("properties", out var propsElement))
+                if (TryGetOptionalObject(entityProp.Value, "properties", out var propsElement))
                 {
                     foreach (var prop in propsElement.EnumerateObject())
                     {
                         var propName = prop.Name;
-                        var type = prop.Value.GetProperty("type").GetString()!;
-                        var isKey = prop.Value.TryGetProperty("isKey", out var ik) && ik.GetBoolean();
-                        var required = prop.Value.TryGetProperty("required", out var req) && req.GetBoolean();
-                        int? maxLength = prop.Value.TryGetProperty("maxLength", out var ml) ? ml.GetInt32() : null;
-                        int? minLength = prop.Value.TryGetProperty("minLength", out var mnl) ? mnl.GetInt32() : null;
-                        int? min = prop.Value.TryGetProperty("min", out var mn) ? mn.GetInt32() : null;
-                        int? max = prop.Value.TryGetProperty("max", out var mx) ? mx.GetInt32() : null;
-                        var pattern = prop.Value.TryGetProperty("pattern", out var pat) ? pat.GetString() : null;
+                        var type = GetRequiredString(prop.Value, "type");
+                        var isKey = GetOptionalBoolean(prop.Value, "isKey");
+                        var required = GetOptionalBoolean(prop.Value, "required");
+                        var maxLength = GetOptionalInt32(prop.Value, "maxLength");
+                        var minLength = GetOptionalInt32(prop.Value, "minLength");
+                        var min = GetOptionalInt32(prop.Value, "min");
+                        var max = GetOptionalInt32(prop.Value, "max");
+                        var pattern = GetOptionalString(prop.Value, "pattern");
                         properties.Add(propName, new NinjadogEntityProperty(type, isKey, required, maxLength, minLength, min, max, pattern));
                     }
                 }
 
                 NinjadogEntityRelationships? relationships = null;
-                if (entityProp.Value.TryGetProperty("relationships", out var relsElement))
+                if (TryGetOptionalObject(entityProp.Value, "relationships", out var relsElement))
                 {
                     relationships = JsonSerializer.Deserialize<NinjadogEntityRelationships>(
                         relsElement.GetRawText(), _deserializeOptions);
                 }
 
                 List<Dictionary<string, object>>? seedData = null;
-                if (entityProp.Value.TryGetProperty("seedData", out var seedElement))
+                if (TryGetOptionalArray(entityProp.Value, "seedData", out var seedElement))
                 {
                     seedData = [];
                     foreach (var seedItem in seedElement.EnumerateArray())
@@ -164,7 +155,7 @@ public abstract record NinjadogSettings(
         }
 
         Dictionary<string, List<string>>? enums = null;
-        if (root.TryGetProperty("enums", out var enumsElement))
+        if (TryGetOptionalObject(root, EnumsPropertyName, out var enumsElement))
         {
             enums = new Dictionary<string, List<string>>();
             foreach (var enumProp in enumsElement.EnumerateObject())
@@ -177,5 +168,127 @@ public abstract record NinjadogSettings(
         }
 
         return new NinjadogLoadedSettings(config, entities, enums);
+    }
+
+    private static string GetRequiredString(JsonElement element, string propertyName)
+    {
+        if (!TryGetOptionalProperty(element, propertyName, out var property) || property.ValueKind != JsonValueKind.String)
+        {
+            throw new JsonException($"Expected '{propertyName}' to be a JSON string.");
+        }
+
+        return property.GetString()!;
+    }
+
+    private static string? GetOptionalString(JsonElement element, string propertyName)
+    {
+        if (!TryGetOptionalProperty(element, propertyName, out var property))
+        {
+            return null;
+        }
+
+        if (property.ValueKind != JsonValueKind.String)
+        {
+            throw new JsonException($"Expected '{propertyName}' to be a JSON string.");
+        }
+
+        return property.GetString();
+    }
+
+    private static bool GetOptionalBoolean(JsonElement element, string propertyName)
+    {
+        if (!TryGetOptionalProperty(element, propertyName, out var property))
+        {
+            return false;
+        }
+
+        if (property.ValueKind is not JsonValueKind.True and not JsonValueKind.False)
+        {
+            throw new JsonException($"Expected '{propertyName}' to be a JSON boolean.");
+        }
+
+        return property.GetBoolean();
+    }
+
+    private static int? GetOptionalInt32(JsonElement element, string propertyName)
+    {
+        if (!TryGetOptionalProperty(element, propertyName, out var property))
+        {
+            return null;
+        }
+
+        if (property.ValueKind != JsonValueKind.Number)
+        {
+            throw new JsonException($"Expected '{propertyName}' to be a JSON number.");
+        }
+
+        return property.GetInt32();
+    }
+
+    private static string[]? GetOptionalStringArray(JsonElement element, string propertyName)
+    {
+        if (!TryGetOptionalProperty(element, propertyName, out var property))
+        {
+            return null;
+        }
+
+        if (property.ValueKind != JsonValueKind.Array)
+        {
+            throw new JsonException($"Expected '{propertyName}' to be a JSON array.");
+        }
+
+        return property.EnumerateArray().Select(item => item.GetString()!).ToArray();
+    }
+
+    private static JsonElement GetRequiredObject(JsonElement element, string propertyName)
+    {
+        if (!TryGetOptionalObject(element, propertyName, out var property))
+        {
+            throw new JsonException($"Expected '{propertyName}' to be a JSON object.");
+        }
+
+        return property;
+    }
+
+    private static bool TryGetOptionalObject(JsonElement element, string propertyName, out JsonElement property)
+    {
+        if (!TryGetOptionalProperty(element, propertyName, out property))
+        {
+            return false;
+        }
+
+        if (property.ValueKind != JsonValueKind.Object)
+        {
+            throw new JsonException($"Expected '{propertyName}' to be a JSON object.");
+        }
+
+        return true;
+    }
+
+    private static bool TryGetOptionalArray(JsonElement element, string propertyName, out JsonElement property)
+    {
+        if (!TryGetOptionalProperty(element, propertyName, out property))
+        {
+            return false;
+        }
+
+        if (property.ValueKind != JsonValueKind.Array)
+        {
+            throw new JsonException($"Expected '{propertyName}' to be a JSON array.");
+        }
+
+        return true;
+    }
+
+    private static bool TryGetOptionalProperty(JsonElement element, string propertyName, out JsonElement property)
+    {
+        property = default;
+
+        if (element.ValueKind != JsonValueKind.Object || !element.TryGetProperty(propertyName, out property))
+        {
+            return false;
+        }
+
+        return property.ValueKind is not JsonValueKind.Null and not JsonValueKind.Undefined;
     }
 }
