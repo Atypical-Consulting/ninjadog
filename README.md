@@ -247,7 +247,7 @@ public partial class DatabaseInitializer(IDbConnectionFactory connectionFactory)
 - **OpenAPI summaries** — Each endpoint gets Swagger documentation
 - **Database initializer** — Schema creation and connection factory generation
 - **CLI tooling** — Project scaffolding and code generation commands
-- **Snapshot tested** — 14 Verify snapshot tests cover template output correctness
+- **Extensively tested** — 197 tests across 22 test files cover template output, settings, validation, and CLI
 
 ## Tech Stack
 
@@ -408,7 +408,7 @@ ninjadog/
 │   │   └── Ninjadog.Templates.CrudWebApi/   # CRUD Web API template
 │   └── tests/
 │       └── Ninjadog.Tests/                  # Snapshot + unit tests
-├── doc/                                     # Generator documentation
+├── docs/                                    # Documentation (Jekyll site)
 ├── Ninjadog.sln                             # Solution file
 └── global.json                              # .NET SDK version config
 ```
@@ -431,7 +431,7 @@ Ninjadog includes **30 generators** organized into 11 categories. Each generator
 | **Summaries** | Create, Delete, GetAll, Get, Update | Per entity |
 | **Validation** | CreateRequestValidator, UpdateRequestValidator | Per entity |
 
-Full documentation for each generator is available in [`doc/generators/`](./doc/generators/).
+Full documentation for each generator is available in [`docs/generators/`](./docs/generators/).
 
 ## CLI
 
@@ -446,7 +446,9 @@ Available commands:
 ```bash
 ninjadog init              # Initialize a new Ninjadog project
 ninjadog build             # Build and run the generator engine
-ninjadog ninjadog          # Generate a new Ninjadog project
+ninjadog validate          # Validate a ninjadog.json configuration file
+ninjadog add-entity        # Add a new entity to an existing configuration
+ninjadog ui                # Launch the web UI configuration builder
 ```
 
 ## Roadmap
@@ -497,7 +499,7 @@ dotnet test
 - **Generator templates** — `src/templates/Ninjadog.Templates.CrudWebApi/`
 - **Snapshot tests** — `src/tests/Ninjadog.Tests/Templates/`
 - **CLI commands** — `src/tools/Ninjadog.CLI/`
-- **Generator docs** — `doc/generators/`
+- **Generator docs** — `docs/generators/`
 
 ## License
 
