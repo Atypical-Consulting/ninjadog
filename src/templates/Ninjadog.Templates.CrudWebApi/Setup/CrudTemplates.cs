@@ -56,7 +56,8 @@ public class CrudTemplates : NinjadogTemplates
 
         AddTemplates(
             "Domain",
-            new DomainEntityTemplate());
+            new DomainEntityTemplate(),
+            new EnumTemplate());
 
         AddTemplates(
             "Endpoints",
