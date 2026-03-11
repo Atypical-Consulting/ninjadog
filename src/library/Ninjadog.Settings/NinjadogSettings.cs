@@ -19,7 +19,8 @@ namespace Ninjadog.Settings;
 /// <param name="Entities">The collection of entities that the Ninjadog Engine will use for template generation.</param>
 public abstract record NinjadogSettings(
     NinjadogConfiguration Config,
-    NinjadogEntities Entities)
+    NinjadogEntities Entities,
+    Dictionary<string, List<string>>? Enums = null)
 {
     private static readonly JsonSerializerOptions _deserializeOptions = new()
     {
@@ -89,6 +90,19 @@ public abstract record NinjadogSettings(
             }
         }
 
-        return new NinjadogLoadedSettings(config, entities);
+        Dictionary<string, List<string>>? enums = null;
+        if (root.TryGetProperty("enums", out var enumsElement))
+        {
+            enums = new Dictionary<string, List<string>>();
+            foreach (var enumProp in enumsElement.EnumerateObject())
+            {
+                var values = enumProp.Value.EnumerateArray()
+                    .Select(e => e.GetString()!)
+                    .ToList();
+                enums[enumProp.Name] = values;
+            }
+        }
+
+        return new NinjadogLoadedSettings(config, entities, enums);
     }
 }

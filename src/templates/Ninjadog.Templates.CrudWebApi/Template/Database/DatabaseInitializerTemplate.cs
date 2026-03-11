@@ -18,6 +18,7 @@ public sealed class DatabaseInitializerTemplate
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();
+        var enumNames = ninjadogSettings.Enums?.Keys.ToHashSet();
         var ns = $"{rootNamespace}.Database";
         const string fileName = "DatabaseInitializer.cs";
 
@@ -33,7 +34,7 @@ public sealed class DatabaseInitializerTemplate
                   public async Task InitializeAsync()
                   {
                       using var connection = await connectionFactory.CreateConnectionAsync();
-                      {{GenerateCreateTableSqlQueries(entities)}}
+                      {{GenerateCreateTableSqlQueries(entities, enumNames)}}
                   }
               }
               """;
@@ -41,7 +42,7 @@ public sealed class DatabaseInitializerTemplate
         return CreateNinjadogContentFile(fileName, content);
     }
 
-    private static string GenerateCreateTableSqlQueries(List<NinjadogEntityWithKey> entities)
+    private static string GenerateCreateTableSqlQueries(List<NinjadogEntityWithKey> entities, HashSet<string>? enumNames)
     {
         IndentedStringBuilder stringBuilder = new(2);
 
@@ -49,13 +50,13 @@ public sealed class DatabaseInitializerTemplate
         {
             stringBuilder
                 .AppendLine()
-                .AppendLine($"await connection.ExecuteAsync(@\"{GenerateSqlCreateTableQuery(entity)}\");");
+                .AppendLine($"await connection.ExecuteAsync(@\"{GenerateSqlCreateTableQuery(entity, enumNames)}\");");
         }
 
         return stringBuilder.ToString();
     }
 
-    private static string GenerateSqlCreateTableQuery(NinjadogEntityWithKey entity)
+    private static string GenerateSqlCreateTableQuery(NinjadogEntityWithKey entity, HashSet<string>? enumNames)
     {
         var st = entity.StringTokens;
         var entityKey = entity.Properties.GetEntityKey();
@@ -64,7 +65,7 @@ public sealed class DatabaseInitializerTemplate
         stringBuilder
             .AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (")
             .IncrementIndent().IncrementIndent().IncrementIndent()
-            .AppendLine($"{entityKey.Key} {MapToSqliteType(entityKey.Type)} PRIMARY KEY,");
+            .AppendLine($"{entityKey.Key} {MapToSqliteType(entityKey.Type, enumNames)} PRIMARY KEY,");
 
         var nonKeyProperties = entity.Properties
             .Where(p => !p.Value.IsKey)
@@ -75,19 +76,24 @@ public sealed class DatabaseInitializerTemplate
             var p = nonKeyProperties[i];
             if (i < nonKeyProperties.Count - 1)
             {
-                stringBuilder.AppendLine($"{p.Key} {MapToSqliteType(p.Value.Type)} NOT NULL,");
+                stringBuilder.AppendLine($"{p.Key} {MapToSqliteType(p.Value.Type, enumNames)} NOT NULL,");
             }
             else
             {
-                stringBuilder.Append($"{p.Key} {MapToSqliteType(p.Value.Type)} NOT NULL)");
+                stringBuilder.Append($"{p.Key} {MapToSqliteType(p.Value.Type, enumNames)} NOT NULL)");
             }
         }
 
         return stringBuilder.ToString();
     }
 
-    private static string MapToSqliteType(string typeName)
+    private static string MapToSqliteType(string typeName, HashSet<string>? enumNames = null)
     {
+        if (enumNames?.Contains(typeName) == true)
+        {
+            return "INTEGER";
+        }
+
         return typeName switch
         {
             "String" => "TEXT",

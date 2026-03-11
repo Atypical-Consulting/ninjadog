@@ -12,5 +12,6 @@ namespace Ninjadog.Settings;
 /// </summary>
 public sealed record NinjadogLoadedSettings(
     NinjadogConfiguration Config,
-    NinjadogEntities Entities)
-    : NinjadogSettings(Config, Entities);
+    NinjadogEntities Entities,
+    Dictionary<string, List<string>>? Enums = null)
+    : NinjadogSettings(Config, Entities, Enums);

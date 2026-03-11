@@ -24,3 +24,13 @@ public sealed class TestEntitiesCollection : NinjadogEntities
 
 public sealed record TestSettings()
     : NinjadogSettings(new TestConfiguration(), new TestEntitiesCollection());
+
+public sealed record EnumTestSettings()
+    : NinjadogSettings(
+        new TestConfiguration(),
+        new TestEntitiesCollection(),
+        new Dictionary<string, List<string>>
+        {
+            ["Priority"] = ["Low", "Medium", "High", "Critical"],
+            ["Status"] = ["Draft", "Active", "Archived"],
+        });
