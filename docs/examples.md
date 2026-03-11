@@ -104,6 +104,50 @@ public partial class GetTodoItemEndpoint(ITodoItemService todoItemService)
 }
 ```
 
+## Endpoint -- Nested Relationship
+
+When an entity defines a `OneToMany` relationship, Ninjadog generates a nested GET endpoint that returns child resources scoped to a parent. This example is generated from an `Author` entity with a `Posts` relationship:
+
+```json
+{
+  "Author": {
+    "properties": {
+      "Id": { "type": "Guid", "isKey": true },
+      "Name": { "type": "String" }
+    },
+    "relationships": {
+      "Posts": { "relatedEntity": "Post", "type": "OneToMany" }
+    }
+  }
+}
+```
+
+```csharp
+public partial class GetPostsByAuthorEndpoint(IPostService postService)
+    : EndpointWithoutRequest<GetAllPostsResponse>
+{
+    public override void Configure()
+    {
+        Get("/authors/{authorId:guid}/posts");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var authorId = Route<string>("authorId");
+        var page = int.TryParse(HttpContext.Request.Query["page"], out var p) && p > 0 ? p : 1;
+        var pageSize = int.TryParse(HttpContext.Request.Query["pageSize"], out var ps) && ps > 0 ? ps : 10;
+
+        var (posts, totalCount) = await postService.GetAllAsync(page, pageSize);
+        var postsResponse = posts.ToPostsResponse(page, pageSize, totalCount);
+        await SendOkAsync(postsResponse, ct);
+    }
+}
+```
+
+{: .tip }
+> The class name `GetPostsByAuthorEndpoint` is derived automatically from the relationship -- combining the child entity name (`Posts`) with the parent entity name (`Author`). Pagination works the same way as the standard GetAll endpoint.
+
 ## Validator -- Type-Aware Rules
 
 Ninjadog generates FluentValidation validators that only validate **reference types** (`string`, `DateTime`). Value types like `bool`, `int`, and `decimal` always have default values in C#, so they are skipped.
@@ -177,9 +221,14 @@ public partial class CreateContactRequestValidator : Validator<CreateContactRequ
 {: .note }
 > Validation attributes compose with type-aware rules. Value types like `Int32` are only validated when explicit constraints (`min`, `max`) are declared -- otherwise they are skipped entirely.
 
-## Database -- SQLite Schema with Type-Aware Columns
+## Database -- Schema with Type-Aware Columns
 
-The `DatabaseInitializer` creates SQLite tables for **all** entities in your project. Column types are mapped from C# types automatically (see [Data Layer](/Ninjadog/generators/data-layer) for the full mapping table).
+The `DatabaseInitializer` creates tables for **all** entities in your project. Column types are mapped from C# types automatically (see [Data Layer](/Ninjadog/generators/data-layer) for the full mapping table).
+
+{: .note }
+> Ninjadog supports **multiple database providers**: SQLite (default), PostgreSQL, and SQL Server. Set `config.database.provider` in your `ninjadog.json` to switch providers -- all generated SQL, type mappings, and connection factories adapt automatically. See [Database Provider Configuration](/Ninjadog/generators/data-layer#database-provider-configuration) for details.
+
+The example below shows SQLite output (the default provider):
 
 ```csharp
 public partial class DatabaseInitializer(IDbConnectionFactory connectionFactory)
