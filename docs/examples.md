@@ -293,6 +293,48 @@ await connection.ExecuteAsync(
 {: .note }
 > Audit fields are opt-in. Without `"auditing": true` in your config, the generated output is identical to the standard schema shown above.
 
+## Database -- Seed Data
+
+When entities include a `seedData` array in `ninjadog.json`, a `DatabaseSeeder` class is generated to populate tables with initial rows at startup. It is called right after `DatabaseInitializer.InitializeAsync()`.
+
+Given this configuration:
+
+```json
+{
+  "Category": {
+    "properties": {
+      "Id": { "type": "Guid", "isKey": true },
+      "Name": { "type": "String" },
+      "IsActive": { "type": "Boolean" }
+    },
+    "seedData": [
+      { "Id": "550e8400-...", "Name": "Default Category", "IsActive": true },
+      { "Id": "550e8400-...", "Name": "Archive", "IsActive": false }
+    ]
+  }
+}
+```
+
+Ninjadog produces:
+
+```csharp
+public partial class DatabaseSeeder(IDbConnectionFactory connectionFactory)
+{
+    public async Task SeedAsync()
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        await connection.ExecuteAsync("INSERT INTO Categories (Id, Name, IsActive) VALUES ('550e8400-...', 'Default Category', 1)");
+
+        await connection.ExecuteAsync("INSERT INTO Categories (Id, Name, IsActive) VALUES ('550e8400-...', 'Archive', 0)");
+
+    }
+}
+```
+
+{: .note }
+> The seeder file is only generated when at least one entity defines `seedData`. If no entities have seed data, no file is emitted.
+
 ---
 
 ## Enum -- C# Code Generation

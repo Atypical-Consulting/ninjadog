@@ -66,6 +66,54 @@ Generates an `IDbConnectionFactory` interface and a provider-specific implementa
 {: .note }
 > When using `postgresql` or `sqlserver`, the corresponding NuGet packages (`Npgsql` or `Microsoft.Data.SqlClient`) are automatically added to the generated project manifest.
 
+### DatabaseSeederGenerator
+
+| Scope | Single File |
+|---|---|
+
+Generates a `DatabaseSeeder` class that inserts seed data defined in `ninjadog.json`. The seeder is called after `DatabaseInitializer.InitializeAsync()` during application startup.
+
+{: .note }
+> This file is **only generated** when at least one entity has a `seedData` array in its configuration.
+
+Define seed data directly in your entity configuration:
+
+```json
+{
+  "Category": {
+    "properties": {
+      "Id": { "type": "Guid", "isKey": true },
+      "Name": { "type": "String" },
+      "IsActive": { "type": "Boolean" }
+    },
+    "seedData": [
+      { "Id": "550e8400-...", "Name": "Default Category", "IsActive": true },
+      { "Id": "550e8400-...", "Name": "Archive", "IsActive": false }
+    ]
+  }
+}
+```
+
+The generated class uses Dapper to execute INSERT statements for each seed row:
+
+```csharp
+public partial class DatabaseSeeder(IDbConnectionFactory connectionFactory)
+{
+    public async Task SeedAsync()
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        await connection.ExecuteAsync("INSERT INTO Categories (Id, Name, IsActive) VALUES ('550e8400-...', 'Default Category', 1)");
+
+        await connection.ExecuteAsync("INSERT INTO Categories (Id, Name, IsActive) VALUES ('550e8400-...', 'Archive', 0)");
+
+    }
+}
+```
+
+{: .tip }
+> Boolean values are automatically converted to `1`/`0` for SQLite compatibility. String values are properly escaped with single quotes.
+
 ## Repositories
 
 ### RepositoryGenerator
