@@ -1,3 +1,4 @@
+using Ninjadog.Settings;
 using Ninjadog.Settings.Entities.Properties;
 using Ninjadog.Settings.Extensions;
 using Ninjadog.Settings.Extensions.Entities.Properties;
@@ -180,5 +181,61 @@ public class NinjadogInitialSettingsTests
         Assert.NotNull(json);
         Assert.Contains("NinjadogApp", json);
         Assert.Contains("1.0.0", json);
+    }
+
+    [Fact]
+    public void FromJsonString_WithExplicitNullOptionalSections_LoadsSettings()
+    {
+        const string json = """
+            {
+              "config": {
+                "name": "TodoApp",
+                "version": "1.0.0",
+                "description": "A simple todo app",
+                "rootNamespace": "MyCustomer.TodoApp",
+                "outputPath": null,
+                "saveGeneratedFiles": null,
+                "cors": null,
+                "features": null,
+                "database": null
+              },
+              "entities": {
+                "TodoItem": {
+                  "properties": {
+                    "Id": {
+                      "type": "Guid",
+                      "isKey": true,
+                      "required": null,
+                      "maxLength": null,
+                      "minLength": null,
+                      "min": null,
+                      "max": null,
+                      "pattern": null
+                    },
+                    "Title": {
+                      "type": "string"
+                    }
+                  },
+                  "relationships": null,
+                  "seedData": null
+                }
+              },
+              "enums": null
+            }
+            """;
+
+        var settings = NinjadogSettings.FromJsonString(json);
+
+        Assert.Equal("TodoApp", settings.Config.Name);
+        Assert.Equal("src/applications/TodoApp", settings.Config.OutputPath);
+        Assert.False(settings.Config.SaveGeneratedFiles);
+        Assert.Null(settings.Config.Cors);
+        Assert.False(settings.Config.SoftDelete);
+        Assert.False(settings.Config.Auditing);
+        Assert.Equal("sqlite", settings.Config.DatabaseProvider);
+        Assert.Single(settings.Entities);
+        Assert.Null(settings.Entities["TodoItem"].Relationships);
+        Assert.Null(settings.Entities["TodoItem"].SeedData);
+        Assert.Null(settings.Enums);
     }
 }
