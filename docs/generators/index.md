@@ -2,7 +2,7 @@
 title: Generators
 description: "Overview of Ninjadog's 33 code generators: endpoints, contracts, data layer, mapping, validation, OpenAPI summaries, and project setup."
 layout: default
-nav_order: 5
+nav_order: 6
 has_children: true
 ---
 
@@ -39,3 +39,12 @@ Ninjadog includes **34 generators** organized into 13 categories. Each generator
 
 {: .tip }
 > All generated classes are `partial`, so you can extend them with custom logic without modifying generated code.
+
+---
+
+## Next Steps
+
+- [Configuration Reference](/Ninjadog/configuration) -- Define entities, enums, and features in ninjadog.json
+- [Generated Examples](/Ninjadog/examples) -- See real generated code from snapshot tests
+- [Seed Data Generator](/Ninjadog/generators/seed-data) -- Populate tables with initial data at startup
+- [CLI Reference](/Ninjadog/cli) -- Run the generators from the command line

@@ -2,7 +2,7 @@
 title: Contributing
 description: "How to contribute to Ninjadog: setup, development workflow, snapshot testing, and project structure guide."
 layout: default
-nav_order: 7
+nav_order: 8
 ---
 
 # Contributing
@@ -58,6 +58,13 @@ Ninjadog uses **snapshot testing** -- each generator has a corresponding expecte
 1. Run `dotnet test` to see if snapshots still match
 2. If your change is intentional, update the snapshot files in `src/tests/Ninjadog.Tests/Templates/`
 3. Run tests again to confirm they pass
+
+## Useful Links
+
+- [Getting Started](/Ninjadog/getting-started) -- Install and run Ninjadog for the first time
+- [Configuration Reference](/Ninjadog/configuration) -- Understand the ninjadog.json format
+- [Generators](/Ninjadog/generators) -- Overview of all code generators
+- [Generated Examples](/Ninjadog/examples) -- See what the generators produce
 
 ## License
 

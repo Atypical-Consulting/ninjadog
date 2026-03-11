@@ -1,8 +1,8 @@
 ---
 title: CLI Reference
-description: "Ninjadog CLI reference: install the .NET global tool, initialize projects with ninjadog init, and generate APIs with ninjadog build."
+description: "Ninjadog CLI reference: install the .NET global tool, initialize projects with ninjadog init, validate configs, launch the web UI, and generate APIs with ninjadog build."
 layout: default
-nav_order: 4
+nav_order: 5
 ---
 
 # CLI Reference
@@ -32,14 +32,16 @@ dotnet tool install -g Ninjadog
 ## Typical Workflow
 
 ```
-ninjadog init              Create a new project
-       ↓
+ninjadog init              Create a new project (interactive)
+       |
   edit config              Define your entities in ninjadog.json
-       ↓
-ninjadog add-entity        (Optional) Add more entities from the CLI
-       ↓
-ninjadog build             Run the generators
-       ↓
+       |                       --- or ---
+ninjadog add-entity        (Optional) Add more      ninjadog ui
+       |                   entities from the CLI    Launch the visual
+ninjadog validate          Check your config         config builder
+       |                   for errors                    |
+ninjadog build             Run the generators        ninjadog build
+       |
   dotnet run               Launch your API
 ```
 
@@ -47,11 +49,141 @@ ninjadog build             Run the generators
 
 ### `ninjadog init`
 
-Initializes a new Ninjadog project in the current directory with a default configuration file containing a sample `Person` entity.
+Initializes a new Ninjadog project in the current directory. By default, `init` runs in interactive mode, prompting you for project details, then writes the configuration with a sample `Person` entity to get you started.
 
 ```bash
 ninjadog init
 ```
+
+**Options:**
+
+| Option | Description |
+|---|---|
+| `--default` | Skip prompts and use default values. |
+| `--name <name>` | Set the project name (skips the name prompt). |
+| `--namespace <ns>` | Set the root namespace (skips the namespace prompt). |
+
+#### Interactive prompts
+
+When you run `ninjadog init`, the CLI asks for the following project settings:
+
+| Prompt | Default | Description |
+|---|---|---|
+| **Project name** | `NinjadogApp` | The display name for your API project. |
+| **Version** | `1.0.0` | The initial semantic version. |
+| **Description** | `Welcome to Ninjadog!` | A short description of the project. |
+| **Root namespace** | `NinjadogApp` | The C# root namespace for generated code. |
+| **Output path** | `.` | Directory where generated files are written (relative to the config file). |
+
+Press <kbd>Enter</kbd> at any prompt to accept the default value.
+
+#### Example session
+
+```
+$ ninjadog init
+? Project name: MyApi
+? Version: 1.0.0
+? Description: My REST API
+? Root namespace: MyApi
+? Output path: src/applications/MyApi
+Ninjadog settings file created successfully.
+```
+
+This creates a `ninjadog.json` in the current directory:
+
+```json
+{
+  "config": {
+    "name": "MyApi",
+    "version": "1.0.0",
+    "description": "My REST API",
+    "rootNamespace": "MyApi",
+    "outputPath": "src/applications/MyApi",
+    "saveGeneratedFiles": true
+  },
+  "entities": {
+    "Person": {
+      "properties": {
+        "Id": { "type": "Guid", "isKey": true },
+        "FirstName": { "type": "string" },
+        "LastName": { "type": "string" },
+        "BirthDate": { "type": "DateTime" }
+      }
+    }
+  }
+}
+```
+
+**Examples (non-interactive):**
+
+```bash
+# Non-interactive with defaults
+ninjadog init --default
+
+# Non-interactive with custom values
+ninjadog init --name MyApi --namespace MyApi.Web
+```
+
+{: .tip }
+> The generated `Person` entity is a starter template. Replace or extend it with your own domain entities before running `ninjadog build`.
+
+{: .note }
+> A `ninjadog.json` file must **not** already exist in the current directory. If one is found, the command exits with an error to avoid overwriting your configuration.
+
+### `ninjadog validate`
+
+Validates your `ninjadog.json` configuration file against the schema and checks for common errors.
+
+```bash
+ninjadog validate [OPTIONS]
+```
+
+**Options:**
+
+| Option | Description |
+|---|---|
+| `--file <path>` | Path to the configuration file. Default: `ninjadog.json` |
+| `--strict` | Treat warnings as errors (exit code 1). |
+
+**Exit codes:**
+
+| Code | Meaning |
+|---|---|
+| `0` | Configuration is valid. |
+| `1` | Validation errors found. |
+| `2` | File not found or JSON parse error. |
+
+**Example output:**
+
+```
+$ ninjadog validate
+
+Validating ninjadog.json...
+
+  ERROR  NINJ001  Entity "Product" has no properties defined.
+  ERROR  NINJ003  Property "Product.Id" is marked as key but type "string" has no maxLength.
+  WARN   NINJ007  Entity "Order" has no key property. A Guid key named "Id" will be added.
+
+Result: 2 errors, 1 warning
+```
+
+**Validation rules:**
+
+| Code | Severity | Description |
+|---|---|---|
+| NINJ001 | Error | Entity has no properties defined. |
+| NINJ002 | Error | Entity has multiple key properties. |
+| NINJ003 | Error | String key property has no `maxLength`. |
+| NINJ004 | Error | Property type is not recognized. |
+| NINJ005 | Error | Relationship references a non-existent entity. |
+| NINJ006 | Error | Enum name conflicts with an entity name. |
+| NINJ007 | Warning | Entity has no key property (a default will be added). |
+| NINJ008 | Warning | Seed data property does not match any entity property. |
+| NINJ009 | Warning | `outputPath` directory does not exist. |
+| NINJ010 | Warning | Config file does not include `$schema` property. |
+
+{: .tip }
+> Run `ninjadog validate` before `ninjadog build` to catch configuration mistakes early. In CI pipelines, use `--strict` to ensure warnings are not ignored.
 
 ### `ninjadog add-entity`
 
@@ -62,7 +194,7 @@ ninjadog add-entity <EntityName>
 ```
 
 {: .note }
-> The entity name should be in **PascalCase** (e.g., `Product`, `OrderItem`). A `ninjadog.json` file must already exist in the current directory — run `ninjadog init` first if you haven't already.
+> The entity name should be in **PascalCase** (e.g., `Product`, `OrderItem`). A `ninjadog.json` file must already exist in the current directory -- run `ninjadog init` first if you haven't already.
 
 **Example:**
 
@@ -99,10 +231,52 @@ Builds and runs the generator engine against your project configuration. This re
 ninjadog build
 ```
 
+### `ninjadog ui`
+
+Launches a local web server that hosts a visual configuration builder for your `ninjadog.json` file. The UI lets you create and edit entities, enums, and seed data through a browser-based interface instead of editing JSON by hand.
+
+```bash
+ninjadog ui [OPTIONS]
+```
+
+**Options:**
+
+| Option | Description | Default |
+|---|---|---|
+| `--port <number>` | Port number for the local web server | `5111` |
+| `--path <path>` | Path to the `ninjadog.json` file to edit | `./ninjadog.json` |
+| `--no-open` | Do not open the browser automatically | `false` |
+
+**Visual builder features:**
+
+- **Entity editor** -- Add, rename, and remove entities. Define properties with types, key markers, and validation rules.
+- **Enum editor** -- Define enums with named members and optional integer values.
+- **Seed data editor** -- Populate initial data rows for each entity directly from the UI.
+- **Live JSON preview** -- See the generated `ninjadog.json` update in real time as you make changes.
+- **Validation** -- The UI validates your configuration before saving, highlighting errors inline.
+
+{: .tip }
+> By default, `ninjadog ui` opens your browser automatically. Use `--no-open` if you are running on a headless server or want to open the URL manually.
+
+{: .note }
+> A `ninjadog.json` file must already exist in the target directory. Run `ninjadog init` first if you haven't already.
+
+**Example:**
+
+```bash
+# Start on the default port and open the browser
+ninjadog ui
+
+# Start on a custom port without opening a browser
+ninjadog ui --port 8080 --no-open
+```
+
 ---
 
 ## Next Steps
 
 - [Getting Started](/Ninjadog/getting-started) -- Step-by-step tutorial using the CLI tool
+- [Configuration Reference](/Ninjadog/configuration) -- Full reference for ninjadog.json
 - [Architecture](/Ninjadog/architecture) -- Understand the project structure
 - [Generators](/Ninjadog/generators) -- See what gets generated
+- [Generated Examples](/Ninjadog/examples) -- Real generated code from snapshot tests

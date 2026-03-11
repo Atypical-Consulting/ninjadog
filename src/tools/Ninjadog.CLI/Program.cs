@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
+// Copyright (c) 2020-2024 Atypical Consulting SRL. All rights reserved.
 // Atypical Consulting SRL licenses this file to you under the Proprietary license.
 // See the LICENSE file in the project root for full license information.
 
@@ -60,6 +60,16 @@ app.Configure(config =>
     config.AddCommand<AddEntityCommand>("add-entity")
         .WithDescription("Adds a new entity to the ninjadog.json file.")
         .WithExample(["add-entity", "Product"]);
+
+    config.AddCommand<ValidateCommand>("validate")
+        .WithDescription("Validates a ninjadog.json configuration file.")
+        .WithExample(["validate"])
+        .WithExample(["validate", "--file", "path/to/ninjadog.json"])
+        .WithExample(["validate", "--strict"]);
+
+    config.AddCommand<UiCommand>("ui")
+        .WithDescription("Opens a web-based configuration builder.")
+        .WithExample(["ui"]);
 });
 
 try
