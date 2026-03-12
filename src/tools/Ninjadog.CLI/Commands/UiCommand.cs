@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ninjadog.Settings.Schema;
 using Ninjadog.Settings.Validation;
@@ -53,13 +54,13 @@ internal sealed class UiCommand : AsyncCommand<UiCommandSettings>
             if (!file.Exists)
             {
                 ctx.Response.StatusCode = 404;
-                await ctx.Response.WriteAsync("index.html not found", cancellationToken);
+                await ctx.Response.WriteAsync("index.html not found");
                 return;
             }
 
             ctx.Response.ContentType = "text/html";
             await using var stream = file.CreateReadStream();
-            await stream.CopyToAsync(ctx.Response.Body, cancellationToken);
+            await stream.CopyToAsync(ctx.Response.Body, ctx.RequestAborted);
         });
 
         // API: Read config
@@ -78,7 +79,7 @@ internal sealed class UiCommand : AsyncCommand<UiCommandSettings>
         app.MapPost("/api/config", async (HttpContext ctx) =>
         {
             using var reader = new StreamReader(ctx.Request.Body);
-            var json = await reader.ReadToEndAsync();
+            var json = await reader.ReadToEndAsync(ctx.RequestAborted);
 
             // Validate JSON is parseable
             try
@@ -90,7 +91,7 @@ internal sealed class UiCommand : AsyncCommand<UiCommandSettings>
                 return Results.Json(new { error = ex.Message }, statusCode: 400);
             }
 
-            await File.WriteAllTextAsync(configPath, json, cancellationToken);
+            await File.WriteAllTextAsync(configPath, json, ctx.RequestAborted);
             return Results.Json(new { saved = true });
         });
 
@@ -98,7 +99,7 @@ internal sealed class UiCommand : AsyncCommand<UiCommandSettings>
         app.MapPost("/api/validate", async (HttpContext ctx) =>
         {
             using var reader = new StreamReader(ctx.Request.Body);
-            var json = await reader.ReadToEndAsync();
+            var json = await reader.ReadToEndAsync(ctx.RequestAborted);
 
             var result = NinjadogConfigValidator.Validate(json);
             return Results.Json(result);
@@ -165,19 +166,14 @@ internal sealed class UiCommand : AsyncCommand<UiCommandSettings>
             }
         });
 
-        // Open browser
+        // Open browser only after server is ready
         if (!settings.NoBrowser)
         {
-            _ = Task.Run(
-                async () =>
-                {
-                    await Task.Delay(500, cancellationToken);
-                    OpenBrowser(url);
-                },
-                cancellationToken);
+            app.Lifetime.ApplicationStarted.Register(() => OpenBrowser(url));
         }
 
-        await app.RunAsync();
+        await app.StartAsync(cancellationToken);
+        await app.WaitForShutdownAsync(cancellationToken);
         return 0;
     }
 
