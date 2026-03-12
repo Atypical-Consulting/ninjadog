@@ -43,6 +43,8 @@ ninjadog validate          Check your config         config builder
 ninjadog build             Run the generators        ninjadog build
        |
   dotnet run               Launch your API
+
+ninjadog update            Refresh schema after upgrading the CLI
 ```
 
 ## Commands
@@ -222,6 +224,25 @@ This appends a `Product` entity to the `entities` section of your `ninjadog.json
 
 {: .tip }
 > After adding an entity, open `ninjadog.json` to define additional properties before running `ninjadog build`.
+
+### `ninjadog update`
+
+Updates the `ninjadog.schema.json` file in the current directory to the version embedded in the installed CLI tool. This is useful after upgrading Ninjadog to get IDE autocompletion and validation for newly added configuration options.
+
+```bash
+ninjadog update
+```
+
+**Example:**
+
+```
+$ ninjadog update
+Schema file updated successfully.
+  -> ninjadog.schema.json
+```
+
+{: .tip }
+> Run `ninjadog update` after upgrading the CLI tool to ensure your local schema stays in sync with the installed version.
 
 ### `ninjadog build`
 
