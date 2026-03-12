@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY ["TestApp.csproj", "."]
+COPY ["TestApp.CrudWebAPI.csproj", "."]
 RUN dotnet restore
 
 COPY . .
@@ -16,4 +16,4 @@ EXPOSE 8080
 
 COPY --from=build /app/publish .
 
-ENTRYPOINT ["dotnet", "TestApp.Api.dll"]
+ENTRYPOINT ["dotnet", "TestApp.CrudWebAPI.dll"]
