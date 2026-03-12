@@ -64,6 +64,10 @@ app.Configure(config =>
         .WithExample(["validate", "--file", "path/to/ninjadog.json"])
         .WithExample(["validate", "--strict"]);
 
+    config.AddCommand<UpdateCommand>("update")
+        .WithDescription("Updates the ninjadog.schema.json file to the latest version.")
+        .WithExample(["update"]);
+
     config.AddCommand<UiCommand>("ui")
         .WithDescription("Opens a web-based configuration builder.")
         .WithExample(["ui"]);
