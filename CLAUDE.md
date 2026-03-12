@@ -70,9 +70,13 @@ The install script derives version from the latest git tag with a `-local` suffi
 
 ## Feature / Bugfix Workflow
 
+> **MANDATORY — DO NOT SKIP ANY STEP.**
+> Never edit code directly on `dev`. Always use a worktree + feature branch, even for small fixes.
+> This workflow applies to every code change, no matter how trivial.
+
 Every feature or bugfix follows this procedure:
 
-1. **Work in a worktree** — Use `git worktree add` (or the `EnterWorktree` tool) to isolate work from the main checkout. This keeps `dev` clean and allows parallel work.
+1. **Work in a worktree** — Use `git worktree add` (or the `EnterWorktree` tool) to isolate work from the main checkout. This keeps `dev` clean and allows parallel work. **Do NOT edit files on `dev` directly — create the worktree BEFORE writing any code.**
 
 2. **Create a branch** — Branch from `dev` using conventional naming:
    - Features: `feat/<short-description>`
