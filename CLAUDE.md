@@ -70,24 +70,33 @@ The install script derives version from the latest git tag with a `-local` suffi
 
 ## Feature / Bugfix Workflow
 
-> **MANDATORY — DO NOT SKIP ANY STEP.**
+> **🚨 CRITICAL — THIS IS A BLOCKING REQUIREMENT 🚨**
+>
+> **BEFORE writing, editing, or modifying ANY code file, you MUST complete steps 1-3 below.**
+> There are ZERO exceptions to this rule. It applies to:
+> - One-line fixes
+> - "Trivial" changes
+> - Bug fixes the user says are urgent
+> - Any change to any `.cs`, `.json`, `.csproj`, or other source file
+>
+> **If you have already edited a file on `dev` without a worktree, STOP. Revert the change immediately with `git checkout -- <file>`, then start this workflow from step 1.**
+>
 > Never edit code directly on `dev`. Always use a worktree + feature branch, even for small fixes.
-> This workflow applies to every code change, no matter how trivial.
 
-Every feature or bugfix follows this procedure:
+Every feature or bugfix follows this procedure **in order**:
 
-1. **Sync dev** — Before starting any work, checkout `dev` and pull the latest changes:
+1. **Sync dev** — Before starting any work, ensure `dev` is up to date:
    ```bash
    git checkout dev && git pull origin dev
    ```
 
-2. **Work in a worktree** — Use `git worktree add` (or the `EnterWorktree` tool) to isolate work from the main checkout. This keeps `dev` clean and allows parallel work. **Do NOT edit files on `dev` directly — create the worktree BEFORE writing any code.**
+2. **Create a worktree FIRST** — Use `git worktree add` (or the `EnterWorktree` tool) to isolate work from the main checkout. This keeps `dev` clean and allows parallel work. **You MUST create the worktree BEFORE writing any code. No exceptions.**
 
 3. **Create a branch** — Branch from `dev` using conventional naming:
    - Features: `feat/<short-description>`
    - Bugfixes: `fix/<short-description>`
 
-4. **Implement & commit** — Make one or more focused commits using conventional commit messages (`feat:`, `fix:`, `chore:`, `docs:`). Each commit should be atomic and build successfully.
+4. **Implement & commit** — Only NOW may you edit code. Make one or more focused commits using conventional commit messages (`feat:`, `fix:`, `chore:`, `docs:`). Each commit should be atomic and build successfully.
 
 5. **Update documentation** — If the change adds or modifies user-facing behavior, update the relevant pages under `docs/` (Jekyll site). Common files to update:
    - `docs/cli.md` — new or changed CLI commands/flags
