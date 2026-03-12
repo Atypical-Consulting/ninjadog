@@ -16,5 +16,6 @@ public sealed record NinjadogLoadedConfiguration(
     string DatabaseProvider = "sqlite",
     bool Aot = false,
     NinjadogAuthConfiguration? Auth = null,
+    NinjadogRateLimitConfiguration? RateLimit = null,
     NinjadogVersioningConfiguration? Versioning = null)
-    : NinjadogConfiguration(Name, Version, Description, RootNamespace, OutputPath, SaveGeneratedFiles, Cors, SoftDelete, Auditing, DatabaseProvider, Aot, Auth, Versioning);
+    : NinjadogConfiguration(Name, Version, Description, RootNamespace, OutputPath, SaveGeneratedFiles, Cors, SoftDelete, Auditing, DatabaseProvider, Aot, Auth, RateLimit, Versioning);

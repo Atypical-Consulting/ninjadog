@@ -104,6 +104,15 @@ public abstract record NinjadogSettings(
             auth = new NinjadogAuthConfiguration(authProvider, issuer, audience, tokenExpirationMinutes, roles, generateLoginEndpoint, generateRegisterEndpoint);
         }
 
+        NinjadogRateLimitConfiguration? rateLimit = null;
+        if (TryGetOptionalObject(configElement, "rateLimit", out var rateLimitElement))
+        {
+            var permitLimit = GetOptionalInt32(rateLimitElement, "permitLimit") ?? 100;
+            var windowSeconds = GetOptionalInt32(rateLimitElement, "windowSeconds") ?? 60;
+            var segmentsPerWindow = GetOptionalInt32(rateLimitElement, "segmentsPerWindow") ?? 6;
+            rateLimit = new NinjadogRateLimitConfiguration(permitLimit, windowSeconds, segmentsPerWindow);
+        }
+
         var config = new NinjadogLoadedConfiguration(
             Name: name,
             Version: GetRequiredString(configElement, "version"),
@@ -117,6 +126,7 @@ public abstract record NinjadogSettings(
             DatabaseProvider: databaseProvider,
             Aot: aot,
             Auth: auth,
+            RateLimit: rateLimit,
             Versioning: versioning);
 
         var entities = new NinjadogLoadedEntities();
