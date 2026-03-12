@@ -8,6 +8,7 @@ public sealed class RepositoryTemplate
 {
     private bool _softDelete;
     private bool _auditing;
+    private bool _aot;
     private string _provider = "sqlite";
 
     /// <inheritdoc />
@@ -18,6 +19,7 @@ public sealed class RepositoryTemplate
     {
         _softDelete = ninjadogSettings.Config.SoftDelete;
         _auditing = ninjadogSettings.Config.Auditing;
+        _aot = ninjadogSettings.Config.Aot;
         _provider = ninjadogSettings.Config.DatabaseProvider;
         return base.GenerateMany(ninjadogSettings);
     }
@@ -31,6 +33,8 @@ public sealed class RepositoryTemplate
         var fileName = $"{st.ClassModelRepository}.cs";
         var entityKey = entity.Properties.GetEntityKey();
 
+        var dapperAotAttribute = _aot ? "\n[DapperAot]" : string.Empty;
+
         var content =
             $$"""
 
@@ -39,7 +43,7 @@ public sealed class RepositoryTemplate
               using Dapper;
 
               {{WriteFileScopedNamespace(ns)}}
-
+              {{dapperAotAttribute}}
               public partial class {{st.ClassModelRepository}}(IDbConnectionFactory connectionFactory)
                   : {{st.InterfaceModelRepository}}
               {

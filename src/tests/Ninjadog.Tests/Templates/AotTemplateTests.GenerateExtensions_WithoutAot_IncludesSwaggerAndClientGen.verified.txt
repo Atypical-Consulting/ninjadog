@@ -11,15 +11,15 @@
 //------------------------------------------------------------------------------
 
 using Microsoft.AspNetCore.Diagnostics;
-using RestaurantBooking.CrudWebApi.Database;
-using RestaurantBooking.CrudWebApi.Repositories;
-using RestaurantBooking.CrudWebApi.Services;
+using TestApp.Api.Database;
+using TestApp.Api.Repositories;
+using TestApp.Api.Services;
 using FastEndpoints;
 using FastEndpoints.ClientGen;
 using FastEndpoints.Swagger;
 using FluentValidation;
 
-namespace RestaurantBooking.CrudWebApi;
+namespace TestApp.Api;
 
 public static class NinjadogExtensions
 {
@@ -32,9 +32,9 @@ public static class NinjadogExtensions
         {
             o.DocumentSettings = s =>
             {
-                s.Title = "RestaurantBooking";
+                s.Title = "TestApp";
                 s.Version = "v1.0.0";
-                s.Description = "An application to manage restaurant bookings.";
+                s.Description = "Test application";
             };
         });
 
@@ -44,30 +44,8 @@ public static class NinjadogExtensions
 
         services.AddSingleton<IDbConnectionFactory>(_ => new SqliteConnectionFactory(connectionString));
         services.AddSingleton<DatabaseInitializer>();
-        services.AddSingleton<ICustomerRepository, CustomerRepository>();
-        services.AddSingleton<ICustomerService, CustomerService>();
-        services.AddSingleton<IBookingRepository, BookingRepository>();
-        services.AddSingleton<IBookingService, BookingService>();
-        services.AddSingleton<ITableRepository, TableRepository>();
-        services.AddSingleton<ITableService, TableService>();
-        services.AddSingleton<IOrderRepository, OrderRepository>();
-        services.AddSingleton<IOrderService, OrderService>();
-        services.AddSingleton<IOrderMenuItemRepository, OrderMenuItemRepository>();
-        services.AddSingleton<IOrderMenuItemService, OrderMenuItemService>();
-        services.AddSingleton<IMenuRepository, MenuRepository>();
-        services.AddSingleton<IMenuService, MenuService>();
-        services.AddSingleton<IMenuItemRepository, MenuItemRepository>();
-        services.AddSingleton<IMenuItemService, MenuItemService>();
-        services.AddSingleton<IMenuItemIngredientRepository, MenuItemIngredientRepository>();
-        services.AddSingleton<IMenuItemIngredientService, MenuItemIngredientService>();
-        services.AddSingleton<IIngredientRepository, IngredientRepository>();
-        services.AddSingleton<IIngredientService, IngredientService>();
-        services.AddSingleton<IIngredientTypeRepository, IngredientTypeRepository>();
-        services.AddSingleton<IIngredientTypeService, IngredientTypeService>();
-        services.AddSingleton<IStaffRepository, StaffRepository>();
-        services.AddSingleton<IStaffService, StaffService>();
-        services.AddSingleton<IStaffRoleRepository, StaffRoleRepository>();
-        services.AddSingleton<IStaffRoleService, StaffRoleService>();
+        services.AddSingleton<ITodoItemRepository, TodoItemRepository>();
+        services.AddSingleton<ITodoItemService, TodoItemService>();
 
         return services;
     }
@@ -83,13 +61,13 @@ public static class NinjadogExtensions
         app.MapCSharpClientEndpoint("/cs-client", "version 1", s =>
         {
             s.ClassName = "ApiClient";
-            s.CSharpGeneratorSettings.Namespace = "RestaurantBooking.CrudWebApi.Client";
+            s.CSharpGeneratorSettings.Namespace = "TestApp.Api.Client";
         });
 
         app.MapTypeScriptClientEndpoint("/ts-client", "version 1", s =>
         {
             s.ClassName = "ApiClient";
-            s.TypeScriptGeneratorSettings.Namespace = "RestaurantBooking.CrudWebApi.Client";
+            s.TypeScriptGeneratorSettings.Namespace = "TestApp.Api.Client";
         });
 
         return app;

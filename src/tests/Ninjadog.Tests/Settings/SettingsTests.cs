@@ -184,6 +184,49 @@ public class NinjadogInitialSettingsTests
     }
 
     [Fact]
+    public void FromJsonString_WithAotFeature_ParsesAotFlag()
+    {
+        const string json = """
+            {
+              "config": {
+                "name": "TestApp",
+                "version": "1.0.0",
+                "description": "Test",
+                "rootNamespace": "TestApp.Api",
+                "features": {
+                  "aot": true
+                }
+              },
+              "entities": {}
+            }
+            """;
+
+        var settings = NinjadogSettings.FromJsonString(json);
+
+        Assert.True(settings.Config.Aot);
+    }
+
+    [Fact]
+    public void FromJsonString_WithoutAotFeature_DefaultsToFalse()
+    {
+        const string json = """
+            {
+              "config": {
+                "name": "TestApp",
+                "version": "1.0.0",
+                "description": "Test",
+                "rootNamespace": "TestApp.Api"
+              },
+              "entities": {}
+            }
+            """;
+
+        var settings = NinjadogSettings.FromJsonString(json);
+
+        Assert.False(settings.Config.Aot);
+    }
+
+    [Fact]
     public void FromJsonString_WithExplicitNullOptionalSections_LoadsSettings()
     {
         const string json = """

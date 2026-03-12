@@ -63,10 +63,12 @@ public abstract record NinjadogSettings(
 
         var softDelete = false;
         var auditing = false;
+        var aot = false;
         if (TryGetOptionalObject(configElement, "features", out var featuresElement))
         {
             softDelete = GetOptionalBoolean(featuresElement, "softDelete");
             auditing = GetOptionalBoolean(featuresElement, "auditing");
+            aot = GetOptionalBoolean(featuresElement, "aot");
         }
 
         var databaseProvider = "sqlite";
@@ -89,7 +91,8 @@ public abstract record NinjadogSettings(
             Cors: cors,
             SoftDelete: softDelete,
             Auditing: auditing,
-            DatabaseProvider: databaseProvider);
+            DatabaseProvider: databaseProvider,
+            Aot: aot);
 
         var entities = new NinjadogLoadedEntities();
 

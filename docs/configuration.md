@@ -41,7 +41,8 @@ The following skeleton shows **every** configuration option at a glance. Require
     },
     "features": {
       "softDelete": false,                    // default: false
-      "auditing": false                       // default: false
+      "auditing": false,                      // default: false
+      "aot": false                            // default: false
     },
     "database": {
       "provider": "sqlite"                    // "sqlite" | "postgresql" | "sqlserver"
@@ -144,6 +145,7 @@ The optional `features` object enables cross-cutting concerns.
 |---|---|---|---|
 | `softDelete` | `boolean` | `false` | Adds `IsDeleted` and `DeletedAt` columns; replaces DELETE with UPDATE. |
 | `auditing` | `boolean` | `false` | Adds `CreatedAt` and `UpdatedAt` columns managed automatically by the repository. |
+| `aot` | `boolean` | `false` | Enables Native AOT publishing support. See [AOT Support](#native-aot-support) below. |
 
 ### Database
 
@@ -277,6 +279,41 @@ Each object in the array must include the key property and any non-nullable prop
 {: .note }
 > The `DatabaseSeeder` is only generated when at least one entity defines `seedData`. See [Seed Data Generator](/Ninjadog/generators/seed-data) for details on the generated code.
 
+## Native AOT Support
+
+When `features.aot` is set to `true`, Ninjadog generates code optimized for [Native AOT publishing](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/):
+
+```json
+{
+  "config": {
+    "features": {
+      "aot": true
+    }
+  }
+}
+```
+
+### What changes with AOT enabled
+
+| Area | Standard | AOT |
+|---|---|---|
+| **App builder** | `WebApplication.CreateBuilder()` | `WebApplication.CreateSlimBuilder()` |
+| **JSON serialization** | Reflection-based | Source-generated `AppJsonSerializerContext` |
+| **FastEndpoints** | Default config | Configured with `SerializerContext` |
+| **Swagger / Client Gen** | Included | Removed (incompatible with AOT) |
+| **Dapper** | Standard | `[DapperAot]` attribute on repositories |
+| **NuGet packages** | Standard set | Adds `Dapper.AOT` |
+
+### Generated files
+
+When AOT is enabled, an additional `AppJsonSerializerContext.cs` file is generated at the project root. It contains `[JsonSerializable]` attributes for every Request, Response, DTO, and Domain type, enabling System.Text.Json source generation.
+
+{: .warning }
+> Swagger UI and client code generation endpoints are not available when AOT is enabled, as they rely on runtime reflection. Use the standard (non-AOT) mode during development if you need these features.
+
+{: .tip }
+> To publish your AOT-enabled project, add `<PublishAot>true</PublishAot>` to your `.csproj` file and run `dotnet publish -c Release`.
+
 ## Complete Example
 
 A full `ninjadog.json` demonstrating all features:
@@ -298,7 +335,8 @@ A full `ninjadog.json` demonstrating all features:
     },
     "features": {
       "softDelete": true,
-      "auditing": true
+      "auditing": true,
+      "aot": false
     },
     "database": {
       "provider": "postgresql"

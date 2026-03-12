@@ -10,16 +10,15 @@
 // should be coordinated with Ninjadog support services.
 //------------------------------------------------------------------------------
 
+using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
-using TodoApp.CrudWebApi.Database;
-using TodoApp.CrudWebApi.Repositories;
-using TodoApp.CrudWebApi.Services;
+using TestApp.Api.Database;
+using TestApp.Api.Repositories;
+using TestApp.Api.Services;
 using FastEndpoints;
-using FastEndpoints.ClientGen;
-using FastEndpoints.Swagger;
 using FluentValidation;
 
-namespace TodoApp.CrudWebApi;
+namespace TestApp.Api;
 
 public static class NinjadogExtensions
 {
@@ -27,15 +26,9 @@ public static class NinjadogExtensions
         this IServiceCollection services,
         ConfigurationManager config)
     {
-        services.AddFastEndpoints();
-        services.SwaggerDocument(o =>
+        services.AddFastEndpoints(o =>
         {
-            o.DocumentSettings = s =>
-            {
-                s.Title = "TodoApp";
-                s.Version = "v1.0.0";
-                s.Description = "An application to manage todo lists.";
-            };
+            o.SerializerContext = AppJsonSerializerContext.Default;
         });
 
         var connectionString =
@@ -44,12 +37,11 @@ public static class NinjadogExtensions
 
         services.AddSingleton<IDbConnectionFactory>(_ => new SqliteConnectionFactory(connectionString));
         services.AddSingleton<DatabaseInitializer>();
-        services.AddSingleton<ITodoListRepository, TodoListRepository>();
-        services.AddSingleton<ITodoListService, TodoListService>();
+        services.AddSingleton<DatabaseSeeder>();
         services.AddSingleton<ITodoItemRepository, TodoItemRepository>();
         services.AddSingleton<ITodoItemService, TodoItemService>();
-        services.AddSingleton<ITodoCategoryRepository, TodoCategoryRepository>();
-        services.AddSingleton<ITodoCategoryService, TodoCategoryService>();
+        services.AddSingleton<ICategoryRepository, CategoryRepository>();
+        services.AddSingleton<ICategoryService, CategoryService>();
 
         return services;
     }
@@ -57,22 +49,7 @@ public static class NinjadogExtensions
     public static WebApplication UseNinjadog(this WebApplication app)
     {
         app.UseValidationExceptionHandler();
-        app.UseDefaultFiles();
-        app.UseStaticFiles();
         app.UseFastEndpoints();
-        app.UseSwaggerGen();
-
-        app.MapCSharpClientEndpoint("/cs-client", "version 1", s =>
-        {
-            s.ClassName = "ApiClient";
-            s.CSharpGeneratorSettings.Namespace = "TodoApp.CrudWebApi.Client";
-        });
-
-        app.MapTypeScriptClientEndpoint("/ts-client", "version 1", s =>
-        {
-            s.ClassName = "ApiClient";
-            s.TypeScriptGeneratorSettings.Namespace = "TodoApp.CrudWebApi.Client";
-        });
 
         return app;
     }
@@ -98,7 +75,7 @@ public static class NinjadogExtensions
                                 failures => failures.Select(failure => failure.ErrorMessage).ToList())
                     };
 
-                    await ctx.Response.WriteAsJsonAsync(validationFailureResponse);
+                    await ctx.Response.WriteAsJsonAsync(validationFailureResponse, AppJsonSerializerContext.Default.ErrorResponse);
                 }
             });
         });
