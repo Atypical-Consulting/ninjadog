@@ -9,6 +9,6 @@ public sealed record RestaurantBookingConfiguration()
     : NinjadogConfiguration(
         Name: "RestaurantBooking",
         Version: "1.0.0",
-        Description: "A application to manage restaurant bookings.",
+        Description: "An application to manage restaurant bookings.",
         RootNamespace: "RestaurantBooking.CrudWebApi",
         OutputPath: "src/applications/RestaurantBooking");

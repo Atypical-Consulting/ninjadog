@@ -1,0 +1,81 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using Dapper;
+
+namespace RestaurantBooking.CrudWebApi.Database;
+
+public partial class DatabaseInitializer(IDbConnectionFactory connectionFactory)
+{
+    public async Task InitializeAsync()
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+        
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Customers (
+            CustomerId CHAR(36) PRIMARY KEY,
+            CustomerFirstName TEXT NOT NULL,
+            CustomerSurname TEXT NOT NULL,
+            PhoneNumber TEXT NOT NULL,
+            CellphoneNumber TEXT NOT NULL,
+            EmailAddress TEXT NOT NULL,
+            OtherCustomerDetails TEXT NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Bookings (
+            BookingId CHAR(36) PRIMARY KEY,
+            DateOfBooking TEXT NOT NULL,
+            NumberInParty INTEGER NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Tables (
+            TableNumber INTEGER PRIMARY KEY,
+            TableDetails TEXT NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Orders (
+            OrderId CHAR(36) PRIMARY KEY,
+            OrderDateTime TEXT NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS OrderMenuItems (
+            OrderMenuItemId CHAR(36) PRIMARY KEY,
+            OrderMenuItemQuantity INTEGER NOT NULL,
+            OrderMenuItemComments TEXT NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Menus (
+            MenuId CHAR(36) PRIMARY KEY,
+            MenuDate TEXT NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS MenuItems (
+            MenuItemId CHAR(36) PRIMARY KEY,
+            MenuItemDescription TEXT NOT NULL,
+            MenuItemPrice REAL NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS MenuItemIngredients (
+            MenuItemIngredientId CHAR(36) PRIMARY KEY,
+            ItemQuantity INTEGER NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Ingredients (
+            IngredientId CHAR(36) PRIMARY KEY,
+            IngredientName TEXT NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS IngredientTypes (
+            IngredientTypeCode CHAR(36) PRIMARY KEY,
+            IngredientTypeDescription TEXT NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS Staffs (
+            StaffId CHAR(36) PRIMARY KEY,
+            StaffFirstName TEXT NOT NULL,
+            StaffLastName TEXT NOT NULL)");
+
+        await connection.ExecuteAsync(@"CREATE TABLE IF NOT EXISTS StaffRoles (
+            StaffRoleCode CHAR(36) PRIMARY KEY,
+            StaffRoleDescription TEXT NOT NULL)");
+
+    }
+}

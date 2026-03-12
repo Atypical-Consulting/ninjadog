@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <AdditionalFiles Include="UseCases\TodoApp\ninjadog.json" />
+    <AdditionalFiles Include="UseCases\RestaurantBooking\ninjadog.json" />
   </ItemGroup>
 
 </Project>

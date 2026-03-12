@@ -1,0 +1,46 @@
+﻿[
+  {
+    FileName: Booking/GetBookingsByCustomerEndpoint.cs,
+    Content:
+//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using RestaurantBooking.CrudWebApi.Contracts.Responses;
+using RestaurantBooking.CrudWebApi.Mapping;
+using RestaurantBooking.CrudWebApi.Services;
+using FastEndpoints;
+
+namespace RestaurantBooking.CrudWebApi.Endpoints;
+
+public partial class GetBookingsByCustomerEndpoint(IBookingService bookingService)
+    : EndpointWithoutRequest<GetAllBookingsResponse>
+{
+    public override void Configure()
+    {
+        Get("/customers/{customerId:guid}/bookings");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var customerId = Route<string>("customerId");
+        var page = int.TryParse(HttpContext.Request.Query["page"], out var p) && p > 0 ? p : 1;
+        var pageSize = int.TryParse(HttpContext.Request.Query["pageSize"], out var ps) && ps > 0 ? ps : 10;
+
+        var (bookings, totalCount) = await bookingService.GetAllAsync(page, pageSize);
+        var bookingsResponse = bookings.ToBookingsResponse(page, pageSize, totalCount);
+        await Send.OkAsync(bookingsResponse, ct);
+    }
+}
+
+  }
+]
