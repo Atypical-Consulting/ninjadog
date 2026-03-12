@@ -18,18 +18,19 @@ public sealed class TodoAppEntities : NinjadogEntities
     /// </summary>
     public TodoAppEntities()
     {
-        Add(TodoList, new NinjadogEntity(
-            new NinjadogEntityProperties
-            {
-                { "Id", new NinjadogEntityId() },
-                { "Title", new NinjadogEntityProperty<string>() },
+        NinjadogEntityProperties todoListProperties = new()
+        {
+            { "Id", new NinjadogEntityId() },
+            { "Title", new NinjadogEntityProperty<string>() },
+        };
 
-                // { "Items", new NinjadogEntityProperty($"List<{TodoItem}>") },
-                // { "Categories", new NinjadogEntityProperty($"List<{TodoCategory}>") },
-                // TODO: Implement the following properties
-                // { "Items", new NinjadogEntityRelationship(TodoItem, NinjadogEntityRelationshipType.OneToMany) },
-                // { "Categories", new NinjadogEntityRelationship(TodoCategory, NinjadogEntityRelationshipType.OneToMany) }
-            }));
+        NinjadogEntityRelationships todoListRelationships = new()
+        {
+            { "Items", new NinjadogEntityRelationship(TodoItem, NinjadogEntityRelationshipType.OneToMany) },
+            { "Categories", new NinjadogEntityRelationship(TodoCategory, NinjadogEntityRelationshipType.OneToMany) },
+        };
+
+        Add(TodoList, new NinjadogEntity(todoListProperties, todoListRelationships));
 
         Add(TodoItem, new NinjadogEntity(
             new NinjadogEntityProperties

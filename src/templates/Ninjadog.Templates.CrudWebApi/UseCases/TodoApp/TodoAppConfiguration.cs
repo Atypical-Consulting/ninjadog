@@ -10,6 +10,6 @@ public sealed record TodoAppConfiguration()
     : NinjadogConfiguration(
         Name: "TodoApp",
         Version: "1.0.0",
-        Description: "A application to manage todo lists.",
+        Description: "An application to manage todo lists.",
         RootNamespace: "TodoApp.CrudWebApi",
         OutputPath: "src/applications/TodoApp");

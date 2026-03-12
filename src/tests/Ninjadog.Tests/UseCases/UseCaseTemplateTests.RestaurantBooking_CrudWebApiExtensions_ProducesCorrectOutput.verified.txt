@@ -1,0 +1,124 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using Microsoft.AspNetCore.Diagnostics;
+using RestaurantBooking.CrudWebApi.Database;
+using RestaurantBooking.CrudWebApi.Repositories;
+using RestaurantBooking.CrudWebApi.Services;
+using FastEndpoints;
+using FastEndpoints.ClientGen;
+using FastEndpoints.Swagger;
+using FluentValidation;
+
+namespace RestaurantBooking.CrudWebApi;
+
+public static class NinjadogExtensions
+{
+    public static IServiceCollection AddNinjadog(
+        this IServiceCollection services,
+        ConfigurationManager config)
+    {
+        services.AddFastEndpoints();
+        services.SwaggerDocument(o =>
+        {
+            o.DocumentSettings = s =>
+            {
+                s.Title = "Ninjadog API";
+                s.Version = "v1";
+            };
+        });
+
+        var connectionString =
+            config.GetValue<string>("Database:ConnectionString")
+            ?? throw new InvalidOperationException("Database:ConnectionString is not configured.");
+
+        services.AddSingleton<IDbConnectionFactory>(_ => new SqliteConnectionFactory(connectionString));
+        services.AddSingleton<DatabaseInitializer>();
+
+        services.AddSingleton<ICustomerRepository, CustomerRepository>();
+        services.AddSingleton<ICustomerService, CustomerService>();
+        services.AddSingleton<IBookingRepository, BookingRepository>();
+        services.AddSingleton<IBookingService, BookingService>();
+        services.AddSingleton<ITableRepository, TableRepository>();
+        services.AddSingleton<ITableService, TableService>();
+        services.AddSingleton<IOrderRepository, OrderRepository>();
+        services.AddSingleton<IOrderService, OrderService>();
+        services.AddSingleton<IOrderMenuItemRepository, OrderMenuItemRepository>();
+        services.AddSingleton<IOrderMenuItemService, OrderMenuItemService>();
+        services.AddSingleton<IMenuRepository, MenuRepository>();
+        services.AddSingleton<IMenuService, MenuService>();
+        services.AddSingleton<IMenuItemRepository, MenuItemRepository>();
+        services.AddSingleton<IMenuItemService, MenuItemService>();
+        services.AddSingleton<IMenuItemIngredientRepository, MenuItemIngredientRepository>();
+        services.AddSingleton<IMenuItemIngredientService, MenuItemIngredientService>();
+        services.AddSingleton<IIngredientRepository, IngredientRepository>();
+        services.AddSingleton<IIngredientService, IngredientService>();
+        services.AddSingleton<IIngredientTypeRepository, IngredientTypeRepository>();
+        services.AddSingleton<IIngredientTypeService, IngredientTypeService>();
+        services.AddSingleton<IStaffRepository, StaffRepository>();
+        services.AddSingleton<IStaffService, StaffService>();
+        services.AddSingleton<IStaffRoleRepository, StaffRoleRepository>();
+        services.AddSingleton<IStaffRoleService, StaffRoleService>();
+
+        return services;
+    }
+
+    public static WebApplication UseNinjadog(this WebApplication app)
+    {
+        app.UseValidationExceptionHandler();
+        app.UseFastEndpoints();
+        app.UseSwaggerGen();
+
+        app.MapCSharpClientEndpoint("/cs-client", "version 1", s =>
+        {
+            s.ClassName = "ApiClient";
+            s.CSharpGeneratorSettings.Namespace = "RestaurantBooking.CrudWebApi.Client";
+        });
+
+        app.MapTypeScriptClientEndpoint("/ts-client", "version 1", s =>
+        {
+            s.ClassName = "ApiClient";
+            s.TypeScriptGeneratorSettings.Namespace = "RestaurantBooking.CrudWebApi.Client";
+        });
+
+        return app;
+    }
+
+    public static WebApplication UseValidationExceptionHandler(this WebApplication app)
+    {
+        app.UseExceptionHandler(errApp =>
+        {
+            errApp.Run(async ctx =>
+            {
+                var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
+
+                if (exHandlerFeature?.Error is ValidationException exception)
+                {
+                    var validationFailureResponse = new ErrorResponse
+                    {
+                        StatusCode = 400,
+                        Message = "One or more errors occured!",
+                        Errors = exception.Errors
+                            .GroupBy(failure => failure.PropertyName)
+                            .ToDictionary(
+                                failures => failures.Key,
+                                failures => failures.Select(failure => failure.ErrorMessage).ToList())
+                    };
+
+                    await ctx.Response.WriteAsJsonAsync(validationFailureResponse);
+                }
+            });
+        });
+
+        return app;
+    }
+}
