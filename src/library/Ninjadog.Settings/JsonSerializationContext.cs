@@ -8,7 +8,8 @@ namespace Ninjadog.Settings;
 [JsonSourceGenerationOptions(
     WriteIndented = true,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    DictionaryKeyPolicy = JsonKnownNamingPolicy.Unspecified)]
+    DictionaryKeyPolicy = JsonKnownNamingPolicy.Unspecified,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 [JsonSerializable(typeof(NinjadogSettings))]
 public sealed partial class JsonSerializationContext
     : JsonSerializerContext;

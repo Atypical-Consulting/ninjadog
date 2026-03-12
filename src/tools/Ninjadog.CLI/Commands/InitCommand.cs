@@ -2,6 +2,7 @@ using Ninjadog.Settings.Config;
 using Ninjadog.Settings.Entities;
 using Ninjadog.Settings.Entities.Properties;
 using Ninjadog.Settings.Extensions;
+using Ninjadog.Settings.Schema;
 
 namespace Ninjadog.CLI.Commands;
 
@@ -31,9 +32,11 @@ internal sealed class InitCommand
             json = InjectSchema(json);
 
             File.WriteAllText("ninjadog.json", json);
+            File.WriteAllText("ninjadog.schema.json", SchemaProvider.GetSchemaText());
 
             MarkupLine("[green]Ninjadog settings file created successfully.[/]");
             MarkupLine("[dim]  -> ninjadog.json[/]");
+            MarkupLine("[dim]  -> ninjadog.schema.json[/]");
 
             return 0;
         }
