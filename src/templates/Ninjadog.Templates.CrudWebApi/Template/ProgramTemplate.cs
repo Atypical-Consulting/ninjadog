@@ -110,7 +110,7 @@ public class ProgramTemplate : NinjadogTemplate
     {
         return auth is null
             ? string.Empty
-            : $"\nusing {rootNamespace}.Auth;\n";
+            : $"using {rootNamespace}.Auth;\n";
     }
 
     private static string GenerateAuthServiceRegistration(NinjadogAuthConfiguration? auth)

@@ -88,7 +88,7 @@ public class AuthExtensionsTemplate : NinjadogTemplate
         {
             var role = roles[i];
             var separator = i < roles.Length - 1 ? string.Empty : ";";
-            policyLines.AppendLine(CultureInfo.InvariantCulture, $"            .AddPolicy(\"{role}\", policy => policy.RequireRole(\"{role}\"){separator})");
+            policyLines.AppendLine(CultureInfo.InvariantCulture, $"            .AddPolicy(\"{role}\", policy => policy.RequireRole(\"{role}\")){separator}");
         }
 
         return policyLines

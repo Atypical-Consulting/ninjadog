@@ -346,7 +346,8 @@ public class NinjadogInitialSettingsTests
                 "saveGeneratedFiles": null,
                 "cors": null,
                 "features": null,
-                "database": null
+                "database": null,
+                "auth": null
               },
               "entities": {
                 "TodoItem": {
@@ -382,6 +383,7 @@ public class NinjadogInitialSettingsTests
         Assert.False(settings.Config.SoftDelete);
         Assert.False(settings.Config.Auditing);
         Assert.Equal("sqlite", settings.Config.DatabaseProvider);
+        Assert.Null(settings.Config.Auth);
         Assert.Single(settings.Entities);
         Assert.Null(settings.Entities["TodoItem"].Relationships);
         Assert.Null(settings.Entities["TodoItem"].SeedData);

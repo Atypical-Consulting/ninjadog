@@ -12,7 +12,6 @@
 
 using TestApp.Api;
 using TestApp.Api.Database;
-
 using TestApp.Api.Auth;
 
 const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
