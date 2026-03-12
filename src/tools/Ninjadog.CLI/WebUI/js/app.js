@@ -8,6 +8,23 @@ const App = (() => {
     let validateTimer = null;
 
     async function init() {
+        // Listen for connection status changes
+        document.addEventListener('ninjadog:disconnected', () => {
+            const badge = document.getElementById('status-badge');
+            badge.textContent = 'Server disconnected';
+            badge.className = 'text-xs px-2 py-0.5 rounded-full bg-red-900 text-red-300';
+            badge.classList.remove('hidden');
+        });
+
+        document.addEventListener('ninjadog:connected', () => {
+            const badge = document.getElementById('status-badge');
+            badge.textContent = 'Reconnected';
+            badge.className = 'text-xs px-2 py-0.5 rounded-full bg-emerald-900 text-emerald-300';
+            badge.classList.remove('hidden');
+            setTimeout(() => badge.classList.add('hidden'), 2000);
+            scheduleValidation();
+        });
+
         // Load config from server
         try {
             const config = await NinjadogApi.getConfig();
@@ -49,47 +66,50 @@ const App = (() => {
     }
 
     function setupHeaderButtons() {
-        document.getElementById('btn-save').addEventListener('click', async () => {
-            const badge = document.getElementById('status-badge');
-            try {
-                const json = JsonPreview.getJson(state);
-                await NinjadogApi.saveConfig(json);
-                savedSnapshot = JSON.stringify(state);
-                updateDirtyIndicator();
-                badge.textContent = 'Saved';
-                badge.className = 'text-xs px-2 py-0.5 rounded-full bg-emerald-900 text-emerald-300';
-                badge.classList.remove('hidden');
-                setTimeout(() => badge.classList.add('hidden'), 2000);
-            } catch (err) {
-                badge.textContent = 'Save failed';
-                badge.className = 'text-xs px-2 py-0.5 rounded-full bg-red-900 text-red-300';
-                badge.classList.remove('hidden');
-                setTimeout(() => badge.classList.add('hidden'), 3000);
-            }
-        });
+        document.getElementById('btn-save').addEventListener('click', saveConfig);
+        document.getElementById('btn-build').addEventListener('click', buildConfig);
+    }
 
-        document.getElementById('btn-build').addEventListener('click', async () => {
-            const badge = document.getElementById('status-badge');
-            try {
-                // Save first
-                const json = JsonPreview.getJson(state);
-                await NinjadogApi.saveConfig(json);
-                savedSnapshot = JSON.stringify(state);
-                updateDirtyIndicator();
-                const result = await NinjadogApi.build();
-                badge.textContent = result.success ? 'Build succeeded' : 'Build failed';
-                badge.className = result.success
-                    ? 'text-xs px-2 py-0.5 rounded-full bg-emerald-900 text-emerald-300'
-                    : 'text-xs px-2 py-0.5 rounded-full bg-red-900 text-red-300';
-                badge.classList.remove('hidden');
-                setTimeout(() => badge.classList.add('hidden'), 3000);
-            } catch (err) {
-                badge.textContent = 'Build failed';
-                badge.className = 'text-xs px-2 py-0.5 rounded-full bg-red-900 text-red-300';
-                badge.classList.remove('hidden');
-                setTimeout(() => badge.classList.add('hidden'), 3000);
-            }
-        });
+    async function saveConfig() {
+        const badge = document.getElementById('status-badge');
+        try {
+            const jsonText = JSON.stringify(JsonPreview.getJson(state), null, 2);
+            await NinjadogApi.saveConfig(jsonText);
+            savedSnapshot = JSON.stringify(state);
+            updateDirtyIndicator();
+            badge.textContent = 'Saved';
+            badge.className = 'text-xs px-2 py-0.5 rounded-full bg-emerald-900 text-emerald-300';
+            badge.classList.remove('hidden');
+            setTimeout(() => badge.classList.add('hidden'), 2000);
+        } catch (err) {
+            badge.textContent = 'Save failed';
+            badge.className = 'text-xs px-2 py-0.5 rounded-full bg-red-900 text-red-300';
+            badge.classList.remove('hidden');
+            setTimeout(() => badge.classList.add('hidden'), 3000);
+        }
+    }
+
+    async function buildConfig() {
+        const badge = document.getElementById('status-badge');
+        try {
+            // Save first
+            const jsonText = JSON.stringify(JsonPreview.getJson(state), null, 2);
+            await NinjadogApi.saveConfig(jsonText);
+            savedSnapshot = JSON.stringify(state);
+            updateDirtyIndicator();
+            const result = await NinjadogApi.build();
+            badge.textContent = result.success ? 'Build succeeded' : 'Build failed';
+            badge.className = result.success
+                ? 'text-xs px-2 py-0.5 rounded-full bg-emerald-900 text-emerald-300'
+                : 'text-xs px-2 py-0.5 rounded-full bg-red-900 text-red-300';
+            badge.classList.remove('hidden');
+            setTimeout(() => badge.classList.add('hidden'), 3000);
+        } catch (err) {
+            badge.textContent = 'Build failed';
+            badge.className = 'text-xs px-2 py-0.5 rounded-full bg-red-900 text-red-300';
+            badge.classList.remove('hidden');
+            setTimeout(() => badge.classList.add('hidden'), 3000);
+        }
     }
 
     function renderActiveTab() {
@@ -133,6 +153,7 @@ const App = (() => {
     function scheduleValidation() {
         if (validateTimer) clearTimeout(validateTimer);
         validateTimer = setTimeout(async () => {
+            if (NinjadogApi.isServerDown()) return;
             try {
                 const json = JsonPreview.getJson(state);
                 const result = await NinjadogApi.validate(json);
