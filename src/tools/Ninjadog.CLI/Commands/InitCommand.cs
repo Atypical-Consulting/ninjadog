@@ -11,8 +11,7 @@ internal sealed class InitCommand
 {
     private static readonly string[] _propertyTypes =
     [
-        "Guid", "string", "int", "Int32", "long", "Int64",
-        "bool", "Boolean", "decimal", "Decimal", "DateTime", "DateOnly"
+        "Guid", "string", "int", "long", "bool", "decimal", "DateTime", "DateOnly"
     ];
 
     private static readonly string[] _databaseProviders =
