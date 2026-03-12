@@ -12,7 +12,7 @@ public class DockerfileTemplate : NinjadogTemplate
     public override NinjadogContentFile GenerateOne(NinjadogSettings ninjadogSettings)
     {
         var name = ninjadogSettings.Config.Name;
-        var rootNamespace = ninjadogSettings.Config.RootNamespace;
+        var projectName = $"{name}.CrudWebAPI";
 
         var content =
             $$"""
@@ -20,7 +20,7 @@ public class DockerfileTemplate : NinjadogTemplate
               FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
               WORKDIR /src
 
-              COPY ["{{name}}.csproj", "."]
+              COPY ["{{projectName}}.csproj", "."]
               RUN dotnet restore
 
               COPY . .
@@ -34,7 +34,7 @@ public class DockerfileTemplate : NinjadogTemplate
 
               COPY --from=build /app/publish .
 
-              ENTRYPOINT ["dotnet", "{{rootNamespace}}.dll"]
+              ENTRYPOINT ["dotnet", "{{projectName}}.dll"]
               """;
 
         return CreateNinjadogContentFile("Dockerfile", content, false);

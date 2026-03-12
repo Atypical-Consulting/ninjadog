@@ -101,10 +101,8 @@ public class CrudTemplates : NinjadogTemplates
             new CreateRequestValidatorTemplate(),
             new UpdateRequestValidatorTemplate());
 
-        AddTemplates(
-            "Docker",
-            new DockerfileTemplate(),
-            new DockerComposeTemplate(),
-            new DockerIgnoreTemplate());
+        Add(new DockerfileTemplate());
+        Add(new DockerComposeTemplate());
+        Add(new DockerIgnoreTemplate());
     }
 }
