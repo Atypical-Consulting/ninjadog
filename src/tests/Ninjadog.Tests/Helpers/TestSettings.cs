@@ -137,15 +137,5 @@ public sealed class AotSeededEntitiesCollection : NinjadogEntities
     }
 }
 
-public sealed record AotSeededConfiguration()
-    : NinjadogConfiguration(
-        Name: "TestApp",
-        Version: "1.0.0",
-        Description: "Test application",
-        RootNamespace: "TestApp.Api",
-        OutputPath: "output",
-        SaveGeneratedFiles: false,
-        Aot: true);
-
 public sealed record AotSeededSettings()
-    : NinjadogSettings(new AotSeededConfiguration(), new AotSeededEntitiesCollection());
+    : NinjadogSettings(new AotConfiguration(), new AotSeededEntitiesCollection());

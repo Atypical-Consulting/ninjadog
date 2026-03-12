@@ -63,14 +63,7 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
                           };
                       });
 
-                      var connectionString =
-                          config.GetValue<string>("Database:ConnectionString")
-                          ?? throw new InvalidOperationException("Database:ConnectionString is not configured.");
-
-                      services.AddSingleton<IDbConnectionFactory>(_ => new {{factoryClassName}}(connectionString));
-                      services.AddSingleton<DatabaseInitializer>();
-              {{GenerateSeederRegistration(hasSeedData)}}
-              {{GenerateModelDependenciesInjection(entities)}}
+              {{GenerateConnectionAndDependencies(entities, hasSeedData, factoryClassName)}}
                       return services;
                   }
 
@@ -97,34 +90,7 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
                       return app;
                   }
 
-                  public static WebApplication UseValidationExceptionHandler(this WebApplication app)
-                  {
-                      app.UseExceptionHandler(errApp =>
-                      {
-                          errApp.Run(async ctx =>
-                          {
-                              var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
-
-                              if (exHandlerFeature?.Error is ValidationException exception)
-                              {
-                                  var validationFailureResponse = new ErrorResponse
-                                  {
-                                      StatusCode = 400,
-                                      Message = "One or more errors occured!",
-                                      Errors = exception.Errors
-                                          .GroupBy(failure => failure.PropertyName)
-                                          .ToDictionary(
-                                              failures => failures.Key,
-                                              failures => failures.Select(failure => failure.ErrorMessage).ToList())
-                                  };
-
-                                  await ctx.Response.WriteAsJsonAsync(validationFailureResponse);
-                              }
-                          });
-                      });
-
-                      return app;
-                  }
+              {{GenerateValidationExceptionHandler(aot: false)}}
               }
               """;
     }
@@ -156,14 +122,7 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
                           o.SerializerContext = AppJsonSerializerContext.Default;
                       });
 
-                      var connectionString =
-                          config.GetValue<string>("Database:ConnectionString")
-                          ?? throw new InvalidOperationException("Database:ConnectionString is not configured.");
-
-                      services.AddSingleton<IDbConnectionFactory>(_ => new {{factoryClassName}}(connectionString));
-                      services.AddSingleton<DatabaseInitializer>();
-              {{GenerateSeederRegistration(hasSeedData)}}
-              {{GenerateModelDependenciesInjection(entities)}}
+              {{GenerateConnectionAndDependencies(entities, hasSeedData, factoryClassName)}}
                       return services;
                   }
 
@@ -175,6 +134,45 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
                       return app;
                   }
 
+              {{GenerateValidationExceptionHandler(aot: true)}}
+              }
+              """;
+    }
+
+    private static string GenerateConnectionAndDependencies(
+        List<NinjadogEntityWithKey> entities, bool hasSeedData, string factoryClassName)
+    {
+        IndentedStringBuilder sb = new(2);
+
+        sb.AppendLine("var connectionString =")
+            .AppendLine("    config.GetValue<string>(\"Database:ConnectionString\")")
+            .AppendLine("    ?? throw new InvalidOperationException(\"Database:ConnectionString is not configured.\");")
+            .AppendLine()
+            .AppendLine($"services.AddSingleton<IDbConnectionFactory>(_ => new {factoryClassName}(connectionString));")
+            .AppendLine("services.AddSingleton<DatabaseInitializer>();");
+
+        if (hasSeedData)
+        {
+            sb.AppendLine("services.AddSingleton<DatabaseSeeder>();");
+        }
+
+        foreach (var st in entities.Select(model => model.StringTokens))
+        {
+            sb.AppendLine($"services.AddSingleton<{st.InterfaceModelRepository}, {st.ClassModelRepository}>();")
+                .AppendLine($"services.AddSingleton<{st.InterfaceModelService}, {st.ClassModelService}>();");
+        }
+
+        return sb.ToString();
+    }
+
+    private static string GenerateValidationExceptionHandler(bool aot)
+    {
+        var writeAsJsonCall = aot
+            ? "await ctx.Response.WriteAsJsonAsync(validationFailureResponse, AppJsonSerializerContext.Default.ErrorResponse);"
+            : "await ctx.Response.WriteAsJsonAsync(validationFailureResponse);";
+
+        return
+            $$"""
                   public static WebApplication UseValidationExceptionHandler(this WebApplication app)
                   {
                       app.UseExceptionHandler(errApp =>
@@ -196,36 +194,14 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
                                               failures => failures.Select(failure => failure.ErrorMessage).ToList())
                                   };
 
-                                  await ctx.Response.WriteAsJsonAsync(validationFailureResponse, AppJsonSerializerContext.Default.ErrorResponse);
+                                  {{writeAsJsonCall}}
                               }
                           });
                       });
 
                       return app;
                   }
-              }
               """;
-    }
-
-    private static string GenerateSeederRegistration(bool hasSeedData)
-    {
-        return hasSeedData
-            ? "        services.AddSingleton<DatabaseSeeder>();\n"
-            : string.Empty;
-    }
-
-    private static string GenerateModelDependenciesInjection(List<NinjadogEntityWithKey> entities)
-    {
-        IndentedStringBuilder stringBuilder = new(2);
-
-        foreach (var st in entities.Select(model => model.StringTokens))
-        {
-            stringBuilder
-                .AppendLine($"services.AddSingleton<{st.InterfaceModelRepository}, {st.ClassModelRepository}>();")
-                .AppendLine($"services.AddSingleton<{st.InterfaceModelService}, {st.ClassModelService}>();");
-        }
-
-        return stringBuilder.ToString();
     }
 
     private static string GetFactoryClassName(string provider)

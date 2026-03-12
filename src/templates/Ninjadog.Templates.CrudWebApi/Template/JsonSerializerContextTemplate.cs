@@ -45,32 +45,22 @@ public sealed class JsonSerializerContextTemplate : NinjadogTemplate
 
     private static string GenerateSerializableAttributes(List<NinjadogEntityWithKey> entities)
     {
-        IndentedStringBuilder sb = new(0);
-
-        // ErrorResponse used by the validation exception handler
-        sb.AppendLine("[JsonSerializable(typeof(ErrorResponse))]");
+        var lines = new List<string>((entities.Count * 6) + 1)
+        {
+            "[JsonSerializable(typeof(ErrorResponse))]"
+        };
 
         foreach (var entity in entities)
         {
             var st = entity.StringTokens;
-
-            // Domain entity
-            sb.AppendLine($"[JsonSerializable(typeof({st.Model}))]");
-
-            // DTO
-            sb.AppendLine($"[JsonSerializable(typeof({st.ClassModelDto}))]");
-
-            // Requests
-            sb.AppendLine($"[JsonSerializable(typeof({st.ClassCreateModelRequest}))]");
-            sb.AppendLine($"[JsonSerializable(typeof({st.ClassUpdateModelRequest}))]");
-
-            // Responses
-            sb.AppendLine($"[JsonSerializable(typeof({st.ClassModelResponse}))]");
-            sb.AppendLine($"[JsonSerializable(typeof({st.ClassGetAllModelsResponse}))]");
+            lines.Add($"[JsonSerializable(typeof({st.Model}))]");
+            lines.Add($"[JsonSerializable(typeof({st.ClassModelDto}))]");
+            lines.Add($"[JsonSerializable(typeof({st.ClassCreateModelRequest}))]");
+            lines.Add($"[JsonSerializable(typeof({st.ClassUpdateModelRequest}))]");
+            lines.Add($"[JsonSerializable(typeof({st.ClassModelResponse}))]");
+            lines.Add($"[JsonSerializable(typeof({st.ClassGetAllModelsResponse}))]");
         }
 
-        // Remove trailing newline
-        var result = sb.ToString().TrimEnd('\n', '\r');
-        return result;
+        return string.Join("\n", lines);
     }
 }

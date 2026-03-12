@@ -38,7 +38,6 @@ public static class NinjadogExtensions
         services.AddSingleton<IDbConnectionFactory>(_ => new SqliteConnectionFactory(connectionString));
         services.AddSingleton<DatabaseInitializer>();
         services.AddSingleton<DatabaseSeeder>();
-
         services.AddSingleton<ITodoItemRepository, TodoItemRepository>();
         services.AddSingleton<ITodoItemService, TodoItemService>();
         services.AddSingleton<ICategoryRepository, CategoryRepository>();
