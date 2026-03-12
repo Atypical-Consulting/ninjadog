@@ -18,6 +18,7 @@ namespace Ninjadog.Settings.Config;
 /// <param name="Aot">Indicates whether Native AOT publishing support should be enabled in the generated project. Default is false.</param>
 /// <param name="Auth">The optional JWT authentication configuration for the application.</param>
 /// <param name="RateLimit">The optional rate limiting configuration for the application.</param>
+/// <param name="Versioning">The optional API versioning configuration. When set, enables versioned endpoints.</param>
 public abstract record NinjadogConfiguration(
     string Name,
     string Version,
@@ -31,4 +32,5 @@ public abstract record NinjadogConfiguration(
     string DatabaseProvider = "sqlite",
     bool Aot = false,
     NinjadogAuthConfiguration? Auth = null,
-    NinjadogRateLimitConfiguration? RateLimit = null);
+    NinjadogRateLimitConfiguration? RateLimit = null,
+    NinjadogVersioningConfiguration? Versioning = null);
