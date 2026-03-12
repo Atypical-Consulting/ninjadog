@@ -13,8 +13,13 @@ public class ProgramTemplate : NinjadogTemplate
     {
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var cors = ninjadogSettings.Config.Cors;
+        var aot = ninjadogSettings.Config.Aot;
         var hasSeedData = ninjadogSettings.Entities.FromKeys().Any(e => e.SeedData is { Count: > 0 });
         const string fileName = "Program.cs";
+
+        var builderCall = aot
+            ? "WebApplication.CreateSlimBuilder(args)"
+            : "WebApplication.CreateBuilder(args)";
 
         var content =
             $$"""
@@ -24,10 +29,10 @@ public class ProgramTemplate : NinjadogTemplate
 
               const string myAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-              var builder = WebApplication.CreateBuilder(args);
+              var builder = {{builderCall}};
               var services = builder.Services;
               var config = builder.Configuration;
-
+              {{GenerateAotJsonOptions(aot, rootNamespace)}}
               services.AddCors(options =>
               {
                   options.AddPolicy(name: myAllowSpecificOrigins,
@@ -85,6 +90,19 @@ public class ProgramTemplate : NinjadogTemplate
         }
 
         return result + ";";
+    }
+
+    private static string GenerateAotJsonOptions(bool aot, string rootNamespace)
+    {
+        return !aot
+            ? string.Empty
+            : $$"""
+
+              services.ConfigureHttpJsonOptions(options =>
+              {
+                  options.SerializerOptions.TypeInfoResolverChain.Insert(0, {{rootNamespace}}.AppJsonSerializerContext.Default);
+              });
+              """;
     }
 
     private static string GenerateSeederCall(bool hasSeedData)

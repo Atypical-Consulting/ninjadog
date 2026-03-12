@@ -15,13 +15,24 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
         var entities = ninjadogSettings.Entities.FromKeys();
         var hasSeedData = entities.Any(e => e.SeedData is { Count: > 0 });
         var provider = ninjadogSettings.Config.DatabaseProvider;
+        var aot = ninjadogSettings.Config.Aot;
         var factoryClassName = GetFactoryClassName(provider);
         var projectName = ninjadogSettings.Config.Name;
         var projectVersion = ninjadogSettings.Config.Version;
         var projectDescription = ninjadogSettings.Config.Description;
         const string fileName = "CrudWebApiExtensions.cs";
 
-        var content =
+        var content = aot
+            ? GenerateAotContent(rootNamespace, entities, hasSeedData, factoryClassName)
+            : GenerateStandardContent(rootNamespace, entities, hasSeedData, factoryClassName);
+
+        return CreateNinjadogContentFile(fileName, content);
+    }
+
+    private static string GenerateStandardContent(
+        string rootNamespace, List<NinjadogEntityWithKey> entities, bool hasSeedData, string factoryClassName)
+    {
+        return
             $$"""
 
               using Microsoft.AspNetCore.Diagnostics;
@@ -116,8 +127,84 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
                   }
               }
               """;
+    }
 
-        return CreateNinjadogContentFile(fileName, content);
+    private static string GenerateAotContent(
+        string rootNamespace, List<NinjadogEntityWithKey> entities, bool hasSeedData, string factoryClassName)
+    {
+        return
+            $$"""
+
+              using System.Text.Json;
+              using Microsoft.AspNetCore.Diagnostics;
+              using {{rootNamespace}}.Database;
+              using {{rootNamespace}}.Repositories;
+              using {{rootNamespace}}.Services;
+              using FastEndpoints;
+              using FluentValidation;
+
+              {{WriteFileScopedNamespace(rootNamespace)}}
+
+              public static class NinjadogExtensions
+              {
+                  public static IServiceCollection AddNinjadog(
+                      this IServiceCollection services,
+                      ConfigurationManager config)
+                  {
+                      services.AddFastEndpoints(o =>
+                      {
+                          o.SerializerContext = AppJsonSerializerContext.Default;
+                      });
+
+                      var connectionString =
+                          config.GetValue<string>("Database:ConnectionString")
+                          ?? throw new InvalidOperationException("Database:ConnectionString is not configured.");
+
+                      services.AddSingleton<IDbConnectionFactory>(_ => new {{factoryClassName}}(connectionString));
+                      services.AddSingleton<DatabaseInitializer>();
+              {{GenerateSeederRegistration(hasSeedData)}}
+              {{GenerateModelDependenciesInjection(entities)}}
+                      return services;
+                  }
+
+                  public static WebApplication UseNinjadog(this WebApplication app)
+                  {
+                      app.UseValidationExceptionHandler();
+                      app.UseFastEndpoints();
+
+                      return app;
+                  }
+
+                  public static WebApplication UseValidationExceptionHandler(this WebApplication app)
+                  {
+                      app.UseExceptionHandler(errApp =>
+                      {
+                          errApp.Run(async ctx =>
+                          {
+                              var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
+
+                              if (exHandlerFeature?.Error is ValidationException exception)
+                              {
+                                  var validationFailureResponse = new ErrorResponse
+                                  {
+                                      StatusCode = 400,
+                                      Message = "One or more errors occured!",
+                                      Errors = exception.Errors
+                                          .GroupBy(failure => failure.PropertyName)
+                                          .ToDictionary(
+                                              failures => failures.Key,
+                                              failures => failures.Select(failure => failure.ErrorMessage).ToList())
+                                  };
+
+                                  await ctx.Response.WriteAsJsonAsync(validationFailureResponse, AppJsonSerializerContext.Default.ErrorResponse);
+                              }
+                          });
+                      });
+
+                      return app;
+                  }
+              }
+              """;
     }
 
     private static string GenerateSeederRegistration(bool hasSeedData)

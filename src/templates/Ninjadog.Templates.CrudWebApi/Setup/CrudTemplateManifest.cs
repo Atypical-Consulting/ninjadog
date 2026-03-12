@@ -24,6 +24,7 @@ public class CrudTemplateManifest : NinjadogTemplateManifest
     public override List<string> NuGetPackages { get; init; } =
     [
         "Dapper:2.1.72",
+        "Dapper.AOT:1.1.6",
         "FastEndpoints:8.0.1",
         "FastEndpoints.ClientGen:8.0.1",
         "FastEndpoints.Swagger:8.0.1",

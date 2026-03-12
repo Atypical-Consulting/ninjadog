@@ -112,3 +112,40 @@ public sealed class RelationshipEntitiesCollection : NinjadogEntities
 
 public sealed record RelationshipSettings()
     : NinjadogSettings(new TestConfiguration(), new RelationshipEntitiesCollection());
+
+public sealed record AotConfiguration()
+    : NinjadogConfiguration(
+        Name: "TestApp",
+        Version: "1.0.0",
+        Description: "Test application",
+        RootNamespace: "TestApp.Api",
+        OutputPath: "output",
+        SaveGeneratedFiles: false,
+        Aot: true);
+
+public sealed record AotSettings()
+    : NinjadogSettings(new AotConfiguration(), new TestEntitiesCollection());
+
+public sealed class AotSeededEntitiesCollection : NinjadogEntities
+{
+    public AotSeededEntitiesCollection()
+    {
+        var guidEntity = TestEntities.CreateGuidKeyEntity();
+        var seededEntity = TestEntities.CreateSeededEntity();
+        Add(guidEntity.Key, new(guidEntity.Properties));
+        Add(seededEntity.Key, new(seededEntity.Properties, null, seededEntity.SeedData));
+    }
+}
+
+public sealed record AotSeededConfiguration()
+    : NinjadogConfiguration(
+        Name: "TestApp",
+        Version: "1.0.0",
+        Description: "Test application",
+        RootNamespace: "TestApp.Api",
+        OutputPath: "output",
+        SaveGeneratedFiles: false,
+        Aot: true);
+
+public sealed record AotSeededSettings()
+    : NinjadogSettings(new AotSeededConfiguration(), new AotSeededEntitiesCollection());

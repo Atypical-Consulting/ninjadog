@@ -30,6 +30,7 @@ public class CrudTemplates : NinjadogTemplates
         Add(new HttpFileTemplate());
         Add(new ProgramTemplate());
         Add(new CrudWebApiExtensionsTemplate());
+        Add(new JsonSerializerContextTemplate());
 
         AddTemplates(
             "Properties",

@@ -1,0 +1,86 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics;
+using TestApp.Api.Database;
+using TestApp.Api.Repositories;
+using TestApp.Api.Services;
+using FastEndpoints;
+using FluentValidation;
+
+namespace TestApp.Api;
+
+public static class NinjadogExtensions
+{
+    public static IServiceCollection AddNinjadog(
+        this IServiceCollection services,
+        ConfigurationManager config)
+    {
+        services.AddFastEndpoints(o =>
+        {
+            o.SerializerContext = AppJsonSerializerContext.Default;
+        });
+
+        var connectionString =
+            config.GetValue<string>("Database:ConnectionString")
+            ?? throw new InvalidOperationException("Database:ConnectionString is not configured.");
+
+        services.AddSingleton<IDbConnectionFactory>(_ => new SqliteConnectionFactory(connectionString));
+        services.AddSingleton<DatabaseInitializer>();
+        services.AddSingleton<DatabaseSeeder>();
+
+        services.AddSingleton<ITodoItemRepository, TodoItemRepository>();
+        services.AddSingleton<ITodoItemService, TodoItemService>();
+        services.AddSingleton<ICategoryRepository, CategoryRepository>();
+        services.AddSingleton<ICategoryService, CategoryService>();
+
+        return services;
+    }
+
+    public static WebApplication UseNinjadog(this WebApplication app)
+    {
+        app.UseValidationExceptionHandler();
+        app.UseFastEndpoints();
+
+        return app;
+    }
+
+    public static WebApplication UseValidationExceptionHandler(this WebApplication app)
+    {
+        app.UseExceptionHandler(errApp =>
+        {
+            errApp.Run(async ctx =>
+            {
+                var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
+
+                if (exHandlerFeature?.Error is ValidationException exception)
+                {
+                    var validationFailureResponse = new ErrorResponse
+                    {
+                        StatusCode = 400,
+                        Message = "One or more errors occured!",
+                        Errors = exception.Errors
+                            .GroupBy(failure => failure.PropertyName)
+                            .ToDictionary(
+                                failures => failures.Key,
+                                failures => failures.Select(failure => failure.ErrorMessage).ToList())
+                    };
+
+                    await ctx.Response.WriteAsJsonAsync(validationFailureResponse, AppJsonSerializerContext.Default.ErrorResponse);
+                }
+            });
+        });
+
+        return app;
+    }
+}
