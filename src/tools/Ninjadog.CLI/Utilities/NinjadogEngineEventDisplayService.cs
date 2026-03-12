@@ -50,8 +50,10 @@ internal sealed class NinjadogEngineEventDisplayService(IDomainEventDispatcher d
         }
         else
         {
+            var entityLabel = entities.Count == 1 ? "entity" : "entities";
             MarkupLine($"Scaffolding [green]{config.Name}[/] project...            [green]done[/]");
             MarkupLine($"Adding NuGet packages ({manifest.NuGetPackages.Count})...            [green]done[/]");
+            MarkupLine($"Generating files for {entities.Count} {entityLabel}...");
         }
     }
 
@@ -60,7 +62,6 @@ internal sealed class NinjadogEngineEventDisplayService(IDomainEventDispatcher d
         var snapshot = domainEvent.ContextSnapshot;
         var elapsed = snapshot.TotalTimeElapsed;
         var totalFilesGenerated = snapshot.TotalFilesGenerated;
-        var entities = domainEvent.Settings.Entities;
 
         if (verbose)
         {
@@ -72,8 +73,7 @@ internal sealed class NinjadogEngineEventDisplayService(IDomainEventDispatcher d
         }
         else
         {
-            var entityLabel = entities.Count == 1 ? "entity" : "entities";
-            MarkupLine($"Generating {totalFilesGenerated} files for {entities.Count} {entityLabel}...     [green]done[/]");
+            MarkupLine($"Generating files...                     [green]done[/]");
             WriteLine();
             MarkupLine($"[bold]Build completed in {elapsed.TotalSeconds:F1}s[/] — [green]{totalFilesGenerated} files[/] generated");
             WriteLine();
@@ -105,15 +105,23 @@ internal sealed class NinjadogEngineEventDisplayService(IDomainEventDispatcher d
     {
         _filesGeneratedForCurrentTemplate++;
 
+        var contentFile = domainEvent.ContentFile;
+        var fileKey = contentFile.Key;
+
         if (verbose)
         {
-            var contentFile = domainEvent.ContentFile;
-            var fileKey = contentFile.Key;
             var length = contentFile.Length;
 
             Write("  - File generated: ");
             WriteTextPath(fileKey);
             Markup($" with a length of [green]{length:N0}[/] characters.");
+            WriteLine();
+        }
+        else
+        {
+            var fileNumber = domainEvent.ContextSnapshot.TotalFilesGenerated;
+            Write($"  [grey][[{fileNumber}]][/] ");
+            WriteTextPath(fileKey);
             WriteLine();
         }
     }
