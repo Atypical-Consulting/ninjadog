@@ -9,12 +9,6 @@ public sealed class DtoToDomainMapperTemplate : MapperTemplateBase
     public override string Name => "DtoToDomainMapper";
 
     /// <inheritdoc />
-    protected override string GetClassName()
-    {
-        return "DtoToDomainMapper";
-    }
-
-    /// <inheritdoc />
     protected override string GenerateUsings(string rootNamespace)
     {
         return $"""

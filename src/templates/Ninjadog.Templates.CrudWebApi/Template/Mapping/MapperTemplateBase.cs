@@ -13,7 +13,7 @@ public abstract class MapperTemplateBase
         var rootNamespace = ninjadogSettings.Config.RootNamespace;
         var entities = ninjadogSettings.Entities.FromKeys();
         var ns = $"{rootNamespace}.Mapping";
-        var className = GetClassName();
+        var className = Name;
         var fileName = $"{className}.cs";
 
         var methods = GenerateMethods(entities);
@@ -33,12 +33,6 @@ public abstract class MapperTemplateBase
 
         return CreateNinjadogContentFile(fileName, content);
     }
-
-    /// <summary>
-    /// Gets the mapper class name.
-    /// </summary>
-    /// <returns>The class name for this mapper.</returns>
-    protected abstract string GetClassName();
 
     /// <summary>
     /// Generates the using directives for this mapper.

@@ -10,12 +10,6 @@ public sealed class ApiContractToDomainMapperTemplate
     public override string Name => "ApiContractToDomainMapper";
 
     /// <inheritdoc />
-    protected override string GetClassName()
-    {
-        return "ApiContractToDomainMapper";
-    }
-
-    /// <inheritdoc />
     protected override string GenerateUsings(string rootNamespace)
     {
         return $"""

@@ -13,11 +13,11 @@ public abstract class SummaryTemplateBase
     {
         var st = entity.StringTokens;
         var ns = $"{rootNamespace}.Summaries";
-        var fileName = $"{GetSummaryClassName(st)}.cs";
+        var summaryClassName = GetSummaryClassName(st);
+        var fileName = $"{summaryClassName}.cs";
 
         var usings = GenerateUsings(rootNamespace);
         var usingsBlock = string.IsNullOrEmpty(usings) ? string.Empty : $"{usings}\n";
-        var summaryClassName = GetSummaryClassName(st);
         var endpointClassName = GetEndpointClassName(st);
         var summaryText = GetSummaryText(st);
         var descriptionAssignment = GenerateDescriptionAssignment(st);
