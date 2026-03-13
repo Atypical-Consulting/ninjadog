@@ -1,3 +1,5 @@
+using Ninjadog.Templates.CrudWebAPI.Template.Database;
+
 namespace Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 
 /// <summary>
@@ -306,11 +308,6 @@ public sealed class RepositoryTemplate
 
     private static string GetNowFunction(string provider)
     {
-        return provider switch
-        {
-            "postgresql" => "NOW()",
-            "sqlserver" => "GETUTCDATE()",
-            _ => "datetime('now')"
-        };
+        return DatabaseProviderHelper.GetNowFunction(provider);
     }
 }

@@ -177,56 +177,39 @@ public sealed class DatabaseInitializerTemplate
     {
         return enumNames?.Contains(typeName) == true
             ? "INTEGER"
-            : provider switch
-            {
-                "postgresql" => MapToPostgresType(typeName),
-                "sqlserver" => MapToSqlServerType(typeName),
-                _ => MapToSqliteType(typeName)
-            };
-    }
-
-    private static string MapToSqliteType(string typeName)
-    {
-        return typeName switch
+            : (provider, typeName) switch
         {
-            "String" => "TEXT",
-            "Int32" => "INTEGER",
-            "Boolean" => "INTEGER",
-            "Decimal" => "REAL",
-            "DateTime" => "TEXT",
-            "DateOnly" => "TEXT",
-            "Guid" => "CHAR(36)",
+            // PostgreSQL types
+            ("postgresql", "String") => "TEXT",
+            ("postgresql", "Int32") => "INTEGER",
+            ("postgresql", "Boolean") => "BOOLEAN",
+            ("postgresql", "Decimal") => "NUMERIC",
+            ("postgresql", "DateTime") => "TIMESTAMP",
+            ("postgresql", "DateOnly") => "DATE",
+            ("postgresql", "Guid") => "UUID",
+
+            // SQL Server types
+            ("sqlserver", "String") => "NVARCHAR(MAX)",
+            ("sqlserver", "Int32") => "INT",
+            ("sqlserver", "Boolean") => "BIT",
+            ("sqlserver", "Decimal") => "DECIMAL(18,2)",
+            ("sqlserver", "DateTime") => "DATETIME2",
+            ("sqlserver", "DateOnly") => "DATE",
+            ("sqlserver", "Guid") => "UNIQUEIDENTIFIER",
+
+            // SQLite types (default)
+            (_, "String") => "TEXT",
+            (_, "Int32") => "INTEGER",
+            (_, "Boolean") => "INTEGER",
+            (_, "Decimal") => "REAL",
+            (_, "DateTime") => "TEXT",
+            (_, "DateOnly") => "TEXT",
+            (_, "Guid") => "CHAR(36)",
+
+            // Fallback per provider
+            ("postgresql", _) => "TEXT",
+            ("sqlserver", _) => "NVARCHAR(MAX)",
             _ => "TEXT"
-        };
-    }
-
-    private static string MapToPostgresType(string typeName)
-    {
-        return typeName switch
-        {
-            "String" => "TEXT",
-            "Int32" => "INTEGER",
-            "Boolean" => "BOOLEAN",
-            "Decimal" => "NUMERIC",
-            "DateTime" => "TIMESTAMP",
-            "DateOnly" => "DATE",
-            "Guid" => "UUID",
-            _ => "TEXT"
-        };
-    }
-
-    private static string MapToSqlServerType(string typeName)
-    {
-        return typeName switch
-        {
-            "String" => "NVARCHAR(MAX)",
-            "Int32" => "INT",
-            "Boolean" => "BIT",
-            "Decimal" => "DECIMAL(18,2)",
-            "DateTime" => "DATETIME2",
-            "DateOnly" => "DATE",
-            "Guid" => "UNIQUEIDENTIFIER",
-            _ => "NVARCHAR(MAX)"
         };
     }
 }
