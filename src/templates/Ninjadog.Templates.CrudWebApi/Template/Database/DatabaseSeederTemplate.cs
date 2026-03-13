@@ -50,11 +50,6 @@ public sealed class DatabaseSeederTemplate : NinjadogTemplate
         foreach (var entity in entities)
         {
             var st = entity.StringTokens;
-            if (entity.SeedData == null)
-            {
-                continue;
-            }
-
             var keyPropertyName = entity.Properties
                 .FirstOrDefault(x => x.Value.IsKey).Key;
 

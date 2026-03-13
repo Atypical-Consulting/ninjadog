@@ -36,7 +36,7 @@ public abstract record NinjadogSettings(
     /// <exception cref="JsonException">Thrown when the JSON is invalid or cannot be deserialized.</exception>
     public static NinjadogSettings FromJsonString(string json, string? basePath = null)
     {
-        var doc = JsonDocument.Parse(json);
+        using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
         var config = NinjadogConfigParser.Parse(root.GetRequiredObject("config"));

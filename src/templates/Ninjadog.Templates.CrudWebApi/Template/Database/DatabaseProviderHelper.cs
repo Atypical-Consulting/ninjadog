@@ -48,4 +48,48 @@ internal static class DatabaseProviderHelper
             _ => ("using Microsoft.Data.Sqlite;", "SqliteConnectionFactory", "SqliteConnection")
         };
     }
+
+    /// <summary>
+    /// Maps a CLR type name to the appropriate database column type for the given provider.
+    /// Enum types are mapped to INTEGER.
+    /// </summary>
+    internal static string MapToDbType(string typeName, string provider, HashSet<string>? enumNames = null)
+    {
+        return enumNames?.Contains(typeName) == true
+            ? "INTEGER"
+            : (provider, typeName) switch
+            {
+                // PostgreSQL types
+                ("postgresql", "String") => "TEXT",
+                ("postgresql", "Int32") => "INTEGER",
+                ("postgresql", "Boolean") => "BOOLEAN",
+                ("postgresql", "Decimal") => "NUMERIC",
+                ("postgresql", "DateTime") => "TIMESTAMP",
+                ("postgresql", "DateOnly") => "DATE",
+                ("postgresql", "Guid") => "UUID",
+
+                // SQL Server types
+                ("sqlserver", "String") => "NVARCHAR(MAX)",
+                ("sqlserver", "Int32") => "INT",
+                ("sqlserver", "Boolean") => "BIT",
+                ("sqlserver", "Decimal") => "DECIMAL(18,2)",
+                ("sqlserver", "DateTime") => "DATETIME2",
+                ("sqlserver", "DateOnly") => "DATE",
+                ("sqlserver", "Guid") => "UNIQUEIDENTIFIER",
+
+                // SQLite types (default)
+                (_, "String") => "TEXT",
+                (_, "Int32") => "INTEGER",
+                (_, "Boolean") => "INTEGER",
+                (_, "Decimal") => "REAL",
+                (_, "DateTime") => "TEXT",
+                (_, "DateOnly") => "TEXT",
+                (_, "Guid") => "CHAR(36)",
+
+                // Fallback per provider
+                ("postgresql", _) => "TEXT",
+                ("sqlserver", _) => "NVARCHAR(MAX)",
+                _ => "TEXT"
+            };
+    }
 }

@@ -186,7 +186,7 @@ public sealed class RepositoryTemplate
         {
             columns.Add("CreatedAt");
             columns.Add("UpdatedAt");
-            var nowFunc = GetNowFunction(provider);
+            var nowFunc = DatabaseProviderHelper.GetNowFunction(provider);
             values.Add(nowFunc);
             values.Add(nowFunc);
         }
@@ -288,7 +288,7 @@ public sealed class RepositoryTemplate
 
         if (auditing)
         {
-            updateClauses.Add($"UpdatedAt = {GetNowFunction(provider)}");
+            updateClauses.Add($"UpdatedAt = {DatabaseProviderHelper.GetNowFunction(provider)}");
         }
 
         return stringBuilder
@@ -302,12 +302,7 @@ public sealed class RepositoryTemplate
         var st = entity.StringTokens;
         var entityKey = entity.Properties.GetEntityKey();
         return softDelete
-            ? $"UPDATE {st.Models} SET IsDeleted = 1, DeletedAt = {GetNowFunction(provider)} WHERE {entityKey.Key} = @{entityKey.Key}"
+            ? $"UPDATE {st.Models} SET IsDeleted = 1, DeletedAt = {DatabaseProviderHelper.GetNowFunction(provider)} WHERE {entityKey.Key} = @{entityKey.Key}"
             : $"DELETE FROM {st.Models} WHERE {entityKey.Key} = @{entityKey.Key}";
-    }
-
-    private static string GetNowFunction(string provider)
-    {
-        return DatabaseProviderHelper.GetNowFunction(provider);
     }
 }

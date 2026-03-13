@@ -52,58 +52,56 @@ internal static class ValidationRuleGenerator
                 continue;
             }
 
+            // Generate rules based on validation attributes
+            var rules = new List<string>();
+
+            if (propertyValue.Required)
             {
-                // Generate rules based on validation attributes
-                var rules = new List<string>();
-
-                if (propertyValue.Required)
-                {
-                    rules.Add($".NotEmpty().WithMessage(\"{propertyName} is required!\")");
-                }
-
-                if (propertyValue.MaxLength.HasValue)
-                {
-                    rules.Add($".MaximumLength({propertyValue.MaxLength.Value})");
-                }
-
-                if (propertyValue.MinLength.HasValue)
-                {
-                    rules.Add($".MinimumLength({propertyValue.MinLength.Value})");
-                }
-
-                if (propertyValue.Min.HasValue)
-                {
-                    rules.Add($".GreaterThanOrEqualTo({propertyValue.Min.Value})");
-                }
-
-                if (propertyValue.Max.HasValue)
-                {
-                    rules.Add($".LessThanOrEqualTo({propertyValue.Max.Value})");
-                }
-
-                if (propertyValue.Pattern != null)
-                {
-                    rules.Add($".Matches(\"{propertyValue.Pattern}\")");
-                }
-
-                sb
-                    .AppendLine($"RuleFor(x => x.{propertyName})")
-                    .IncrementIndent();
-
-                for (var i = 0; i < rules.Count; i++)
-                {
-                    if (i == rules.Count - 1)
-                    {
-                        sb.AppendLine($"{rules[i]};");
-                    }
-                    else
-                    {
-                        sb.AppendLine(rules[i]);
-                    }
-                }
-
-                sb.DecrementIndent();
+                rules.Add($".NotEmpty().WithMessage(\"{propertyName} is required!\")");
             }
+
+            if (propertyValue.MaxLength.HasValue)
+            {
+                rules.Add($".MaximumLength({propertyValue.MaxLength.Value})");
+            }
+
+            if (propertyValue.MinLength.HasValue)
+            {
+                rules.Add($".MinimumLength({propertyValue.MinLength.Value})");
+            }
+
+            if (propertyValue.Min.HasValue)
+            {
+                rules.Add($".GreaterThanOrEqualTo({propertyValue.Min.Value})");
+            }
+
+            if (propertyValue.Max.HasValue)
+            {
+                rules.Add($".LessThanOrEqualTo({propertyValue.Max.Value})");
+            }
+
+            if (propertyValue.Pattern != null)
+            {
+                rules.Add($".Matches(\"{propertyValue.Pattern}\")");
+            }
+
+            sb
+                .AppendLine($"RuleFor(x => x.{propertyName})")
+                .IncrementIndent();
+
+            for (var i = 0; i < rules.Count; i++)
+            {
+                if (i == rules.Count - 1)
+                {
+                    sb.AppendLine($"{rules[i]};");
+                }
+                else
+                {
+                    sb.AppendLine(rules[i]);
+                }
+            }
+
+            sb.DecrementIndent();
 
             hasWrittenRule = true;
         }
