@@ -47,28 +47,16 @@ public sealed class NinjadogEngineBuilder
         return _serviceProvider is null
             ? throw new InvalidOperationException("No service provider is set.")
             : new NinjadogEngine(
-                EnsureTemplateManifestIsSet(),
-                EnsureNinjadogSettingsAreSet(),
-                EnsureOutputProcessorsAreSet(),
+                EnsureIsSet(_templateManifest, "Template manifest"),
+                EnsureIsSet(_ninjadogSettings, "Ninjadog settings"),
+                EnsureIsSet(_outputProcessors, "Output processors"),
                 _serviceProvider.GetRequiredService<INinjadogAppService>(),
                 _serviceProvider.GetRequiredService<IDomainEventDispatcher>());
     }
 
-    private NinjadogTemplateManifest EnsureTemplateManifestIsSet()
+    private static T EnsureIsSet<T>(T? value, string propertyName)
+        where T : class
     {
-        return _templateManifest
-               ?? throw new InvalidOperationException("Template manifest is not set.");
-    }
-
-    private NinjadogSettings EnsureNinjadogSettingsAreSet()
-    {
-        return _ninjadogSettings
-               ?? throw new InvalidOperationException("Ninjadog settings are not set.");
-    }
-
-    private NinjadogOutputProcessors EnsureOutputProcessorsAreSet()
-    {
-        return _outputProcessors
-               ?? throw new InvalidOperationException("No output processors are set.");
+        return value ?? throw new InvalidOperationException($"{propertyName} is not set.");
     }
 }

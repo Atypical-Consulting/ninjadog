@@ -4,37 +4,20 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Validation;
 /// This template generates the validation rules for the update request of a given entity.
 /// </summary>
 public sealed class UpdateRequestValidatorTemplate
-    : NinjadogTemplate
+    : ValidatorTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "UpdateRequestValidator";
 
-    /// <inheritdoc/>
-    public override NinjadogContentFile GenerateOneByEntity(
-        NinjadogEntityWithKey entity, string rootNamespace)
+    /// <inheritdoc />
+    protected override string GetRequestClassName(StringTokens st)
     {
-        var st = entity.StringTokens;
-        var ns = $"{rootNamespace}.Validation";
-        var fileName = $"{st.ClassUpdateModelRequestValidator}.cs";
+        return st.ClassUpdateModelRequest;
+    }
 
-        var content =
-            $$"""
-
-              using {{rootNamespace}}.Contracts.Requests;
-              using FastEndpoints;
-              using FluentValidation;
-
-              {{WriteFileScopedNamespace(ns)}}
-
-              public partial class {{st.ClassUpdateModelRequestValidator}} : Validator<{{st.ClassUpdateModelRequest}}>
-              {
-                  public {{st.ClassUpdateModelRequestValidator}}()
-                  {
-              {{ValidationRuleGenerator.GenerateValidationRules(entity)}}
-                  }
-              }
-              """;
-
-        return CreateNinjadogContentFile(fileName, content);
+    /// <inheritdoc />
+    protected override string GetValidatorClassName(StringTokens st)
+    {
+        return st.ClassUpdateModelRequestValidator;
     }
 }
