@@ -31,9 +31,10 @@ public sealed class HealthEndpointTemplate
                       AllowAnonymous();
                   }
 
-                  public override Task HandleAsync(CancellationToken ct)
+                  public override async Task HandleAsync(CancellationToken ct)
                   {
-                      return SendOkAsync(new { Status = "Healthy" }, ct);
+                      HttpContext.Response.StatusCode = 200;
+                      await HttpContext.Response.WriteAsJsonAsync(new { Status = "Healthy" }, ct);
                   }
               }
               """;

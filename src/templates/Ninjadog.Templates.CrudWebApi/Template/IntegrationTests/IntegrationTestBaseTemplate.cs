@@ -20,6 +20,7 @@ public sealed class IntegrationTestBaseTemplate : NinjadogTemplate
             $$"""
 
               using System.Text.Json;
+              using Xunit;
 
               {{WriteFileScopedNamespace(testNamespace)}}
 

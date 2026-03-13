@@ -213,12 +213,12 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
                               var error = exHandlerFeature?.Error;
 
                               int statusCode;
-                              ProblemDetails problemDetails;
+                              Microsoft.AspNetCore.Mvc.ProblemDetails problemDetails;
 
                               if (error is ValidationException validationException)
                               {
                                   statusCode = StatusCodes.Status400BadRequest;
-                                  problemDetails = new ProblemDetails
+                                  problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
                                   {
                                       Status = statusCode,
                                       Title = "One or more validation errors occurred.",
@@ -237,7 +237,7 @@ public class CrudWebApiExtensionsTemplate : NinjadogTemplate
                               else
                               {
                                   statusCode = StatusCodes.Status500InternalServerError;
-                                  problemDetails = new ProblemDetails
+                                  problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
                                   {
                                       Status = statusCode,
                                       Title = "An unexpected error occurred.",

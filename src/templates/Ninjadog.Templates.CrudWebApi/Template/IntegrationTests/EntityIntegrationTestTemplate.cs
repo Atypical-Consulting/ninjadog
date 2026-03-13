@@ -44,6 +44,7 @@ public sealed class EntityIntegrationTestTemplate : NinjadogTemplate
               using {{rootNamespace}}.Contracts.Requests;
               using {{rootNamespace}}.Contracts.Responses;
               using FluentAssertions;
+              using Xunit;
 
               {{WriteFileScopedNamespace(testNamespace)}}
 

@@ -30,7 +30,8 @@ public sealed class ReadyEndpoint(IDbConnectionFactory connectionFactory)
         try
         {
             using var connection = await connectionFactory.CreateConnectionAsync();
-            await SendOkAsync(new { Status = "Ready" }, ct);
+            HttpContext.Response.StatusCode = 200;
+            await HttpContext.Response.WriteAsJsonAsync(new { Status = "Ready" }, ct);
         }
         catch (Exception) when (ct.IsCancellationRequested is false)
         {

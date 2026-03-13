@@ -34,7 +34,7 @@ public sealed class UpdateSummaryTemplate
                       Summary = "Updates an existing {{st.ModelHumanized}} in the system";
                       Description = "Updates an existing {{st.ModelHumanized}} in the system";
                       Response<{{st.ClassModelResponse}}>(201, "{{st.ModelHumanized}} was successfully updated");
-                      Response<ProblemDetails>(400, "The request did not pass validation checks");
+                      Response<Microsoft.AspNetCore.Mvc.ProblemDetails>(400, "The request did not pass validation checks");
                   }
               }
               """;

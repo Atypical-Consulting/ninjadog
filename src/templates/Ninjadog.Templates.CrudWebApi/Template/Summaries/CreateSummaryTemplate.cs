@@ -34,7 +34,7 @@ public sealed class CreateSummaryTemplate
                       Summary = "Creates a new {{st.ModelHumanized}} in the system";
                       Description = "Creates a new {{st.ModelHumanized}} in the system";
                       Response<{{st.ClassModelResponse}}>(201, "{{st.ModelHumanized}} was successfully created");
-                      Response<ProblemDetails>(400, "The request did not pass validation checks");
+                      Response<Microsoft.AspNetCore.Mvc.ProblemDetails>(400, "The request did not pass validation checks");
                   }
               }
               """;
