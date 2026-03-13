@@ -20,8 +20,18 @@ public abstract class EndpointTemplateBase
     /// <inheritdoc />
     public override IEnumerable<NinjadogContentFile> GenerateMany(NinjadogSettings ninjadogSettings)
     {
+        CacheSettings(ninjadogSettings);
+        return base.GenerateMany(ninjadogSettings);
+    }
+
+    /// <summary>
+    /// Caches auth and versioning settings from the provided configuration.
+    /// Can be called by subclasses that override GenerateMany with custom iteration logic.
+    /// </summary>
+    /// <param name="ninjadogSettings">The settings to cache from.</param>
+    protected void CacheSettings(NinjadogSettings ninjadogSettings)
+    {
         HasAuth = ninjadogSettings.Config.Auth is not null;
         ApiVersion = ninjadogSettings.Config.Versioning?.DefaultVersion;
-        return base.GenerateMany(ninjadogSettings);
     }
 }
