@@ -3,37 +3,24 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 /// <summary>
 /// This template generates the DtoToDomainMapper class.
 /// </summary>
-public sealed class DtoToDomainMapperTemplate : NinjadogTemplate
+public sealed class DtoToDomainMapperTemplate : MapperTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "DtoToDomainMapper";
 
-    /// <inheritdoc/>
-    public override NinjadogContentFile GenerateOne(NinjadogSettings ninjadogSettings)
+    /// <inheritdoc />
+    protected override string GenerateUsings(string rootNamespace)
     {
-        var rootNamespace = ninjadogSettings.Config.RootNamespace;
-        var entities = ninjadogSettings.Entities.FromKeys();
-        var ns = $"{rootNamespace}.Mapping";
-        const string className = "DtoToDomainMapper";
-        const string fileName = $"{className}.cs";
+        return $"""
+                using {rootNamespace}.Contracts.Data;
+                using {rootNamespace}.Domain;
+                """;
+    }
 
-        var methods = string.Join("\n", entities.Select(GenerateToModelMethods));
-
-        var content =
-            $$"""
-
-              using {{rootNamespace}}.Contracts.Data;
-              using {{rootNamespace}}.Domain;
-
-              {{WriteFileScopedNamespace(ns)}}
-
-              public static class {{className}}
-              {
-                  {{methods}}
-              }
-              """;
-
-        return CreateNinjadogContentFile(fileName, content);
+    /// <inheritdoc />
+    protected override string GenerateMethods(List<NinjadogEntityWithKey> entities)
+    {
+        return string.Join("\n", entities.Select(GenerateToModelMethods));
     }
 
     private static string GenerateToModelMethods(NinjadogEntityWithKey entity)
