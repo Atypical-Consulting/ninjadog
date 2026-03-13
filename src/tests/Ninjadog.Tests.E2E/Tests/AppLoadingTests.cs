@@ -6,10 +6,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for initial app loading, navigation, and layout.
 /// </summary>
-public sealed class AppLoadingTests : UiTestBase
+public sealed class AppLoadingTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public AppLoadingTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task PageLoads_WithTitle()
     {
@@ -28,6 +26,7 @@ public sealed class AppLoadingTests : UiTestBase
         header.ShouldNotBeNull();
 
         var ninjaText = await Page.TextContentAsync("h1");
+        ninjaText.ShouldNotBeNull();
         ninjaText.ShouldContain("NINJADOG");
     }
 

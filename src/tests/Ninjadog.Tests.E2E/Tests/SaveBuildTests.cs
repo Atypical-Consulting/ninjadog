@@ -7,10 +7,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for save, build, and export functionality.
 /// </summary>
-public sealed class SaveBuildTests : UiTestBase
+public sealed class SaveBuildTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public SaveBuildTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task Save_WritesConfigToFile()
     {
@@ -125,12 +123,14 @@ public sealed class SaveBuildTests : UiTestBase
         await SaveAndWaitAsync();
 
         var first = Server.ReadSavedConfig();
+        first.ShouldNotBeNull();
         first.ShouldContain("First");
 
         await FillFieldAsync("name", "Second");
         await SaveAndWaitAsync();
 
         var second = Server.ReadSavedConfig();
+        second.ShouldNotBeNull();
         second.ShouldContain("Second");
         second.ShouldNotContain("\"First\"");
     }

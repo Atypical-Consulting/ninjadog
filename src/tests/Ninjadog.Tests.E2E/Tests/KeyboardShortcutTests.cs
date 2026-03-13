@@ -6,10 +6,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for keyboard shortcuts and the shortcut overlay.
 /// </summary>
-public sealed class KeyboardShortcutTests : UiTestBase
+public sealed class KeyboardShortcutTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public KeyboardShortcutTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task QuestionMark_TogglesShortcutOverlay()
     {
@@ -152,6 +150,7 @@ public sealed class KeyboardShortcutTests : UiTestBase
         rows.Count.ShouldBeGreaterThanOrEqualTo(6);
 
         var overlayText = await Page.TextContentAsync("#shortcut-overlay");
+        overlayText.ShouldNotBeNull();
         overlayText.ShouldContain("Save");
         overlayText.ShouldContain("Undo");
         overlayText.ShouldContain("Redo");

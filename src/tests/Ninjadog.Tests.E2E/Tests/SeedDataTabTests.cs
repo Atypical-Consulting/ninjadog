@@ -7,10 +7,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for the Seed Data tab — rows, auto-keys, import, validation.
 /// </summary>
-public sealed class SeedDataTabTests : UiTestBase
+public sealed class SeedDataTabTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public SeedDataTabTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     private async Task SetupEntityWithPropertiesAsync()
     {
         await SwitchTabAsync("entities");
@@ -30,6 +28,7 @@ public sealed class SeedDataTabTests : UiTestBase
         await SwitchTabAsync("seed");
 
         var text = await Page.TextContentAsync("#tab-seed");
+        text.ShouldNotBeNull();
         text.ShouldContain("No entities defined");
     }
 
@@ -84,6 +83,7 @@ public sealed class SeedDataTabTests : UiTestBase
 
         // Row count shown in header
         var countText = await Page.TextContentAsync("[data-seed-entity='Product'] .text-xs.text-gray-500");
+        countText.ShouldNotBeNull();
         countText.ShouldContain("3 rows");
     }
 
@@ -118,7 +118,7 @@ public sealed class SeedDataTabTests : UiTestBase
             "tr[data-entity='Product'][data-row='0'] .seed-field[data-prop='name']");
         await nameInput!.FocusAsync();
         await Page.Keyboard.PressAsync("Control+a");
-        await nameInput.TypeAsync("Test Widget");
+        await Page.Keyboard.TypeAsync("Test Widget");
 
         await SaveAndWaitAsync();
 
@@ -160,6 +160,7 @@ public sealed class SeedDataTabTests : UiTestBase
         modal.ShouldNotBeNull();
 
         var title = await Page.TextContentAsync(".import-modal-title");
+        title.ShouldNotBeNull();
         title.ShouldContain("Product");
     }
 

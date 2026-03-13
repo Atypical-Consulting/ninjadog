@@ -7,10 +7,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// End-to-end workflow tests — full user journeys across multiple tabs.
 /// </summary>
-public sealed class FullWorkflowTests : UiTestBase
+public sealed class FullWorkflowTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public FullWorkflowTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task CreateProjectFromScratch_ConfigureAndSave()
     {
@@ -61,7 +59,7 @@ public sealed class FullWorkflowTests : UiTestBase
             "tr[data-entity='Product'][data-row='0'] .seed-field[data-prop='name']");
         await nameInput!.FocusAsync();
         await Page.Keyboard.PressAsync("Control+a");
-        await nameInput.TypeAsync("Sample Product");
+        await Page.Keyboard.TypeAsync("Sample Product");
 
         // 5. Save
         await SaveAndWaitAsync();

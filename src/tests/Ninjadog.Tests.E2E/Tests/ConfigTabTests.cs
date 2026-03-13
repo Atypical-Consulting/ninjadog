@@ -7,10 +7,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for the Config tab — form fields, validation, and state changes.
 /// </summary>
-public sealed class ConfigTabTests : UiTestBase
+public sealed class ConfigTabTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public ConfigTabTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task ConfigForm_ShowsAllSections()
     {

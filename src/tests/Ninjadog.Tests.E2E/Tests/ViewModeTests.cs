@@ -6,10 +6,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for view mode toggling — Split, Form Only, JSON Only.
 /// </summary>
-public sealed class ViewModeTests : UiTestBase
+public sealed class ViewModeTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public ViewModeTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task SplitView_BothPanelsVisible()
     {

@@ -7,10 +7,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for the Enums tab — add/remove enums and values.
 /// </summary>
-public sealed class EnumTabTests : UiTestBase
+public sealed class EnumTabTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public EnumTabTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task AddEnum_InlineForm()
     {
@@ -70,6 +68,7 @@ public sealed class EnumTabTests : UiTestBase
         var tag = await Page.WaitForSelectorAsync(".entity-card[data-enum='Color'] .enum-value-tag");
         tag.ShouldNotBeNull();
         var text = await tag.TextContentAsync();
+        text.ShouldNotBeNull();
         text.ShouldContain("Red");
     }
 
@@ -134,6 +133,7 @@ public sealed class EnumTabTests : UiTestBase
         tags.Count.ShouldBe(1);
 
         var text = await tags[0].TextContentAsync();
+        text.ShouldNotBeNull();
         text.ShouldContain("Banana");
     }
 
@@ -218,12 +218,14 @@ public sealed class EnumTabTests : UiTestBase
         await Page.ClickAsync("#enum-add-confirm");
 
         var countText = await Page.TextContentAsync(".entity-card[data-enum='Season'] .text-xs.text-gray-500");
+        countText.ShouldNotBeNull();
         countText.ShouldContain("0 values");
 
         await Page.FillAsync(".enum-val-input[data-enum='Season']", "Spring");
         await Page.ClickAsync(".enum-val-add[data-enum='Season']");
 
         countText = await Page.TextContentAsync(".entity-card[data-enum='Season'] .text-xs.text-gray-500");
+        countText.ShouldNotBeNull();
         countText.ShouldContain("1 values");
     }
 }

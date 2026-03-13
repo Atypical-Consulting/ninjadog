@@ -7,10 +7,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for the template picker modal — selecting starter templates.
 /// </summary>
-public sealed class TemplatePickerTests : UiTestBase
+public sealed class TemplatePickerTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public TemplatePickerTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task StartFromTemplate_OpensPickerModal()
     {

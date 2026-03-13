@@ -7,10 +7,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for the Entities tab — add/remove/clone entities, properties, relationships, presets.
 /// </summary>
-public sealed class EntityTabTests : UiTestBase
+public sealed class EntityTabTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public EntityTabTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task AddEntity_InlineForm_CreatesEntity()
     {
