@@ -69,27 +69,25 @@ export default function EnumsPage() {
   };
 
   return (
-    <div>
+    <div id="tab-enums" className="tab-content-active">
       <div className="flex items-center justify-between mb-4">
         <div className="section-title mb-0">Enums ({names.length})</div>
         <div>
-          {!addFormOpen ? (
-            <button className="btn-sm btn-primary" onClick={() => setAddFormOpen(true)}>+ Add Enum</button>
-          ) : (
-            <div className="inline-add-form">
-              <input
-                className="field-input text-sm py-1"
-                style={{ width: 200 }}
-                placeholder="Enum name (PascalCase)"
-                value={addInput}
-                onChange={(e) => setAddInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') addEnum(); if (e.key === 'Escape') setAddFormOpen(false); }}
-                autoFocus
-              />
-              <button className="btn-sm btn-primary" onClick={addEnum}>Create</button>
-              <button className="btn-sm btn-ghost" onClick={() => setAddFormOpen(false)}>Cancel</button>
-            </div>
-          )}
+          <button id="btn-add-enum" className={`btn-sm btn-primary${addFormOpen ? ' hidden' : ''}`} onClick={() => setAddFormOpen(true)}>+ Add Enum</button>
+          <div className={`inline-add-form${!addFormOpen ? ' hidden' : ''}`}>
+            <input
+              id="enum-add-input"
+              className="field-input text-sm py-1"
+              style={{ width: 200 }}
+              placeholder="Enum name (PascalCase)"
+              value={addInput}
+              onChange={(e) => setAddInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') addEnum(); if (e.key === 'Escape') setAddFormOpen(false); }}
+              autoFocus={addFormOpen}
+            />
+            <button id="enum-add-confirm" className="btn-sm btn-primary" onClick={addEnum}>Create</button>
+            <button className="btn-sm btn-ghost" onClick={() => setAddFormOpen(false)}>Cancel</button>
+          </div>
         </div>
       </div>
 
@@ -127,7 +125,7 @@ function EnumCard({
   };
 
   return (
-    <div className="entity-card">
+    <div className="entity-card" data-enum={name}>
       <div className="entity-header">
         <span className="font-medium text-sm">
           <span className="entity-color-dot" style={{ background: getEntityColor(name) }} />
@@ -136,7 +134,8 @@ function EnumCard({
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">{values.length} values</span>
           <button
-            className={`btn-sm ${confirmingDelete ? 'btn-confirm-danger' : 'btn-danger'}`}
+            className={`btn-sm enum-remove ${confirmingDelete ? 'btn-confirm-danger' : 'btn-danger'}`}
+            data-enum={name}
             onClick={onRemove}
           >
             {confirmingDelete ? 'Sure?' : 'Remove'}
@@ -148,19 +147,20 @@ function EnumCard({
           {values.map((v, i) => (
             <span key={i} className="enum-value-tag">
               {v}
-              <button onClick={() => onRemoveValue(i)}>&times;</button>
+              <button className="enum-val-remove" data-enum={name} data-index={i} onClick={() => onRemoveValue(i)}>&times;</button>
             </span>
           ))}
         </div>
         <div className="flex items-center gap-2">
           <input
-            className="field-input text-xs py-1 flex-1"
+            className="field-input text-xs py-1 flex-1 enum-val-input"
+            data-enum={name}
             placeholder="New value..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleAdd(); }}
           />
-          <button className="btn-sm btn-ghost" onClick={handleAdd}>Add</button>
+          <button className="btn-sm btn-ghost enum-val-add" data-enum={name} onClick={handleAdd}>Add</button>
         </div>
       </div>
     </div>

@@ -169,39 +169,41 @@ export default function ConfigPage() {
   const entityCount = state.entities ? Object.keys(state.entities).length : 0;
 
   return (
-    <div className="space-y-4">
+    <div id="tab-config" className="tab-content-active space-y-4">
       <div className="section-card">
         <div className="section-title">General</div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="field-label">Name</label>
             <input
+              data-field="name"
               className={`field-input${fieldErrors.name ? ' field-error' : ''}`}
               value={c.name || ''}
               onFocus={handleFocus}
               onChange={(e) => handleChange('name', e.target.value)}
             />
-            {fieldErrors.name && <div className="field-error-msg" style={{ display: 'block' }}>{fieldErrors.name}</div>}
+            {fieldErrors.name && <div className="field-error-msg" data-error-for="name" style={{ display: 'block' }}>{fieldErrors.name}</div>}
           </div>
           <div>
             <label className="field-label">Version</label>
-            <input className="field-input" value={c.version || ''} onFocus={handleFocus} onChange={(e) => handleChange('version', e.target.value)} />
+            <input data-field="version" className="field-input" value={c.version || ''} onFocus={handleFocus} onChange={(e) => handleChange('version', e.target.value)} />
           </div>
           <div className="col-span-2">
             <label className="field-label">Description</label>
-            <input className="field-input" value={c.description || ''} onFocus={handleFocus} onChange={(e) => handleChange('description', e.target.value)} />
+            <input data-field="description" className="field-input" value={c.description || ''} onFocus={handleFocus} onChange={(e) => handleChange('description', e.target.value)} />
           </div>
           <div>
             <label className="field-label">
               Root Namespace <Tooltip text="The root C# namespace for generated code. Example: MyCompany.Api" />
             </label>
             <input
+              data-field="rootNamespace"
               className={`field-input${fieldErrors.rootNamespace ? ' field-error' : ''}`}
               value={c.rootNamespace || ''}
               onFocus={handleFocus}
               onChange={(e) => handleChange('rootNamespace', e.target.value)}
             />
-            {fieldErrors.rootNamespace && <div className="field-error-msg" style={{ display: 'block' }}>{fieldErrors.rootNamespace}</div>}
+            {fieldErrors.rootNamespace && <div className="field-error-msg" data-error-for="rootNamespace" style={{ display: 'block' }}>{fieldErrors.rootNamespace}</div>}
           </div>
           <div>
             <label className="field-label">
@@ -209,6 +211,7 @@ export default function ConfigPage() {
             </label>
             <div className="flex gap-2">
               <input
+                data-field="outputPath"
                 className="field-input flex-1"
                 value={c.outputPath || '.'}
                 onFocus={handleFocus}
@@ -254,7 +257,7 @@ export default function ConfigPage() {
             <label className="field-label">
               Provider <Tooltip text="The database engine for generated repository code" />
             </label>
-            <select className="field-select" value={database.provider || 'sqlite'} onChange={(e) => handleChange('databaseProvider', e.target.value)}>
+            <select data-field="databaseProvider" className="field-select" value={database.provider || 'sqlite'} onChange={(e) => handleChange('databaseProvider', e.target.value)}>
               <option value="sqlite">SQLite</option>
               <option value="postgres">PostgreSQL</option>
               <option value="sqlserver">SQL Server</option>
@@ -270,6 +273,7 @@ export default function ConfigPage() {
             Origins (comma-separated) <Tooltip text="Allowed origins for cross-origin requests. Use * for all origins (not recommended for production)" />
           </label>
           <input
+            data-field="corsOrigins"
             className={`field-input${fieldErrors.corsOrigins ? ' field-error' : ''}`}
             value={(cors.origins || []).join(', ')}
             onFocus={handleFocus}
@@ -293,11 +297,11 @@ export default function ConfigPage() {
         <div className="section-title">Features</div>
         <div className="flex items-center gap-6">
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" className="field-checkbox" checked={!!features.softDelete} onChange={(e) => handleChange('softDelete', e.target.checked)} />
+            <input type="checkbox" data-field="softDelete" className="field-checkbox" checked={!!features.softDelete} onChange={(e) => handleChange('softDelete', e.target.checked)} />
             Soft Delete <Tooltip text="Adds IsDeleted and DeletedAt columns instead of permanently deleting records" />
           </label>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" className="field-checkbox" checked={!!features.auditing} onChange={(e) => handleChange('auditing', e.target.checked)} />
+            <input type="checkbox" data-field="auditing" className="field-checkbox" checked={!!features.auditing} onChange={(e) => handleChange('auditing', e.target.checked)} />
             Auditing <Tooltip text="Adds CreatedAt and UpdatedAt timestamp columns to all entities" />
           </label>
         </div>
@@ -313,8 +317,8 @@ export default function ConfigPage() {
           <div className="empty-state-title">Ready to build your API</div>
           <div className="empty-state-text">Configure your project settings above, then add entities to generate a complete CRUD Web API.</div>
           <div className="empty-state-actions">
-            <button className="btn-sm btn-primary" onClick={() => setTemplatePickerOpen(true)}>Start from Template</button>
-            <button className="btn-sm btn-ghost" onClick={() => navigate('/entities')}>Add First Entity</button>
+            <button id="btn-start-template" className="btn-sm btn-primary" onClick={() => setTemplatePickerOpen(true)}>Start from Template</button>
+            <button id="btn-start-scratch" className="btn-sm btn-ghost" onClick={() => navigate('/entities')}>Add First Entity</button>
           </div>
         </div>
       )}

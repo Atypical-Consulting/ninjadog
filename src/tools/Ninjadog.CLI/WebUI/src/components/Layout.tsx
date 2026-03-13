@@ -35,24 +35,21 @@ export default function Layout() {
       <TabBar />
 
       <div className="flex flex-1 overflow-hidden">
-        {showLeft && (
-          <div className="flex flex-col flex-1 min-w-0">
-            <div className="flex-1 overflow-auto p-6 content-area">
-              <Outlet />
-            </div>
+        <div id="left-panel" className={`flex flex-col flex-1 min-w-0${!showLeft ? ' hidden' : ''}`}>
+          <div className="flex-1 overflow-auto p-6 content-area">
+            <Outlet />
           </div>
-        )}
+        </div>
 
-        {showLeft && showRight && (
-          <div
-            className="resize-handle"
-            onMouseDown={handleMouseDown}
-          />
-        )}
+        <div
+          id="resize-handle"
+          className={`resize-handle${!(showLeft && showRight) ? ' hidden' : ''}`}
+          onMouseDown={handleMouseDown}
+        />
 
-        {showRight && (
+        <div id="json-panel" className={!showRight ? 'hidden' : ''} style={{ width: viewMode === 'json' ? '100%' : `${panelWidth}px` }}>
           <JsonPanel width={viewMode === 'json' ? '100%' : `${panelWidth}px`} />
-        )}
+        </div>
       </div>
 
       <BuildConsole />

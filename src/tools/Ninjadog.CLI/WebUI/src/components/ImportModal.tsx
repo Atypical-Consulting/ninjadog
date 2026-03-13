@@ -62,8 +62,6 @@ export default function ImportModal() {
   const showToast = useUiStore((s) => s.showToast);
   const [text, setText] = useState('');
 
-  if (!open) return null;
-
   const handleImport = () => {
     const raw = text.trim();
     if (!raw) {
@@ -86,21 +84,22 @@ export default function ImportModal() {
   };
 
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && handleCancel()}>
+    <div id="import-modal" className={`modal-overlay${!open ? ' hidden' : ''}`} onClick={(e) => e.target === e.currentTarget && handleCancel()}>
       <div className="modal-panel import-modal-panel">
         <h2 className="import-modal-title">Import data for {entityName}</h2>
         <p className="text-xs text-gray-400 mb-3">
           Paste CSV or JSON data below. CSV should have a header row matching property names.
         </p>
         <textarea
+          id="import-textarea"
           className="import-textarea"
           placeholder={'name,email,age\nJohn,john@example.com,30\nJane,jane@example.com,25'}
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
         <div className="import-actions">
-          <button className="btn-sm btn-ghost" onClick={handleCancel}>Cancel</button>
-          <button className="btn-sm btn-primary" onClick={handleImport}>Import</button>
+          <button id="import-cancel" className="btn-sm btn-ghost" onClick={handleCancel}>Cancel</button>
+          <button id="import-confirm" className="btn-sm btn-primary" onClick={handleImport}>Import</button>
         </div>
       </div>
     </div>

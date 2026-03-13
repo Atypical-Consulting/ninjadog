@@ -4,13 +4,12 @@ export default function BuildConsole() {
   const { open, lines } = useUiStore((s) => s.buildConsole);
   const close = useUiStore((s) => s.closeBuildConsole);
 
-  if (!open) return null;
-
   return (
-    <div className="build-console">
+    <div id="build-console" className={`build-console${!open ? ' hidden' : ''}`}>
       <div className="build-console-header">
         <span>Build Output</span>
         <button
+          id="build-console-close"
           className="text-gray-400 hover:text-white"
           style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem' }}
           onClick={close}

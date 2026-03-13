@@ -14,14 +14,12 @@ export default function ShortcutsOverlay() {
   const open = useUiStore((s) => s.shortcutsOpen);
   const setOpen = useUiStore((s) => s.setShortcutsOpen);
 
-  if (!open) return null;
-
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
+    <div id="shortcut-overlay" className={`modal-overlay${!open ? ' hidden' : ''}`} onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
       <div className="modal-panel shortcut-panel">
         <div className="flex items-center justify-between mb-4">
           <h2 className="shortcut-title" style={{ marginBottom: 0 }}>Keyboard Shortcuts</h2>
-          <button className="header-btn-icon" style={{ width: 28, height: 28 }} onClick={() => setOpen(false)}>&times;</button>
+          <button id="shortcut-overlay-close" className="header-btn-icon" style={{ width: 28, height: 28 }} onClick={() => setOpen(false)}>&times;</button>
         </div>
         <div className="shortcut-grid">
           {SHORTCUTS.map((s, i) => (

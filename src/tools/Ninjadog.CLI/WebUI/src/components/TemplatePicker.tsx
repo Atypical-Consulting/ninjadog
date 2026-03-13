@@ -82,8 +82,6 @@ export default function TemplatePicker() {
   const setState = useConfigStore((s) => s.setState);
   const onStateChanged = useConfigStore((s) => s.onStateChanged);
 
-  if (!open) return null;
-
   const apply = (key: string) => {
     const template = TEMPLATES[key];
     if (!template) return;
@@ -95,13 +93,13 @@ export default function TemplatePicker() {
   };
 
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
+    <div id="template-picker" className={`modal-overlay${!open ? ' hidden' : ''}`} onClick={(e) => e.target === e.currentTarget && setOpen(false)}>
       <div className="modal-panel template-picker-panel">
         <h2 className="template-picker-title">Start from a Template</h2>
         <p className="template-picker-subtitle">Choose a starter configuration or start from scratch.</p>
-        <div className="template-grid">
+        <div id="template-grid" className="template-grid">
           {Object.entries(TEMPLATES).map(([key, t]) => (
-            <div key={key} className="template-card" onClick={() => apply(key)}>
+            <div key={key} className="template-card" data-template={key} onClick={() => apply(key)}>
               <div className="template-card-icon">{t.icon}</div>
               <div className="template-card-title">{t.title}</div>
               <div className="template-card-desc">{t.desc}</div>
@@ -110,7 +108,7 @@ export default function TemplatePicker() {
           ))}
         </div>
         <div className="flex justify-end mt-4">
-          <button className="btn-sm btn-ghost" onClick={() => setOpen(false)}>Cancel</button>
+          <button id="template-picker-close" className="btn-sm btn-ghost" onClick={() => setOpen(false)}>Cancel</button>
         </div>
       </div>
     </div>

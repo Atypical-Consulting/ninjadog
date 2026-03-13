@@ -81,7 +81,7 @@ export default function SeedPage() {
   );
 
   if (entityNames.length === 0) {
-    return <p className="text-sm text-gray-500">No entities defined. Add entities first.</p>;
+    return <div id="tab-seed" className="tab-content-active"><p className="text-sm text-gray-500">No entities defined. Add entities first.</p></div>;
   }
 
   const addRow = (entityName: string) => {
@@ -161,7 +161,7 @@ export default function SeedPage() {
   };
 
   return (
-    <div>
+    <div id="tab-seed" className="tab-content-active">
       <div className="section-title">Seed Data</div>
       {entityNames.map((name) => {
         const entity = entities[name];
@@ -171,7 +171,7 @@ export default function SeedPage() {
         const canAutoKey = keyProp && ['guid', 'int', 'long'].includes((keyProp.type || '').toLowerCase());
 
         return (
-          <div key={name} className="entity-card">
+          <div key={name} className="entity-card" data-seed-entity={name}>
             <div className="entity-header">
               <span className="font-medium text-sm">
                 <span className="entity-color-dot" style={{ background: getEntityColor(name) }} />
@@ -182,8 +182,8 @@ export default function SeedPage() {
                 {canAutoKey && seedData.length > 0 && (
                   <button className="btn-sm btn-ghost" onClick={() => fillKeys(name)} title={`Auto-fill empty ${keyProp!.name} values`}>Fill Keys</button>
                 )}
-                <button className="btn-sm btn-ghost" onClick={() => handleImport(name)}>Import</button>
-                <button className="btn-sm btn-ghost" onClick={() => addRow(name)}>+ Row</button>
+                <button className="btn-sm btn-ghost seed-import" data-entity={name} onClick={() => handleImport(name)}>Import</button>
+                <button className="btn-sm btn-ghost seed-add-row" data-entity={name} onClick={() => addRow(name)}>+ Row</button>
               </div>
             </div>
             {(seedData.length > 0 || props.length > 0) && (
@@ -200,7 +200,7 @@ export default function SeedPage() {
                   </thead>
                   <tbody>
                     {seedData.map((row: any, i: number) => (
-                      <tr key={i}>
+                      <tr key={i} data-entity={name} data-row={i}>
                         {props.map((p) => {
                           const propDef = entity.properties[p] || {};
                           const cellValue = row[p] ?? '';
@@ -211,18 +211,19 @@ export default function SeedPage() {
                             <td key={p} className={`seed-cell${error ? ' cell-error' : ''}`} title={error || undefined}>
                               <input
                                 className={`field-input seed-field${isKey ? ' font-mono' : ''}`}
+                                data-prop={p}
                                 style={{ paddingTop: 4, paddingBottom: 4, fontSize: 12 }}
                                 defaultValue={String(cellValue)}
                                 onFocus={() => { undoPushedRef.current = false; }}
                                 onBlur={(e) => handleCellChange(name, i, p, e.target.value)}
                               />
                               {canGen && (
-                                <button className="seed-gen-key" title={`Generate ${propDef.type} key`} onClick={() => generateKey(name, i)}>&#x21bb;</button>
+                                <button className="seed-gen-key" data-entity={name} data-row={i} title={`Generate ${propDef.type} key`} onClick={() => generateKey(name, i)}>&#x21bb;</button>
                               )}
                             </td>
                           );
                         })}
-                        <td><button className="btn-sm btn-danger" onClick={() => removeRow(name, i)}>X</button></td>
+                        <td><button className="btn-sm btn-danger seed-remove-row" data-entity={name} data-row={i} onClick={() => removeRow(name, i)}>X</button></td>
                       </tr>
                     ))}
                   </tbody>

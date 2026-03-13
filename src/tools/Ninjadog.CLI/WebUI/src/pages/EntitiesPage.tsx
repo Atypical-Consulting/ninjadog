@@ -246,27 +246,25 @@ export default function EntitiesPage() {
   const displayNames = useSidebar && currentFocused ? [currentFocused] : names;
 
   return (
-    <div>
+    <div id="tab-entities" className="tab-content-active">
       <div className="flex items-center justify-between mb-4">
         <div className="section-title mb-0">Entities ({names.length})</div>
         <div>
-          {!addFormOpen ? (
-            <button className="btn-sm btn-primary" onClick={() => setAddFormOpen(true)}>+ Add Entity</button>
-          ) : (
-            <div className="inline-add-form">
-              <input
-                className="field-input text-sm py-1"
-                style={{ width: 200 }}
-                placeholder="Entity name (PascalCase)"
-                value={addInput}
-                onChange={(e) => setAddInput(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') addEntity(); if (e.key === 'Escape') setAddFormOpen(false); }}
-                autoFocus
-              />
-              <button className="btn-sm btn-primary" onClick={addEntity}>Create</button>
-              <button className="btn-sm btn-ghost" onClick={() => setAddFormOpen(false)}>Cancel</button>
-            </div>
-          )}
+          <button id="btn-add-entity" className={`btn-sm btn-primary${addFormOpen ? ' hidden' : ''}`} onClick={() => setAddFormOpen(true)}>+ Add Entity</button>
+          <div id="entity-add-form" className={`inline-add-form${!addFormOpen ? ' hidden' : ''}`}>
+            <input
+              id="entity-add-input"
+              className="field-input text-sm py-1"
+              style={{ width: 200 }}
+              placeholder="Entity name (PascalCase)"
+              value={addInput}
+              onChange={(e) => setAddInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') addEntity(); if (e.key === 'Escape') setAddFormOpen(false); }}
+              autoFocus={addFormOpen}
+            />
+            <button id="entity-add-confirm" className="btn-sm btn-primary" onClick={addEntity}>Create</button>
+            <button id="entity-add-cancel" className="btn-sm btn-ghost" onClick={() => setAddFormOpen(false)}>Cancel</button>
+          </div>
         </div>
       </div>
 
@@ -374,9 +372,10 @@ function EntityCard({
           {relNames.length > 0 && <span className="badge badge-secondary">{relNames.length} rel{relNames.length !== 1 ? 's' : ''}</span>}
         </div>
         <div className="flex items-center gap-2">
-          <button className="btn-sm btn-ghost" onClick={onClone}>Clone</button>
+          <button className="btn-sm btn-ghost entity-clone" data-entity={name} onClick={onClone}>Clone</button>
           <button
-            className={`btn-sm ${confirmingDelete ? 'btn-confirm-danger' : 'btn-danger'}`}
+            className={`btn-sm entity-remove ${confirmingDelete ? 'btn-confirm-danger' : 'btn-danger'}`}
+            data-entity={name}
             onClick={onRemove}
           >
             {confirmingDelete ? 'Sure?' : 'Remove'}
@@ -389,33 +388,31 @@ function EntityCard({
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-medium text-gray-400">Properties</span>
             <div>
-              {!propAddOpen ? (
-                <button className="btn-sm btn-ghost" onClick={() => setPropAddOpen(true)}>+ Property</button>
-              ) : (
-                <div className="inline-add-form">
-                  <input
-                    className="field-input text-xs py-1"
-                    style={{ width: 150 }}
-                    placeholder="Property name (camelCase)"
-                    value={propAddInput}
-                    onChange={(e) => setPropAddInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') { onAddProp(propAddInput); setPropAddInput(''); setPropAddOpen(false); }
-                      if (e.key === 'Escape') setPropAddOpen(false);
-                    }}
-                    autoFocus
-                  />
-                  <button className="btn-sm btn-primary" onClick={() => { onAddProp(propAddInput); setPropAddInput(''); setPropAddOpen(false); }}>Add</button>
-                  <button className="btn-sm btn-ghost" onClick={() => setPropAddOpen(false)}>Cancel</button>
-                </div>
-              )}
+              <button className={`btn-sm btn-ghost prop-add-btn${propAddOpen ? ' hidden' : ''}`} data-entity={name} onClick={() => setPropAddOpen(true)}>+ Property</button>
+              <div className={`inline-add-form${!propAddOpen ? ' hidden' : ''}`}>
+                <input
+                  className="field-input text-xs py-1 prop-add-input"
+                  data-entity={name}
+                  style={{ width: 150 }}
+                  placeholder="Property name (camelCase)"
+                  value={propAddInput}
+                  onChange={(e) => setPropAddInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') { onAddProp(propAddInput); setPropAddInput(''); setPropAddOpen(false); }
+                    if (e.key === 'Escape') setPropAddOpen(false);
+                  }}
+                  autoFocus={propAddOpen}
+                />
+                <button className="btn-sm btn-primary prop-add-confirm" data-entity={name} onClick={() => { onAddProp(propAddInput); setPropAddInput(''); setPropAddOpen(false); }}>Add</button>
+                <button className="btn-sm btn-ghost" onClick={() => setPropAddOpen(false)}>Cancel</button>
+              </div>
             </div>
           </div>
 
           <div className="preset-bar">
             <span className="text-xs text-gray-500 mr-1">Quick add:</span>
             {Object.keys(PRESETS).map((k) => (
-              <button key={k} className="preset-btn" onClick={() => onPreset(k)}>
+              <button key={k} className="preset-btn" data-preset={k} data-entity={name} onClick={() => onPreset(k)}>
                 {k === 'id' ? 'ID Field' : k.charAt(0).toUpperCase() + k.slice(1)}
               </button>
             ))}
@@ -439,7 +436,7 @@ function EntityCard({
               </thead>
               <tbody>
                 {propNames.map((p) => (
-                  <tr key={p}>
+                  <tr key={p} data-entity={name} data-prop={p}>
                     <td className="drag-handle">&#10303;</td>
                     <td className="text-center">
                       <input
@@ -460,7 +457,8 @@ function EntityCard({
                     </td>
                     <td>
                       <select
-                        className="field-select py-1 text-xs"
+                        className="field-select py-1 text-xs prop-field"
+                        data-key="type"
                         style={{ minWidth: 110 }}
                         value={props[p].type || 'string'}
                         onChange={(e) => onPropChange(p, 'type', e.target.value)}
@@ -479,7 +477,7 @@ function EntityCard({
                     <td><input className="field-input py-1 text-xs w-16" type="number" defaultValue={props[p].min ?? ''} onFocus={onPropFocus} onBlur={(e) => onPropChange(p, 'min', e.target.value)} /></td>
                     <td><input className="field-input py-1 text-xs w-16" type="number" defaultValue={props[p].max ?? ''} onFocus={onPropFocus} onBlur={(e) => onPropChange(p, 'max', e.target.value)} /></td>
                     <td><input className="field-input py-1 text-xs w-20" defaultValue={props[p].pattern || ''} onFocus={onPropFocus} onBlur={(e) => onPropChange(p, 'pattern', e.target.value)} /></td>
-                    <td><button className="btn-sm btn-danger" onClick={() => onRemoveProp(p)}>X</button></td>
+                    <td><button className="btn-sm btn-danger prop-remove" onClick={() => onRemoveProp(p)}>X</button></td>
                   </tr>
                 ))}
               </tbody>
@@ -494,26 +492,24 @@ function EntityCard({
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-medium text-gray-400">Relationships</span>
             <div>
-              {!relAddOpen ? (
-                <button className="btn-sm btn-ghost" onClick={() => setRelAddOpen(true)}>+ Relationship</button>
-              ) : (
-                <div className="inline-add-form">
-                  <input
-                    className="field-input text-xs py-1"
-                    style={{ width: 150 }}
-                    placeholder="Relationship name"
-                    value={relAddInput}
-                    onChange={(e) => setRelAddInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') { onAddRel(relAddInput); setRelAddInput(''); setRelAddOpen(false); }
-                      if (e.key === 'Escape') setRelAddOpen(false);
-                    }}
-                    autoFocus
-                  />
-                  <button className="btn-sm btn-primary" onClick={() => { onAddRel(relAddInput); setRelAddInput(''); setRelAddOpen(false); }}>Add</button>
-                  <button className="btn-sm btn-ghost" onClick={() => setRelAddOpen(false)}>Cancel</button>
-                </div>
-              )}
+              <button className={`btn-sm btn-ghost rel-add-btn${relAddOpen ? ' hidden' : ''}`} data-entity={name} onClick={() => setRelAddOpen(true)}>+ Relationship</button>
+              <div className={`inline-add-form${!relAddOpen ? ' hidden' : ''}`}>
+                <input
+                  className="field-input text-xs py-1 rel-add-input"
+                  data-entity={name}
+                  style={{ width: 150 }}
+                  placeholder="Relationship name"
+                  value={relAddInput}
+                  onChange={(e) => setRelAddInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') { onAddRel(relAddInput); setRelAddInput(''); setRelAddOpen(false); }
+                    if (e.key === 'Escape') setRelAddOpen(false);
+                  }}
+                  autoFocus={relAddOpen}
+                />
+                <button className="btn-sm btn-primary rel-add-confirm" data-entity={name} onClick={() => { onAddRel(relAddInput); setRelAddInput(''); setRelAddOpen(false); }}>Add</button>
+                <button className="btn-sm btn-ghost" onClick={() => setRelAddOpen(false)}>Cancel</button>
+              </div>
             </div>
           </div>
           {relNames.length > 0 ? (
@@ -521,16 +517,16 @@ function EntityCard({
               <thead><tr><th>Name</th><th>Type</th><th>Target Entity</th><th>Foreign Key</th><th></th></tr></thead>
               <tbody>
                 {relNames.map((r) => (
-                  <tr key={r}>
-                    <td><input className="field-input py-1 text-xs" defaultValue={r} onBlur={(e) => onRelChange(r, 'name', e.target.value)} /></td>
+                  <tr key={r} data-entity={name} data-rel={r}>
+                    <td><input className="field-input py-1 text-xs rel-field" data-key="name" defaultValue={r} onBlur={(e) => onRelChange(r, 'name', e.target.value)} /></td>
                     <td>
-                      <select className="field-select py-1 text-xs" value={rels[r].type || 'hasMany'} onChange={(e) => onRelChange(r, 'type', e.target.value)}>
+                      <select className="field-select py-1 text-xs rel-field" data-key="type" value={rels[r].type || 'hasMany'} onChange={(e) => onRelChange(r, 'type', e.target.value)}>
                         {RELATIONSHIP_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                       </select>
                     </td>
-                    <td><input className="field-input py-1 text-xs" defaultValue={rels[r].targetEntity || ''} onBlur={(e) => onRelChange(r, 'targetEntity', e.target.value)} /></td>
-                    <td><input className="field-input py-1 text-xs" defaultValue={rels[r].foreignKey || ''} onBlur={(e) => onRelChange(r, 'foreignKey', e.target.value)} /></td>
-                    <td><button className="btn-sm btn-danger" onClick={() => onRemoveRel(r)}>X</button></td>
+                    <td><input className="field-input py-1 text-xs rel-field" data-key="targetEntity" defaultValue={rels[r].targetEntity || ''} onBlur={(e) => onRelChange(r, 'targetEntity', e.target.value)} /></td>
+                    <td><input className="field-input py-1 text-xs rel-field" data-key="foreignKey" defaultValue={rels[r].foreignKey || ''} onBlur={(e) => onRelChange(r, 'foreignKey', e.target.value)} /></td>
+                    <td><button className="btn-sm btn-danger rel-remove" data-entity={name} onClick={() => onRemoveRel(r)}>X</button></td>
                   </tr>
                 ))}
               </tbody>

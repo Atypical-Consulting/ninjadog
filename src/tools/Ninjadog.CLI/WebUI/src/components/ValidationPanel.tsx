@@ -30,7 +30,7 @@ export default function ValidationPanel() {
   }, []);
 
   return (
-    <div className="shrink-0 border-t border-bdr bg-surface-base max-h-40 overflow-auto">
+    <div id="validation-panel" className="shrink-0 border-t border-bdr bg-surface-base max-h-40 overflow-auto">
       <div className="validation-header px-4 py-2 text-[11px] font-medium text-gray-500 border-b border-bdr-dim uppercase tracking-widest font-mono">
         Validation
       </div>

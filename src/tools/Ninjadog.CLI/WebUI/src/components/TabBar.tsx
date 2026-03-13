@@ -57,13 +57,14 @@ export default function TabBar() {
         <NavLink
           key={tab.path}
           to={tab.path}
+          data-tab={tab.path.slice(1)}
           className={({ isActive }) =>
             `tab-btn px-5 text-sm font-medium${isActive ? ' active' : ''}`
           }
         >
           {tab.label}
-          {tab.badgeKey && badges[tab.badgeKey] > 0 && (
-            <span className="tab-badge">{badges[tab.badgeKey]}</span>
+          {tab.badgeKey && (
+            <span id={`badge-${tab.badgeKey}`} className={`tab-badge${badges[tab.badgeKey] > 0 ? '' : ' hidden'}`}>{badges[tab.badgeKey]}</span>
           )}
         </NavLink>
       ))}
@@ -74,6 +75,7 @@ export default function TabBar() {
             <button
               key={v.mode}
               className={`view-toggle-btn${viewMode === v.mode ? ' active' : ''}`}
+              data-view={v.mode}
               title={v.title}
               onClick={() => setViewMode(v.mode)}
             >
