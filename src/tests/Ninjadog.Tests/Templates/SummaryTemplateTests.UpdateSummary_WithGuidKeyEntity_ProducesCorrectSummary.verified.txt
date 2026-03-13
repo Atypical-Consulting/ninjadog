@@ -24,6 +24,6 @@ public partial class UpdateTodoItemSummary : Summary<UpdateTodoItemEndpoint>
         Summary = "Updates an existing todo item in the system";
         Description = "Updates an existing todo item in the system";
         Response<TodoItemResponse>(201, "todo item was successfully updated");
-        Response<ProblemDetails>(400, "The request did not pass validation checks");
+        Response<Microsoft.AspNetCore.Mvc.ProblemDetails>(400, "The request did not pass validation checks");
     }
 }
