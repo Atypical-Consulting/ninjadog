@@ -1,5 +1,3 @@
-using Ninjadog.Templates.CrudWebAPI.Template.Database;
-
 namespace Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 
 /// <summary>
@@ -53,7 +51,7 @@ public sealed class RepositoryTemplate
                       using var connection = await connectionFactory.CreateConnectionAsync();
 
                       var result = await connection.ExecuteAsync(
-                          @"{{GenerateSqlInsertQuery(entity, _sql)}}",
+                          @"{{SqlQueryBuilder.GenerateInsertQuery(entity, _sql)}}",
                           {{st.VarModel}});
 
                       return result > 0;
@@ -64,7 +62,7 @@ public sealed class RepositoryTemplate
                       using var connection = await connectionFactory.CreateConnectionAsync();
 
                       return await connection.QuerySingleOrDefaultAsync<{{st.ClassModelDto}}>(
-                          "{{GenerateSqlSelectOneQuery(entity, _sql)}}",
+                          "{{SqlQueryBuilder.GenerateSelectOneQuery(entity, _sql)}}",
                           new { {{entityKey.PascalKey}} = id });
                   }
 
@@ -81,7 +79,7 @@ public sealed class RepositoryTemplate
                       parameters.Add("Offset", (page - 1) * pageSize);
 
                       var orderBy = BuildOrderByClause(sortBy, sortDescending);
-                      {{GenerateGetAllSqlBuilder(entity, _sql)}}
+                      {{SqlQueryBuilder.GenerateGetAllSqlBuilder(entity, _sql)}}
 
                       return await connection.QueryAsync<{{st.ClassModelDto}}>(sql, parameters);
                   }
@@ -91,7 +89,7 @@ public sealed class RepositoryTemplate
                       using var connection = await connectionFactory.CreateConnectionAsync();
 
                       var (whereClause, parameters) = BuildWhereClause(filters);
-                      {{GenerateCountSqlBuilder(entity, _sql.SoftDelete)}}
+                      {{SqlQueryBuilder.GenerateCountSqlBuilder(entity, _sql.SoftDelete)}}
 
                       return await connection.ExecuteScalarAsync<int>(sql, parameters);
                   }
@@ -101,7 +99,7 @@ public sealed class RepositoryTemplate
                       using var connection = await connectionFactory.CreateConnectionAsync();
 
                       var result = await connection.ExecuteAsync(
-                          @"{{GenerateSqlUpdateQuery(entity, _sql)}}",
+                          @"{{SqlQueryBuilder.GenerateUpdateQuery(entity, _sql)}}",
                           {{st.VarModel}});
 
                           return result > 0;
@@ -112,7 +110,7 @@ public sealed class RepositoryTemplate
                       using var connection = await connectionFactory.CreateConnectionAsync();
 
                       var result = await connection.ExecuteAsync(
-                          @"{{GenerateSqlDeleteQuery(entity, _sql)}}",
+                          @"{{SqlQueryBuilder.GenerateDeleteQuery(entity, _sql)}}",
                           new { {{entityKey.PascalKey}} = id });
 
                       return result > 0;
@@ -120,7 +118,7 @@ public sealed class RepositoryTemplate
 
                   private static readonly HashSet<string> AllowedColumns = new(StringComparer.OrdinalIgnoreCase)
                   {
-                      {{GenerateAllowedColumns(entity)}}
+                      {{SqlQueryBuilder.GenerateAllowedColumns(entity)}}
                   };
 
                   private static (string WhereClause, Dictionary<string, object> Parameters) BuildWhereClause(
@@ -163,145 +161,5 @@ public sealed class RepositoryTemplate
               """;
 
         return CreateNinjadogContentFile(fileName, content);
-    }
-
-    private static string GenerateAllowedColumns(NinjadogEntityWithKey entity)
-    {
-        var columns = entity.Properties
-            .Where(p => !p.Value.IsKey)
-            .Select(p => $"\"{p.Key.UppercaseFirst()}\"");
-        return string.Join(", ", columns);
-    }
-
-    private static string GenerateSqlInsertQuery(NinjadogEntityWithKey entity, SqlGenerationContext sql)
-    {
-        var st = entity.StringTokens;
-        var properties = entity.Properties;
-
-        var columns = properties.Keys.Select(k => k.UppercaseFirst()).ToList();
-        var values = properties.Keys.Select(k => $"@{k.UppercaseFirst()}").ToList();
-
-        if (sql.Auditing)
-        {
-            columns.Add("CreatedAt");
-            columns.Add("UpdatedAt");
-            var nowFunc = DatabaseProviderHelper.GetNowFunction(sql.Provider);
-            values.Add(nowFunc);
-            values.Add(nowFunc);
-        }
-
-        return new IndentedStringBuilder(0)
-            .Append($"INSERT INTO {st.Models} (")
-            .Append(string.Join(", ", columns))
-            .Append(") ")
-            .IncrementIndent(3)
-            .Append("VALUES (")
-            .Append(string.Join(", ", values))
-            .Append(")")
-            .ToString();
-    }
-
-    private static string GenerateSqlSelectOneQuery(NinjadogEntityWithKey entity, SqlGenerationContext sql)
-    {
-        var st = entity.StringTokens;
-        var entityKey = entity.Properties.GetEntityKey();
-        var softDeleteFilter = sql.SoftDelete ? " AND IsDeleted = 0" : string.Empty;
-        var limit = sql.Provider == "sqlserver" ? string.Empty : " LIMIT 1";
-        var top = sql.Provider == "sqlserver" ? "TOP 1 " : string.Empty;
-        return $"SELECT {top}* FROM {st.Models} WHERE {entityKey.PascalKey} = @{entityKey.PascalKey}{softDeleteFilter}{limit}";
-    }
-
-    private static List<string> GenerateFilterableQueryLines(string baseQuery, bool softDelete)
-    {
-        var filterJoin = softDelete ? " AND " : " WHERE ";
-        return
-        [
-            $"var sql = \"{baseQuery}\";",
-            "if (!string.IsNullOrEmpty(whereClause))",
-            "{",
-            $"    sql += \"{filterJoin}\" + whereClause;",
-            "}",
-        ];
-    }
-
-    private static string GenerateGetAllSqlBuilder(NinjadogEntityWithKey entity, SqlGenerationContext sql)
-    {
-        var st = entity.StringTokens;
-        var baseQuery = sql.SoftDelete
-            ? $"SELECT * FROM {st.Models} WHERE IsDeleted = 0"
-            : $"SELECT * FROM {st.Models}";
-        var paginationClause = sql.Provider == "sqlserver"
-            ? " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY"
-            : " LIMIT @PageSize OFFSET @Offset";
-
-        var lines = GenerateFilterableQueryLines(baseQuery, sql.SoftDelete);
-        lines.Add(string.Empty);
-
-        lines.AddRange(sql.Provider == "sqlserver"
-            ?
-            [
-                "sql += !string.IsNullOrEmpty(orderBy)",
-                "    ? \" ORDER BY \" + orderBy",
-                "    : \" ORDER BY (SELECT NULL)\";",
-                string.Empty,
-            ]
-            :
-            [
-                "if (!string.IsNullOrEmpty(orderBy))",
-                "{",
-                "    sql += \" ORDER BY \" + orderBy;",
-                "}",
-                string.Empty,
-            ]);
-
-        lines.Add($"sql += \"{paginationClause}\";");
-
-        return string.Join("\n        ", lines);
-    }
-
-    private static string GenerateCountSqlBuilder(NinjadogEntityWithKey entity, bool softDelete)
-    {
-        var st = entity.StringTokens;
-        var baseQuery = softDelete
-            ? $"SELECT COUNT(*) FROM {st.Models} WHERE IsDeleted = 0"
-            : $"SELECT COUNT(*) FROM {st.Models}";
-
-        var lines = GenerateFilterableQueryLines(baseQuery, softDelete);
-        return string.Join("\n        ", lines);
-    }
-
-    private static string GenerateSqlUpdateQuery(NinjadogEntityWithKey entity, SqlGenerationContext sql)
-    {
-        var st = entity.StringTokens;
-        var properties = entity.Properties;
-        var entityKey = entity.Properties.GetEntityKey();
-
-        IndentedStringBuilder stringBuilder = new(0);
-
-        stringBuilder.Append($"UPDATE {st.Models} SET ");
-
-        var updateClauses = properties
-            .Where(p => !p.Value.IsKey)
-            .Select(p => $"{p.Key.UppercaseFirst()} = @{p.Key.UppercaseFirst()}")
-            .ToList();
-
-        if (sql.Auditing)
-        {
-            updateClauses.Add($"UpdatedAt = {DatabaseProviderHelper.GetNowFunction(sql.Provider)}");
-        }
-
-        return stringBuilder
-            .Append(string.Join(", ", updateClauses))
-            .Append($" WHERE {entityKey.PascalKey} = @{entityKey.PascalKey}")
-            .ToString();
-    }
-
-    private static string GenerateSqlDeleteQuery(NinjadogEntityWithKey entity, SqlGenerationContext sql)
-    {
-        var st = entity.StringTokens;
-        var entityKey = entity.Properties.GetEntityKey();
-        return sql.SoftDelete
-            ? $"UPDATE {st.Models} SET IsDeleted = 1, DeletedAt = {DatabaseProviderHelper.GetNowFunction(sql.Provider)} WHERE {entityKey.PascalKey} = @{entityKey.PascalKey}"
-            : $"DELETE FROM {st.Models} WHERE {entityKey.PascalKey} = @{entityKey.PascalKey}";
     }
 }
