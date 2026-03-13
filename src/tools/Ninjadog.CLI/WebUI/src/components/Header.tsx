@@ -59,6 +59,7 @@ export default function Header() {
     <header className="header-bar flex items-center justify-between px-6 py-3 shrink-0">
       <div className="flex items-center gap-3">
         <div className="ninja-icon" aria-hidden="true">
+          {/* Shuriken / ninja star icon */}
           <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
             <path d="M12 2L9 9L2 12L9 15L12 22L15 15L22 12L15 9L12 2Z" />
           </svg>
@@ -66,19 +67,19 @@ export default function Header() {
         <div className="flex flex-col leading-tight">
           <div className="flex items-center gap-2">
             <h1 className="text-lg font-display tracking-wide text-white">NINJADOG</h1>
-            <span id="dirty-indicator" className={`dirty-dot${!dirty ? ' hidden' : ''}`} title="Unsaved changes" />
+            {dirty && <span id="dirty-indicator" className="dirty-dot" title="Unsaved changes" />}
           </div>
-          <span className="text-[10px] uppercase tracking-[0.2em] text-gray-500 -mt-0.5">
+          <span className="text-[10px] uppercase tracking-[0.2em] -mt-0.5" style={{ color: 'var(--text-muted)' }}>
             Config Builder
           </span>
         </div>
         {!connected && (
-          <span className="status-badge text-xs px-2 py-0.5 rounded-full bg-red-900 text-red-300 ml-2">
+          <span className="status-badge text-xs px-2 py-0.5 rounded-full ml-2" style={{ background: 'rgba(229, 77, 77, 0.15)', color: '#f87171', border: '1px solid rgba(229, 77, 77, 0.3)' }}>
             Server disconnected
           </span>
         )}
         {connected && showReconnected && (
-          <span className="status-badge text-xs px-2 py-0.5 rounded-full bg-emerald-900 text-emerald-300 ml-2">
+          <span className="status-badge text-xs px-2 py-0.5 rounded-full ml-2" style={{ background: 'rgba(34, 196, 129, 0.15)', color: '#4ade80', border: '1px solid rgba(34, 196, 129, 0.3)' }}>
             Reconnected
           </span>
         )}
@@ -92,7 +93,8 @@ export default function Header() {
           disabled={undoStack.length === 0}
           onClick={undo}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" /></svg>
+          {/* Undo arrow */}
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" /></svg>
         </button>
         <button
           id="btn-redo"
@@ -101,7 +103,8 @@ export default function Header() {
           disabled={redoStack.length === 0}
           onClick={redo}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10" /></svg>
+          {/* Redo arrow */}
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10" /></svg>
         </button>
         <div className="header-separator" />
 
@@ -115,29 +118,34 @@ export default function Header() {
         </label>
 
         <button id="btn-export" className="header-btn-icon" title="Download JSON" onClick={handleExport}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+          {/* Download icon */}
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
         </button>
 
         <button id="btn-shortcuts" className="header-btn-icon" title="Keyboard Shortcuts (?)" onClick={toggleShortcuts}>
-          <span style={{ fontSize: '14px', fontWeight: 700 }}>?</span>
+          {/* Keyboard icon */}
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2" /><path d="M6 8h.001" /><path d="M10 8h.001" /><path d="M14 8h.001" /><path d="M18 8h.001" /><path d="M6 12h.001" /><path d="M10 12h.001" /><path d="M14 12h.001" /><path d="M18 12h.001" /><path d="M8 16h8" /></svg>
         </button>
         <button
           id="btn-ai"
           className={`header-btn-icon${chatOpen ? ' header-btn-icon-active' : ''}`}
           title="AI Assistant (Ctrl+Shift+A)"
           onClick={toggleChat}
-          style={chatOpen ? { color: 'var(--accent)' } : undefined}
+          style={chatOpen ? { color: 'var(--accent)', borderColor: 'var(--accent)', background: 'var(--accent-dim)' } : undefined}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+          {/* Chat/message bubble icon */}
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 10h.01" /><path d="M12 10h.01" /><path d="M16 10h.01" /></svg>
         </button>
         <div className="header-separator" />
 
         <button id="btn-save" className={`header-btn header-btn-secondary${dirty ? ' header-btn-dirty' : ''}`} onClick={handleSave}>
+          {/* Save/disk icon */}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>
           Save
         </button>
         <button id="btn-build" className="header-btn header-btn-primary" onClick={handleBuild}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
+          {/* Hammer/build icon */}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 12l-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9" /><path d="M17.64 15L22 10.64" /><path d="M20.91 11.7l-1.25-1.25c-.6-.6-.93-1.4-.93-2.25V6.5l-3-2.5-2 2 1 1.5V9c0 .85-.33 1.65-.93 2.25L12.55 12.5" /></svg>
           Build
         </button>
       </div>

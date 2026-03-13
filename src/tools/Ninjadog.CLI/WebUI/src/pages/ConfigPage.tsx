@@ -15,6 +15,12 @@ function Tooltip({ text }: { text: string }) {
   );
 }
 
+function FieldHint({ text }: { text: string }) {
+  return (
+    <p className="text-[11px] mt-1" style={{ color: 'var(--text-muted)', lineHeight: 1.4 }}>{text}</p>
+  );
+}
+
 export default function ConfigPage() {
   const state = useConfigStore((s) => s.state);
   const setState = useConfigStore((s) => s.setState);
@@ -171,26 +177,35 @@ export default function ConfigPage() {
   return (
     <div id="tab-config" className="tab-content-active space-y-4">
       <div className="section-card">
-        <div className="section-title">General</div>
+        <div className="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6, opacity: 0.6 }}>
+            <circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          General
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="field-label">Name</label>
             <input
               data-field="name"
               className={`field-input${fieldErrors.name ? ' field-error' : ''}`}
+              placeholder="e.g. TodoApp, BlogEngine"
               value={c.name || ''}
               onFocus={handleFocus}
               onChange={(e) => handleChange('name', e.target.value)}
             />
+            <FieldHint text="The name of your application or project." />
             {fieldErrors.name && <div className="field-error-msg" data-error-for="name" style={{ display: 'block' }}>{fieldErrors.name}</div>}
           </div>
           <div>
             <label className="field-label">Version</label>
-            <input data-field="version" className="field-input" value={c.version || ''} onFocus={handleFocus} onChange={(e) => handleChange('version', e.target.value)} />
+            <input data-field="version" className="field-input" placeholder="e.g. 1.0.0" value={c.version || ''} onFocus={handleFocus} onChange={(e) => handleChange('version', e.target.value)} />
+            <FieldHint text="Semantic version of your application (major.minor.patch)." />
           </div>
           <div className="col-span-2">
             <label className="field-label">Description</label>
-            <input data-field="description" className="field-input" value={c.description || ''} onFocus={handleFocus} onChange={(e) => handleChange('description', e.target.value)} />
+            <input data-field="description" className="field-input" placeholder="A brief description of your API" value={c.description || ''} onFocus={handleFocus} onChange={(e) => handleChange('description', e.target.value)} />
+            <FieldHint text="A brief description of your application or project." />
           </div>
           <div>
             <label className="field-label">
@@ -199,10 +214,12 @@ export default function ConfigPage() {
             <input
               data-field="rootNamespace"
               className={`field-input${fieldErrors.rootNamespace ? ' field-error' : ''}`}
+              placeholder="e.g. MyCompany.TodoApp"
               value={c.rootNamespace || ''}
               onFocus={handleFocus}
               onChange={(e) => handleChange('rootNamespace', e.target.value)}
             />
+            <FieldHint text="The root namespace for generated code. Uses dotted PascalCase notation." />
             {fieldErrors.rootNamespace && <div className="field-error-msg" data-error-for="rootNamespace" style={{ display: 'block' }}>{fieldErrors.rootNamespace}</div>}
           </div>
           <div>
@@ -222,6 +239,7 @@ export default function ConfigPage() {
                 Browse
               </button>
             </div>
+            <FieldHint text="The path where generated files will be saved, relative to ninjadog.json." />
             {dirBrowserOpen && dirData && (
               <div className="dir-browser mt-2">
                 <div className="dir-current">
@@ -251,7 +269,12 @@ export default function ConfigPage() {
       </div>
 
       <div className="section-card">
-        <div className="section-title">Database</div>
+        <div className="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6, opacity: 0.6 }}>
+            <ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" /><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+          </svg>
+          Database
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="field-label">
@@ -262,12 +285,18 @@ export default function ConfigPage() {
               <option value="postgres">PostgreSQL</option>
               <option value="sqlserver">SQL Server</option>
             </select>
+            <FieldHint text="Determines SQL dialect, type mappings, and connection factory in generated code." />
           </div>
         </div>
       </div>
 
       <div className="section-card">
-        <div className="section-title">CORS</div>
+        <div className="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6, opacity: 0.6 }}>
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          CORS
+        </div>
         <div>
           <label className="field-label">
             Origins (comma-separated) <Tooltip text="Allowed origins for cross-origin requests. Use * for all origins (not recommended for production)" />
@@ -275,34 +304,49 @@ export default function ConfigPage() {
           <input
             data-field="corsOrigins"
             className={`field-input${fieldErrors.corsOrigins ? ' field-error' : ''}`}
+            placeholder="e.g. http://localhost:3000, https://myapp.com"
             value={(cors.origins || []).join(', ')}
             onFocus={handleFocus}
             onChange={(e) => handleChange('corsOrigins', e.target.value)}
           />
+          <FieldHint text="Allowed CORS origins. Use URLs (http/https) or * for all origins." />
           {fieldErrors.corsOrigins && <div className="field-error-msg" style={{ display: 'block' }}>{fieldErrors.corsOrigins}</div>}
         </div>
         <div className="grid grid-cols-2 gap-4 mt-3">
           <div>
             <label className="field-label">Methods (comma-separated)</label>
-            <input className="field-input" value={(cors.methods || []).join(', ')} onFocus={handleFocus} onChange={(e) => handleChange('corsMethods', e.target.value)} />
+            <input className="field-input" placeholder="e.g. GET, POST, PUT, DELETE" value={(cors.methods || []).join(', ')} onFocus={handleFocus} onChange={(e) => handleChange('corsMethods', e.target.value)} />
+            <FieldHint text="Allowed HTTP methods. Omit to allow all methods." />
           </div>
           <div>
             <label className="field-label">Headers (comma-separated)</label>
-            <input className="field-input" value={(cors.headers || []).join(', ')} onFocus={handleFocus} onChange={(e) => handleChange('corsHeaders', e.target.value)} />
+            <input className="field-input" placeholder="e.g. Content-Type, Authorization" value={(cors.headers || []).join(', ')} onFocus={handleFocus} onChange={(e) => handleChange('corsHeaders', e.target.value)} />
+            <FieldHint text="Allowed HTTP headers. Omit to allow all headers." />
           </div>
         </div>
       </div>
 
       <div className="section-card">
-        <div className="section-title">Features</div>
-        <div className="flex items-center gap-6">
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" data-field="softDelete" className="field-checkbox" checked={!!features.softDelete} onChange={(e) => handleChange('softDelete', e.target.checked)} />
-            Soft Delete <Tooltip text="Adds IsDeleted and DeletedAt columns instead of permanently deleting records" />
+        <div className="section-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: 6, opacity: 0.6 }}>
+            <path d="M12 20V10" /><path d="M18 20V4" /><path d="M6 20v-4" />
+          </svg>
+          Features
+        </div>
+        <div className="space-y-3">
+          <label className="flex items-start gap-3 text-sm cursor-pointer">
+            <input type="checkbox" data-field="softDelete" className="field-checkbox mt-0.5" checked={!!features.softDelete} onChange={(e) => handleChange('softDelete', e.target.checked)} />
+            <div>
+              <span style={{ color: 'var(--text)' }}>Soft Delete</span>
+              <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>Adds IsDeleted and DeletedAt columns. Filters deleted records from queries instead of permanently removing them.</p>
+            </div>
           </label>
-          <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" data-field="auditing" className="field-checkbox" checked={!!features.auditing} onChange={(e) => handleChange('auditing', e.target.checked)} />
-            Auditing <Tooltip text="Adds CreatedAt and UpdatedAt timestamp columns to all entities" />
+          <label className="flex items-start gap-3 text-sm cursor-pointer">
+            <input type="checkbox" data-field="auditing" className="field-checkbox mt-0.5" checked={!!features.auditing} onChange={(e) => handleChange('auditing', e.target.checked)} />
+            <div>
+              <span style={{ color: 'var(--text)' }}>Auditing</span>
+              <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>Adds CreatedAt and UpdatedAt timestamps, automatically managed on insert and update.</p>
+            </div>
           </label>
         </div>
       </div>
@@ -311,7 +355,7 @@ export default function ConfigPage() {
         <div className="empty-state">
           <div className="empty-state-icon">
             <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M12 2L9 9L2 12L9 15L12 22L15 15L22 12L15 9L12 2Z" />
+              <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><path d="M17.5 14v7" /><path d="M14 17.5h7" />
             </svg>
           </div>
           <div className="empty-state-title">Ready to build your API</div>

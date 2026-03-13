@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useConfigStore } from '../store/config-store';
 import { useUiStore } from '../store/ui-store';
 
@@ -9,6 +9,29 @@ function getEntityColor(name: string) {
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   const hue = Math.abs(hash) % 360;
   return `hsl(${hue}, 65%, 55%)`;
+}
+
+function AutoFocusInput({ value, onChange, onKeyDown, placeholder, className, style }: {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => { ref.current?.focus(); }, []);
+  return (
+    <input
+      ref={ref}
+      className={className}
+      style={style}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+    />
+  );
 }
 
 export default function EnumsPage() {
@@ -73,23 +96,30 @@ export default function EnumsPage() {
       <div className="flex items-center justify-between mb-4">
         <div className="section-title mb-0">Enums ({names.length})</div>
         <div>
-          <button id="btn-add-enum" className={`btn-sm btn-primary${addFormOpen ? ' hidden' : ''}`} onClick={() => setAddFormOpen(true)}>+ Add Enum</button>
-          <div className={`inline-add-form${!addFormOpen ? ' hidden' : ''}`}>
-            <input
-              id="enum-add-input"
-              className="field-input text-sm py-1"
-              style={{ width: 200 }}
-              placeholder="Enum name (PascalCase)"
-              value={addInput}
-              onChange={(e) => setAddInput(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') addEnum(); if (e.key === 'Escape') setAddFormOpen(false); }}
-              autoFocus={addFormOpen}
-            />
-            <button id="enum-add-confirm" className="btn-sm btn-primary" onClick={addEnum}>Create</button>
-            <button className="btn-sm btn-ghost" onClick={() => setAddFormOpen(false)}>Cancel</button>
-          </div>
+          {addFormOpen ? (
+            <div className="inline-add-form">
+              <AutoFocusInput
+                className="field-input text-sm py-1"
+                style={{ width: 200 }}
+                placeholder="Enum name (PascalCase)"
+                value={addInput}
+                onChange={(e) => setAddInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') addEnum(); if (e.key === 'Escape') { setAddFormOpen(false); setAddInput(''); } }}
+              />
+              <button id="enum-add-confirm" className="btn-sm btn-primary" onClick={addEnum}>Create</button>
+              <button className="btn-sm btn-ghost" onClick={() => { setAddFormOpen(false); setAddInput(''); }}>Cancel</button>
+            </div>
+          ) : (
+            <button id="btn-add-enum" className="btn-sm btn-primary" onClick={() => setAddFormOpen(true)}>+ Add Enum</button>
+          )}
         </div>
       </div>
+
+      {names.length === 0 && (
+        <p className="text-sm py-4" style={{ color: 'var(--text-muted)' }}>
+          No enums defined. Enums let you define fixed sets of values (e.g. Status, Priority) that can be used as property types.
+        </p>
+      )}
 
       {names.map((name) => (
         <EnumCard
@@ -127,35 +157,37 @@ function EnumCard({
   return (
     <div className="entity-card" data-enum={name}>
       <div className="entity-header">
-        <span className="font-medium text-sm">
-          <span className="entity-color-dot" style={{ background: getEntityColor(name) }} />
-          {name}
-        </span>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">{values.length} values</span>
-          <button
-            className={`btn-sm enum-remove ${confirmingDelete ? 'btn-confirm-danger' : 'btn-danger'}`}
-            data-enum={name}
-            onClick={onRemove}
-          >
-            {confirmingDelete ? 'Sure?' : 'Remove'}
-          </button>
+          <span className="entity-color-dot" style={{ background: getEntityColor(name) }} />
+          <span className="font-medium text-sm">{name}</span>
+          <span className="text-[11px] px-2 py-0.5 rounded-full font-medium" style={{ background: 'var(--accent-secondary-dim)', color: 'var(--accent-secondary)' }}>
+            {values.length} value{values.length !== 1 ? 's' : ''}
+          </span>
         </div>
+        <button
+          className={`btn-sm enum-remove ${confirmingDelete ? 'btn-confirm-danger' : 'btn-danger'}`}
+          data-enum={name}
+          onClick={onRemove}
+        >
+          {confirmingDelete ? 'Sure?' : 'Remove'}
+        </button>
       </div>
       <div className="entity-body">
-        <div className="flex flex-wrap gap-2 mb-2">
-          {values.map((v, i) => (
-            <span key={i} className="enum-value-tag">
-              {v}
-              <button className="enum-val-remove" data-enum={name} data-index={i} onClick={() => onRemoveValue(i)}>&times;</button>
-            </span>
-          ))}
-        </div>
+        {values.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-3">
+            {values.map((v, i) => (
+              <span key={i} className="enum-value-tag">
+                {v}
+                <button className="enum-val-remove" data-enum={name} data-index={i} onClick={() => onRemoveValue(i)} title="Remove value">&times;</button>
+              </span>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <input
             className="field-input text-xs py-1 flex-1 enum-val-input"
             data-enum={name}
-            placeholder="New value..."
+            placeholder="Add a new value..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') handleAdd(); }}
