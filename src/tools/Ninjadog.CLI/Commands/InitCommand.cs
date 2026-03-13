@@ -3,6 +3,7 @@ using Ninjadog.Settings.Entities;
 using Ninjadog.Settings.Entities.Properties;
 using Ninjadog.Settings.Extensions;
 using Ninjadog.Settings.Schema;
+using Ninjadog.Templates.CrudWebAPI.UseCases;
 
 namespace Ninjadog.CLI.Commands;
 
@@ -19,15 +20,29 @@ internal sealed class InitCommand
         "sqlite", "postgresql", "sqlserver"
     ];
 
+    private static readonly string[] _templates =
+    [
+        "CrudWebAPI"
+    ];
+
+    private static readonly string[] _useCases =
+    [
+        "TodoApp",
+        "RestaurantBooking",
+        "Custom"
+    ];
+
     public override int Execute(CommandContext context, InitCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {
-            var initialSettings = ShouldPrompt(settings)
-                ? CollectInteractiveSettings(settings)
-                : BuildNonInteractiveSettings(settings);
+            ValidateCliArguments(settings);
 
-            var json = initialSettings.ToJsonString();
+            var resultSettings = ShouldPrompt(settings)
+                ? CollectSettingsInteractively(settings)
+                : ResolveUseCase(settings.UseCase, () => BuildNonInteractiveSettings(settings));
+
+            var json = resultSettings.ToJsonString();
             json = InjectSchema(json);
 
             File.WriteAllText("ninjadog.json", json);
@@ -48,9 +63,72 @@ internal sealed class InitCommand
         }
     }
 
+    private static NinjadogSettings CollectSettingsInteractively(InitCommandSettings settings)
+    {
+        _ = SelectTemplate(settings);
+        var useCase = SelectUseCase(settings);
+
+        return ResolveUseCase(useCase, () => CollectInteractiveSettings(settings));
+    }
+
+    private static void ValidateCliArguments(InitCommandSettings settings)
+    {
+        if (settings.Template is not null && !_templates.Contains(settings.Template))
+        {
+            throw new InvalidOperationException(
+                $"Unknown template '{settings.Template}'. Available: {string.Join(", ", _templates)}");
+        }
+
+        if (settings.UseCase is not null && !_useCases.Contains(settings.UseCase))
+        {
+            throw new InvalidOperationException(
+                $"Unknown use case '{settings.UseCase}'. Available: {string.Join(", ", _useCases)}");
+        }
+    }
+
+    private static NinjadogSettings ResolveUseCase(string? useCase, Func<NinjadogSettings> fallback)
+    {
+        return useCase switch
+        {
+            "TodoApp" => UseCaseSettings.TodoApp(),
+            "RestaurantBooking" => UseCaseSettings.RestaurantBooking(),
+            _ => fallback(),
+        };
+    }
+
     private static bool ShouldPrompt(InitCommandSettings settings)
     {
         return !settings.Default && !System.Console.IsInputRedirected;
+    }
+
+    private static string SelectTemplate(InitCommandSettings settings)
+    {
+        if (settings.Template is not null)
+        {
+            return settings.Template;
+        }
+
+        if (_templates.Length == 1)
+        {
+            MarkupLine($"[dim]Template:[/] [green]{_templates[0]}[/]");
+            return _templates[0];
+        }
+
+        return Prompt(new SelectionPrompt<string>()
+            .Title("[green]Template[/]:")
+            .AddChoices(_templates));
+    }
+
+    private static string SelectUseCase(InitCommandSettings settings)
+    {
+        if (settings.UseCase is not null)
+        {
+            return settings.UseCase;
+        }
+
+        return Prompt(new SelectionPrompt<string>()
+            .Title("[green]Use case[/]:")
+            .AddChoices(_useCases));
     }
 
     private static NinjadogInitialSettings BuildNonInteractiveSettings(InitCommandSettings settings)
