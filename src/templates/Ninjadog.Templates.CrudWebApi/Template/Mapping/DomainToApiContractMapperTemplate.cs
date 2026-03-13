@@ -4,39 +4,33 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Mapping;
 /// This template generates the DomainToApiContractMapper class.
 /// </summary>
 public sealed class DomainToApiContractMapperTemplate
-    : NinjadogTemplate
+    : MapperTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "DomainToApiContractMapper";
 
     /// <inheritdoc />
-    public override NinjadogContentFile GenerateOne(NinjadogSettings ninjadogSettings)
+    protected override string GetClassName()
     {
-        var rootNamespace = ninjadogSettings.Config.RootNamespace;
-        var entities = ninjadogSettings.Entities.FromKeys();
-        var ns = $"{rootNamespace}.Mapping";
-        const string className = "DomainToApiContractMapper";
-        const string fileName = $"{className}.cs";
+        return "DomainToApiContractMapper";
+    }
 
-        var toModelResponseMethods = string.Join("\n", entities.Select(GenerateToModelResponseMethods));
+    /// <inheritdoc />
+    protected override string GenerateUsings(string rootNamespace)
+    {
+        return $"""
+                using {rootNamespace}.Contracts.Responses;
+                using {rootNamespace}.Domain;
+                """;
+    }
+
+    /// <inheritdoc />
+    protected override string GenerateMethods(List<NinjadogEntityWithKey> entities)
+    {
         var toModelsResponseMethods = string.Join("\n", entities.Select(GenerateToModelsResponseMethods));
+        var toModelResponseMethods = string.Join("\n", entities.Select(GenerateToModelResponseMethods));
 
-        var content =
-            $$"""
-
-              using {{rootNamespace}}.Contracts.Responses;
-              using {{rootNamespace}}.Domain;
-
-              {{WriteFileScopedNamespace(ns)}}
-
-              public static class {{className}}
-              {
-                  {{toModelsResponseMethods}}
-                  {{toModelResponseMethods}}
-              }
-              """;
-
-        return CreateNinjadogContentFile(fileName, content);
+        return $"{toModelsResponseMethods}\n    {toModelResponseMethods}";
     }
 
     private static string GenerateToModelResponseMethods(NinjadogEntityWithKey entity)
