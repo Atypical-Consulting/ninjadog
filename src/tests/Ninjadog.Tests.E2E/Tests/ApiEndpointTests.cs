@@ -1,5 +1,4 @@
 using System.Net;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Ninjadog.Tests.E2E.Fixtures;
@@ -11,23 +10,19 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// Tests for the backend API endpoints directly (no browser).
 /// </summary>
 [Collection("NinjadogUi")]
-public sealed class ApiEndpointTests : IAsyncLifetime
+#pragma warning disable CS9113 // Parameter '_' is unread — required by xUnit collection fixture DI
+public sealed class ApiEndpointTests(NinjadogUiFixture server, PlaywrightFixture _) : IAsyncLifetime
+#pragma warning restore CS9113
 {
-    private readonly NinjadogUiFixture _server;
     private HttpClient _client = null!;
-
-    public ApiEndpointTests(NinjadogUiFixture server, PlaywrightFixture _)
-    {
-        _server = server;
-    }
 
     public Task InitializeAsync()
     {
-        _client = new HttpClient { BaseAddress = new Uri(_server.BaseUrl) };
+        _client = new HttpClient { BaseAddress = new Uri(server.BaseUrl) };
         // Clean up config between tests
-        if (File.Exists(_server.ConfigPath))
+        if (File.Exists(server.ConfigPath))
         {
-            File.Delete(_server.ConfigPath);
+            File.Delete(server.ConfigPath);
         }
 
         return Task.CompletedTask;
@@ -52,7 +47,7 @@ public sealed class ApiEndpointTests : IAsyncLifetime
     [Fact]
     public async Task GetConfig_WithFile_ReturnsContent()
     {
-        _server.SeedConfigJson("""{"config":{"name":"Test"}}""");
+        server.SeedConfigJson("""{"config":{"name":"Test"}}""");
 
         var response = await _client.GetAsync("/api/config");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -70,8 +65,8 @@ public sealed class ApiEndpointTests : IAsyncLifetime
         var response = await _client.PostAsync("/api/config", content);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        File.Exists(_server.ConfigPath).ShouldBeTrue();
-        var saved = File.ReadAllText(_server.ConfigPath);
+        File.Exists(server.ConfigPath).ShouldBeTrue();
+        var saved = File.ReadAllText(server.ConfigPath);
         saved.ShouldContain("Posted");
     }
 
@@ -107,7 +102,7 @@ public sealed class ApiEndpointTests : IAsyncLifetime
     [Fact]
     public async Task PostBuild_WithConfig_ReturnsSuccess()
     {
-        _server.SeedConfigJson("""{"config":{"name":"Build"}}""");
+        server.SeedConfigJson("""{"config":{"name":"Build"}}""");
 
         var response = await _client.PostAsync("/api/build", null);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -134,7 +129,7 @@ public sealed class ApiEndpointTests : IAsyncLifetime
     public async Task GetDirectories_ReturnsDirectoryList()
     {
         // Create a subdirectory
-        Directory.CreateDirectory(Path.Combine(_server.TempDir, "subdir"));
+        Directory.CreateDirectory(Path.Combine(server.TempDir, "subdir"));
 
         var response = await _client.GetAsync("/api/directories?path=.");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);

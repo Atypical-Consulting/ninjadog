@@ -6,10 +6,8 @@ namespace Ninjadog.Tests.E2E.Tests;
 /// <summary>
 /// Tests for undo/redo functionality.
 /// </summary>
-public sealed class UndoRedoTests : UiTestBase
+public sealed class UndoRedoTests(NinjadogUiFixture server, PlaywrightFixture pw) : UiTestBase(server, pw)
 {
-    public UndoRedoTests(NinjadogUiFixture server, PlaywrightFixture pw) : base(server, pw) { }
-
     [Fact]
     public async Task TypeInField_EnablesUndoButton()
     {

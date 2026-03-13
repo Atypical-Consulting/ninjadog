@@ -6,17 +6,11 @@ namespace Ninjadog.Tests.E2E.Fixtures;
 /// Base class for UI e2e tests. Provides a fresh page and server fixture per test.
 /// </summary>
 [Collection("NinjadogUi")]
-public abstract class UiTestBase : IAsyncLifetime
+public abstract class UiTestBase(NinjadogUiFixture server, PlaywrightFixture pw) : IAsyncLifetime
 {
-    protected readonly NinjadogUiFixture Server;
-    protected readonly PlaywrightFixture Pw;
+    protected NinjadogUiFixture Server { get; } = server;
+    protected PlaywrightFixture Pw { get; } = pw;
     protected IPage Page { get; private set; } = null!;
-
-    protected UiTestBase(NinjadogUiFixture server, PlaywrightFixture pw)
-    {
-        Server = server;
-        Pw = pw;
-    }
 
     public async Task InitializeAsync()
     {
@@ -78,8 +72,7 @@ public abstract class UiTestBase : IAsyncLifetime
     protected async Task<bool> IsDirtyAsync()
     {
         var dot = await Page.QuerySelectorAsync("#dirty-indicator");
-        if (dot is null) return false;
-        return !await dot.EvaluateAsync<bool>("el => el.classList.contains('hidden')");
+        return dot is not null && !await dot.EvaluateAsync<bool>("el => el.classList.contains('hidden')");
     }
 
     /// <summary>

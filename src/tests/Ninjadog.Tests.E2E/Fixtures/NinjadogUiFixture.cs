@@ -16,19 +16,19 @@ namespace Ninjadog.Tests.E2E.Fixtures;
 public sealed class NinjadogUiFixture : IAsyncLifetime
 {
     private const string ConfigFileName = "ninjadog.json";
+    private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
 
     private WebApplication? _app;
-    private string _tempDir = null!;
     private int _port;
 
     public string BaseUrl => $"http://localhost:{_port}";
-    public string TempDir => _tempDir;
-    public string ConfigPath => Path.Combine(_tempDir, ConfigFileName);
+    public string TempDir { get; private set; } = null!;
+    public string ConfigPath => Path.Combine(TempDir, ConfigFileName);
 
     public async Task InitializeAsync()
     {
-        _tempDir = Path.Combine(Path.GetTempPath(), "ninjadog-e2e-" + Guid.NewGuid().ToString("N")[..8]);
-        Directory.CreateDirectory(_tempDir);
+        TempDir = Path.Combine(Path.GetTempPath(), "ninjadog-e2e-" + Guid.NewGuid().ToString("N")[..8]);
+        Directory.CreateDirectory(TempDir);
 
         _port = GetAvailablePort();
 
@@ -121,7 +121,7 @@ public sealed class NinjadogUiFixture : IAsyncLifetime
 
         _app.MapGet("/api/directories", (string? path) =>
         {
-            var basePath = _tempDir;
+            var basePath = TempDir;
             var targetPath = string.IsNullOrWhiteSpace(path) || path == "."
                 ? basePath
                 : Path.IsPathRooted(path) ? path : Path.Combine(basePath, path);
@@ -151,7 +151,7 @@ public sealed class NinjadogUiFixture : IAsyncLifetime
                 {
                     current = relativeToCwd,
                     absolute = resolved,
-                    parent = parent != null ? Path.GetRelativePath(basePath, parent) : (string?)null,
+                    parent = parent != null ? Path.GetRelativePath(basePath, parent) : null,
                     directories = dirs
                 });
             }
@@ -174,9 +174,9 @@ public sealed class NinjadogUiFixture : IAsyncLifetime
 
         try
         {
-            if (Directory.Exists(_tempDir))
+            if (Directory.Exists(TempDir))
             {
-                Directory.Delete(_tempDir, recursive: true);
+                Directory.Delete(TempDir, recursive: true);
             }
         }
         catch
@@ -201,7 +201,7 @@ public sealed class NinjadogUiFixture : IAsyncLifetime
     /// </summary>
     public void SeedConfig(object config)
     {
-        var json = JsonSerializer.Serialize(config, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(config, _indentedJsonOptions);
         File.WriteAllText(ConfigPath, json);
     }
 
