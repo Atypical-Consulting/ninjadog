@@ -3,6 +3,7 @@ import { useConfigStore } from '../store/config-store';
 import * as api from '../api/ninjadog-api';
 
 export interface Diagnostic {
+  code?: string;
   severity: number;
   path: string;
   message: string;

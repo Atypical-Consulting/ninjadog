@@ -35,22 +35,37 @@ export default function Layout() {
       <Header />
       <TabBar />
 
-      <div className="flex flex-1 overflow-hidden">
-        <div id="left-panel" className={`flex flex-col flex-1 min-w-0${!showLeft ? ' hidden' : ''}`}>
-          <div className="flex-1 overflow-auto p-6 content-area">
-            <Outlet />
+      <div className="flex flex-1 overflow-hidden" style={{ minHeight: 0 }}>
+        {showLeft && (
+          <div id="left-panel" className="flex flex-col flex-1 min-w-0">
+            <div className="flex-1 overflow-auto p-6 content-area">
+              <Outlet />
+            </div>
           </div>
-        </div>
+        )}
 
-        <div
-          id="resize-handle"
-          className={`resize-handle${!(showLeft && showRight) ? ' hidden' : ''}`}
-          onMouseDown={handleMouseDown}
-        />
+        {showLeft && showRight && (
+          <div
+            id="resize-handle"
+            className="resize-handle"
+            onMouseDown={handleMouseDown}
+          />
+        )}
 
-        <div id="json-panel" className={`flex flex-col${!showRight ? ' hidden' : ''}`} style={{ width: viewMode === 'json' ? '100%' : `${panelWidth}px` }}>
-          <JsonPanel width={viewMode === 'json' ? '100%' : `${panelWidth}px`} />
-        </div>
+        {showRight && (
+          <div
+            id="json-panel"
+            className="flex flex-col"
+            style={{
+              width: viewMode === 'json' ? '100%' : `${panelWidth}px`,
+              minWidth: viewMode === 'json' ? 0 : 300,
+              flexShrink: 0,
+              minHeight: 0,
+            }}
+          >
+            <JsonPanel width={viewMode === 'json' ? '100%' : `${panelWidth}px`} />
+          </div>
+        )}
 
         <ChatPanel />
       </div>
