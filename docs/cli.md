@@ -43,6 +43,8 @@ ninjadog validate          Check your config         config builder
 ninjadog build             Run the generators        ninjadog build
        |
   dotnet run               Launch your API
+
+ninjadog update            Refresh schema after upgrading the CLI
 ```
 
 ## Commands
@@ -62,10 +64,24 @@ ninjadog init
 | `--default` | Skip prompts and use default values. |
 | `--name <name>` | Set the project name (skips the name prompt). |
 | `--namespace <ns>` | Set the root namespace (skips the namespace prompt). |
+| `--template <name>` | Template to use (e.g. `CrudWebAPI`). Skips the template prompt. |
+| `--use-case <name>` | Use case to scaffold (`TodoApp`, `RestaurantBooking`, or `Custom`). Skips the use case prompt. |
+| `--from-prompt <text>` | Generate config from a natural language description using AI. Requires `ANTHROPIC_API_KEY` environment variable. |
 
-#### Interactive prompts
+#### Template and use case selection
 
-When you run `ninjadog init`, the CLI asks for the following project settings:
+When you run `ninjadog init` interactively, the CLI first asks you to choose a **template** and a **use case**:
+
+| Prompt | Choices | Description |
+|---|---|---|
+| **Template** | `CrudWebAPI` | The code generation template to use. Currently only CrudWebAPI is available. |
+| **Use case** | `TodoApp`, `RestaurantBooking`, `Custom` | A pre-built use case with entities already defined, or `Custom` to define your own entities interactively. |
+
+Selecting `TodoApp` or `RestaurantBooking` creates a fully configured `ninjadog.json` with pre-defined entities, relationships, and seed data. Selecting `Custom` continues with the interactive prompts below.
+
+#### Interactive prompts (Custom use case)
+
+When you select the `Custom` use case, the CLI asks for the following project settings:
 
 | Prompt | Default | Description |
 |---|---|---|
@@ -114,14 +130,26 @@ This creates a `ninjadog.json` in the current directory:
 }
 ```
 
-**Examples (non-interactive):**
+**Examples:**
 
 ```bash
+# Interactive mode (prompts for template and use case)
+ninjadog init
+
+# Scaffold TodoApp use case directly
+ninjadog init --use-case TodoApp
+
+# Scaffold RestaurantBooking use case
+ninjadog init -u RestaurantBooking
+
 # Non-interactive with defaults
 ninjadog init --default
 
 # Non-interactive with custom values
 ninjadog init --name MyApi --namespace MyApi.Web
+
+# Generate from natural language (requires ANTHROPIC_API_KEY)
+ninjadog init --from-prompt "A blog platform with users, posts, tags, and comments"
 ```
 
 {: .tip }
@@ -223,6 +251,25 @@ This appends a `Product` entity to the `entities` section of your `ninjadog.json
 {: .tip }
 > After adding an entity, open `ninjadog.json` to define additional properties before running `ninjadog build`.
 
+### `ninjadog update`
+
+Updates the `ninjadog.schema.json` file in the current directory to the version embedded in the installed CLI tool. This is useful after upgrading Ninjadog to get IDE autocompletion and validation for newly added configuration options.
+
+```bash
+ninjadog update
+```
+
+**Example:**
+
+```
+$ ninjadog update
+Schema file updated successfully.
+  -> ninjadog.schema.json
+```
+
+{: .tip }
+> Run `ninjadog update` after upgrading the CLI tool to ensure your local schema stays in sync with the installed version.
+
 ### `ninjadog build`
 
 Builds and runs the generator engine against your project configuration. This reads the `ninjadog.json` file in the current directory and produces the generated source files.
@@ -255,7 +302,8 @@ ninjadog ui [OPTIONS]
 - **Live JSON preview** -- See the generated `ninjadog.json` update in real time with Monaco Editor syntax highlighting and schema validation.
 - **Validation** -- Live schema validation with error paths displayed inline.
 - **Undo / Redo** -- Full undo/redo history (up to 50 states) with <kbd>Ctrl+Z</kbd> / <kbd>Ctrl+Y</kbd> keyboard shortcuts.
-- **Keyboard shortcuts** -- <kbd>Ctrl+S</kbd> save, <kbd>Ctrl+B</kbd> build, <kbd>Ctrl+E</kbd> add entity, <kbd>1</kbd>--<kbd>4</kbd> switch tabs, <kbd>?</kbd> show shortcut overlay.
+- **AI Assistant** -- Describe your API in plain English and generate a complete configuration. Toggle the chat panel with the sparkle icon or <kbd>Ctrl+Shift+A</kbd>. Supports multi-turn conversation for iterating on the schema. Requires `ANTHROPIC_API_KEY` environment variable.
+- **Keyboard shortcuts** -- <kbd>Ctrl+S</kbd> save, <kbd>Ctrl+B</kbd> build, <kbd>Ctrl+E</kbd> add entity, <kbd>Ctrl+Shift+A</kbd> AI assistant, <kbd>1</kbd>--<kbd>4</kbd> switch tabs, <kbd>?</kbd> show shortcut overlay.
 - **Auto-save** -- Optional auto-save to localStorage with 3-second debounce.
 - **View modes** -- Toggle between Split View (form + JSON), Form Only, or JSON Only layouts.
 - **Template picker** -- Start from pre-built templates (Blank, Todo App, Blog API, E-Commerce) instead of an empty configuration.

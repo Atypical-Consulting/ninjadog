@@ -4,7 +4,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 /// This template generates the Update endpoint for a given entity.
 /// </summary>
 public sealed class UpdateEndpointTemplate
-    : NinjadogTemplate
+    : EndpointTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "UpdateEndpoint";
@@ -34,13 +34,12 @@ public sealed class UpdateEndpointTemplate
               {
                   public override void Configure()
                   {
-                      Put("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");
-                      AllowAnonymous();
+                      Put("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");{{(HasAuth ? string.Empty : "\n        AllowAnonymous();")}}{{GenerateVersionCall(ApiVersion)}}
                   }
 
                   public override async Task HandleAsync({{st.ClassUpdateModelRequest}} req, CancellationToken ct)
                   {
-                      var {{st.VarExistingModel}} = await {{st.VarModelService}}.GetAsync(req.{{entityKey.Key}});
+                      var {{st.VarExistingModel}} = await {{st.VarModelService}}.GetAsync(req.{{entityKey.PascalKey}});
 
                       if ({{st.VarExistingModel}} is null)
                       {

@@ -1,18 +1,20 @@
+using Ninjadog.CLI.AI;
 using Ninjadog.Settings.Config;
 using Ninjadog.Settings.Entities;
 using Ninjadog.Settings.Entities.Properties;
 using Ninjadog.Settings.Extensions;
 using Ninjadog.Settings.Schema;
+using Ninjadog.Settings.Validation;
+using Ninjadog.Templates.CrudWebAPI.UseCases;
 
 namespace Ninjadog.CLI.Commands;
 
 internal sealed class InitCommand
-    : Command<InitCommandSettings>
+    : AsyncCommand<InitCommandSettings>
 {
     private static readonly string[] _propertyTypes =
     [
-        "Guid", "string", "int", "Int32", "long", "Int64",
-        "bool", "Boolean", "decimal", "Decimal", "DateTime", "DateOnly"
+        "Guid", "string", "int", "long", "bool", "decimal", "DateTime", "DateOnly"
     ];
 
     private static readonly string[] _databaseProviders =
@@ -20,23 +22,37 @@ internal sealed class InitCommand
         "sqlite", "postgresql", "sqlserver"
     ];
 
-    public override int Execute(CommandContext context, InitCommandSettings settings, CancellationToken cancellationToken)
+    private static readonly string[] _templates =
+    [
+        "CrudWebAPI"
+    ];
+
+    private static readonly string[] _useCases =
+    [
+        "TodoApp",
+        "RestaurantBooking",
+        "Custom"
+    ];
+
+    public override async Task<int> ExecuteAsync(CommandContext context, InitCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {
-            var initialSettings = ShouldPrompt(settings)
-                ? CollectInteractiveSettings(settings)
-                : BuildNonInteractiveSettings(settings);
+            if (settings.FromPrompt is not null)
+            {
+                return await ExecuteFromPromptAsync(settings.FromPrompt, cancellationToken);
+            }
 
-            var json = initialSettings.ToJsonString();
+            ValidateCliArguments(settings);
+
+            var resultSettings = ShouldPrompt(settings)
+                ? CollectSettingsInteractively(settings)
+                : ResolveUseCase(settings.UseCase, () => BuildNonInteractiveSettings(settings));
+
+            var json = resultSettings.ToJsonString();
             json = InjectSchema(json);
 
-            File.WriteAllText("ninjadog.json", json);
-            File.WriteAllText("ninjadog.schema.json", SchemaProvider.GetSchemaText());
-
-            MarkupLine("[green]Ninjadog settings file created successfully.[/]");
-            MarkupLine("[dim]  -> ninjadog.json[/]");
-            MarkupLine("[dim]  -> ninjadog.schema.json[/]");
+            WriteConfigFiles(json);
 
             return 0;
         }
@@ -49,9 +65,109 @@ internal sealed class InitCommand
         }
     }
 
+    private static async Task<int> ExecuteFromPromptAsync(string prompt, CancellationToken ct)
+    {
+        GenerationResult? result = null;
+
+        await Status()
+            .Spinner(Spinner.Known.Dots)
+            .StartAsync("Generating configuration from prompt...", async _ =>
+            {
+                result = await ConfigGenerator.GenerateAsync(prompt, ct);
+            });
+
+        if (result is null || (!result.Success && result.Json is null))
+        {
+            MarkupLine($"[red]Error:[/] {result?.Error?.EscapeMarkup() ?? "Unknown error"}");
+            return 1;
+        }
+
+        var json = InjectSchema(result.Json!);
+
+        WriteConfigFiles(json);
+
+        if (result.Validation is { IsValid: false })
+        {
+            WriteLine();
+            MarkupLine("[yellow]Validation warnings:[/]");
+            foreach (var diag in result.Validation.Diagnostics)
+            {
+                var color = diag.Severity == ValidationSeverity.Error ? "red" : "yellow";
+                MarkupLine($"  [{color}]{diag.Path.EscapeMarkup()}:[/] {diag.Message.EscapeMarkup()}");
+            }
+
+            MarkupLine("[dim]The file was saved but may need manual adjustments.[/]");
+        }
+
+        return 0;
+    }
+
+    private static NinjadogSettings CollectSettingsInteractively(InitCommandSettings settings)
+    {
+        _ = SelectTemplate(settings);
+        var useCase = SelectUseCase(settings);
+
+        return ResolveUseCase(useCase, () => CollectInteractiveSettings(settings));
+    }
+
+    private static void ValidateCliArguments(InitCommandSettings settings)
+    {
+        if (settings.Template is not null && !_templates.Contains(settings.Template))
+        {
+            throw new InvalidOperationException(
+                $"Unknown template '{settings.Template}'. Available: {string.Join(", ", _templates)}");
+        }
+
+        if (settings.UseCase is not null && !_useCases.Contains(settings.UseCase))
+        {
+            throw new InvalidOperationException(
+                $"Unknown use case '{settings.UseCase}'. Available: {string.Join(", ", _useCases)}");
+        }
+    }
+
+    private static NinjadogSettings ResolveUseCase(string? useCase, Func<NinjadogSettings> fallback)
+    {
+        return useCase switch
+        {
+            "TodoApp" => UseCaseSettings.TodoApp(),
+            "RestaurantBooking" => UseCaseSettings.RestaurantBooking(),
+            _ => fallback(),
+        };
+    }
+
     private static bool ShouldPrompt(InitCommandSettings settings)
     {
         return !settings.Default && !System.Console.IsInputRedirected;
+    }
+
+    private static string SelectTemplate(InitCommandSettings settings)
+    {
+        if (settings.Template is not null)
+        {
+            return settings.Template;
+        }
+
+        if (_templates.Length == 1)
+        {
+            MarkupLine($"[dim]Template:[/] [green]{_templates[0]}[/]");
+            return _templates[0];
+        }
+
+        return Prompt(new SelectionPrompt<string>()
+            .Title("[green]Template[/]:")
+            .AddChoices(_templates));
+    }
+
+    private static string SelectUseCase(InitCommandSettings settings)
+    {
+        if (settings.UseCase is not null)
+        {
+            return settings.UseCase;
+        }
+
+        return Prompt(new SelectionPrompt<string>()
+            .Title("[green]Use case[/]:")
+            .AddChoices(_useCases));
     }
 
     private static NinjadogInitialSettings BuildNonInteractiveSettings(InitCommandSettings settings)
@@ -159,6 +275,16 @@ internal sealed class InitCommand
         while (Confirm("  Add [green]another property[/]?", true));
 
         return properties;
+    }
+
+    private static void WriteConfigFiles(string json)
+    {
+        File.WriteAllText("ninjadog.json", json);
+        File.WriteAllText("ninjadog.schema.json", SchemaProvider.GetSchemaText());
+
+        MarkupLine("[green]Ninjadog settings file created successfully.[/]");
+        MarkupLine("[dim]  -> ninjadog.json[/]");
+        MarkupLine("[dim]  -> ninjadog.schema.json[/]");
     }
 
     private static string? GetDirectoryName()

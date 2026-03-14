@@ -41,10 +41,31 @@ The following skeleton shows **every** configuration option at a glance. Require
     },
     "features": {
       "softDelete": false,                    // default: false
-      "auditing": false                       // default: false
+      "auditing": false,                      // default: false
+      "aot": false                            // default: false
     },
     "database": {
       "provider": "sqlite"                    // "sqlite" | "postgresql" | "sqlserver"
+    },
+    "auth": {
+      "provider": "jwt",                      // only "jwt" supported
+      "issuer": "https://myapp.com",          // default: "https://localhost"
+      "audience": "myapp-api",                // default: "api"
+      "tokenExpirationMinutes": 60,           // default: 60
+      "roles": ["Admin", "User"],             // optional
+      "generateLoginEndpoint": true,          // default: true
+      "generateRegisterEndpoint": true        // default: true
+    },
+    "rateLimit": {
+      "permitLimit": 100,                     // default: 100
+      "windowSeconds": 60,                    // default: 60
+      "segmentsPerWindow": 6                  // default: 6
+    },
+    "versioning": {
+      "strategy": "UrlPath",                  // "UrlPath" | "HeaderBased"
+      "defaultVersion": 1,                    // default: 1
+      "prefix": "v",                          // default: "v"
+      "headerName": "X-Api-Version"           // default: "X-Api-Version"
     }
   },
   "enums": {
@@ -107,7 +128,10 @@ The `config` object contains project-level settings.
     "saveGeneratedFiles": true,
     "cors": { ... },
     "features": { ... },
-    "database": { ... }
+    "database": { ... },
+    "auth": { ... },
+    "rateLimit": { ... },
+    "versioning": { ... }
   }
 }
 ```
@@ -144,6 +168,7 @@ The optional `features` object enables cross-cutting concerns.
 |---|---|---|---|
 | `softDelete` | `boolean` | `false` | Adds `IsDeleted` and `DeletedAt` columns; replaces DELETE with UPDATE. |
 | `auditing` | `boolean` | `false` | Adds `CreatedAt` and `UpdatedAt` columns managed automatically by the repository. |
+| `aot` | `boolean` | `false` | Enables Native AOT publishing support. See [AOT Support](#native-aot-support) below. |
 
 ### Database
 
@@ -155,6 +180,114 @@ The optional `database` object controls the target database provider.
 
 {: .note }
 > The provider affects SQL dialect (e.g., `LIMIT` vs `OFFSET/FETCH`), column type mappings, timestamp functions, NuGet dependencies, and the generated connection factory class.
+
+### Authentication
+
+The optional `auth` object enables JWT authentication and authorization for the generated API.
+
+```json
+{
+  "config": {
+    "auth": {
+      "provider": "jwt",
+      "issuer": "https://myapp.com",
+      "audience": "myapp-api",
+      "tokenExpirationMinutes": 120,
+      "roles": ["Admin", "User"],
+      "generateLoginEndpoint": true,
+      "generateRegisterEndpoint": true
+    }
+  }
+}
+```
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `provider` | `string` | `"jwt"` | Authentication provider. Currently only `jwt` is supported. |
+| `issuer` | `string` | `"https://localhost"` | JWT token issuer URL. |
+| `audience` | `string` | `"api"` | JWT token audience identifier. |
+| `tokenExpirationMinutes` | `integer` | `60` | Token lifetime in minutes. |
+| `roles` | `string[]` | -- | Role names for authorization policies. When set, generates named policies. |
+| `generateLoginEndpoint` | `boolean` | `true` | Generates a `POST /api/auth/login` endpoint. |
+| `generateRegisterEndpoint` | `boolean` | `true` | Generates a `POST /api/auth/register` endpoint. |
+
+When auth is enabled:
+- **GET/GetAll endpoints** remain `AllowAnonymous()` (public reads)
+- **Create/Update/Delete endpoints** require a valid JWT token
+- **Login/Register endpoints** are `AllowAnonymous()`
+- A `Users` table is created automatically at startup
+- Passwords are hashed with BCrypt
+- An `appsettings.json` `Jwt` section is generated with a placeholder secret key
+
+{: .warning }
+> Replace the `Jwt:Secret` value in `appsettings.json` with a strong secret key (minimum 32 characters) before deploying to production. Never commit real secrets to source control.
+
+{: .note }
+> When the `auth` block is absent, all endpoints use `AllowAnonymous()` and no auth infrastructure is generated. This is fully backward-compatible.
+
+### Rate Limiting
+
+The optional `rateLimit` object enables ASP.NET Core's built-in sliding window rate limiter for the generated API.
+
+```json
+{
+  "config": {
+    "rateLimit": {
+      "permitLimit": 100,
+      "windowSeconds": 60,
+      "segmentsPerWindow": 6
+    }
+  }
+}
+```
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `permitLimit` | `integer` | `100` | Maximum number of requests allowed within the time window. |
+| `windowSeconds` | `integer` | `60` | Duration of the time window in seconds. |
+| `segmentsPerWindow` | `integer` | `6` | Number of segments the window is divided into for smoother rate limiting. |
+
+When rate limiting is enabled:
+- Requests exceeding the limit receive a `429 Too Many Requests` response
+- The rate limiter middleware is added after CORS and before authentication in the pipeline
+- A named policy `"sliding"` is registered and applied globally
+
+{: .note }
+> When the `rateLimit` block is absent, no rate limiting infrastructure is generated. This is fully backward-compatible.
+
+### Versioning
+
+The optional `versioning` object enables API versioning for all generated endpoints.
+
+```json
+{
+  "config": {
+    "versioning": {
+      "strategy": "UrlPath",
+      "defaultVersion": 1,
+      "prefix": "v",
+      "headerName": "X-Api-Version"
+    }
+  }
+}
+```
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `strategy` | `string` | `"UrlPath"` | Versioning strategy. `UrlPath` prepends version to routes (e.g., `/v1/products`). `HeaderBased` appends version to routes for header-based resolution. |
+| `defaultVersion` | `integer` | `1` | The default API version assigned to all generated endpoints. |
+| `prefix` | `string` | `"v"` | Version prefix string (e.g., `"v"` produces `/v1/`). |
+| `headerName` | `string` | `"X-Api-Version"` | Header name for header-based versioning (documentation only for `UrlPath` strategy). |
+
+When versioning is enabled:
+- All CRUD endpoints (GET, POST, PUT, DELETE) include a `Version(N)` declaration
+- Auth endpoints (login, register) are also versioned
+- Health and readiness endpoints (`/health`, `/ready`) remain unversioned
+- `UseFastEndpoints()` is configured with versioning options
+- For `UrlPath` strategy, routes become `/v1/products`, `/v1/products/{id}`, etc.
+
+{: .tip }
+> Start with `UrlPath` strategy — it's the most explicit and easiest to test. Routes clearly show which API version is being called. When the `versioning` block is absent, no versioning infrastructure is generated.
 
 ## Entities
 
@@ -254,7 +387,9 @@ Each enum produces a separate `.cs` file under the `Domain` namespace. Enum-type
 
 ## Seed Data
 
-Entities can include an optional `seedData` array to populate tables with initial rows at startup.
+Entities can include an optional `seedData` to populate tables with initial rows at startup. You can provide seed data either as an **inline JSON array** or as a **path to a CSV file**.
+
+### Inline JSON Array
 
 ```json
 {
@@ -272,10 +407,72 @@ Entities can include an optional `seedData` array to populate tables with initia
 }
 ```
 
-Each object in the array must include the key property and any non-nullable properties. The generated `DatabaseSeeder` class runs INSERT statements at startup, immediately after `DatabaseInitializer.InitializeAsync()`.
+### CSV File Reference
+
+Instead of embedding rows in JSON, you can point to a CSV file. The path is relative to the `ninjadog.json` file location.
+
+```json
+{
+  "Category": {
+    "properties": {
+      "Id": { "type": "Guid", "isKey": true },
+      "Name": { "type": "string" },
+      "IsActive": { "type": "bool" }
+    },
+    "seedData": "data/categories.csv"
+  }
+}
+```
+
+Where `data/categories.csv` contains:
+
+```csv
+Id,Name,IsActive
+550e8400-e29b-41d4-a716-446655440001,Electronics,true
+550e8400-e29b-41d4-a716-446655440002,Books,true
+```
+
+The CSV file must have a header row with column names matching the entity property names. Values are automatically parsed as strings, integers, decimals, or booleans. Quoted fields (RFC 4180) are supported for values containing commas or quotes.
+
+Each row must include the key property and any non-nullable properties. The generated `DatabaseSeeder` class runs INSERT statements at startup, immediately after `DatabaseInitializer.InitializeAsync()`.
 
 {: .note }
 > The `DatabaseSeeder` is only generated when at least one entity defines `seedData`. See [Seed Data Generator](/Ninjadog/generators/seed-data) for details on the generated code.
+
+## Native AOT Support
+
+When `features.aot` is set to `true`, Ninjadog generates code optimized for [Native AOT publishing](https://learn.microsoft.com/en-us/dotnet/core/deploying/native-aot/):
+
+```json
+{
+  "config": {
+    "features": {
+      "aot": true
+    }
+  }
+}
+```
+
+### What changes with AOT enabled
+
+| Area | Standard | AOT |
+|---|---|---|
+| **App builder** | `WebApplication.CreateBuilder()` | `WebApplication.CreateSlimBuilder()` |
+| **JSON serialization** | Reflection-based | Source-generated `AppJsonSerializerContext` |
+| **FastEndpoints** | Default config | Configured with `SerializerContext` |
+| **Swagger / Client Gen** | Included | Removed (incompatible with AOT) |
+| **Dapper** | Standard | `[DapperAot]` attribute on repositories |
+| **NuGet packages** | Standard set | Adds `Dapper.AOT` |
+
+### Generated files
+
+When AOT is enabled, an additional `AppJsonSerializerContext.cs` file is generated at the project root. It contains `[JsonSerializable]` attributes for every Request, Response, DTO, and Domain type, enabling System.Text.Json source generation.
+
+{: .warning }
+> Swagger UI and client code generation endpoints are not available when AOT is enabled, as they rely on runtime reflection. Use the standard (non-AOT) mode during development if you need these features.
+
+{: .tip }
+> To publish your AOT-enabled project, add `<PublishAot>true</PublishAot>` to your `.csproj` file and run `dotnet publish -c Release`.
 
 ## Complete Example
 
@@ -298,10 +495,28 @@ A full `ninjadog.json` demonstrating all features:
     },
     "features": {
       "softDelete": true,
-      "auditing": true
+      "auditing": true,
+      "aot": false
     },
     "database": {
       "provider": "postgresql"
+    },
+    "auth": {
+      "provider": "jwt",
+      "issuer": "https://bookstore.example.com",
+      "audience": "bookstore-api",
+      "tokenExpirationMinutes": 120,
+      "roles": ["Admin", "Editor"]
+    },
+    "rateLimit": {
+      "permitLimit": 200,
+      "windowSeconds": 60,
+      "segmentsPerWindow": 6
+    },
+    "versioning": {
+      "strategy": "UrlPath",
+      "defaultVersion": 1,
+      "prefix": "v"
     }
   },
   "enums": {

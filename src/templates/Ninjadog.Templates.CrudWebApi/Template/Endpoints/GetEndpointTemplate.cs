@@ -4,7 +4,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 /// This template generates the Get endpoint for a given entity.
 /// </summary>
 public sealed class GetEndpointTemplate
-    : NinjadogTemplate
+    : EndpointTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "GetEndpoint";
@@ -35,12 +35,12 @@ public sealed class GetEndpointTemplate
                   public override void Configure()
                   {
                       Get("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");
-                      AllowAnonymous();
+                      AllowAnonymous();{{GenerateVersionCall(ApiVersion)}}
                   }
 
                   public override async Task HandleAsync({{st.ClassGetModelRequest}} req, CancellationToken ct)
                   {
-                      var {{st.VarModel}} = await {{st.VarModelService}}.GetAsync(req.{{entityKey.Key}});
+                      var {{st.VarModel}} = await {{st.VarModelService}}.GetAsync(req.{{entityKey.PascalKey}});
 
                       if ({{st.VarModel}} is null)
                       {

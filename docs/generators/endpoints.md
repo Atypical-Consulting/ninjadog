@@ -8,7 +8,7 @@ nav_order: 2
 
 # Endpoint Generators
 
-All endpoint generators produce **per-entity** files using [FastEndpoints](https://fast-endpoints.com/).
+Endpoint generators produce files using [FastEndpoints](https://fast-endpoints.com/). Most are **per-entity** CRUD endpoints; health check endpoints are generated once per project.
 
 ## CreateEndpointGenerator
 
@@ -16,14 +16,45 @@ Generates a `POST /{entities}` endpoint that accepts a create request, maps it t
 
 ## GetAllEndpointGenerator
 
-Generates a `GET /{entities}` endpoint with built-in pagination support via query parameters:
+Generates a `GET /{entities}` endpoint with built-in **pagination**, **filtering**, and **sorting** via query parameters:
+
+### Pagination
 
 | Parameter | Default | Description |
 |---|---|---|
 | `page` | 1 | Page number (1-based) |
 | `pageSize` | 10 | Items per page |
 
-The response includes `TotalCount` metadata for client-side pagination controls.
+### Filtering
+
+Filter results by passing entity property names as query parameters. Only non-key properties are filterable. Filters use exact equality matching and are combined with `AND`.
+
+```
+GET /todo-items?IsCompleted=true&Priority=5
+```
+
+Invalid property names are silently ignored, preventing SQL injection. The generated code maintains a compile-time whitelist of allowed column names.
+
+### Sorting
+
+| Parameter | Default | Description |
+|---|---|---|
+| `sortBy` | (none) | Property name to sort by |
+| `sortDir` | `asc` | Sort direction: `asc` or `desc` |
+
+```
+GET /todo-items?sortBy=DueDate&sortDir=desc
+```
+
+The `sortBy` value is validated against the same property whitelist. Invalid sort fields are ignored (no sorting applied).
+
+### Combined example
+
+```
+GET /products?Category=Electronics&sortBy=Price&sortDir=asc&page=2&pageSize=20
+```
+
+The response includes `TotalCount` metadata reflecting the filtered result set, enabling accurate client-side pagination controls.
 
 ## GetEndpointGenerator
 
@@ -75,11 +106,40 @@ The generated endpoint:
 {: .tip }
 > If an entity has no `relationships` block, the generator produces no output for that entity. You can safely add relationships incrementally without affecting existing endpoints.
 
+## Health Check Endpoints
+
+Ninjadog automatically generates two infrastructure endpoints for container orchestrators (Kubernetes, ECS, etc.):
+
+### `/health` -- Liveness Check
+
+A lightweight endpoint that returns `200 OK` with `{ "Status": "Healthy" }`. Use this as your **liveness probe** to confirm the process is running.
+
+### `/ready` -- Readiness Check
+
+Verifies that the database connection is available before returning `200 OK` with `{ "Status": "Ready" }`. Returns `503 Service Unavailable` if the database cannot be reached. Use this as your **readiness probe** to prevent traffic from reaching the service before it can serve requests.
+
+Both endpoints allow anonymous access and require no configuration.
+
+**Kubernetes example:**
+
+```yaml
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+```
+
 ## Generated HTTP Endpoints
 
 For an entity called `Product` with a `Guid` key:
 
 ```
+GET    /health                Liveness check
+GET    /ready                 Readiness check (verifies DB)
 POST   /products              Create a new product
 GET    /products              List all products (paginated)
 GET    /products/{id:guid}    Get a single product

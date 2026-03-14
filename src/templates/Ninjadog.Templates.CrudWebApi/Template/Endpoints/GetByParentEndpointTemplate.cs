@@ -5,7 +5,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 /// For example, GET /parents/{parentId}/children.
 /// </summary>
 public sealed class GetByParentEndpointTemplate
-    : NinjadogTemplate
+    : EndpointTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "GetByParentEndpoint";
@@ -13,6 +13,7 @@ public sealed class GetByParentEndpointTemplate
     /// <inheritdoc />
     public override IEnumerable<NinjadogContentFile> GenerateMany(NinjadogSettings ninjadogSettings)
     {
+        CacheSettings(ninjadogSettings);
         var entities = ninjadogSettings.Entities.FromKeys();
 
         foreach (var entity in entities)
@@ -70,7 +71,7 @@ public sealed class GetByParentEndpointTemplate
                   public override void Configure()
                   {
                       Get("{{parentSt.ModelEndpoint}}/{{{parentSt.VarModel}}Id{{routeConstraintStr}}}{{childSt.ModelEndpoint}}");
-                      AllowAnonymous();
+                      AllowAnonymous();{{GenerateVersionCall(ApiVersion)}}
                   }
 
                   public override async Task HandleAsync(CancellationToken ct)

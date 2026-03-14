@@ -1,6 +1,6 @@
 ---
 title: Generators
-description: "Overview of Ninjadog's 36 code generators: endpoints, contracts, data layer, Docker, mapping, validation, OpenAPI summaries, and project setup."
+description: "Overview of Ninjadog's code generators: endpoints, contracts, data layer, Docker, mapping, validation, OpenAPI summaries, integration tests, and project setup."
 layout: default
 nav_order: 6
 has_children: true
@@ -9,7 +9,7 @@ has_children: true
 # Generators
 {: .no_toc }
 
-Ninjadog includes **37 generators** organized into 14 categories. Each generator produces either a single shared file or a per-entity file.
+Ninjadog includes **59 generators** organized into 16 categories. Each generator produces either a single shared file or a per-entity file.
 {: .fs-6 .fw-300 }
 
 ---
@@ -18,7 +18,7 @@ Ninjadog includes **37 generators** organized into 14 categories. Each generator
 
 | Category | Generators | Scope |
 |---|---|---|
-| **[Project Setup](/Ninjadog/generators/project-setup)** | ProgramGenerator, AppSettingsGenerator, DomainEntityGenerator | Single file / Per entity |
+| **[Project Setup](/Ninjadog/generators/project-setup)** | ProgramGenerator, AppSettingsGenerator, IndexPageGenerator, DomainEntityGenerator | Single file / Per entity |
 | **Domain** | DomainEntityGenerator, EnumGenerator | Per entity |
 | **[Core](/Ninjadog/generators/core)** | NinjadogGenerator | Single file |
 | **[Contracts -- Data](/Ninjadog/generators/contracts)** | DtoGenerator | Per entity |
@@ -31,7 +31,9 @@ Ninjadog includes **37 generators** organized into 14 categories. Each generator
 | **[Services](/Ninjadog/generators/data-layer)** | Service, ServiceInterface | Per entity |
 | **[Summaries](/Ninjadog/generators/openapi)** | Create, Delete, GetAll, Get, Update | Per entity |
 | **[Validation](/Ninjadog/generators/validation)** | CreateRequestValidator, UpdateRequestValidator | Per entity |
+| **[Middleware](/Ninjadog/generators/project-setup)** | RequestCorrelationMiddleware | Single file |
 | **[Docker](/Ninjadog/generators/docker)** | Dockerfile, DockerCompose, DockerIgnore | Single file |
+| **[Integration Tests](/Ninjadog/generators/integration-tests)** | TestCsproj, WebApplicationFactory, TestBase, EntityEndpointTests | Single file / Per entity |
 
 ## Generation Modes
 

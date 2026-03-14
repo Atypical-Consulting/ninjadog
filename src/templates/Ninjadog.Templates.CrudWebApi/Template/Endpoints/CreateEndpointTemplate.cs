@@ -4,7 +4,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 /// This template generates the Create endpoint for a given entity.
 /// </summary>
 public sealed class CreateEndpointTemplate
-    : NinjadogTemplate
+    : EndpointTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "CreateEndpoint";
@@ -34,8 +34,7 @@ public sealed class CreateEndpointTemplate
               {
                   public override void Configure()
                   {
-                      Post("{{st.ModelEndpoint}}");
-                      AllowAnonymous();
+                      Post("{{st.ModelEndpoint}}");{{(HasAuth ? string.Empty : "\n        AllowAnonymous();")}}{{GenerateVersionCall(ApiVersion)}}
                   }
 
                   public override async Task HandleAsync({{st.ClassCreateModelRequest}} req, CancellationToken ct)
@@ -46,7 +45,7 @@ public sealed class CreateEndpointTemplate
 
                       var {{st.VarModelResponse}} = {{st.VarModel}}.{{st.MethodToModelResponse}}();
                       await Send.CreatedAtAsync<{{st.ClassGetModelEndpoint}}>(
-                          new { Id = {{st.VarModel}}.{{entityKey.Key}} }, {{st.VarModelResponse}}, generateAbsoluteUrl: true, cancellation: ct);
+                          new { Id = {{st.VarModel}}.{{entityKey.PascalKey}} }, {{st.VarModelResponse}}, generateAbsoluteUrl: true, cancellation: ct);
                   }
               }
               """;

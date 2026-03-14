@@ -3,8 +3,8 @@
   "config": {
     "name": "TodoApp",
     "version": "1.0.0",
-    "description": "A simple todo app",
-    "rootNamespace": "MyCustomer.TodoApp"
+    "description": "An application to manage todo lists.",
+    "rootNamespace": "TodoApp.CrudWebApi"
   },
   "entities": {
     "TodoList": {
@@ -15,9 +15,16 @@
         },
         "Title": {
           "type": "string"
-        },
+        }
+      },
+      "relationships": {
         "Items": {
-          "type": "List<TodoItem>"
+          "relatedEntity": "TodoItem",
+          "relationshipType": "OneToMany"
+        },
+        "Categories": {
+          "relatedEntity": "TodoCategory",
+          "relationshipType": "OneToMany"
         }
       }
     },
@@ -32,8 +39,29 @@
         },
         "IsCompleted": {
           "type": "bool"
+        },
+        "DueDate": {
+          "type": "DateTime"
         }
       }
+    },
+    "TodoCategory": {
+      "properties": {
+        "Id": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Color": {
+          "type": "string"
+        },
+        "Icon": {
+          "type": "string"
+        }
+      },
+      "seedData": "todo-categories.csv"
     }
   }
 }

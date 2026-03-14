@@ -23,7 +23,7 @@ if (Ninjadog.CLI.CliInvocation.RequiresProjectSettings(args))
     if (File.Exists(settingsFilePath))
     {
         var json = File.ReadAllText(settingsFilePath);
-        var settings = NinjadogSettings.FromJsonString(json);
+        var settings = NinjadogSettings.FromJsonString(json, Path.GetDirectoryName(settingsFilePath));
         registrations.AddSingleton(settings);
     }
     else
@@ -48,7 +48,10 @@ app.Configure(config =>
 
     config.AddCommand<InitCommand>("init")
         .WithDescription("Initializes a new Ninjadog project.")
-        .WithExample(["init"]);
+        .WithExample(["init"])
+        .WithExample(["init", "--use-case", "TodoApp"])
+        .WithExample(["init", "-u", "RestaurantBooking"])
+        .WithExample(["init", "--from-prompt", "A blog with users, posts, and comments"]);
 
     config.AddCommand<BuildCommand>("build")
         .WithDescription("Builds and compiles the project.")
@@ -63,6 +66,16 @@ app.Configure(config =>
         .WithExample(["validate"])
         .WithExample(["validate", "--file", "path/to/ninjadog.json"])
         .WithExample(["validate", "--strict"]);
+
+    config.AddCommand<EvolveCommand>("evolve")
+        .WithDescription("Detects schema changes and generates SQL migrations.")
+        .WithExample(["evolve"])
+        .WithExample(["evolve", "--dry-run"])
+        .WithExample(["evolve", "--name", "add-priority-field"]);
+
+    config.AddCommand<UpdateCommand>("update")
+        .WithDescription("Updates the ninjadog.schema.json file to the latest version.")
+        .WithExample(["update"]);
 
     config.AddCommand<UiCommand>("ui")
         .WithDescription("Opens a web-based configuration builder.")

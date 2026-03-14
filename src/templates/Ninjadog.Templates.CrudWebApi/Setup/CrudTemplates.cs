@@ -1,4 +1,5 @@
 using Ninjadog.Templates.CrudWebAPI.Template;
+using Ninjadog.Templates.CrudWebAPI.Template.Auth;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Data;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 using Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
@@ -6,7 +7,9 @@ using Ninjadog.Templates.CrudWebAPI.Template.Database;
 using Ninjadog.Templates.CrudWebAPI.Template.Docker;
 using Ninjadog.Templates.CrudWebAPI.Template.Domain;
 using Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
+using Ninjadog.Templates.CrudWebAPI.Template.IntegrationTests;
 using Ninjadog.Templates.CrudWebAPI.Template.Mapping;
+using Ninjadog.Templates.CrudWebAPI.Template.Middleware;
 using Ninjadog.Templates.CrudWebAPI.Template.Repositories;
 using Ninjadog.Templates.CrudWebAPI.Template.Services;
 using Ninjadog.Templates.CrudWebAPI.Template.Summaries;
@@ -30,6 +33,7 @@ public class CrudTemplates : NinjadogTemplates
         Add(new HttpFileTemplate());
         Add(new ProgramTemplate());
         Add(new CrudWebApiExtensionsTemplate());
+        Add(new JsonSerializerContextTemplate());
 
         AddTemplates(
             "Properties",
@@ -69,7 +73,9 @@ public class CrudTemplates : NinjadogTemplates
             new GetAllEndpointTemplate(),
             new GetEndpointTemplate(),
             new UpdateEndpointTemplate(),
-            new GetByParentEndpointTemplate());
+            new GetByParentEndpointTemplate(),
+            new HealthEndpointTemplate(),
+            new ReadyEndpointTemplate());
 
         AddTemplates(
             "Mapping",
@@ -101,8 +107,41 @@ public class CrudTemplates : NinjadogTemplates
             new CreateRequestValidatorTemplate(),
             new UpdateRequestValidatorTemplate());
 
+        AddTemplates(
+            "Middleware",
+            new RequestCorrelationMiddlewareTemplate());
+
+        AddTemplates(
+            "Auth",
+            new AuthExtensionsTemplate(),
+            new TokenServiceInterfaceTemplate(),
+            new TokenServiceTemplate(),
+            new UserEntityTemplate(),
+            new UserRepositoryInterfaceTemplate(),
+            new UserRepositoryTemplate(),
+            new UserInitializerTemplate(),
+            new LoginEndpointTemplate(),
+            new RegisterEndpointTemplate(),
+            new LoginRequestTemplate(),
+            new LoginResponseTemplate(),
+            new RegisterRequestTemplate(),
+            new RegisterResponseTemplate(),
+            new LoginRequestValidatorTemplate(),
+            new RegisterRequestValidatorTemplate());
+
+        AddTemplates(
+            "wwwroot",
+            new IndexPageTemplate());
+
         Add(new DockerfileTemplate());
         Add(new DockerComposeTemplate());
         Add(new DockerIgnoreTemplate());
+
+        AddTemplates(
+            "IntegrationTests",
+            new IntegrationTestCsprojTemplate(),
+            new CustomWebApplicationFactoryTemplate(),
+            new IntegrationTestBaseTemplate(),
+            new EntityIntegrationTestTemplate());
     }
 }

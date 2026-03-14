@@ -1,0 +1,179 @@
+{
+  "$schema": "https://ninjadog.dev/schemas/ninjadog.schema.json",
+  "config": {
+    "name": "RestaurantBooking",
+    "version": "1.0.0",
+    "description": "An application to manage restaurant bookings.",
+    "rootNamespace": "RestaurantBooking.CrudWebApi"
+  },
+  "entities": {
+    "Customer": {
+      "properties": {
+        "CustomerId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "CustomerFirstName": {
+          "type": "string"
+        },
+        "CustomerSurname": {
+          "type": "string"
+        },
+        "PhoneNumber": {
+          "type": "string"
+        },
+        "CellphoneNumber": {
+          "type": "string"
+        },
+        "EmailAddress": {
+          "type": "string"
+        },
+        "OtherCustomerDetails": {
+          "type": "string"
+        }
+      },
+      "relationships": {
+        "Bookings": {
+          "relatedEntity": "Booking",
+          "relationshipType": "OneToMany"
+        }
+      }
+    },
+    "Booking": {
+      "properties": {
+        "BookingId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "DateOfBooking": {
+          "type": "DateTime"
+        },
+        "NumberInParty": {
+          "type": "int"
+        }
+      }
+    },
+    "Table": {
+      "properties": {
+        "TableNumber": {
+          "type": "int",
+          "isKey": true
+        },
+        "TableDetails": {
+          "type": "string"
+        }
+      },
+      "seedData": "tables.csv"
+    },
+    "Order": {
+      "properties": {
+        "OrderId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "OrderDateTime": {
+          "type": "DateTime"
+        }
+      }
+    },
+    "OrderMenuItem": {
+      "properties": {
+        "OrderMenuItemId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "OrderMenuItemQuantity": {
+          "type": "int"
+        },
+        "OrderMenuItemComments": {
+          "type": "string"
+        }
+      }
+    },
+    "Menu": {
+      "properties": {
+        "MenuId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "MenuDate": {
+          "type": "DateTime"
+        }
+      }
+    },
+    "MenuItem": {
+      "properties": {
+        "MenuItemId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "MenuItemDescription": {
+          "type": "string"
+        },
+        "MenuItemPrice": {
+          "type": "decimal"
+        }
+      }
+    },
+    "MenuItemIngredient": {
+      "properties": {
+        "MenuItemIngredientId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "ItemQuantity": {
+          "type": "int"
+        }
+      }
+    },
+    "Ingredient": {
+      "properties": {
+        "IngredientId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "IngredientName": {
+          "type": "string"
+        }
+      }
+    },
+    "IngredientType": {
+      "properties": {
+        "IngredientTypeCode": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "IngredientTypeDescription": {
+          "type": "string"
+        }
+      },
+      "seedData": "ingredient-types.csv"
+    },
+    "Staff": {
+      "properties": {
+        "StaffId": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "StaffFirstName": {
+          "type": "string"
+        },
+        "StaffLastName": {
+          "type": "string"
+        }
+      }
+    },
+    "StaffRole": {
+      "properties": {
+        "StaffRoleCode": {
+          "type": "Guid",
+          "isKey": true
+        },
+        "StaffRoleDescription": {
+          "type": "string"
+        }
+      },
+      "seedData": "staff-roles.csv"
+    }
+  }
+}

@@ -4,7 +4,7 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Endpoints;
 /// This template generates the Delete endpoint for a given entity.
 /// </summary>
 public sealed class DeleteEndpointTemplate
-    : NinjadogTemplate
+    : EndpointTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "DeleteEndpoint";
@@ -32,13 +32,12 @@ public sealed class DeleteEndpointTemplate
               {
                   public override void Configure()
                   {
-                      Delete("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");
-                      AllowAnonymous();
+                      Delete("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");{{(HasAuth ? string.Empty : "\n        AllowAnonymous();")}}{{GenerateVersionCall(ApiVersion)}}
                   }
 
                   public override async Task HandleAsync({{st.ClassDeleteModelRequest}} req, CancellationToken ct)
                   {
-                      var deleted = await {{st.VarModelService}}.DeleteAsync(req.{{entityKey.Key}});
+                      var deleted = await {{st.VarModelService}}.DeleteAsync(req.{{entityKey.PascalKey}});
                       if (!deleted)
                       {
                           await Send.NotFoundAsync(ct);

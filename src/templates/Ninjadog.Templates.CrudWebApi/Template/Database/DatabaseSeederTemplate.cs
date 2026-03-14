@@ -50,56 +50,40 @@ public sealed class DatabaseSeederTemplate : NinjadogTemplate
         foreach (var entity in entities)
         {
             var st = entity.StringTokens;
-            if (entity.SeedData == null)
-            {
-                continue;
-            }
-
             var keyPropertyName = entity.Properties
-                .FirstOrDefault(x => x.Value.IsKey).Key;
+                .FirstOrDefault(x => x.Value.IsKey).Key.UppercaseFirst();
 
-            foreach (var row in entity.SeedData)
+            foreach (var row in entity.SeedData ?? [])
             {
-                var columns = string.Join(", ", row.Keys);
-                var values = string.Join(", ", row.Values.Select(FormatSqlValue));
-                var sql = GenerateIdempotentInsert(provider, st.Models, columns, values, keyPropertyName, row);
+                var columns = string.Join(", ", row.Keys.Select(k => k.UppercaseFirst()));
+                var paramNames = string.Join(", ", row.Keys.Select(k => $"@{k.UppercaseFirst()}"));
+                var sql = DatabaseProviderHelper.GetIdempotentInsert(provider, st.Models, columns, paramNames, keyPropertyName);
+                var paramObject = GenerateAnonymousObject(row);
 
                 sb.AppendLine()
-                    .AppendLine($"await connection.ExecuteAsync(\"{sql}\");");
+                    .AppendLine($"await connection.ExecuteAsync(")
+                    .IncrementIndent()
+                    .AppendLine($"\"{sql}\",")
+                    .AppendLine($"{paramObject});")
+                    .DecrementIndent();
             }
         }
 
         return sb.ToString();
     }
 
-    private static string GenerateIdempotentInsert(
-        string provider,
-        string tableName,
-        string columns,
-        string values,
-        string keyPropertyName,
-        Dictionary<string, object> row)
+    private static string GenerateAnonymousObject(Dictionary<string, object> row)
     {
-        switch (provider)
-        {
-            case "postgresql":
-                return $"INSERT INTO {tableName} ({columns}) VALUES ({values}) ON CONFLICT DO NOTHING";
-
-            case "sqlserver":
-                var keyValue = row.TryGetValue(keyPropertyName, out var kv) ? FormatSqlValue(kv) : "NULL";
-                return $"IF NOT EXISTS (SELECT 1 FROM {tableName} WHERE {keyPropertyName} = {keyValue}) INSERT INTO {tableName} ({columns}) VALUES ({values})";
-
-            default:
-                return $"INSERT OR IGNORE INTO {tableName} ({columns}) VALUES ({values})";
-        }
+        var properties = row.Select(kvp => $"{kvp.Key.UppercaseFirst()} = {FormatCSharpValue(kvp.Value)}");
+        return $"new {{ {string.Join(", ", properties)} }}";
     }
 
-    private static string FormatSqlValue(object value)
+    private static string FormatCSharpValue(object value)
     {
         return value switch
         {
-            string s => $"'{s.Replace("'", "''")}'",
-            bool b => b ? "1" : "0",
+            string s => $"\"{s.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"",
+            bool b => b ? "true" : "false",
             _ => value.ToString()!
         };
     }

@@ -32,7 +32,7 @@ public sealed class DtoTemplate : NinjadogTemplate
 
     /// <summary>
     /// Generates DTO properties with database-friendly types.
-    /// Guid is mapped to string (stored as TEXT in SQLite) and DateOnly is mapped to DateTime.
+    /// DateOnly is mapped to DateTime. Guid is kept as-is (Dapper handles the conversion).
     /// </summary>
     private static string GenerateDtoProperties(NinjadogEntityWithKey entity)
     {
@@ -46,13 +46,12 @@ public sealed class DtoTemplate : NinjadogTemplate
     {
         var dtoType = p.Type switch
         {
-            "Guid" => "string",
             "DateOnly" => "DateTime",
             _ => p.Type
         };
 
         IndentedStringBuilder sb = new(1);
-        sb.Append($"public {dtoType} {p.Key} {{ get; init; }}");
+        sb.Append($"public {dtoType} {p.PascalKey} {{ get; init; }}");
 
         if (dtoType == "string")
         {
