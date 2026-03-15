@@ -32,7 +32,7 @@ public sealed class DeleteEndpointTemplate
               {
                   public override void Configure()
                   {
-                      Delete("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");{{(HasAuth ? string.Empty : "\n        AllowAnonymous();")}}{{GenerateVersionCall(ApiVersion)}}
+                      Delete("{{st.ModelEndpoint}}/{id:{{GetRouteConstraint(entityKey.Type)}}}");{{GenerateAuthLine(HasAuth)}}{{GenerateVersionCall(ApiVersion)}}
                   }
 
                   public override async Task HandleAsync({{st.ClassDeleteModelRequest}} req, CancellationToken ct)

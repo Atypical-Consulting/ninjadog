@@ -25,6 +25,17 @@ public abstract class EndpointTemplateBase
     }
 
     /// <summary>
+    /// Generates the AllowAnonymous() call when auth is not enabled.
+    /// Returns an empty string when auth is enabled.
+    /// </summary>
+    /// <param name="hasAuth">Whether auth is enabled.</param>
+    /// <returns>The AllowAnonymous line or empty string.</returns>
+    protected static string GenerateAuthLine(bool hasAuth)
+    {
+        return hasAuth ? string.Empty : "\n        AllowAnonymous();";
+    }
+
+    /// <summary>
     /// Caches auth and versioning settings from the provided configuration.
     /// Can be called by subclasses that override GenerateMany with custom iteration logic.
     /// </summary>

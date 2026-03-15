@@ -8,9 +8,14 @@ internal static class ValidationRuleGenerator
 {
     private static readonly HashSet<string> _valueTypes =
     [
-        "Int32",
+        "Boolean",
+        "Byte",
         "Decimal",
-        "Boolean"
+        "Double",
+        "Int16",
+        "Int32",
+        "Int64",
+        "Single"
     ];
 
     internal static string GenerateValidationRules(NinjadogEntityWithKey entity)

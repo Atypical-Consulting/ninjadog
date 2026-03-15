@@ -60,74 +60,56 @@ public sealed class DatabaseInitializerTemplate
         var st = entity.StringTokens;
         var entityKey = entity.Properties.GetEntityKey();
         var fkConstraints = GetForeignKeyConstraints(entity, allEntities);
-        IndentedStringBuilder stringBuilder = new(0);
 
-        stringBuilder
-            .AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (")
-            .IncrementIndent().IncrementIndent().IncrementIndent()
-            .AppendLine($"{entityKey.PascalKey} {MapToDbType(entityKey.Type, provider, enumNames)} PRIMARY KEY,");
+        // Collect all column definitions into a flat list
+        List<string> columns =
+        [
+            $"{entityKey.PascalKey} {MapToDbType(entityKey.Type, provider, enumNames)} PRIMARY KEY",
+        ];
 
-        var nonKeyProperties = entity.Properties
-            .Where(p => !p.Value.IsKey)
-            .ToList();
-
-        for (var i = 0; i < nonKeyProperties.Count; i++)
+        // Non-key properties
+        foreach (var p in entity.Properties.Where(p => !p.Value.IsKey))
         {
-            var p = nonKeyProperties[i];
-            var isLast = i == nonKeyProperties.Count - 1;
-            var needsComma = !isLast || softDelete || auditing || fkConstraints.Count > 0;
             var nullConstraint = p.Value.Required ? " NOT NULL" : string.Empty;
-
-            if (needsComma)
-            {
-                stringBuilder.AppendLine($"{p.Key.UppercaseFirst()} {MapToDbType(p.Value.Type, provider, enumNames)}{nullConstraint},");
-            }
-            else
-            {
-                stringBuilder.Append($"{p.Key.UppercaseFirst()} {MapToDbType(p.Value.Type, provider, enumNames)}{nullConstraint})");
-            }
+            columns.Add($"{p.Key.UppercaseFirst()} {MapToDbType(p.Value.Type, provider, enumNames)}{nullConstraint}");
         }
 
+        // Soft delete columns
         if (softDelete)
         {
-            var needsComma = auditing || fkConstraints.Count > 0;
-            stringBuilder
-                .AppendLine("IsDeleted INTEGER NOT NULL DEFAULT 0,")
-                .Append(needsComma ? "DeletedAt TEXT," : "DeletedAt TEXT)");
-            if (needsComma)
-            {
-                stringBuilder.AppendLine();
-            }
+            columns.Add("IsDeleted INTEGER NOT NULL DEFAULT 0");
+            columns.Add("DeletedAt TEXT");
         }
 
+        // Audit columns
         if (auditing)
         {
-            var needsComma = fkConstraints.Count > 0;
-            stringBuilder
-                .AppendLine("CreatedAt TEXT NOT NULL,");
-            if (needsComma)
-            {
-                stringBuilder.AppendLine("UpdatedAt TEXT,");
-            }
-            else
-            {
-                stringBuilder.Append("UpdatedAt TEXT)");
-            }
+            columns.Add("CreatedAt TEXT NOT NULL");
+            columns.Add("UpdatedAt TEXT");
         }
 
-        for (var i = 0; i < fkConstraints.Count; i++)
+        // Foreign key constraints
+        foreach (var (fkColumn, parentTable, parentPk) in fkConstraints)
         {
-            var (fkColumn, parentTable, parentPk) = fkConstraints[i];
-            var isLast = i == fkConstraints.Count - 1;
-            var constraint = $"FOREIGN KEY ({fkColumn}) REFERENCES {parentTable}({parentPk})";
+            columns.Add($"FOREIGN KEY ({fkColumn}) REFERENCES {parentTable}({parentPk})");
+        }
 
+        // Build the CREATE TABLE statement
+        IndentedStringBuilder stringBuilder = new(0);
+        stringBuilder
+            .AppendLine($"CREATE TABLE IF NOT EXISTS {st.Models} (")
+            .IncrementIndent().IncrementIndent().IncrementIndent();
+
+        for (var i = 0; i < columns.Count; i++)
+        {
+            var isLast = i == columns.Count - 1;
             if (isLast)
             {
-                stringBuilder.Append($"{constraint})");
+                stringBuilder.Append($"{columns[i]})");
             }
             else
             {
-                stringBuilder.AppendLine($"{constraint},");
+                stringBuilder.AppendLine($"{columns[i]},");
             }
         }
 

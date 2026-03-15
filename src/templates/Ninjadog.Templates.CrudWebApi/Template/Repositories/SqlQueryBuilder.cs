@@ -66,9 +66,7 @@ internal static class SqlQueryBuilder
         var st = entity.StringTokens;
         var entityKey = entity.Properties.GetEntityKey();
         var softDeleteFilter = sql.SoftDelete ? " AND IsDeleted = 0" : string.Empty;
-        var limit = sql.Provider == "sqlserver" ? string.Empty : " LIMIT 1";
-        var top = sql.Provider == "sqlserver" ? "TOP 1 " : string.Empty;
-        return $"SELECT {top}* FROM {st.Models} WHERE {entityKey.PascalKey} = @{entityKey.PascalKey}{softDeleteFilter}{limit}";
+        return $"SELECT {sql.SelectTopOne}* FROM {st.Models} WHERE {entityKey.PascalKey} = @{entityKey.PascalKey}{softDeleteFilter}{sql.LimitOne}";
     }
 
     /// <summary>
@@ -83,14 +81,12 @@ internal static class SqlQueryBuilder
         var baseQuery = sql.SoftDelete
             ? $"SELECT * FROM {st.Models} WHERE IsDeleted = 0"
             : $"SELECT * FROM {st.Models}";
-        var paginationClause = sql.Provider == "sqlserver"
-            ? " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY"
-            : " LIMIT @PageSize OFFSET @Offset";
+        var paginationClause = sql.PaginationClause;
 
         var lines = GenerateFilterableQueryLines(baseQuery, sql.SoftDelete);
         lines.Add(string.Empty);
 
-        lines.AddRange(sql.Provider == "sqlserver"
+        lines.AddRange(sql.IsSqlServer
             ?
             [
                 "sql += !string.IsNullOrEmpty(orderBy)",

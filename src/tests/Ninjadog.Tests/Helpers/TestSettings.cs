@@ -12,72 +12,136 @@ public static class TestSettingsFactory
 {
     public static ConfiguredSettings WithSoftDelete()
     {
-        return new ConfiguredSettings(new TestConfiguration() with { SoftDelete = true }, new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithSoftDelete().Build();
     }
 
     public static ConfiguredSettings WithAuditing()
     {
-        return new ConfiguredSettings(new TestConfiguration() with { Auditing = true }, new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithAuditing().Build();
     }
 
     public static ConfiguredSettings WithPostgres()
     {
-        return new ConfiguredSettings(new TestConfiguration() with { DatabaseProvider = "postgresql" }, new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithDatabaseProvider("postgresql").Build();
     }
 
     public static ConfiguredSettings WithSqlServer()
     {
-        return new ConfiguredSettings(new TestConfiguration() with { DatabaseProvider = "sqlserver" }, new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithDatabaseProvider("sqlserver").Build();
     }
 
     public static ConfiguredSettings WithRelationships()
     {
-        return new ConfiguredSettings(new TestConfiguration(), new RelationshipEntitiesCollection());
+        return TestSettingsBuilder.Default().WithEntities(new RelationshipEntitiesCollection()).Build();
     }
 
     public static ConfiguredSettings WithAot()
     {
-        return new ConfiguredSettings(new TestConfiguration() with { Aot = true }, new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithAot().Build();
     }
 
     public static ConfiguredSettings WithAotSeeded()
     {
-        return new ConfiguredSettings(new TestConfiguration() with { Aot = true }, new AotSeededEntitiesCollection());
+        return TestSettingsBuilder.Default().WithAot().WithEntities(new AotSeededEntitiesCollection()).Build();
     }
 
     public static ConfiguredSettings WithRateLimit()
     {
-        return new ConfiguredSettings(
-            new TestConfiguration() with { RateLimit = new NinjadogRateLimitConfiguration() },
-            new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithRateLimit().Build();
     }
 
     public static ConfiguredSettings WithCustomRateLimit(int permitLimit = 50, int windowSeconds = 30, int segmentsPerWindow = 3)
     {
-        return new ConfiguredSettings(
-            new TestConfiguration() with { RateLimit = new NinjadogRateLimitConfiguration(PermitLimit: permitLimit, WindowSeconds: windowSeconds, SegmentsPerWindow: segmentsPerWindow) },
-            new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithRateLimit(new NinjadogRateLimitConfiguration(PermitLimit: permitLimit, WindowSeconds: windowSeconds, SegmentsPerWindow: segmentsPerWindow)).Build();
     }
 
     public static ConfiguredSettings WithVersioning()
     {
-        return new ConfiguredSettings(
-            new TestConfiguration() with { Versioning = new NinjadogVersioningConfiguration() },
-            new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithVersioning().Build();
     }
 
     public static ConfiguredSettings WithHeaderVersioning()
     {
-        return new ConfiguredSettings(
-            new TestConfiguration() with { Versioning = new NinjadogVersioningConfiguration(Strategy: "HeaderBased") },
-            new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithVersioning(new NinjadogVersioningConfiguration(Strategy: "HeaderBased")).Build();
     }
 
     public static ConfiguredSettings WithAuth(params string[] roles)
     {
-        return new ConfiguredSettings(
-            new TestConfiguration() with { Auth = new NinjadogAuthConfiguration(Roles: roles) },
-            new TestEntitiesCollection());
+        return TestSettingsBuilder.Default().WithAuth(roles).Build();
+    }
+}
+
+/// <summary>
+/// Fluent builder for creating test settings with specific feature combinations.
+/// </summary>
+public sealed class TestSettingsBuilder
+{
+    private TestConfiguration _config = new();
+    private NinjadogEntities _entities = new TestEntitiesCollection();
+    private Dictionary<string, List<string>>? _enums;
+
+    public static TestSettingsBuilder Default()
+    {
+        return new TestSettingsBuilder();
+    }
+
+    public TestSettingsBuilder WithSoftDelete(bool enabled = true)
+    {
+        _config = _config with { SoftDelete = enabled };
+        return this;
+    }
+
+    public TestSettingsBuilder WithAuditing(bool enabled = true)
+    {
+        _config = _config with { Auditing = enabled };
+        return this;
+    }
+
+    public TestSettingsBuilder WithDatabaseProvider(string provider)
+    {
+        _config = _config with { DatabaseProvider = provider };
+        return this;
+    }
+
+    public TestSettingsBuilder WithAot(bool enabled = true)
+    {
+        _config = _config with { Aot = enabled };
+        return this;
+    }
+
+    public TestSettingsBuilder WithRateLimit(NinjadogRateLimitConfiguration? rateLimit = null)
+    {
+        _config = _config with { RateLimit = rateLimit ?? new NinjadogRateLimitConfiguration() };
+        return this;
+    }
+
+    public TestSettingsBuilder WithVersioning(NinjadogVersioningConfiguration? versioning = null)
+    {
+        _config = _config with { Versioning = versioning ?? new NinjadogVersioningConfiguration() };
+        return this;
+    }
+
+    public TestSettingsBuilder WithAuth(params string[] roles)
+    {
+        _config = _config with { Auth = new NinjadogAuthConfiguration(Roles: roles) };
+        return this;
+    }
+
+    public TestSettingsBuilder WithEntities(NinjadogEntities entities)
+    {
+        _entities = entities;
+        return this;
+    }
+
+    public TestSettingsBuilder WithEnums(Dictionary<string, List<string>> enums)
+    {
+        _enums = enums;
+        return this;
+    }
+
+    public ConfiguredSettings Build()
+    {
+        return new ConfiguredSettings(_config, _entities, _enums);
     }
 }
 

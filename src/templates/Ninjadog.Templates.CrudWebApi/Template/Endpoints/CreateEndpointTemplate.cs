@@ -34,7 +34,7 @@ public sealed class CreateEndpointTemplate
               {
                   public override void Configure()
                   {
-                      Post("{{st.ModelEndpoint}}");{{(HasAuth ? string.Empty : "\n        AllowAnonymous();")}}{{GenerateVersionCall(ApiVersion)}}
+                      Post("{{st.ModelEndpoint}}");{{GenerateAuthLine(HasAuth)}}{{GenerateVersionCall(ApiVersion)}}
                   }
 
                   public override async Task HandleAsync({{st.ClassCreateModelRequest}} req, CancellationToken ct)

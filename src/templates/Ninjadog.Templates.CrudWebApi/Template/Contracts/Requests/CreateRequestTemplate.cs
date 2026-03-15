@@ -4,33 +4,26 @@ namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 /// This template generates the Create request for a given entity.
 /// </summary>
 public sealed class CreateRequestTemplate
-    : NinjadogTemplate
+    : PropertyRequestTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "CreateRequest";
 
     /// <inheritdoc />
-    public override NinjadogContentFile GenerateOneByEntity(
-        NinjadogEntityWithKey entity, string rootNamespace)
+    protected override string GetClassName(StringTokens st)
     {
-        var st = entity.StringTokens;
-        var ns = $"{rootNamespace}.Contracts.Requests";
-        var fileName = $"{st.ClassCreateModelRequest}.cs";
+        return st.ClassCreateModelRequest;
+    }
 
-        var content =
-            $$"""
+    /// <inheritdoc />
+    protected override string GetActionVerb()
+    {
+        return "create";
+    }
 
-              {{WriteFileScopedNamespace(ns)}}
-
-              /// <summary>
-              ///     Request to create a {{st.Model}}.
-              /// </summary>
-              public partial class {{st.ClassCreateModelRequest}}
-              {
-              {{entity.GenerateMemberProperties(excludeAutoKey: true)}}
-              }
-              """;
-
-        return CreateNinjadogContentFile(fileName, content);
+    /// <inheritdoc />
+    protected override bool ShouldExcludeAutoKey()
+    {
+        return true;
     }
 }

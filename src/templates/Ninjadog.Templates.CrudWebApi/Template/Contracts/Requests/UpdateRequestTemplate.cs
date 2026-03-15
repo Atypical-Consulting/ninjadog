@@ -1,36 +1,29 @@
-﻿namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
+namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Requests;
 
 /// <summary>
 /// This template generates the Update request for a given entity.
 /// </summary>
 public sealed class UpdateRequestTemplate
-    : NinjadogTemplate
+    : PropertyRequestTemplateBase
 {
     /// <inheritdoc />
     public override string Name => "UpdateRequest";
 
     /// <inheritdoc />
-    public override NinjadogContentFile GenerateOneByEntity(
-        NinjadogEntityWithKey entity, string rootNamespace)
+    protected override string GetClassName(StringTokens st)
     {
-        var st = entity.StringTokens;
-        var ns = $"{rootNamespace}.Contracts.Requests";
-        var fileName = $"{st.ClassUpdateModelRequest}.cs";
+        return st.ClassUpdateModelRequest;
+    }
 
-        var content =
-            $$"""
+    /// <inheritdoc />
+    protected override string GetActionVerb()
+    {
+        return "update";
+    }
 
-              {{WriteFileScopedNamespace(ns)}}
-
-              /// <summary>
-              ///     Request to update a {{st.Model}}.
-              /// </summary>
-              public partial class {{st.ClassUpdateModelRequest}}
-              {
-              {{entity.GenerateMemberProperties()}}
-              }
-              """;
-
-        return CreateNinjadogContentFile(fileName, content);
+    /// <inheritdoc />
+    protected override bool ShouldExcludeAutoKey()
+    {
+        return false;
     }
 }
