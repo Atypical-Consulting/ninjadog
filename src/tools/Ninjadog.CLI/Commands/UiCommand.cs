@@ -6,14 +6,19 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ninjadog.CLI.AI;
+using Ninjadog.Engine;
+using Ninjadog.Engine.Core.DomainEvents;
+using Ninjadog.Engine.Infrastructure;
 using Ninjadog.Evolution;
 using Ninjadog.Evolution.Migrations;
 using Ninjadog.Settings.Schema;
 using Ninjadog.Settings.Validation;
+using Ninjadog.Templates.CrudWebAPI.Setup;
 
 namespace Ninjadog.CLI.Commands;
 
@@ -139,7 +144,38 @@ internal sealed class UiCommand : AsyncCommand<UiCommandSettings>
                 return Results.Json(new { success = false, error = "No ninjadog.json found." }, statusCode: 400);
             }
 
-            return Results.Json(new { success = true, message = "Build triggered. Use the CLI 'ninjadog build' for full output." });
+            try
+            {
+                var json = File.ReadAllText(configPath);
+                var ninjadogSettings = NinjadogSettings.FromJsonString(json, Path.GetDirectoryName(configPath));
+
+                var services = new ServiceCollection();
+                services.AddDomainEventDispatcher();
+                services.AddInfrastructure();
+                services.AddSingleton<INinjadogEngineFactory, NinjadogEngineFactory>();
+                services.AddSingleton<NinjadogTemplateManifest, CrudTemplateManifest>();
+                services.AddSingleton(ninjadogSettings);
+                services.AddSingleton(new NinjadogVerbosityOptions());
+
+                using var serviceProvider = services.BuildServiceProvider();
+                var engineFactory = serviceProvider.GetRequiredService<INinjadogEngineFactory>();
+                var engine = engineFactory.CreateNinjadogEngine();
+                engine.Run();
+
+                var snapshot = engine.Context.GetSnapshot();
+                return Results.Json(new
+                {
+                    success = true,
+                    message = $"Build completed — {snapshot.TotalFilesGenerated} files generated ({snapshot.TotalCharactersGenerated:N0} chars) in {snapshot.TotalTimeElapsed.TotalSeconds:F1}s",
+                    filesGenerated = snapshot.TotalFilesGenerated,
+                    charactersGenerated = snapshot.TotalCharactersGenerated,
+                    elapsedSeconds = snapshot.TotalTimeElapsed.TotalSeconds,
+                });
+            }
+            catch (Exception ex)
+            {
+                return Results.Json(new { success = false, error = ex.Message }, statusCode: 500);
+            }
         });
 
         // API: Get schema
