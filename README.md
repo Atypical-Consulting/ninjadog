@@ -1,3 +1,5 @@
+![Ninjadog banner](.github/banner.png)
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/Atypical-Consulting/Ninjadog/dev/logo.png" alt="Ninjadog logo" width="256" />
 </p>
