@@ -1,0 +1,151 @@
+﻿[  
+//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Data;
+using TestApp.Api.Database;
+using Dapper;
+
+namespace TestApp.Api.Repositories;
+
+public partial class TodoItemRepository(IDbConnectionFactory connectionFactory)
+    : ITodoItemRepository
+{
+    public async Task<bool> CreateAsync(TodoItemDto todoItem)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"INSERT INTO TodoItems (Id, Title, Description, IsCompleted, DueDate, Priority, Cost) VALUES (@Id, @Title, @Description, @IsCompleted, @DueDate, @Priority, @Cost)",
+            todoItem);
+
+        return result > 0;
+    }
+
+    public async Task<TodoItemDto?> GetAsync(Guid id)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        return await connection.QuerySingleOrDefaultAsync<TodoItemDto>(
+            "SELECT * FROM TodoItems WHERE Id = @Id LIMIT 1",
+            new { Id = id });
+    }
+
+    public async Task<IEnumerable<TodoItemDto>> GetAllAsync(
+        int page, int pageSize,
+        Dictionary<string, string>? filters = null,
+        string? sortBy = null,
+        bool sortDescending = false)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var (whereClause, parameters) = BuildWhereClause(filters);
+        parameters.Add("PageSize", pageSize);
+        parameters.Add("Offset", (page - 1) * pageSize);
+
+        var orderBy = BuildOrderByClause(sortBy, sortDescending);
+        var sql = "SELECT * FROM TodoItems";
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            sql += " WHERE " + whereClause;
+        }
+        
+        if (!string.IsNullOrEmpty(orderBy))
+        {
+            sql += " ORDER BY " + orderBy;
+        }
+        
+        sql += " LIMIT @PageSize OFFSET @Offset";
+
+        return await connection.QueryAsync<TodoItemDto>(sql, parameters);
+    }
+
+    public async Task<int> CountAsync(Dictionary<string, string>? filters = null)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var (whereClause, parameters) = BuildWhereClause(filters);
+        var sql = "SELECT COUNT(*) FROM TodoItems";
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            sql += " WHERE " + whereClause;
+        }
+
+        return await connection.ExecuteScalarAsync<int>(sql, parameters);
+    }
+
+    public async Task<bool> UpdateAsync(TodoItemDto todoItem)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"UPDATE TodoItems SET Title = @Title, Description = @Description, IsCompleted = @IsCompleted, DueDate = @DueDate, Priority = @Priority, Cost = @Cost WHERE Id = @Id",
+            todoItem);
+
+            return result > 0;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"DELETE FROM TodoItems WHERE Id = @Id",
+            new { Id = id });
+
+        return result > 0;
+    }
+
+    private static readonly HashSet<string> AllowedColumns = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Title", "Description", "IsCompleted", "DueDate", "Priority", "Cost"
+    };
+
+    private static (string WhereClause, Dictionary<string, object> Parameters) BuildWhereClause(
+        Dictionary<string, string>? filters)
+    {
+        var parameters = new Dictionary<string, object>();
+        if (filters is null || filters.Count == 0)
+        {
+            return (string.Empty, parameters);
+        }
+
+        var conditions = new List<string>();
+        foreach (var (key, value) in filters)
+        {
+            if (AllowedColumns.Contains(key))
+            {
+                conditions.Add($"{key} = @Filter_{key}");
+                parameters[$"Filter_{key}"] = value;
+            }
+        }
+
+        var whereClause = conditions.Count > 0
+            ? string.Join(" AND ", conditions)
+            : string.Empty;
+
+        return (whereClause, parameters);
+    }
+
+    private static string BuildOrderByClause(string? sortBy, bool sortDescending)
+    {
+        if (string.IsNullOrEmpty(sortBy) || !AllowedColumns.Contains(sortBy))
+        {
+            return string.Empty;
+        }
+
+        var direction = sortDescending ? "DESC" : "ASC";
+        return $"{sortBy} {direction}";
+    }
+}
+
+]

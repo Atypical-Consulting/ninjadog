@@ -1,0 +1,36 @@
+﻿namespace Ninjadog.Templates.CrudWebAPI.Template.Contracts.Responses;
+
+/// <summary>
+/// This template generates the GetAll response for a given entity.
+/// </summary>
+public sealed class GetAllResponseTemplate
+    : NinjadogTemplate
+{
+    /// <inheritdoc />
+    public override string Name => "GetAllResponse";
+
+    /// <inheritdoc />
+    public override NinjadogContentFile GenerateOneByEntity(
+        NinjadogEntityWithKey entity, string rootNamespace)
+    {
+        var st = entity.StringTokens;
+        var ns = $"{rootNamespace}.Contracts.Responses";
+        var fileName = $"{st.ClassGetAllModelsResponse}.cs";
+
+        var content =
+            $$"""
+
+              {{WriteFileScopedNamespace(ns)}}
+
+              public partial class {{st.ClassGetAllModelsResponse}}
+              {
+                  public IEnumerable<{{st.ClassModelResponse}}> {{st.Models}} { get; init; } = Enumerable.Empty<{{st.ClassModelResponse}}>();
+                  public int Page { get; init; }
+                  public int PageSize { get; init; }
+                  public int TotalCount { get; init; }
+              }
+              """;
+
+        return CreateNinjadogContentFile(fileName, content);
+    }
+}

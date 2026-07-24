@@ -1,0 +1,43 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Requests;
+using TestApp.Api.Contracts.Responses;
+using TestApp.Api.Mapping;
+using TestApp.Api.Services;
+using FastEndpoints;
+
+namespace TestApp.Api.Endpoints;
+
+public partial class GetOrderEndpoint(IOrderService orderService)
+    : Endpoint<GetOrderRequest, OrderResponse>
+{
+    public override void Configure()
+    {
+        Get("/orders/{id:int}");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(GetOrderRequest req, CancellationToken ct)
+    {
+        var order = await orderService.GetAsync(req.OrderId);
+
+        if (order is null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
+        var orderResponse = order.ToOrderResponse();
+        await Send.OkAsync(orderResponse, ct);
+    }
+}

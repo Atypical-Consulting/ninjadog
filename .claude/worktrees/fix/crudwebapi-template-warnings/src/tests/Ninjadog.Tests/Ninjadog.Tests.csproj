@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CA1707;CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ValueOf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../tools/Ninjadog.CLI/Ninjadog.CLI.csproj" />
+    <ProjectReference Include="../../templates/Ninjadog.Templates.CrudWebApi/Ninjadog.Templates.CrudWebApi.csproj" />
+  </ItemGroup>
+
+</Project>

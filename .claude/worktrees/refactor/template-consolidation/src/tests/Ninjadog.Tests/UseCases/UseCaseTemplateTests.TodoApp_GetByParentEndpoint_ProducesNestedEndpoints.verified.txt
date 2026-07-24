@@ -1,0 +1,90 @@
+﻿[
+  {
+    FileName: TodoItem/GetTodoItemsByTodoListEndpoint.cs,
+    Content:
+//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TodoApp.CrudWebApi.Contracts.Responses;
+using TodoApp.CrudWebApi.Mapping;
+using TodoApp.CrudWebApi.Services;
+using FastEndpoints;
+
+namespace TodoApp.CrudWebApi.Endpoints;
+
+public partial class GetTodoItemsByTodoListEndpoint(ITodoItemService todoItemService)
+    : EndpointWithoutRequest<GetAllTodoItemsResponse>
+{
+    public override void Configure()
+    {
+        Get("/todo-lists/{todoListId:guid}/todo-items");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var todoListId = Route<string>("todoListId");
+        var page = int.TryParse(HttpContext.Request.Query["page"], out var p) && p > 0 ? p : 1;
+        var pageSize = int.TryParse(HttpContext.Request.Query["pageSize"], out var ps) && ps > 0 ? ps : 10;
+
+        var (todoItems, totalCount) = await todoItemService.GetAllAsync(page, pageSize);
+        var todoItemsResponse = todoItems.ToTodoItemsResponse(page, pageSize, totalCount);
+        await Send.OkAsync(todoItemsResponse, ct);
+    }
+}
+
+  },
+  {
+    FileName: TodoCategory/GetTodoCategoriesByTodoListEndpoint.cs,
+    Content:
+//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TodoApp.CrudWebApi.Contracts.Responses;
+using TodoApp.CrudWebApi.Mapping;
+using TodoApp.CrudWebApi.Services;
+using FastEndpoints;
+
+namespace TodoApp.CrudWebApi.Endpoints;
+
+public partial class GetTodoCategoriesByTodoListEndpoint(ITodoCategoryService todoCategoryService)
+    : EndpointWithoutRequest<GetAllTodoCategoriesResponse>
+{
+    public override void Configure()
+    {
+        Get("/todo-lists/{todoListId:guid}/todo-categories");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var todoListId = Route<string>("todoListId");
+        var page = int.TryParse(HttpContext.Request.Query["page"], out var p) && p > 0 ? p : 1;
+        var pageSize = int.TryParse(HttpContext.Request.Query["pageSize"], out var ps) && ps > 0 ? ps : 10;
+
+        var (todoCategories, totalCount) = await todoCategoryService.GetAllAsync(page, pageSize);
+        var todoCategoriesResponse = todoCategories.ToTodoCategoriesResponse(page, pageSize, totalCount);
+        await Send.OkAsync(todoCategoriesResponse, ct);
+    }
+}
+
+  }
+]

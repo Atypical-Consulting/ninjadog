@@ -1,0 +1,148 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Data;
+using TestApp.Api.Database;
+using Dapper;
+
+namespace TestApp.Api.Repositories;
+
+public partial class OrderRepository(IDbConnectionFactory connectionFactory)
+    : IOrderRepository
+{
+    public async Task<bool> CreateAsync(OrderDto order)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"INSERT INTO Orders (OrderId, CustomerName, Total) VALUES (@OrderId, @CustomerName, @Total)",
+            order);
+
+        return result > 0;
+    }
+
+    public async Task<OrderDto?> GetAsync(Int32 id)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        return await connection.QuerySingleOrDefaultAsync<OrderDto>(
+            "SELECT * FROM Orders WHERE OrderId = @OrderId LIMIT 1",
+            new { OrderId = id });
+    }
+
+    public async Task<IEnumerable<OrderDto>> GetAllAsync(
+        int page, int pageSize,
+        Dictionary<string, string>? filters = null,
+        string? sortBy = null,
+        bool sortDescending = false)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var (whereClause, parameters) = BuildWhereClause(filters);
+        parameters.Add("PageSize", pageSize);
+        parameters.Add("Offset", (page - 1) * pageSize);
+
+        var orderBy = BuildOrderByClause(sortBy, sortDescending);
+        var sql = "SELECT * FROM Orders";
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            sql += " WHERE " + whereClause;
+        }
+        
+        if (!string.IsNullOrEmpty(orderBy))
+        {
+            sql += " ORDER BY " + orderBy;
+        }
+        
+        sql += " LIMIT @PageSize OFFSET @Offset";
+
+        return await connection.QueryAsync<OrderDto>(sql, parameters);
+    }
+
+    public async Task<int> CountAsync(Dictionary<string, string>? filters = null)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var (whereClause, parameters) = BuildWhereClause(filters);
+        var sql = "SELECT COUNT(*) FROM Orders";
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            sql += " WHERE " + whereClause;
+        }
+
+        return await connection.ExecuteScalarAsync<int>(sql, parameters);
+    }
+
+    public async Task<bool> UpdateAsync(OrderDto order)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"UPDATE Orders SET CustomerName = @CustomerName, Total = @Total WHERE OrderId = @OrderId",
+            order);
+
+            return result > 0;
+    }
+
+    public async Task<bool> DeleteAsync(Int32 id)
+    {
+        using var connection = await connectionFactory.CreateConnectionAsync();
+
+        var result = await connection.ExecuteAsync(
+            @"DELETE FROM Orders WHERE OrderId = @OrderId",
+            new { OrderId = id });
+
+        return result > 0;
+    }
+
+    private static readonly HashSet<string> AllowedColumns = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "CustomerName", "Total"
+    };
+
+    private static (string WhereClause, Dictionary<string, object> Parameters) BuildWhereClause(
+        Dictionary<string, string>? filters)
+    {
+        var parameters = new Dictionary<string, object>();
+        if (filters is null || filters.Count == 0)
+        {
+            return (string.Empty, parameters);
+        }
+
+        var conditions = new List<string>();
+        foreach (var (key, value) in filters)
+        {
+            if (AllowedColumns.Contains(key))
+            {
+                conditions.Add($"{key} = @Filter_{key}");
+                parameters[$"Filter_{key}"] = value;
+            }
+        }
+
+        var whereClause = conditions.Count > 0
+            ? string.Join(" AND ", conditions)
+            : string.Empty;
+
+        return (whereClause, parameters);
+    }
+
+    private static string BuildOrderByClause(string? sortBy, bool sortDescending)
+    {
+        if (string.IsNullOrEmpty(sortBy) || !AllowedColumns.Contains(sortBy))
+        {
+            return string.Empty;
+        }
+
+        var direction = sortDescending ? "DESC" : "ASC";
+        return $"{sortBy} {direction}";
+    }
+}

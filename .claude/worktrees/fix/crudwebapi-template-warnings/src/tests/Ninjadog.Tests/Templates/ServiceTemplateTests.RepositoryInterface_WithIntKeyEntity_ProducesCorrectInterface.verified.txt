@@ -1,0 +1,30 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using TestApp.Api.Contracts.Data;
+
+namespace TestApp.Api.Repositories;
+
+public partial interface IOrderRepository
+{
+    Task<bool> CreateAsync(OrderDto order);
+
+    Task<OrderDto?> GetAsync(Int32 id);
+
+    Task<IEnumerable<OrderDto>> GetAllAsync(int page, int pageSize);
+
+    Task<int> CountAsync();
+
+    Task<bool> UpdateAsync(OrderDto order);
+
+    Task<bool> DeleteAsync(Int32 id);
+}

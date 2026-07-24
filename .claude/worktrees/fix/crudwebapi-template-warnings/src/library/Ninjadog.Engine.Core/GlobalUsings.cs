@@ -1,0 +1,9 @@
+global using Ninjadog.Engine.Core.Abstractions;
+global using Ninjadog.Engine.Core.DomainEvents.Errors;
+global using Ninjadog.Engine.Core.DomainEvents.ProcessContent;
+global using Ninjadog.Engine.Core.DomainEvents.ProcessTemplate;
+global using Ninjadog.Engine.Core.DomainEvents.Run;
+global using Ninjadog.Engine.Core.Models;
+global using Ninjadog.Engine.Core.ValueObjects;
+global using Ninjadog.Settings;
+global using Ninjadog.Settings.Extensions.Entities;

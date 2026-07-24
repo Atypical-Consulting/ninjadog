@@ -1,0 +1,107 @@
+﻿//------------------------------------------------------------------------------
+// This code was powered by the Ninjadog Engine
+//
+// Developed by: Atypical Consulting SRL - Philippe Matray
+// Generated on: [SCRUBBED]
+// Version     : [SCRUBBED]
+//
+// This file is part of a custom software solution crafted to meet your
+// specific needs. For optimal performance and compatibility, modifications
+// should be coordinated with Ninjadog support services.
+//------------------------------------------------------------------------------
+
+using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using TestApp.Api.Database;
+using TestApp.Api.Repositories;
+using TestApp.Api.Services;
+using FastEndpoints;
+using FluentValidation;
+
+namespace TestApp.Api;
+
+public static class NinjadogExtensions
+{
+    private const string ProblemJsonContentType = "application/problem+json";
+
+    public static IServiceCollection AddNinjadog(
+        this IServiceCollection services,
+        ConfigurationManager config)
+    {
+        services.AddFastEndpoints(o =>
+        {
+            o.SerializerContext = AppJsonSerializerContext.Default;
+        });
+
+        var connectionString =
+            config.GetValue<string>("Database:ConnectionString")
+            ?? throw new InvalidOperationException("Database:ConnectionString is not configured.");
+
+        services.AddSingleton<IDbConnectionFactory>(_ => new SqliteConnectionFactory(connectionString));
+        services.AddSingleton<DatabaseInitializer>();
+        services.AddScoped<ITodoItemRepository, TodoItemRepository>();
+        services.AddScoped<ITodoItemService, TodoItemService>();
+
+        return services;
+    }
+
+    public static WebApplication UseNinjadog(this WebApplication app)
+    {
+        app.UseGlobalExceptionHandler();
+        app.UseFastEndpoints();
+
+        return app;
+    }
+
+    private static WebApplication UseGlobalExceptionHandler(this WebApplication app)
+    {
+        app.UseExceptionHandler(errApp =>
+        {
+            errApp.Run(async ctx =>
+            {
+                var exHandlerFeature = ctx.Features.Get<IExceptionHandlerFeature>();
+                var error = exHandlerFeature?.Error;
+
+                int statusCode;
+                Microsoft.AspNetCore.Mvc.ProblemDetails problemDetails;
+
+                if (error is ValidationException validationException)
+                {
+                    statusCode = StatusCodes.Status400BadRequest;
+                    problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
+                    {
+                        Status = statusCode,
+                        Title = "One or more validation errors occurred.",
+                        Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                        Detail = "See the errors property for details.",
+                        Extensions =
+                        {
+                            ["errors"] = validationException.Errors
+                                .GroupBy(f => f.PropertyName)
+                                .ToDictionary(
+                                    g => g.Key,
+                                    g => g.Select(f => f.ErrorMessage).ToArray())
+                        }
+                    };
+                }
+                else
+                {
+                    statusCode = StatusCodes.Status500InternalServerError;
+                    problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails
+                    {
+                        Status = statusCode,
+                        Title = "An unexpected error occurred.",
+                        Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1"
+                    };
+                }
+
+                ctx.Response.StatusCode = statusCode;
+                ctx.Response.ContentType = ProblemJsonContentType;
+                await ctx.Response.WriteAsJsonAsync(problemDetails, AppJsonSerializerContext.Default.ProblemDetails, ctx.RequestAborted);
+            });
+        });
+
+        return app;
+    }
+}

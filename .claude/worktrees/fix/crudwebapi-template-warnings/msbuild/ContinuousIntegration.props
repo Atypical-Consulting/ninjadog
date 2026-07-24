@@ -1,0 +1,6 @@
+<Project>
+  <!-- Continuous Integration -->
+  <PropertyGroup Label="Deterministic Build" Condition="'$(CI)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+</Project>

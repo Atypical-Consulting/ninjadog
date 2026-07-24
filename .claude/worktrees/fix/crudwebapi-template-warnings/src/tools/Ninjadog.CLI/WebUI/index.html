@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ninjadog Config Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/tailwind.css" />
+    <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body class="dark h-full font-body">
+    <div id="app" class="flex flex-col h-full">
+        <!-- Header -->
+        <header class="header-bar flex items-center justify-between px-6 py-3 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="ninja-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+                        <path d="M12 2L9 9L2 12L9 15L12 22L15 15L22 12L15 9L12 2Z"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col leading-tight">
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg font-display tracking-wide text-white">NINJADOG</h1>
+                        <span id="dirty-indicator" class="dirty-dot hidden" title="Unsaved changes"></span>
+                    </div>
+                    <span class="text-[10px] uppercase tracking-[0.2em] text-gray-500 -mt-0.5">Config Builder</span>
+                </div>
+                <span id="status-badge" class="status-badge text-xs px-2.5 py-0.5 rounded-full font-semibold hidden ml-2"></span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="btn-save" class="header-btn header-btn-secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save
+                </button>
+                <button id="btn-build" class="header-btn header-btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    Build
+                </button>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Left panel: Tabs + form -->
+            <div class="flex flex-col flex-1 min-w-0">
+                <!-- Tab bar -->
+                <nav class="tab-bar flex border-b border-bdr bg-surface-base shrink-0" style="height: 42px;">
+                    <button class="tab-btn active px-5 text-sm font-medium" data-tab="config">Config</button>
+                    <button class="tab-btn px-5 text-sm font-medium" data-tab="entities">Entities</button>
+                    <button class="tab-btn px-5 text-sm font-medium" data-tab="enums">Enums</button>
+                    <button class="tab-btn px-5 text-sm font-medium" data-tab="seed">Seed Data</button>
+                </nav>
+
+                <!-- Tab content -->
+                <div class="flex-1 overflow-auto p-6 content-area">
+                    <div id="tab-config" class="tab-content"></div>
+                    <div id="tab-entities" class="tab-content hidden"></div>
+                    <div id="tab-enums" class="tab-content hidden"></div>
+                    <div id="tab-seed" class="tab-content hidden"></div>
+                </div>
+            </div>
+
+            <!-- Right panel: JSON editor (Monaco) -->
+            <div id="json-panel" class="w-[420px] flex flex-col border-l border-bdr shrink-0">
+                <div class="flex items-center justify-between px-4 border-b border-bdr bg-surface-base" style="height: 42px;">
+                    <span class="text-[11px] font-mono font-medium text-gray-500 uppercase tracking-widest">JSON Editor</span>
+                </div>
+                <div id="monaco-container" class="flex-1 overflow-hidden"></div>
+            </div>
+        </div>
+
+        <!-- Validation panel -->
+        <div id="validation-panel" class="shrink-0 border-t border-bdr bg-surface-base max-h-40 overflow-auto">
+            <div class="validation-header px-4 py-2 text-[11px] font-medium text-gray-500 border-b border-bdr-dim uppercase tracking-widest font-mono">Validation</div>
+            <div id="validation-messages" class="px-4 py-2 space-y-1"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/config-editor.js"></script>
+    <script src="/js/entity-editor.js"></script>
+    <script src="/js/enum-editor.js"></script>
+    <script src="/js/seed-editor.js"></script>
+    <script src="/js/json-preview.js"></script>
+    <script src="/js/validation.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>

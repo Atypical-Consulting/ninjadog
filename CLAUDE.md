@@ -113,7 +113,9 @@ Every feature or bugfix follows this procedure **in order**:
 
 7. **Simplify & verify (MANDATORY)** — You MUST run `/simplify` to review changed code for reuse, quality, and efficiency. Then launch the UI (`ninjadog ui --port 5391 --no-browser`) and use the browser MCP to test your implementation end-to-end. **Fix any problems found during testing before proceeding. Do NOT skip this step.**
 
-8. **Create a PR (MANDATORY)** — You MUST push the branch and open a pull request targeting `dev` before considering the task complete. **The task is NOT done until the PR exists. Do NOT skip this step.**
+8. **Create a PR (MANDATORY)** — You MUST push the branch and open a pull request targeting `dev` before considering the task complete. **The task is NOT done until the PR exists. Do NOT skip this step.** Include a `## Test plan` section with checkboxes in the PR body.
    ```bash
    gh pr create --base dev --title "feat: short description" --body "..."
    ```
+
+9. **Execute test plan & update PR (MANDATORY)** — After creating the PR, execute every item in the test plan using the browser MCP (for UI items) and CLI commands (for build/test items). As each item passes or fails, update the PR body to check off the corresponding checkbox using `gh pr edit`. **The PR is NOT ready for review until all test plan items are checked. Do NOT skip this step.**

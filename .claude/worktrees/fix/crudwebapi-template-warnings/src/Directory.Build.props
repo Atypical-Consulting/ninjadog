@@ -1,0 +1,48 @@
+<Project>
+  <Import Project="../msbuild/General.props"/>
+  <Import Project="../msbuild/Documentation.props"/>
+  <Import Project="../msbuild/CodeAnalysis.props"/>
+  <Import Project="../msbuild/ContinuousIntegration.props"/>
+  <Import Project="../msbuild/Packaging.props"/>
+  <Import Project="../msbuild/SourceLink.props"/>
+  <Import Project="../msbuild/FileInclusion.props"/>
+  <Import Project="../msbuild/Versioning.props"/>
+  
+  <!-- Properties -->
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile Condition="'$(IsTestProject)' != 'true'">true</GenerateDocumentationFile>
+    <LangVersion>latest</LangVersion>
+    <IsTestProject>$(MSBuildProjectName.Contains('Tests'))</IsTestProject>
+    <ImplicitUsings>true</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Code Analyzers -->
+    <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Roslynator.Analyzers" PrivateAssets="all"/>
+    <!-- Reproducible Builds -->
+    <PackageReference Include="DotNet.ReproducibleBuilds" PrivateAssets="all"/>
+    <!-- MinVer -->
+    <PackageReference Include="MinVer" PrivateAssets="all"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="$(IsTestProject)">
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Snapshooter.Xunit" />
+    <PackageReference Include="Verify.XUnit" />
+    <PackageReference Include="coverlet.collector" PrivateAssets="all" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
+

@@ -1,0 +1,93 @@
+using Microsoft.Extensions.DependencyInjection;
+using Ninjadog.CLI.Commands;
+using Ninjadog.CLI.Utilities;
+using Ninjadog.Engine;
+using Ninjadog.Engine.Core.DomainEvents;
+using Ninjadog.Engine.Infrastructure;
+using Ninjadog.Templates.CrudWebAPI.Setup;
+
+SpectreWriteHelpers.WriteNinjadog();
+
+var registrations = new ServiceCollection();
+registrations.AddDomainEventDispatcher();
+registrations.AddInfrastructure();
+registrations.AddSingleton<INinjadogEngineFactory, NinjadogEngineFactory>();
+registrations.AddSingleton<NinjadogTemplateManifest, CrudTemplateManifest>();
+registrations.AddSingleton(new NinjadogVerbosityOptions());
+
+const string settingsFileName = "ninjadog.json";
+var settingsFilePath = Path.Combine(Directory.GetCurrentDirectory(), settingsFileName);
+
+if (Ninjadog.CLI.CliInvocation.RequiresProjectSettings(args))
+{
+    if (File.Exists(settingsFilePath))
+    {
+        var json = File.ReadAllText(settingsFilePath);
+        var settings = NinjadogSettings.FromJsonString(json, Path.GetDirectoryName(settingsFilePath));
+        registrations.AddSingleton(settings);
+    }
+    else
+    {
+        AnsiConsole.MarkupLine($"[yellow]Warning:[/] No {settingsFileName} found in the current directory. Run [green]ninjadog init[/] first.");
+        AnsiConsole.MarkupLine("[yellow]Using default settings.[/]");
+        registrations.AddSingleton<NinjadogSettings>(new Ninjadog.Settings.Extensions.NinjadogInitialSettings());
+    }
+}
+
+var registrar = new Ninjadog.CLI.Infrastructure.TypeRegistrar(registrations);
+
+var app = new CommandApp(registrar);
+
+app.Configure(config =>
+{
+    config.PropagateExceptions();
+
+#if DEBUG
+    config.ValidateExamples();
+#endif
+
+    config.AddCommand<InitCommand>("init")
+        .WithDescription("Initializes a new Ninjadog project.")
+        .WithExample(["init"])
+        .WithExample(["init", "--use-case", "TodoApp"])
+        .WithExample(["init", "-u", "RestaurantBooking"])
+        .WithExample(["init", "--from-prompt", "A blog with users, posts, and comments"]);
+
+    config.AddCommand<BuildCommand>("build")
+        .WithDescription("Builds and compiles the project.")
+        .WithExample(["build"]);
+
+    config.AddCommand<AddEntityCommand>("add-entity")
+        .WithDescription("Adds a new entity to the ninjadog.json file.")
+        .WithExample(["add-entity", "Product"]);
+
+    config.AddCommand<ValidateCommand>("validate")
+        .WithDescription("Validates a ninjadog.json configuration file.")
+        .WithExample(["validate"])
+        .WithExample(["validate", "--file", "path/to/ninjadog.json"])
+        .WithExample(["validate", "--strict"]);
+
+    config.AddCommand<EvolveCommand>("evolve")
+        .WithDescription("Detects schema changes and generates SQL migrations.")
+        .WithExample(["evolve"])
+        .WithExample(["evolve", "--dry-run"])
+        .WithExample(["evolve", "--name", "add-priority-field"]);
+
+    config.AddCommand<UpdateCommand>("update")
+        .WithDescription("Updates the ninjadog.schema.json file to the latest version.")
+        .WithExample(["update"]);
+
+    config.AddCommand<UiCommand>("ui")
+        .WithDescription("Opens a web-based configuration builder.")
+        .WithExample(["ui"]);
+});
+
+try
+{
+    return await app.RunAsync(args);
+}
+catch (Exception ex)
+{
+    WriteException(ex, ExceptionFormats.ShortenEverything);
+    return -99;
+}

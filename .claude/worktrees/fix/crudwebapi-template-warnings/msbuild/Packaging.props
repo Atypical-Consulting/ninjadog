@@ -1,0 +1,21 @@
+<Project>
+  <!-- Packaging -->
+  <PropertyGroup Label="Package Information">
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <!--<PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion>-->
+
+    <Description>
+      Ninjadog: One config. Full REST API. Zero boilerplate.
+    </Description>
+    <Authors>Philippe Matray</Authors>
+    <Copyright>Philippe Matray</Copyright>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/Atypical-Consulting/ninjadog</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Atypical-Consulting/ninjadog</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/Atypical-Consulting/ninjadog/releases</PackageReleaseNotes>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageTags>code-generation, scaffolding, crud, rest-api, web-api, dotnet, dotnet-tool</PackageTags>
+  </PropertyGroup>
+</Project>
