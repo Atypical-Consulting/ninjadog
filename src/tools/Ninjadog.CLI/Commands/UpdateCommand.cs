@@ -5,7 +5,7 @@ namespace Ninjadog.CLI.Commands;
 internal sealed class UpdateCommand
     : Command<UpdateCommandSettings>
 {
-    public override int Execute(CommandContext context, UpdateCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, UpdateCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {
