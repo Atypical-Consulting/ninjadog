@@ -9,7 +9,7 @@ internal sealed class ValidateCommand
     private const int ExitCodeErrors = 1;
     private const int ExitCodeFileNotFound = 2;
 
-    public override int Execute(CommandContext context, ValidateCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, ValidateCommandSettings settings, CancellationToken cancellationToken)
     {
         var filePath = ResolveFilePath(settings.File);
 

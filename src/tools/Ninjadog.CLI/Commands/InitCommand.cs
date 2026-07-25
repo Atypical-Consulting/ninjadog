@@ -34,7 +34,7 @@ internal sealed class InitCommand
         "Custom"
     ];
 
-    public override async Task<int> ExecuteAsync(CommandContext context, InitCommandSettings settings, CancellationToken cancellationToken)
+    protected override async Task<int> ExecuteAsync(CommandContext context, InitCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {

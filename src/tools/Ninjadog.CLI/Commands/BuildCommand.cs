@@ -8,7 +8,7 @@ internal sealed class BuildCommand(
     NinjadogVerbosityOptions verbosityOptions)
     : Command<BuildCommandSettings>
 {
-    public override int Execute(CommandContext context, BuildCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, BuildCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {

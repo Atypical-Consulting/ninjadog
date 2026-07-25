@@ -30,7 +30,7 @@ internal sealed class UiCommand : AsyncCommand<UiCommandSettings>
     private const int MaxPortRetries = 10;
 
     /// <inheritdoc />
-    public override async Task<int> ExecuteAsync(CommandContext context, UiCommandSettings settings, CancellationToken cancellationToken)
+    protected override async Task<int> ExecuteAsync(CommandContext context, UiCommandSettings settings, CancellationToken cancellationToken)
     {
         var configPath = Path.Combine(Directory.GetCurrentDirectory(), ConfigFileName);
         var port = FindAvailablePort(settings.Port);

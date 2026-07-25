@@ -9,7 +9,7 @@ internal sealed class DocsCommand : Command<DocsCommandSettings>
 {
     private const string DocsUrl = "https://atypical-consulting.github.io/Ninjadog/";
 
-    public override int Execute(CommandContext context, DocsCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, DocsCommandSettings settings, CancellationToken cancellationToken)
     {
         MarkupLine($"[green]Opening documentation:[/] [blue]{DocsUrl}[/]");
 
