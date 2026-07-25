@@ -23,6 +23,39 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Ninjadog.CLI embarque WebUI/dist/** en EmbeddedResource, et dist/ est
+      # committé. Un bump de dépendance JS ne change donc RIEN de ce qui est
+      # livré tant que le bundle n'est pas régénéré — la CI reste verte et la
+      # vulnérabilité reste dans le binaire. Mesuré le 2026-07-26 : dist/ datait
+      # du 15 mars alors que package.json avait été bumpé depuis.
+      # Cette étape reconstruit le bundle et échoue s'il diffère du committé.
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 26
+          cache: npm
+          cache-dependency-path: src/tools/Ninjadog.CLI/WebUI/package-lock.json
+
+      - name: Rebuild WebUI bundle
+        working-directory: src/tools/Ninjadog.CLI/WebUI
+        run: |
+          npm ci
+          npm run build
+
+      - name: Verify the committed WebUI bundle is up to date
+        run: |
+          # --porcelain couvre aussi les fichiers NON SUIVIS : vite nomme ses
+          # assets par hash, donc un bundle modifié apparaît comme une
+          # suppression + un ajout non suivi, que `git diff` seul ne voit pas.
+          changes=$(git status --porcelain -- src/tools/Ninjadog.CLI/WebUI/dist)
+          if [ -n "$changes" ]; then
+            echo "::error::WebUI/dist est périmé : il ne correspond plus aux sources ni au lockfile."
+            echo "Correctif : npm ci && npm run build dans src/tools/Ninjadog.CLI/WebUI, puis committer dist/."
+            echo "$changes"
+            exit 1
+          fi
+          echo "dist/ est à jour."
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
