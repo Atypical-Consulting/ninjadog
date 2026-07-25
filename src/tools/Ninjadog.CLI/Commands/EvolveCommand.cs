@@ -7,7 +7,7 @@ namespace Ninjadog.CLI.Commands;
 internal sealed class EvolveCommand
     : Command<EvolveCommandSettings>
 {
-    public override int Execute(CommandContext context, EvolveCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, EvolveCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {
