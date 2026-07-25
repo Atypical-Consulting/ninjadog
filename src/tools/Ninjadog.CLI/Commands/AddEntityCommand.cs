@@ -5,7 +5,7 @@ namespace Ninjadog.CLI.Commands;
 internal sealed class AddEntityCommand
     : Command<AddEntityCommandSettings>
 {
-    public override int Execute(CommandContext context, AddEntityCommandSettings settings, CancellationToken cancellationToken)
+    protected override int Execute(CommandContext context, AddEntityCommandSettings settings, CancellationToken cancellationToken)
     {
         try
         {
