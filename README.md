@@ -512,3 +512,10 @@ This project is licensed under the Apache License 2.0 — see the [LICENSE](LICE
 Built with care by [Atypical Consulting](https://atypical.garry-ai.cloud) — opinionated, production-grade open source.
 
 [![Contributors](https://contrib.rocks/image?repo=Atypical-Consulting/ninjadog)](https://github.com/Atypical-Consulting/ninjadog/graphs/contributors)
+
+<!-- portfolio-nugetkeep:start -->
+---
+Built by [Atypical Consulting](https://www.atypical.consulting). We also make
+[NuGetKeep](https://nugetkeep.com/?utm_source=github-readme&utm_medium=readme&utm_campaign=launch-2026-07),
+a self-hosted NuGet server with supply-chain quarantine.
+<!-- portfolio-nugetkeep:end -->
